@@ -36,7 +36,7 @@ SWEP.ViewModel = "models/weapons/v_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 
 SWEP.Primary.Sound = Sound("weapons/grenade_launcher1.wav", 70, 90)
-SWEP.Primary.Damage = 256
+SWEP.Primary.Damage = 192
 SWEP.Primary.NumShots = 0
 SWEP.Primary.Delay = 1
 
@@ -57,10 +57,13 @@ SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	if SERVER then
 		local ent = ents.Create("projectile_launchedgrenade")
 		if ent:IsValid() then
@@ -83,7 +86,7 @@ function SWEP:Reload()
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.Owner:GetViewModel():SetPlaybackRate(0.2)
 		self:EmitSound("vehicles/tank_readyfire1.wav", 70, 130)
@@ -95,4 +98,5 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	self:ResetConeAdder()
 end

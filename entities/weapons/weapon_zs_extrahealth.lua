@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "추가 방탄복"
-	SWEP.Description = "사용시 죽을 때까지 체력이 30 늘어나며 이동속도는 10 하락한다."
+	SWEP.Description = "사용시 죽을 때까지 체력이 30 늘어나며 이동속도는 15 하락한다.\n최대체력이 200 이상인 경우 사용할 수 없다."
 	SWEP.ViewModelFOV = 70.241170637475
 	SWEP.ViewModelFlip = false
 	SWEP.Slot = 4
@@ -38,16 +38,21 @@ SWEP.WalkSpeed = SPEED_FAST
 function SWEP:PrimaryAttack()
 	if (self:CanPrimaryAttack()) then
 		local owner = self.Owner
-		
+		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 		if (IsValid(owner)) then
-			owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -10
-			owner:ResetSpeed() 
-			if SERVER then 
-				owner:SetMaxHealth(owner:GetMaxHealth() + 30) 
-				owner:SetHealth(owner:GetMaxHealth()) 
+			if owner:GetMaxHealth() < 200 then
+				owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -15
+				owner:ResetSpeed() 
+				if SERVER then 
+					owner:SetMaxHealth(owner:GetMaxHealth() + 30)
+					owner:SetHealth(owner:Health()+30) 
+				end
+				self:TakePrimaryAmmo(1)
+				self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
+			else 
+				self.Owner:PrintMessage(HUD_PRINTCENTER, "방탄복을 더 사용할 수 없다.")
+				return
 			end
-			self:TakePrimaryAmmo(1)
-			self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
 		else
 			if SERVER then
 				owner:StripWeapon(self:GetClass())
@@ -58,6 +63,5 @@ function SWEP:PrimaryAttack()
 			owner:StripWeapon(self:GetClass())
 		end
 		
-		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	end
 end

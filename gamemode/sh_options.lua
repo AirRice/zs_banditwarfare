@@ -231,13 +231,13 @@ GM:AddPointShopItem(3,"practition", "'프랙티션' 돌격소총", nil, ITEMCAT_
 GM:AddPointShopItem(3,"inferno", "'인페르노' AUG", nil, ITEMCAT_GUNS, 155, "weapon_zs_inferno")
 GM:AddPointShopItem(3,"sweeper", "'스위퍼' 샷건", nil, ITEMCAT_GUNS, 155, "weapon_zs_sweepershotgun")
 GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 소총", nil, ITEMCAT_GUNS, 155, "weapon_zs_pulserifle")
+GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 155, "weapon_zs_zeus")
 
 GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 220, "weapon_zs_reaper")
 GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 220, "weapon_zs_tommy")
 GM:AddPointShopItem(4,"blitz", "'블리츠' 돌격소총", nil, ITEMCAT_GUNS, 220, "weapon_zs_blitz")
 GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 220, "weapon_zs_sg550")
 GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 220, "weapon_zs_crossbow")
-GM:AddPointShopItem(4,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 220, "weapon_zs_zeus")
 GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 220, "weapon_zs_boomstick")
 GM:AddPointShopItem(4,"slugrifle", "'티니' 슬러그 소총", nil, ITEMCAT_GUNS, 210, "weapon_zs_slugrifle")
 GM:AddPointShopItem(4,"positron", "'포지트론' 입자포", nil, ITEMCAT_GUNS, 245, "weapon_zs_positron")
@@ -250,7 +250,7 @@ GM:AddPointShopItem(nil,"rifleammo", "소총 탄약", nil, ITEMCAT_AMMO, 5, nil,
 GM:AddPointShopItem(nil,"crossbowammo", "크로스보우 화살 묶음", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(5, "XBowBolt", true) end, "models/Items/CrossbowRounds.mdl")
 GM:AddPointShopItem(nil,"pulseammo", "펄스건 탄약", nil, ITEMCAT_AMMO, 4, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["pulse"] or 40, "pulse", true) end, "models/Items/combine_rifle_ammo01.mdl")
 GM:AddPointShopItem(nil,"medicammo", "메디컬 에너지", nil, ITEMCAT_AMMO, 4, nil, function(pl) pl:GiveAmmo(50, "Battery", true) end, "models/healthvial.mdl")
-GM:AddPointShopItem(nil,"empround", "EMP 배터리", "EMP건의 추가 탄환이다.", ITEMCAT_AMMO, 15, nil, function(pl) pl:GiveAmmo(1, "gravity", true) end, "models/items/Battery.mdl").NoClassicMode = true
+GM:AddPointShopItem(nil,"empround", "EMP 배터리", "EMP건의 추가 탄환이다.", ITEMCAT_AMMO, 15, nil, function(pl) pl:GiveAmmo(5, "gravity", true) end, "models/items/Battery.mdl").NoClassicMode = true
 GM:AddPointShopItem(nil,"nails", "못 2개", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(2, "GaussEnergy", true) end, "models/crossbow_bolt.mdl").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"axe", "도끼", nil, ITEMCAT_MELEE, 25, "weapon_zs_axe")
@@ -335,6 +335,9 @@ GM.RestrictedModels = {
 	"models/player/corpse1.mdl",
 	"models/player/charple.mdl",
 	"models/player/skeleton.mdl"
+}
+GM.ForceClassicMaps = {
+	"cs_newyork"
 }
 
 -- If a person has no player model then use one of these (auto-generated).

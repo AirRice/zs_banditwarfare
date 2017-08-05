@@ -64,7 +64,7 @@ function ENT:Explode()
 	if owner:IsValid() and owner:IsPlayer() and (owner:Team() == TEAM_HUMAN or owner:Team() == TEAM_BANDIT) then
 		local pos = self:GetPos()
 
-		util.BlastDamage2(self, owner, pos, 320, 600)
+		util.BlastDamage2(self, owner, pos, 256, 256)
 
 		local effectdata = EffectData()
 			effectdata:SetOrigin(pos)

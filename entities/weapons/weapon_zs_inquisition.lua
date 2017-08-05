@@ -59,7 +59,7 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:TakeAmmo()
 	for i = 0, 2 do
-		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, 0.15 * i, 1, function()
+		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, 0.1 * i, 1, function()
 			self:EmitFireSound()
 			self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 		end)
@@ -71,10 +71,13 @@ end
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	if CLIENT then return end
 
 	local aimvec = owner:GetAimVector()
@@ -89,7 +92,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		local phys = ent:GetPhysicsObject()
 		if phys:IsValid() then
 			phys:Wake()
-			phys:SetVelocityInstantaneous(aimvec * 1900)
+			phys:SetVelocityInstantaneous(aimvec * 2200)
 		end
 	end
 end

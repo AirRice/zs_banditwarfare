@@ -48,7 +48,7 @@ SWEP.IronSightsAng = Vector(1.4,0.1,5)
 
 function SWEP:Reload()
 	if self.reloading then return end
-	self:SetShotsFired(0)
+
 	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
 		self.reloading = true
@@ -56,6 +56,8 @@ function SWEP:Reload()
 		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
 		self.Owner:DoReloadEvent()
 	end
+	
+	self:ResetConeAdder()
 end
 
 if SERVER then
@@ -90,6 +92,7 @@ function SWEP:Think()
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
+	self:DevineConeAdder()
 end
 end
 

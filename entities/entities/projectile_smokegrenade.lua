@@ -83,7 +83,7 @@ function ENT:CreateSmoke()
 	local prpos = VectorRand() * r
 	prpos.z = prpos.z + 32
 	
-    for i=1, 20 do
+    for i=1, 10 do
 		local gray = math.random(75, 200)
 		local particle = emitter:Add("particle/particle_smokegrenade", pos+ prpos)
 		particle:SetVelocity(VectorRand():GetNormalized() * math.Rand(500, 1500))

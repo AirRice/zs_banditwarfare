@@ -75,6 +75,7 @@ function SWEP:Reload()
 		self:SetNextReload(CurTime() + self:SequenceDuration())
 	end
 	self:SetIronsights(false)
+	self:ResetConeAdder()
 end
 
 function SWEP:SecondaryAttack()

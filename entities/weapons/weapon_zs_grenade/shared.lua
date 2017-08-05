@@ -16,6 +16,8 @@ SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_FAST
 
+SWEP.GrenadeDamage = 128
+SWEP.GrenadeRadius = 128
 function SWEP:Initialize()
 	self:SetWeaponHoldType("grenade")
 	self:SetDeploySpeed(1.1)

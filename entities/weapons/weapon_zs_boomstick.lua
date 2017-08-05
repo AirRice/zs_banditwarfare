@@ -37,7 +37,7 @@ SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 28
 
 SWEP.ConeMax = 0.53
-SWEP.ConeMin = 0.2
+SWEP.ConeMin = 0.12
 SWEP.Recoil = 3.2
 SWEP.WalkSpeed = SPEED_SLOWEST
 
@@ -49,7 +49,7 @@ SWEP.nextreloadfinish = 0
 
 function SWEP:Reload()
 	if self.reloading then return end
-	self:SetShotsFired(0)
+	
 	if self:GetNextReload() <= CurTime() and self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 		self.reloading = true
@@ -58,6 +58,8 @@ function SWEP:Reload()
 		self.Owner:DoReloadEvent()
 		self:SetNextReload(CurTime() + self:SequenceDuration())
 	end
+	
+	self:ResetConeAdder()
 end
 
 function SWEP:PrimaryAttack()

@@ -36,7 +36,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 65
+SWEP.Primary.Damage = 50
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -77,7 +77,7 @@ function SWEP:Reload()
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.Owner:GetViewModel():SetPlaybackRate(0.8)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()/4*5+0.3
@@ -88,6 +88,7 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	self:ResetConeAdder()
 end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)

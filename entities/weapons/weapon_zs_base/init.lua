@@ -9,10 +9,10 @@ function SWEP:Think()
 		self.IdleAnimation = nil
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
+	
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
-	if self.Owner:KeyReleased(IN_ATTACK) then
-		self:SetShotsFired(0)
-	end
+	
+	self:DevineConeAdder()
 end

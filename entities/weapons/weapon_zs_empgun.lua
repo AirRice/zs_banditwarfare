@@ -55,7 +55,7 @@ SWEP.HoldType = "revolver"
 SWEP.ViewModel = "models/weapons/cstrike/c_pist_deagle.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_deagle.mdl"
 SWEP.UseHands = true
-SWEP.Primary.ClipSize = 1
+SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "gravity"
 SWEP.Primary.DefaultClip = 1
@@ -63,11 +63,11 @@ SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Sound = Sound("Weapon_EMPgun.Single")
 SWEP.Primary.Damage = 1
 SWEP.Primary.NumShots = 0
-SWEP.Primary.Delay = 0.1
+SWEP.Primary.Delay = 0.7
 SWEP.Recoil = 1.66
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.ConeMax = 0.1
-SWEP.ConeMin = 0.05
+SWEP.ConeMin = 0.02
 SWEP.TracerName = "ToolTracer"
 SWEP.IronSightsPos = Vector(-6.5, 0, -0.65)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
@@ -78,7 +78,7 @@ function SWEP:Reload()
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+	
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.Owner:GetViewModel():SetPlaybackRate(0.5)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
@@ -89,6 +89,8 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	
+	self:ResetConeAdder()
 end
 
 function BulletCallback(attacker, tr, dmginfo)
@@ -131,7 +133,7 @@ function BulletCallback(attacker, tr, dmginfo)
 			local up = 100
 			local pushvel = tr.Normal * fwd
             pushvel.z = math.max(pushvel.z, up)
-			ent:KnockDown(3)
+			--ent:KnockDown(3)
             ent:SetGroundEntity(nil)
             ent:SetLocalVelocity( ent:GetVelocity() + pushvel)
             end

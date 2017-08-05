@@ -68,8 +68,8 @@ SWEP.ReloadSound = Sound("ambient/machines/combine_terminal_idle4.wav")
 SWEP.Primary.Sound = Sound("Weapon_pulseboom.Single")
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.82
-SWEP.ConeMin = 0.07
+SWEP.ConeMax = 0.62
+SWEP.ConeMin = 0.05
 SWEP.Recoil = 3.76
 SWEP.WalkSpeed = SPEED_SLOWER
 
@@ -79,7 +79,7 @@ function SWEP:Reload()
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.Owner:GetViewModel():SetPlaybackRate(0.4)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
@@ -90,6 +90,7 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	self:ResetConeAdder()
 end
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	GenericBulletCallback(attacker, tr, dmginfo)

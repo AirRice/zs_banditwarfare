@@ -10,6 +10,7 @@ SWEP.ConeRamp = 3
 
 SWEP.CSMuzzleFlashes = true
 
+
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.DefaultClip = 0
 SWEP.Primary.Automatic = false
@@ -29,9 +30,19 @@ SWEP.IronSightsHoldType = "ar2"
 SWEP.IronSightsPos = Vector(0, 0, 0)
 
 SWEP.EmptyWhenPurchased = true
-SWEP.LastShot = 0
+
+SWEP.AngleAdded = {
+	Pitch = 0,
+	Yaw = 0,
+	Roll = 0,
+	CurrentPitch = 0,
+	CurrentYaw = 0,
+	CurrentRoll = 0
+}
+
 function SWEP:SetupDataTables()
-	self:NetworkVar( "Int", 31, "ShotsFired" )
+	self:NetworkVar("Vector", 31, "ConeAdder")
+	self:NetworkVar("Float", 31, "LastFire")
 end
 
 function SWEP:Initialize()
@@ -53,53 +64,100 @@ function SWEP:Initialize()
 	end
 end
 
-function SWEP:GetCone()
-	if self.ConeMax == self.ConeMin then return self.ConeMax end --not self.Owner:OnGround() or
+function SWEP:DevineConeAdder() 
+	if (IsValid(self.Owner) and self:GetLastFire() + (self.Primary.Delay or 0) + FrameTime() <= CurTime()) then
+		self:SetConeAdder(self:GetConeAdder() / 2)
+	end
+end
+
+-- function SWEP:SetConeAdder()
+	-- self:SetNWFloat("LastFire", CurTime())
+	-- self:SetNWVector("ConeAdder", self:GetConeAdder() + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.2)
+-- end
+
+-- function SWEP:GetConeAdder()
+	-- return self:GetNWVector("ConeAdder")
+-- end
+function SWEP:ResetConeAdder()
+	self:SetConeAdder(Vector(0, 0, 0))
+end
+
+function SWEP:SetConeAndFire()
+	self:SetLastFire(CurTime())
+	if (self:GetConeAdder():Length() < (self.MaxConeAdder or 1.0)) then
+		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.2)
+	end
+end
+
+function SWEP:GetConeAdderLength()
+	return self:GetConeAdder():Length()
+end
+
+function SWEP:DoRecoil()
+	if (!IsValid(self.Owner)) then
+		return
+	end
 	
+	local recoil = self.Recoil
+	
+	local mul = 1
+	
+	if (self.Owner:Crouching()) then
+		mul = mul - 0.2
+	end
+	
+	if (self:GetIronsights()) then
+		mul = mul - 0.15
+	end
+	
+	if (self.Owner.BuffTightGrip) then
+		mul = mul - 0.15
+	end
+	
+	recoil = recoil * mul
+	
+	if SERVER then
+		
+		self.Owner:ViewPunch(Angle(math.Rand(-recoil * 3, 0), math.Rand(-recoil, recoil), 0))
+	else
+		local curAng = self.Owner:EyeAngles()
+		curAng.pitch = curAng.pitch - math.Rand(recoil * 3, 0)
+		curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
+		curAng.Roll = 0
+		self.Owner:SetEyeAngles(curAng)
+	end
+end
+
+function SWEP:GetCone()
+	-- if not self.Owner:OnGround() or self.ConeMax == self.ConeMin then return self.ConeMax end
+
 	local basecone = self.ConeMin
 	local conedelta = self.ConeMax - basecone
-	local multiplier = math.Clamp(self.Owner:GetVelocity():Length() / self.WalkSpeed, 0.6,1) * 0.5
-	if self.Owner:Crouching() and self.Owner:OnGround() then multiplier = multiplier - 0.2 end
-	if self:GetIronsights() then multiplier = multiplier - 0.2 end
-	if not self.Owner:OnGround() then multiplier = multiplier + 0.2 end
-	if self.Owner.BuffSights and (self.Primary.Ammo == "pistol" or self.Primary.Ammo == "ar2" or self.Primary.Ammo == "smg") then multiplier = multiplier * 0.8 end
-	return basecone + conedelta * multiplier ^ self.ConeRamp + 	self:GetShotsFired()*math.max(basecone/10,0.004)
+
+	if !self.Owner:OnGround() then
+		basecone = basecone * 1.2
+	end
+	
+	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1) * 0.5
+	if not self.Owner:Crouching() then multiplier = multiplier + 0.25 end
+	if not self:GetIronsights() then multiplier = multiplier + 0.25 end
+
+	-- if (SERVER) then
+	-- PrintMessage(3, tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
+	-- else
+	-- chat.AddText(Color(255, 0, 0), tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
+	-- end
+	return (basecone + self:GetConeAdderLength()) + conedelta * multiplier ^ self.ConeRamp
 end
 
 function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
+	if not self:CanPrimaryAttack() then return end 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
 	self:EmitFireSound()
 	self:TakeAmmo()
 	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
-end
-
-
-function SWEP:CalcRecoil()
-	if not IsValid(self.Owner) then return end
-	local recoil = self.Recoil
-	if (self.Owner:Crouching()) then
-		recoil = recoil * 0.8
-	end
-	if (self.Owner.BuffTightGrip) then
-		recoil = recoil * 0.85
-	end
-	if (self:GetIronsights()) then
-		recoil = recoil * 0.75
-	end
-	local anglo
-	recoil = recoil + recoil * math.Clamp(self.Owner:GetVelocity():Length()/self.WalkSpeed,0,1.3)
-	anglo = Angle(math.Rand(-recoil*2.5,-recoil/3), math.Rand(-recoil,recoil), 0)
-	if SERVER then
-		self.Owner:ViewPunch(anglo)		
-	else
-		local eyes = self.Owner:EyeAngles()
-		eyes.pitch = eyes.pitch + anglo.pitch
-		eyes.yaw = eyes.yaw + anglo.yaw
-		self.Owner:SetEyeAngles(eyes) 
-	end
 end
 
 function SWEP:GetWalkSpeed()
@@ -180,11 +238,11 @@ end
 
 function SWEP:Reload()
 	if self.Owner:IsHolding() then return end
-	
+
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		self:SetNextReload(self.IdleAnimation)
@@ -193,6 +251,8 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	
+	self:ResetConeAdder()
 end
 
 function SWEP:GetIronsights()
@@ -204,7 +264,6 @@ function SWEP:CanPrimaryAttack()
 
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")
-		self:SetShotsFired(0)
 		self:SetNextPrimaryFire(CurTime() + math.max(0.25, self.Primary.Delay))
 		return false
 	end
@@ -259,14 +318,17 @@ function SWEP:SendWeaponAnimation()
 end
 
 SWEP.BulletCallback = GenericBulletCallback
-function SWEP:ShootBullets(dmg, numbul, cone)
+function SWEP:ShootBullets(dmg, numbul, cone)	
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
+	
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
-	self.LastShot = CurTime()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	self:StartBulletKnockback()
 	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)

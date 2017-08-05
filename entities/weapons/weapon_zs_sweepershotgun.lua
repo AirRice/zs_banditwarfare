@@ -43,7 +43,7 @@ SWEP.nextreloadfinish = 0
 
 function SWEP:Reload()
 	if self.reloading then return end
-	self:SetShotsFired(0)
+
 	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
 		self.reloading = true
@@ -53,6 +53,7 @@ function SWEP:Reload()
 	end
 
 	self:SetIronsights(false)
+	self:ResetConeAdder()
 end
 
 function SWEP:Think()

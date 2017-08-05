@@ -100,7 +100,7 @@ function SWEP:Reload()
 	if CurTime() < self.NextReload then return end
 
 	self.NextReload = CurTime() + self.ReloadDelay
-	self:SetShotsFired(0)
+
 	local owner = self.Owner
 
 	if self:Clip1() < self.Primary.ClipSize and 0 < owner:GetAmmoCount(self.Primary.Ammo) then
@@ -111,6 +111,7 @@ function SWEP:Reload()
 		timer.Simple(0.25, function()
 			if self:IsValid() and IsValid(owner) then
 				self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+				self:ResetConeAdder()
 			end
 		end)
 	end

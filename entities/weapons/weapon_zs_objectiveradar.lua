@@ -56,7 +56,12 @@ end
 if not CLIENT then return end
 function SWEP:DrawHUD()
 	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
-		self:DrawTarget(ent,24,0)
+		local teamcolor = nil
+		if ent:GetSigilTeam() ~= nil then 
+			teamcolor = team.GetColor(ent:GetSigilTeam())
+		end
+		
+		self:DrawTarget(ent,24,0,teamcolor)
 	end
 	if self.BaseClass.DrawHUD then
 		self.BaseClass.DrawHUD(self)
@@ -64,17 +69,17 @@ function SWEP:DrawHUD()
 end
 
 local texScope = Material("vgui/hud/autoaim")
-function SWEP:DrawTarget(tgt, size, offset)
+function SWEP:DrawTarget(tgt, size, offset, color)
 	local scrpos = tgt:GetPos():ToScreen()
 	scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 	scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
 	--surface.SetMaterial(texScope)
 	--surface.DrawTexturedRect( scrpos.x - size, scrpos.y - size, size * 2, size * 2 )
-	surface.DrawCircle(scrpos.x - size, scrpos.y - size, size * 2,255,0,0,150)
+	--surface.DrawCircle(scrpos.x - size, scrpos.y - size, size * 2,255,0,0,150)
+	draw.RoundedBox( scrpos.x - size, scrpos.y - size, size * 2, size * 2, color ~= nil and color or COLOR_WHITE )
 	local text = math.ceil(self.Owner:GetPos():Distance(tgt:GetPos()))
 	local w, h = surface.GetTextSize(text)
-
 	--surface.SetFont("ZSHUDFontSmall")
 	--surface.DrawText(text)
-	draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - w/2,scrpos.y + (offset * size) - h/2)
+	draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size+ (offset * size) - h/2)
 end

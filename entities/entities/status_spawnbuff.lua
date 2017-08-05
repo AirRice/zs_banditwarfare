@@ -3,7 +3,7 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "status__base"
 
-ENT.LifeTime = 5
+ENT.LifeTime = 10
 ENT.OwnerPos = nil
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
@@ -28,6 +28,18 @@ function ENT:Think()
 		return
 	end
 	self.OwnerPos = self:GetOwner():GetPos()
+	local numoutsidespawns = 0
+	local teamspawns = {}
+	teamspawns = team.GetValidSpawnPoint(self:GetOwner():Team())
+	for _, ent in pairs(teamspawns) do
+		if ent:GetPos():Distance(self:GetOwner():GetPos()) >= 256 and self:GetOwner():Alive() then
+			numoutsidespawns = numoutsidespawns + 1
+		end
+	end
+	if numoutsidespawns >= #teamspawns then
+		self:Remove()
+		return
+	end
 end
 end
 

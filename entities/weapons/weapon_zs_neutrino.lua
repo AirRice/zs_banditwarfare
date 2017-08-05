@@ -69,8 +69,8 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 100
 
-SWEP.ConeMax = 0.2
-SWEP.ConeMin = 0.07
+SWEP.ConeMax = 0.15
+SWEP.ConeMin = 0.06
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.TracerName = "Ar2Tracer"
@@ -79,6 +79,13 @@ function SWEP:SetIronsights()
 end
 
 function SWEP:Reload()
+end
+
+function SWEP:SetConeAndFire()
+	self:SetLastFire(CurTime())
+	if (self:GetConeAdder():Length() < (self.MaxConeAdder or 1.0)) then
+		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.01)
+	end
 end
 
 function SWEP:PrimaryAttack()
@@ -96,18 +103,6 @@ function SWEP:PrimaryAttack()
 		self:SetNextPrimaryFire(CurTime() + math.max(0.05, self.Primary.Delay * (1 - combo / 80)))
 		self:SetDTInt(4, combo + 1)
 	end
-end
-
-function SWEP:GetCone()
-	if self.ConeMax == self.ConeMin then return self.ConeMax end --not self.Owner:OnGround() or
-	
-	local basecone = self.ConeMin
-	local conedelta = self.ConeMax - basecone
-	local multiplier = math.Clamp(self.Owner:GetVelocity():Length() / self.WalkSpeed, 0.6,1) * 0.5
-	if self.Owner:Crouching() and self.Owner:OnGround() then multiplier = multiplier - 0.2 end
-	if self:GetIronsights() then multiplier = multiplier - 0.2 end
-	if not self.Owner:OnGround() then multiplier = multiplier + 0.2 end
-	return basecone + conedelta * multiplier ^ self.ConeRamp + 	self:GetShotsFired()*math.max(basecone/10,0.004)/8
 end
 
 function SWEP:Think()

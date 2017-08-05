@@ -52,7 +52,7 @@ if SERVER then
 			self.IdleAnimation = CurTime() + self:SequenceDuration()
 
 			self:EmitSound("Weapon_Crossbow.Single")
-			self:CalcRecoil()
+
 			local ent = ents.Create("projectile_arrow")
 			if ent:IsValid() then
 				ent:SetOwner(owner)
@@ -66,17 +66,19 @@ if SERVER then
 					phys:SetVelocityInstantaneous(owner:GetAimVector() * 3900)
 				end
 			end
+			self:DoRecoil()
 		end
 	end
 
 	function SWEP:Reload()
 		if self:GetNextReload() <= CurTime() and self:Clip1() == 0 and 0 < self.Owner:GetAmmoCount("XBowBolt") then
-			self:SetShotsFired(0)
 			self:EmitSound("weapons/crossbow/bolt_load"..math.random(2)..".wav", 50, 100)
 			self:EmitSound("weapons/crossbow/reload1.wav")
 			self:DefaultReload(ACT_VM_RELOAD)
 			self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
 			self:SetNextReload(CurTime() + self:SequenceDuration())
+			
+			self:ResetConeAdder()
 		end
 	end
 

@@ -48,8 +48,14 @@ SWEP.ConeMax = 0.05
 SWEP.ConeMin = 0.003
 SWEP.IronSightsPos = Vector(-6.2, 0, 2.5)
 
-function SWEP:ShootPulseBullets(dmg, numbul, cone)	
-	self:CalcRecoil()
+function SWEP:ShootPulseBullets()	
+	local dmg = self.Primary.Damage*2
+	local numbul = self.Primary.NumShots
+	local cone = self:GetCone()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	
 	local owner = self.Owner
 	--owner:MuzzleFlash()
@@ -69,7 +75,7 @@ function SWEP:PrimaryAttack()
 		self:EmitSound("weapons/gauss/fire1.wav",75,110,1,CHAN_AUTO)
 		self:TakeAmmo()
 		self.Owner:RemoveAmmo( 1, "pulse")
-		self:ShootPulseBullets(self.Primary.Damage*2, self.Primary.NumShots, self:GetCone())
+		self:ShootPulseBullets()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	else
 		self:EmitFireSound()

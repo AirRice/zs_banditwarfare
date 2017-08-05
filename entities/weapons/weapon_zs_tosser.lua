@@ -37,9 +37,9 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.15
-SWEP.ConeMin = 0.049
-SWEP.Recoil = 0.4
+SWEP.ConeMax = 0.12
+SWEP.ConeMin = 0.029
+SWEP.Recoil = 0.25
 SWEP.WalkSpeed = SPEED_NORMAL
 
 --SWEP.IronSightsPos = Vector(-6.42, 4, 2.53)

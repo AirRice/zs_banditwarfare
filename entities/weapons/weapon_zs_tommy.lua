@@ -64,7 +64,7 @@ function SWEP:Reload()
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
-	self:SetShotsFired(0)
+	
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
 		self.Owner:GetViewModel():SetPlaybackRate(0.8)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*5/4+0.3
@@ -75,4 +75,5 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
+	self:ResetConeAdder()
 end

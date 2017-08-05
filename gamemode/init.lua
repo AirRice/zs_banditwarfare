@@ -339,11 +339,12 @@ function GM:Initialize()
 	self:AddCustomAmmo()
 	self:AddNetworkStrings()
 	self:LoadProfiler()
-	self:SetClassicMode(math.random(0,1) == 1)
 	
 	local mapname = string.lower(game.GetMap())
-	if string.find(mapname, "_obj_", 1, true) or string.find(mapname, "objective", 1, true) then
-		self.ObjectiveMap = true
+	if table.HasValue(self.ForceClassicMaps, mapname) then
+		self:SetClassicMode(true)
+	else
+		self:SetClassicMode(math.random(0,1) == 1)
 	end
 
 	--[[if string.sub(mapname, 1, 3) == "zm_" then
@@ -1643,7 +1644,7 @@ function GM:PlayerDeathThink(pl)
 		local target = pl:GetObserverTarget()
 		if not target or not target:IsValid() or not target:IsPlayer() then
 			pl:StripWeapons()
-			pl:Spectate(OBS_MODE_ROAMING)
+			pl:Spectate(OBS_MODE_DEATHCAM)
 			pl:SpectateEntity(NULL)
 		end
 	end
@@ -1672,27 +1673,8 @@ function GM:PlayerDeathThink(pl)
 			if not pl.StartSpectating or CurTime() >= pl.StartSpectating then
 				pl.StartSpectating = nil
 				pl:StripWeapons()
-				pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
-
-				local living = {}
-				for _, v in pairs(team.GetPlayers(pl:Team())) do
-					if v:Alive() then table.insert(living, v) end
-				end
-
-				pl:StripWeapons()
-
-				if pl.SpectatedPlayerKey > #living then
-					pl.SpectatedPlayerKey = 1
-				end
-
-				local specplayer = living[pl.SpectatedPlayerKey]
-				if specplayer then
-					pl:Spectate(OBS_MODE_CHASE)
-					pl:SpectateEntity(specplayer)
-				else
-					pl:Spectate(OBS_MODE_ROAMING)
-					pl:SpectateEntity(NULL)
-				end
+				pl:Spectate(OBS_MODE_DEATHCAM)
+				pl:SpectateEntity(NULL)
 			end
 			
 		end
@@ -2713,7 +2695,9 @@ function GM:PlayerSpawn(pl)
 	pl.LifeBarricadeDamage = 0
 	pl.LifeEnemyDamage = 0
 	pl.LifeEnemyKills = 0
-	pl:GiveStatus("spawnbuff").Owner = pl
+	if not self:IsClassicMode() then
+		pl:GiveStatus("spawnbuff").Owner = pl
+	end
 
 	self.PreviouslyDied[pl:UniqueID()] = nil 
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
@@ -2791,10 +2775,16 @@ function GM:PlayerSpawn(pl)
 			hands:DoSetup(pl)
 			hands:Spawn()
 		end
-		local stored = weapons.GetStored("weapon_zs_battleaxe")
-		pl:Give("weapon_zs_battleaxe")
+		if (math.random(0,1)==1) then
+			local stored = weapons.GetStored("weapon_zs_battleaxe")
+			pl:Give("weapon_zs_battleaxe")
+			pl:GiveAmmo(stored.Primary.DefaultClip/3, stored.Primary.Ammo)
+		else
+			local stored = weapons.GetStored("weapon_zs_peashooter")
+			pl:Give("weapon_zs_peashooter")
+			pl:GiveAmmo(stored.Primary.DefaultClip/3, stored.Primary.Ammo)
+		end
 		pl:Give("weapon_zs_swissarmyknife")
-		pl:GiveAmmo(stored.Primary.DefaultClip/3, stored.Primary.Ammo)
 	end
 
 	pl:DoMuscularBones()
@@ -2824,11 +2814,22 @@ function GM:WaveStateChanged(newstate)
 	if newstate then
 		
 		local players = player.GetAll()
-		if #players >= 1 then
-			for _, pl in pairs(players) do
-				--gamemode.Call("GiveDefaultOrRandomEquipment", pl)
-				pl.BonusDamageCheck = CurTime()
+		for _, pl in pairs(players) do
+			if not pl:Alive() then
+				pl.m_PreRespawn = true
+				pl:UnSpectateAndSpawn()
+				local teamspawns = {}
+				teamspawns = team.GetValidSpawnPoint(pl:Team())
+				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+				pl.m_PreRespawn = nil
+				pl.SpawnedTime = CurTime()
+				pl.NextSpawnTime = nil
+				net.Start("zs_playerredeemed")
+					net.WriteEntity(pl)
+					net.WriteString(pl:Name())
+				net.Broadcast()	
 			end
+			pl.BonusDamageCheck = CurTime()
 		end
 
 			
