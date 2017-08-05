@@ -1,0 +1,9 @@
+"css_galleria"
+{
+	"material"	"overviews/css_galleria"	// texture file
+	"pos_x"		"5005"	// X coordinate,
+	"pos_y"		"-2175"	// Y coordinate,
+	"scale"		"5.5" 	// and used scale used when taking the screenshot
+	"rotate"		"0"	// map was rotated by 90 degress in image editor
+	"zoom"		"1"	// optimal zoom factor if map is shown in full size
+}
