@@ -286,6 +286,7 @@ GM:AddPointShopItem(nil,"barricadekit", "'이지스' 바리케이드 킷", nil, 
 GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_TOOLS, 25, "weapon_zs_wrench").NoClassicMode = true
 GM:AddPointShopItem(nil,"ffemitter", "방어막 생성기", nil, ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
 GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_TOOLS, 5, "weapon_zs_objectiveradar").NoClassicMode = true
+GM:AddPointShopItem(nil,"enemytracker", "생체 탐지기", nil, ITEMCAT_TOOLS, 10, "weapon_zs_enemyradar")
 GM:AddPointShopItem(nil,"boardpack", "판자 2장", nil, ITEMCAT_TOOLS, 15, "weapon_zs_boardpack").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_OTHER, 35, "weapon_zs_backdoor").NoClassicMode = true
@@ -336,8 +337,56 @@ GM.RestrictedModels = {
 	"models/player/charple.mdl",
 	"models/player/skeleton.mdl"
 }
-GM.ForceClassicMaps = {
-	"cs_newyork"
+GM.MapWhitelist = {
+	"cs_assault",
+	"cs_compound",
+	"cs_galleria",
+	"cs_havana",
+	"cs_italy",
+	"cs_kismayo",
+	"cs_militia",
+	"cs_office",
+	"de_aztec",
+	"de_cbble",
+	"de_chateau",
+	"de_dust",
+	"de_dust2",
+	"de_inferno",
+	"de_nuke",
+	"de_piranesi",
+	"de_port",
+	"de_prodigy",
+	"de_school",
+	"de_tides",
+	"de_train",
+	"zm_4ngry_quarantine",
+	"zm_ryan_valley02",
+	"zm_stab_aroundtown_v3c",
+	"zm_tx_highschoolbeta7_d_vh",
+	"zs_ambush_v4",
+	"zs_ancient_castle_opt",
+	"zs_clav_oblivion",
+	"zs_coasthouse",
+	"zs_countryside_b1",
+	"zs_deadmount_reborn_v1",
+	"zs_dryfield_v2",
+	"zs_eaglecity_fourside_b3",
+	"zs_gravity_v4",
+	"zs_hazard_v2",
+	"zs_insurance",
+	"zs_laboratory",
+	"zs_lockup_v2",
+	"zs_outpost_gold_v2",
+	"zs_placid",
+	"zs_plague",
+	"zs_port_v4",
+	"zs_raunchyhouse_v2",
+	"zs_ravine",
+	"zs_scrapmetal_v2_fixed",
+	"zs_slugde_fixed",
+	"zs_trainstation",
+	"zs_urbandecay2",
+	"zsb_ravenholm_pre_b1"
 }
 
 -- If a person has no player model then use one of these (auto-generated).

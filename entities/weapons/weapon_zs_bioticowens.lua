@@ -54,10 +54,13 @@ end
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
 	if CLIENT then return end
 	local aimvec = owner:GetAimVector()

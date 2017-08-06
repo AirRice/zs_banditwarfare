@@ -43,10 +43,13 @@ SWEP.IronSightsPos = Vector(-3, 3, 2)
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	self:EmitSound("weapons/slam/throw.wav", 70, math.random(78, 82))
 	if CLIENT then return end
 	local aimvec = owner:GetAimVector()

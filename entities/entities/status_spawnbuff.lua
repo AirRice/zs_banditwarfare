@@ -32,7 +32,7 @@ function ENT:Think()
 	local teamspawns = {}
 	teamspawns = team.GetValidSpawnPoint(self:GetOwner():Team())
 	for _, ent in pairs(teamspawns) do
-		if ent:GetPos():Distance(self:GetOwner():GetPos()) >= 256 and self:GetOwner():Alive() then
+		if ent:GetPos():Distance(self:GetOwner():GetPos()) >= 350 and self:GetOwner():Alive() then
 			numoutsidespawns = numoutsidespawns + 1
 		end
 	end

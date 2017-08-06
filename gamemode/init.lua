@@ -341,10 +341,10 @@ function GM:Initialize()
 	self:LoadProfiler()
 	
 	local mapname = string.lower(game.GetMap())
-	if table.HasValue(self.ForceClassicMaps, mapname) then
-		self:SetClassicMode(true)
+	if table.HasValue(self.MapWhitelist, mapname) then
+		self:SetClassicMode(math.random(10) < 5)
 	else
-		self:SetClassicMode(math.random(0,1) == 1)
+		self:SetClassicMode(true)
 	end
 
 	--[[if string.sub(mapname, 1, 3) == "zm_" then
@@ -1243,7 +1243,19 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.NextRegenerate = 0
 		pl.SpawnedTime = CurTime()
 		if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
-			pl:ChangeTeam(math.random(3,4))
+			if self:GetHumanScore() > self:GetBanditScore() then
+				pl:ChangeTeam(TEAM_BANDIT)
+			elseif self:GetHumanScore() < self:GetBanditScore() then
+				pl:ChangeTeam(TEAM_HUMAN)
+			else
+				if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
+					pl:ChangeTeam(TEAM_HUMAN)
+				elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
+					pl:ChangeTeam(TEAM_BANDIT)
+				else
+					pl:ChangeTeam(math.random(3,4))
+				end
+			end
 		elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
 			pl:ChangeTeam(TEAM_HUMAN)
 		else
@@ -2841,7 +2853,7 @@ function GM:WaveStateChanged(newstate)
 		end
 		gamemode.Call("SetWave", prevwave + 1)
 		gamemode.Call("SetWaveStart", CurTime())
-		gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() - (self:GetWave() - 1) * self.TimeLostPerWave)
+		gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() * (self:IsClassicMode() and 0.5 or 1) - (self:GetWave() - 1) * self.TimeLostPerWave )
 
 		net.Start("zs_wavestart")
 			net.WriteInt(self:GetWave(), 16)

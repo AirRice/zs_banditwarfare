@@ -53,8 +53,11 @@ function SWEP:PrimaryAttack()
 
 	self:EmitFireSound()
 	self:TakeAmmo()
-	self:CalcRecoil()
-	self:SetShotsFired(self:GetShotsFired()+1)
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
+
 	local owner = self.Owner
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
@@ -66,7 +69,7 @@ end
 
 function SWEP:Reload()
 	if self.reloading then return end
-	self:SetShotsFired(0)
+
 	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
 		self.reloading = true
@@ -76,6 +79,7 @@ function SWEP:Reload()
 	end
 
 	self:SetIronsights(false)
+	self:ResetConeAdder()
 end
 
 function SWEP:Think()

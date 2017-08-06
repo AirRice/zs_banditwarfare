@@ -80,10 +80,13 @@ end
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
-	self:CalcRecoil()
+	if SERVER then
+		self:SetConeAndFire()
+	end
+	self:DoRecoil()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self:SetShotsFired(self:GetShotsFired()+1)
+
 	self.Owner:EmitSound("weapons/crossbow/bolt_fly4.wav")
 	--self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
 	--self.Owner:EmitSound("npc/headcrab_poison/ph_scream"..math.random(1, 3)..".wav",72,math.Rand(130,150))

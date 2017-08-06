@@ -33,7 +33,7 @@ SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.11
-SWEP.ConeMin = 0.06
+SWEP.ConeMin = 0.04
 SWEP.Recoil = 0.42
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
@@ -46,7 +46,7 @@ SWEP.IronSightsAng = Vector(0, 2, 0)
 SWEP.Primary.DefaultNumShots = SWEP.Primary.NumShots
 SWEP.Primary.DefaultDelay = SWEP.Primary.Delay
 SWEP.Primary.IronsightsNumShots = SWEP.Primary.NumShots * 2
-SWEP.Primary.IronsightsDelay = SWEP.Primary.Delay * 1.6666
+SWEP.Primary.IronsightsDelay = SWEP.Primary.Delay * 1.8
 
 function SWEP:SetIronsights(b)
 	if self:GetIronsights() ~= b then

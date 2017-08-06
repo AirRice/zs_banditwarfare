@@ -63,7 +63,7 @@ if SERVER then
 				local phys = ent:GetPhysicsObject()
 				if phys:IsValid() then
 					phys:Wake()
-					phys:SetVelocityInstantaneous(owner:GetAimVector() * 3900)
+					phys:SetVelocityInstantaneous(owner:GetAimVector() * 3000)
 				end
 			end
 			self:DoRecoil()

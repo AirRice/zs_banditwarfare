@@ -45,6 +45,7 @@ SWEP.WalkSpeed = SPEED_NORMAL
 SWEP.HoldType = "slam"
 SWEP.ScanDelay = 10
 SWEP.LastScan = 0
+SWEP.targets = {}
 function SWEP:PrimaryAttack()
 end
 
@@ -56,28 +57,44 @@ end
 
 if not CLIENT then return end
 function SWEP:DrawHUD()
+	if GAMEMODE:GetWaveActive() then
 	if self.LastScan + self.ScanDelay <= CurTime() then
+		self.targets = {}
 		for _, ent in pairs(player.GetAll()) do
-			local teamcolor = nil
-			if self.Owner:IsPlayer() and ent:Team() ~= self.Owner:Team() then 
-				teamcolor = team.GetColor(ent:Team())
+			if self.Owner:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT)then 
+				table.insert(self.targets,ent:GetPos())
 			end
-			self:DrawTarget(ent,32,0,teamcolor)
 		end
 		self.LastScan = CurTime()
+		surface.PlaySound("npc/combine_gunship/gunship_ping_search.wav")
 	end
+	for _, pos in pairs(self.targets) do
+		self:DrawTarget(pos,18,0)
+	end
+	local scrW = ScrW()
+	local scrH = ScrH()
+	local width = 200
+	local height = 20
+	local x = scrW / 2 - width / 2
+	local y = scrH / 2 - height / 2 + 30
+	local ratio = (CurTime() - self.LastScan) / self.ScanDelay
+	surface.SetDrawColor(Color(0, 0, 255, 80))
+	surface.DrawOutlinedRect(x - 1, y - 1, width + 2, height + 2)
+	draw.RoundedBox(0, x, y, width*ratio, height, Color(255, 0, 0, 80))
+	end
+
 	if self.BaseClass.DrawHUD then
 		self.BaseClass.DrawHUD(self)
 	end
 end
 
 local texScope = Material("vgui/hud/autoaim")
-function SWEP:DrawTarget(tgt, size, offset, color)
-	local scrpos = tgt:GetPos():ToScreen()
+function SWEP:DrawTarget(tgt, size, offset)
+	local scrpos = tgt:ToScreen()
 	scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 	scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
-	draw.RoundedBox( 15,scrpos.x - size, scrpos.y - size, size * 2, size * 2, color ~= nil and color or COLOR_GREY )
-	local text = math.ceil(self.Owner:GetPos():Distance(tgt:GetPos()))
+	surface.DrawCircle(scrpos.x - size, scrpos.y - size, size * 2,255,0,0,150)
+	local text = math.ceil(self.Owner:GetPos():Distance(tgt))
 	local w, h = surface.GetTextSize(text)
 	--surface.SetFont("ZSHUDFontSmall")
 	--surface.DrawText(text)

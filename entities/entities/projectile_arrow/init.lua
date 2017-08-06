@@ -56,6 +56,6 @@ function ENT:StartTouch(ent)
 
 	self.Touched[ent] = true
 
-	ent:TakeDamage(95, owner, self)
+	ent:TakeDamage(100, owner, self)
 	ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 end

@@ -107,7 +107,7 @@ function GM:CreateSigils()
 			end
 			local flag = false
 			for __, sig in pairs(sigs) do
-				if n.v:Distance(sig.NodePos) <= 1024 then
+				if n.v:Distance(sig.NodePos) <= 512 then
 					flag = true
 				end
 				n.d = math.min(n.d, n.v:Distance(sig.NodePos))

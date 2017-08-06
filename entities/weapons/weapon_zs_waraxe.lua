@@ -20,7 +20,7 @@ if CLIENT then
 	}
 end
 
-SWEP.Primary.Damage = 16
+SWEP.Primary.Damage = 12
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 0.2
 
