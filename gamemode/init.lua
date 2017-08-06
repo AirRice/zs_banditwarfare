@@ -2222,12 +2222,12 @@ function GM:PostPlayerDeath(pl)
 
 	if self:GetWaveActive() and self:IsClassicMode() then 
 		if humancount == 0 and banditcount >=1 then
-			timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", TEAM_BANDIT) end)
+			timer.Simple(5, function() gamemode.Call("WaveEndWithWinner", TEAM_BANDIT) end)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_bandit")))
 			end
 		elseif banditcount == 0 and humancount >=1 then
-			timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", TEAM_HUMAN) end)
+			timer.Simple(5, function() gamemode.Call("WaveEndWithWinner", TEAM_HUMAN) end)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_human")))
 			end

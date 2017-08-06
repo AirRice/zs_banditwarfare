@@ -48,7 +48,7 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.055
+SWEP.ConeMax = 0.078
 SWEP.ConeMin = 0.01
 
 SWEP.Recoil = 0.5
