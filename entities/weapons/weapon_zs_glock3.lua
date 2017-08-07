@@ -22,7 +22,7 @@ SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Glock.Single")
-SWEP.Primary.Damage = 9
+SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 0.3
 SWEP.Recoil = 0.96

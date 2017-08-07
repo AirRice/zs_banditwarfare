@@ -668,7 +668,23 @@ function GM:Think()
 			if self:GetWaveEnd() <= time and self:GetWaveEnd() ~= -1 then
 				gamemode.Call("SetWaveActive", false)
 			end
-			
+			if self:IsClassicMode() then
+				local banditcount = 0
+				local humancount = 0
+				for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
+					if bandit:Alive() then banditcount = banditcount +1 end
+				end
+				for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
+					if human:Alive() then humancount = humancount +1 end
+				end
+				if humancount == 0 and banditcount == 0 then
+					timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", nil) end)
+						for _, pl in pairs(player.GetAll()) do
+							pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "all_dead"))
+						end
+					
+				end
+			end
 			if not self:IsClassicMode() then
 				gamemode.Call("SigilCommsThink")
 			end
@@ -700,7 +716,9 @@ function GM:Think()
 		if pl:GetBarricadeGhosting() then
 			pl:BarricadeGhostingThink()
 		end
-
+		if pl:Team() == TEAM_SPECTATOR then
+			self:SpectatorThink(pl)
+		end
 		if pl.m_PointQueue >= 1 and time >= pl.m_LastDamageDealt + 2 then
 			pl:PointCashOut((pl.m_LastDamageDealtPosition or pl:GetPos()) + Vector(0, 0, 32), FM_NONE)
 		end
@@ -907,6 +925,8 @@ GM.CappedInfliction = 0
 GM.StartingZombie = {}
 GM.CheckedOut = {}
 GM.PreviouslyDied = {}
+GM.PreviousTeam = {}
+GM.PreviousPoints = {}
 GM.CurrentSigilTable = {}
 GM.CommsEnd = false
 GM.SuddenDeath = false
@@ -953,6 +973,8 @@ function GM:RestartLua()
 	
 	self.CheckedOut = {}
 	self.PreviouslyDied = {}
+	self.PreviousTeam = {}
+	self.PreviousPoints = {}
 	self.StoredUndeadFrags = {}
 
 	ROUNDWINNER = nil
@@ -1021,7 +1043,7 @@ function GM:RestartGame()
 		pl:SetDeaths(0)
 		pl:SetKills(0)
 		pl:SetPoints(0)
-		pl:AddPoints(15)
+		pl:AddPoints(20)
 		pl:DoHulls()
 		pl.DeathClass = nil
 	end
@@ -1201,7 +1223,8 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl:SetCanZoom(false)
 	pl:SetNoCollideWithTeammates(true)
 	pl:SetCustomCollisionCheck(true)
-
+	pl:DoHulls()
+	
 	pl.EnemyKilled = 0
 	pl.BountyModifier = 0
 	pl.EnemyKilledAssists = 0
@@ -1232,7 +1255,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.m_PointQueue = 0
 	pl.m_LastDamageDealt = 0
 	pl.m_PreRespawn = nil
-	pl:AddPoints(15)
+
 	pl.HealedThisRound = 0
 	local nosend = not pl.DidInitPostEntity
 	pl.CarryOverHealth = 0
@@ -1241,30 +1264,47 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.PointsCommission = 0
 	pl.CarryOverCommision = 0
 	pl.NextRegenerate = 0
-		pl.SpawnedTime = CurTime()
-		if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
-			if self:GetHumanScore() > self:GetBanditScore() then
-				pl:ChangeTeam(TEAM_BANDIT)
-			elseif self:GetHumanScore() < self:GetBanditScore() then
-				pl:ChangeTeam(TEAM_HUMAN)
-			else
-				if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
-					pl:ChangeTeam(TEAM_HUMAN)
-				elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
-					pl:ChangeTeam(TEAM_BANDIT)
-				else
-					pl:ChangeTeam(math.random(3,4))
-				end
-			end
-		elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
+	pl.SpawnedTime = CurTime()
+	if pl:GetInfo("zsb_spectator") == "1" then
+		pl:ChangeTeam(TEAM_SPECTATOR)
+		pl:StripWeapons( )
+		pl:Spectate( OBS_MODE_ROAMING )
+		return false;
+	end
+	if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
+		if self.PreviousTeam[pl:UniqueID()] then
+			pl:ChangeTeam(self.PreviousTeam[pl:UniqueID()])
+		end
+		if self:GetHumanScore() > self:GetBanditScore() then
+			pl:ChangeTeam(TEAM_BANDIT)
+		elseif self:GetHumanScore() < self:GetBanditScore() then
 			pl:ChangeTeam(TEAM_HUMAN)
 		else
-			pl:ChangeTeam(TEAM_BANDIT)
+			if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
+				pl:ChangeTeam(TEAM_HUMAN)
+			elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
+				pl:ChangeTeam(TEAM_BANDIT)
+			else
+				pl:ChangeTeam(math.random(3,4))
+			end
 		end
+	elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
+		pl:ChangeTeam(TEAM_HUMAN)
+	else
+		pl:ChangeTeam(TEAM_BANDIT)
+	end
+	if self.PreviousPoints[pl:UniqueID()] then
+		pl:SetPoints(0)
+		pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
+	else
+		pl:SetPoints(0)
+		pl:AddPoints(20+team.TotalFrags(pl:Team())/team.NumPlayers(pl:Team()))
+	end
 end
 function GM:ShuffleTeams()
 	local newbandit,newhuman = 0,0
 	for _, pl in pairs(player.GetAll()) do
+		if pl:IsSpectator() then continue end
 		if newbandit == newhuman then
 			pl:ChangeTeam(math.random(3,4))
 			if pl:Team() == TEAM_BANDIT then newbandit = newbandit+1
@@ -1289,7 +1329,8 @@ function GM:PlayerDisconnected(pl)
 	local uid = pl:UniqueID()
 
 	self.PreviouslyDied[uid] = CurTime()
-
+	self.PreviousTeam[uid] = pl:Team()
+	self.PreviousPoints[uid] = pl:Frags()
 	pl:DropAll()
 
 	if pl:Health() > 0 and not pl:IsSpectator() then
@@ -1648,6 +1689,52 @@ concommand.Add("worthcheckout", function(sender, command, arguments)
 
 	gamemode.Call("RemoveDuplicateAmmo", sender)
 end)]]
+
+function GM:SpectatorThink(pl)
+	if pl:GetObserverMode() == OBS_MODE_CHASE then
+		local target = pl:GetObserverTarget()
+		if not target or not target:IsValid() or not target:IsPlayer() then
+			pl:StripWeapons()
+			pl:Spectate(OBS_MODE_ROAMING)
+			pl:SpectateEntity(NULL)
+		end
+	end
+	if pl:GetObserverMode() == OBS_MODE_NONE then -- Not in spectator yet.
+		if self:GetWaveActive() then -- During wave.
+			if not pl.StartSpectating or CurTime() >= pl.StartSpectating then
+				pl.StartSpectating = nil
+				pl:StripWeapons()
+				pl:Spectate(OBS_MODE_ROAMING)
+				pl:SpectateEntity(NULL)
+			end			
+		end
+	else -- In spectator.
+		if pl:KeyPressed(IN_ATTACK2) then
+			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
+
+			local living = {}
+			for _, v in pairs(player.GetAll()) do
+				if v:Alive() then table.insert(living, v) end
+			end
+
+			pl:StripWeapons()
+
+			if pl.SpectatedPlayerKey > #living then
+				pl.SpectatedPlayerKey = 1
+			end
+
+			local specplayer = living[pl.SpectatedPlayerKey]
+			if specplayer then
+				pl:Spectate(OBS_MODE_CHASE)
+				pl:SpectateEntity(specplayer)
+			end
+		elseif pl:KeyPressed(IN_JUMP) then
+			pl:Spectate(OBS_MODE_ROAMING)
+			pl:SpectateEntity(NULL)
+			pl.SpectatedPlayerKey = nil
+		end
+	end
+end
 
 function GM:PlayerDeathThink(pl)
 	if self.RoundEnded or pl.Revive then return end
@@ -2045,13 +2132,16 @@ function GM:DamageFloater(attacker, victim, dmginfo)
 end
 
 function GM:OnPlayerChangedTeam(pl, oldteam, newteam)
+	local uid = pl:UniqueID()
 	if newteam == TEAM_HUMAN or newteam == TEAM_BANDIT then
 		pl.DamagedBy = {}
-		self.PreviouslyDied[pl:UniqueID()] = nil
+		self.PreviouslyDied[uid] = nil
 		pl:SetBarricadeGhosting(false)
 		--self.CheckedOut[pl:UniqueID()] = true
+	elseif newteam == TEAM_SPECTATOR then
+		self.PreviousTeam[uid] = oldteam
+		self.PreviousPoints[uid] = pl:Frags()
 	end
-
 	pl:SetLastAttacker(nil)
 	for _, p in pairs(player.GetAll()) do
 		if p.LastAttacker == pl then
@@ -2710,7 +2800,43 @@ function GM:PlayerSpawn(pl)
 	if not self:IsClassicMode() then
 		pl:GiveStatus("spawnbuff").Owner = pl
 	end
-
+	if (pl:Team() == TEAM_SPECTATOR) then
+		if pl:GetInfo("zsb_spectator") == "1" then
+			pl:StripWeapons( )
+			pl:Spectate( OBS_MODE_ROAMING )
+			return false;
+		else
+			if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
+				if self.PreviousTeam[pl:UniqueID()] then
+					pl:ChangeTeam(self.PreviousTeam[pl:UniqueID()])
+				end
+				if self:GetHumanScore() > self:GetBanditScore() then
+					pl:ChangeTeam(TEAM_BANDIT)
+				elseif self:GetHumanScore() < self:GetBanditScore() then
+					pl:ChangeTeam(TEAM_HUMAN)
+				else
+					if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
+						pl:ChangeTeam(TEAM_HUMAN)
+					elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
+						pl:ChangeTeam(TEAM_BANDIT)
+					else
+						pl:ChangeTeam(math.random(3,4))
+					end
+				end
+			elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
+				pl:ChangeTeam(TEAM_HUMAN)
+			else
+				pl:ChangeTeam(TEAM_BANDIT)
+			end
+			if self.PreviousPoints[pl:UniqueID()] then
+				pl:SetPoints(0)
+				pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
+			else
+				pl:SetPoints(0)
+				pl:AddPoints(20+team.TotalFrags(pl:Team())/team.NumPlayers(pl:Team()))
+			end
+		end
+	end
 	self.PreviouslyDied[pl:UniqueID()] = nil 
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		pl.m_PointQueue = 0
@@ -2744,7 +2870,10 @@ function GM:PlayerSpawn(pl)
 		pl:SetNoTarget(false)
 		
 		pl:SetMaxHealth(100)
-
+		if self:IsClassicMode() and self:GetWaveActive() then
+			pl:Kill()
+			return
+		end
 		pl:Give("weapon_zs_fists")
 		local nosend = not pl.DidInitPostEntity
 		pl.HumanRepairMultiplier = nil
@@ -2827,7 +2956,7 @@ function GM:WaveStateChanged(newstate)
 		
 		local players = player.GetAll()
 		for _, pl in pairs(players) do
-			if not pl:Alive() then
+			if not pl:Alive() and not pl:IsSpectator() then
 				pl.m_PreRespawn = true
 				pl:UnSpectateAndSpawn()
 				local teamspawns = {}
@@ -2900,6 +3029,7 @@ function GM:WaveStateChanged(newstate)
 			end
 		end
 	else
+	
 		self:SetComms(0,0)
 		self.CommsEnd = false
 		self.SuddenDeath = false
@@ -2925,13 +3055,19 @@ function GM:WaveStateChanged(newstate)
 			return
 		end
 		for _, pl in pairs(player.GetAll()) do
+			
+			
 			--pl:SendLua("RunConsoleCommand( \"stopsound\" )")
 			local teamspawns = {}
 			teamspawns = team.GetValidSpawnPoint(pl:Team())
 			if shouldshuffle then 
 				pl:PrintMessage(HUD_PRINTCENTER, "팀 밸런스를 위해 5초 후 셔플합니다.")
 			end
-			if pl:Alive() then
+			if pl:GetInfo("zsb_spectator") == "1" then
+				pl:ChangeTeam(TEAM_SPECTATOR)
+				pl:StripWeapons( )
+				pl:Spectate( OBS_MODE_ROAMING )	
+			elseif pl:Alive() then
 				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
 			else
 				pl:UnSpectateAndSpawn()	

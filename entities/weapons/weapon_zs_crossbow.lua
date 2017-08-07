@@ -59,11 +59,12 @@ if SERVER then
 				ent:SetPos(owner:GetShootPos())
 				ent:SetAngles(owner:GetAimVector():Angle())
 				ent.Team = owner:Team()
+				ent:SetGravity(0.5)
 				ent:Spawn()
 				local phys = ent:GetPhysicsObject()
 				if phys:IsValid() then
 					phys:Wake()
-					phys:SetVelocityInstantaneous(owner:GetAimVector() * 3000)
+					phys:SetVelocityInstantaneous(owner:GetAimVector() * 1800)
 				end
 			end
 			self:DoRecoil()

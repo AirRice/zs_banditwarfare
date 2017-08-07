@@ -60,7 +60,7 @@ function PANEL:Paint()
 	self.m_CommsProgressBarH:MoveRightOf( self.m_ScoreLabelH, 5 )
 	self.m_ScoreLabelH:SetText(translate.Get("teamname_human").." "..GAMEMODE:GetHumanScore())
 	self.m_ScoreLabelB:SetText(GAMEMODE:GetBanditScore().." "..translate.Get("teamname_bandit"))	
-	if GAMEMODE:GetWaveActive() then
+	if GAMEMODE:GetWaveActive() and not GAMEMODE:IsClassicMode() then
 		self.m_CommsProgressBarB:SetVisible(true)
 		self.m_CommsProgressBarH:SetVisible(true)
 	else

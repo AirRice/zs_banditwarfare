@@ -1,7 +1,7 @@
 GM.CraftingRange = 72
 
 GM.Crafts = {
-	{
+	--[[{
 		Name = "a big wooden crate",
 		a = {"*physics*", {"models/props_junk/wood_crate001a.mdl", "models/props_junk/wood_crate001a_damaged.mdl", "models/props_junk/wood_crate001a_damagedmax.mdl"}},
 		b = {"*physics*", {"models/props_junk/wood_crate001a.mdl", "models/props_junk/wood_crate001a_damaged.mdl", "models/props_junk/wood_crate001a_damagedmax.mdl"}},
@@ -19,7 +19,7 @@ GM.Crafts = {
 		a = {"*physics*", "models/props_junk/gascan001a.mdl"},
 		b = {"*physics*", "models/props_c17/oildrum001.mdl"},
 		Result = {"prop_physics", Model("models/props_c17/oildrum001_explosive.mdl")}
-	},
+	},]]
 	{
 		Name = "a sawhack",
 		callback = function(enta, entb)

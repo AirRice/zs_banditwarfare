@@ -440,7 +440,15 @@ function GM:_Think()
 	if self.DeathFog > 0 then
 		self.DeathFog = math.max(self.DeathFog - FrameTime() / 5, 0)
 	end
-
+	
+	if self.HealthHUD and self.HealthHUD:Valid() then
+		if MySelf:Team() == TEAM_SPECTATOR then
+			self.HealthHUD:SetVisible(false)
+		else
+			self.HealthHUD:SetVisible(not self.FilmMode)
+		end
+	end
+	
 	local health = MySelf:Health()
 	if self.PrevHealth and health < self.PrevHealth then
 		self.HurtEffect = math.min(self.HurtEffect + (self.PrevHealth - health) * 0.02, 1.5)
@@ -640,6 +648,8 @@ function GM:_HUDPaint()
 
 	if (myteam == TEAM_BANDIT or myteam == TEAM_HUMAN) then
 		self:HumanHUD(screenscale)
+	elseif myteam == TEAM_SPECTATOR then
+		self:ObserverHUD(screenscale)
 	end
 	hitmarkeralpha = math.Approach( hitmarkeralpha, 0, 5 )
 	
@@ -663,14 +673,14 @@ function GM:ObserverHUD(obsmode)
 	if obsmode == OBS_MODE_CHASE then
 		local target = MySelf:GetObserverTarget()
 		if target and target:IsValid() then
-			if target:IsPlayer() and target:Team() == MySelf:Team() then
+			if (target:IsPlayer() and target:Team() == MySelf:Team()) or MySelf:Team() == TEAM_SPECTATOR then
 					draw_SimpleTextBlur(translate.Format("observing_x", target:Name(), math.max(0, target:Health())), "ZSHUDFontSmall", w * 0.5, h * 0.75 - texh - 32, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 			end
 
 			--dyn = self:GetDynamicSpawning() and self:DynamicSpawnIsValid(target)
 		end
 	end
-	if not self:IsClassicMode() then
+	if not self:IsClassicMode() and MySelf:Team() ~= TEAM_SPECTATOR then
 	if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
 		draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 	elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
@@ -678,8 +688,10 @@ function GM:ObserverHUD(obsmode)
 	end
 	end
 	local space = texh + 8
-	draw_SimpleTextBlur(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_DARKRED, TEXT_ALIGN_CENTER)
-	--draw_SimpleTextBlur(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 3, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlur(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+	if MySelf:Team() == TEAM_SPECTATOR then
+		draw_SimpleTextBlur(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 3, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+	end
 end
 
 local matHumanHeadID = Material("zombiesurvival/humanhead")
@@ -710,22 +722,24 @@ function GM:_PostDrawTranslucentRenderables()
 		self:DrawPointWorldHints()
 		self:DrawWorldHints()
 	end
+	if self.ShowIndicators then
 	client = LocalPlayer()
 	plys = team.GetPlayers(client:Team())
 
 	local indicator_col = team.GetColor(client:Team())
-      dir = client:GetForward() * -1
+    dir = client:GetForward() * -1
 
-      render.SetMaterial(indicator_mat)
+    render.SetMaterial(indicator_mat)
 
-      for i=1, #plys do
-         ply = plys[i]
-         if ply:IsPlayer() and ply:Team() == client:Team() and ply != client and ply:Alive() then
-            pos = ply:GetPos()
-            pos.z = pos.z + 74
-            render.DrawQuadEasy(pos, dir, 16, 16, indicator_col, 180)
-         end
+    for i=1, #plys do
+        ply = plys[i]
+        if ply:IsPlayer() and ply:Team() == client:Team() and ply != client and ply:Alive() and client:Team() ~= TEAM_SPECTATOR then
+           pos = ply:GetPos()
+           pos.z = pos.z + 74
+           render.DrawQuadEasy(pos, dir, 16, 16, indicator_col, 180)
+        end
       end
+	end
 end
 
 function GM:RestartRound()
@@ -745,7 +759,6 @@ end
 
 function GM:_HUDShouldDraw(name)
 	if self.FilmMode and name ~= "CHudWeaponSelection" then return false end
-
 	return name ~= "CHudHealth" and name ~= "CHudBattery"
 	and name ~= "CHudAmmo" and name ~= "CHudSecondaryAmmo"
 	and name ~= "CHudDamageIndicator"
@@ -830,7 +843,6 @@ end
 
 function GM:EvaluateFilmMode()
 	local visible = not self.FilmMode
-
 	if self.GameStatePanel and self.GameStatePanel:Valid() then
 		self.GameStatePanel:SetVisible(visible)
 	end
@@ -842,15 +854,11 @@ function GM:EvaluateFilmMode()
 	if self.CenterNotificationHUD and self.CenterNotificationHUD:Valid() then
 		self.CenterNotificationHUD:SetVisible(visible)
 	end
-
-	if self.HealthHUD and self.HealthHUD:Valid() then
-		self.HealthHUD:SetVisible(visible)
-	end
 end
 
 function GM:CreateVGUI()
 	local screenscale = BetterScreenScale()
-	self.GameStatePanel = vgui.Create("DGameState")
+	self.GameStatePanel = vgui.Create("DGameState")				
 	self.GameStatePanel:SetTextFont("ZSHUDFontSmaller")
 	self.GameStatePanel:SetAlpha(220)
 	self.GameStatePanel:SetSize(screenscale * 420, screenscale * 80)
@@ -1583,8 +1591,10 @@ net.Receive("zs_wavestart", function(length)
 	if LocalPlayer():Team() == TEAM_BANDIT then
 	--surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
 		surface.PlaySound(banditintros[math.random(#banditintros)])
-	else
+	elseif LocalPlayer():Team() == TEAM_HUMAN then
 		surface.PlaySound(humanintros[math.random(#humanintros)])
+	else
+		surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
 	end
 end)
 

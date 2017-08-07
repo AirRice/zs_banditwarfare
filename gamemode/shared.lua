@@ -267,7 +267,7 @@ function GM:Move(pl, move)
 end
 
 function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
-	if inwater then return true end
+	if inwater or pl:GetActiveWeapon().NoFallDamage then return true end
 	if SERVER then
 		pl:PreventSkyCade()
 	end

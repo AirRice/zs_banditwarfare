@@ -61,7 +61,7 @@ function SWEP:DrawHUD()
 	if self.LastScan + self.ScanDelay <= CurTime() then
 		self.targets = {}
 		for _, ent in pairs(player.GetAll()) do
-			if self.Owner:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT)then 
+			if self.Owner:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive() then 
 				table.insert(self.targets,ent:GetPos())
 			end
 		end

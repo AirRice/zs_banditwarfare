@@ -34,6 +34,7 @@ end)
 CreateClientConVar("zs_noredeem", "0", true, true)
 CreateClientConVar("zs_alwaysvolunteer", "0", true, true)
 CreateClientConVar("zs_nobosspick", "0", true, true)
+CreateClientConVar("zsb_spectator", "0", true, true)
 
 GM.SuicideOnChangeClass = CreateClientConVar("zs_suicideonchange", "1", true, false):GetBool()
 cvars.AddChangeCallback("zs_suicideonchange", function(cvar, oldvalue, newvalue)
@@ -48,6 +49,21 @@ end)
 GM.AlwaysShowNails = CreateClientConVar("zs_alwaysshownails", "0", true, false):GetBool()
 cvars.AddChangeCallback("zs_alwaysshownails", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AlwaysShowNails = tonumber(newvalue) == 1
+end)
+
+GM.ShowIndicators = CreateClientConVar("zsb_teamindicators", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_teamindicators", function(cvar, oldvalue, newvalue)
+	GAMEMODE.ShowIndicators = tonumber(newvalue) == 1
+end)
+
+GM.SimpleScoreBoard = CreateClientConVar("zsb_simplescoreboard", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_simplescoreboard", function(cvar, oldvalue, newvalue)
+	GAMEMODE.SimpleScoreBoard = tonumber(newvalue) == 1
+end)
+
+GM.KillstreakSounds = CreateClientConVar("zsb_killstreaksounds", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_killstreaksounds", function(cvar, oldvalue, newvalue)
+	GAMEMODE.KillstreakSounds = tonumber(newvalue) == 1
 end)
 
 GM.NoCrosshairRotate = CreateClientConVar("zs_nocrosshairrotate", "0", true, false):GetBool()

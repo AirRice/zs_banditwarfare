@@ -157,7 +157,7 @@ end
 
 GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 	for _, pl in pairs(player.GetAll()) do
-		if pl.EnemyKilled == 0 then return pl end
+		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
 	end
 end
 

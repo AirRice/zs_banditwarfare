@@ -60,7 +60,7 @@ sound.Add( {
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
 SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
 SWEP.Recoil = 0.5
-SWEP.Primary.Damage = 11
+SWEP.Primary.Damage = 10
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.17
 
@@ -100,7 +100,7 @@ function SWEP:PrimaryAttack()
 		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 40) and 2 or (self:GetDTInt(4) >= 80) and 3 or 1), self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
-		self:SetNextPrimaryFire(CurTime() + math.max(0.05, self.Primary.Delay * (1 - combo / 80)))
+		self:SetNextPrimaryFire(CurTime() + math.max(0.03, self.Primary.Delay * (1 - combo / 90)))
 		self:SetDTInt(4, combo + 1)
 	end
 end

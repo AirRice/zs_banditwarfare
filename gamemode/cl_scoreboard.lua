@@ -74,7 +74,13 @@ function PANEL:Init()
 
 	self.HumanList = vgui.Create("DScrollPanel", self)
 	self.HumanList.Team = TEAM_HUMAN
-
+	
+	self.SpectatorsLabel = vgui.Create("DLabel", self)
+	self.SpectatorsLabel.Font = "ZSHUDFontSmallerNS"
+	self.SpectatorsLabel:SetFont(self.SpectatorsLabel.Font)
+	self.SpectatorsLabel:SetTextColor(COLOR_GRAY)
+	self.SpectatorsLabel:NoClipping(true)
+	
 	self:InvalidateLayout()
 end
 
@@ -97,6 +103,9 @@ function PANEL:PerformLayout()
 	self.BanditList:SetSize(self:GetWide() / 2 - 24, self:GetTall() - 150)
 	self.BanditList:AlignBottom(16)
 	self.BanditList:AlignRight(8)
+	self.SpectatorsLabel:SetSize(self:GetWide() - 24,24)
+	self.SpectatorsLabel:AlignBottom(8)
+	self.SpectatorsLabel:AlignLeft(8)
 end
 
 function PANEL:Think()
@@ -161,7 +170,13 @@ function PANEL:Refresh()
 	self.m_ServerNameLabel:SetText(GetHostName())
 	self.m_ServerNameLabel:SizeToContents()
 	self.m_ServerNameLabel:SetPos(math.min(self:GetWide() - self.m_ServerNameLabel:GetWide(), self:GetWide() * 0.75 - self.m_ServerNameLabel:GetWide() * 0.5), 32 - self.m_ServerNameLabel:GetTall() / 2)
-
+	local SpectatorNames = {}
+	for _, pl in pairs(player.GetAllSpectators()) do
+		table.insert (SpectatorNames,pl:Name())					
+	end
+	
+	self.SpectatorsLabel:SetText("관전자:"..table.concat(SpectatorNames, ", "))
+	
 	if self.PlayerPanels == nil then self.PlayerPanels = {} end
 
 	for pl, panel in pairs(self.PlayerPanels) do
@@ -312,7 +327,11 @@ function PANEL:Refresh()
 		name = string.sub(name, 1, 24)..".."
 	end
 	self.m_PlayerLabel:SetText(name)
-	self.m_ScoreLabel:SetText(pl:GetKills().."K/"..pl:Deaths().."D | "..pl:Frags())
+	if GAMEMODE.SimpleScoreBoard then
+		self.m_ScoreLabel:SetText(pl:GetKills().."K/"..pl:Deaths().."D")
+	else
+		self.m_ScoreLabel:SetText(pl:GetKills().."K/"..pl:Deaths().."D | "..pl:Frags())
+	end
 	
 	if pl == LocalPlayer() then
 		self.m_Mute:SetVisible(false)

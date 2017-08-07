@@ -57,6 +57,7 @@ LANGUAGE.arsenal_upgraded							= "무기고에 추가됨"
 LANGUAGE.final_wave									= "마지막 웨이브가 시작되었다!"
 LANGUAGE.cant_do_that_in_classic_mode				= "섬멸전에서는 그렇게 할 수 없다."
 LANGUAGE.cant_use_x_in_classic_mode					= "섬멸전에서는 %s를 사용할 수 없다!"
+LANGUAGE.all_dead									= "모든 플레이어가 죽었다."
 
 LANGUAGE.final_wave_sub								= "최후의 전투가 시작된다!"
 LANGUAGE.wave_x_has_begun							= "%d번째 웨이브가 시작됐다!"

@@ -361,7 +361,7 @@ GM.MapWhitelist = {
 	"de_train",
 	"zm_4ngry_quarantine",
 	"zm_ryan_valley02",
-	"zm_stab_aroundtown_v3c",
+	--"zm_stab_aroundtown_v3c",
 	"zm_tx_highschoolbeta7_d_vh",
 	"zs_ambush_v4",
 	"zs_ancient_castle_opt",
@@ -385,8 +385,8 @@ GM.MapWhitelist = {
 	"zs_scrapmetal_v2_fixed",
 	"zs_slugde_fixed",
 	"zs_trainstation",
-	"zs_urbandecay2",
-	"zsb_ravenholm_pre_b1"
+	"zs_urbandecay2"
+	--"zsb_ravenholm_pre_b1"
 }
 
 -- If a person has no player model then use one of these (auto-generated).

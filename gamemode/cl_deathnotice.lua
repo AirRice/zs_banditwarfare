@@ -274,6 +274,7 @@ net.Receive("zs_killstreak", function(length)
 	local name = net.ReadString()
 	if kills <=1 then return end
 	--gamemode.Call("AddDeathNotice", nil, 0, "redeem", name, TEAM_HUMAN)
+	if GAMEMODE.KillstreakSounds then
 	if kills >= 14 then
 		surface.PlaySound("killstreak/8kills.wav")
 	elseif kills == 12 then
@@ -288,6 +289,7 @@ net.Receive("zs_killstreak", function(length)
 		surface.PlaySound("killstreak/3kills.wav")
 	elseif kills == 2 then
 		surface.PlaySound("killstreak/2kills.wav")
+	end
 	end
 	if pl:IsValid() then
 		GAMEMODE:TopNotify(pl, " ", {killicon = "killstreak"}, " ",kills, "연킬!")

@@ -40,7 +40,7 @@ function SWEP:PrimaryAttack()
 		local owner = self.Owner
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 		if (IsValid(owner)) then
-			if owner:GetMaxHealth() < 200 then
+			if owner:GetMaxHealth() + 30 < 200 then
 				owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -15
 				owner:ResetSpeed() 
 				if SERVER then 
@@ -49,10 +49,21 @@ function SWEP:PrimaryAttack()
 				end
 				self:TakePrimaryAmmo(1)
 				self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
-			else 
+			elseif owner:GetMaxHealth()+30 > 200 and owner:GetMaxHealth() < 200 then
+				owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -15
+				owner:ResetSpeed() 
+				if SERVER then 
+					local oldhealth = owner:GetMaxHealth()
+					owner:SetMaxHealth(200)
+					owner:SetHealth(owner:Health()+(200-oldhealth)) 
+				end
+				self:TakePrimaryAmmo(1)
+				self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
+			else
 				self.Owner:PrintMessage(HUD_PRINTCENTER, "방탄복을 더 사용할 수 없다.")
 				return
 			end
+				
 		else
 			if SERVER then
 				owner:StripWeapon(self:GetClass())

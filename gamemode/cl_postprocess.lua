@@ -179,8 +179,8 @@ local colHealth = Color(255, 255, 255, 255)
 local matPullBeam = Material("cable/rope")
 local colPullBeam = Color(255, 255, 255, 255)
 function GM:_PostDrawOpaqueRenderables()
-		if self.Auras then
-			--[[local eyepos = EyePos()
+		if self.ShowIndicators and MySelf:Team() ~= TEAM_SPECTATOR then
+			local eyepos = EyePos()
 			for _, pl in pairs(team_GetPlayers(MySelf:Team())) do
 				if pl:Alive() and pl:GetPos():Distance(eyepos) <= pl:GetAuraRange() and pl ~= MySelf then
 					local healthfrac = math_max(pl:Health(), 0) / pl:GetMaxHealth()
@@ -194,13 +194,8 @@ function GM:_PostDrawOpaqueRenderables()
 
 					render_SetMaterial(matGlow)
 					render_DrawSprite(pos, 13, 13, colHealth)
-					local size = math_sin(self.HeartBeatTime + pl:EntIndex()) * 50 - 21
-					if size > 0 then
-						render_DrawSprite(pos, size * 1.5, size, colHealth)
-						render_DrawSprite(pos, size, size * 1.5, colHealth)
-					end
 				end
-			end]]
+			end
 		end
 		self:DrawCraftingEntity()
 		local holding = MySelf.status_human_holding

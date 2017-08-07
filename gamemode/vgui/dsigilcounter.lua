@@ -22,7 +22,7 @@ function PANEL:Paint()
 		sigilicon:SetSize(48, 48)
 		sigilicon:SetPos((i - 1) * spacing + (spacing-48)*0.5, 0)
 		sigilicon:CenterVertical()
-		if GAMEMODE:GetWaveActive() and not GAMEMODE:IsClassicMode() then
+		if GAMEMODE:GetWaveActive() and not GAMEMODE:IsClassicMode() and not GAMEMODE.FilmMode then
 			sigilicon:SetVisible(true)
 		else 
 			sigilicon:SetVisible(false)
