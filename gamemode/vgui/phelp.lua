@@ -2,6 +2,9 @@ GM.Help = {
 {Name = "help_cat_introduction",
 Content = "help_cont_introduction"},
 
+{Name = "help_cat_keys",
+Content = "help_cont_keys"},
+
 {Name = "help_cat_tips",
 Content = "help_cont_tips"},
 

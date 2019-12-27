@@ -8,7 +8,8 @@ ENT.NextWaterDamage = 0
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetUseType(SIMPLE_USE)
-
+	self:SetModelScale(1.3)
+	self:Activate()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then

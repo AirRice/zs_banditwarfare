@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "리벳건"
-	SWEP.Description = "못을 높은 속도로 발사한다. 멀리에서 바리케이드를 보강할 수 있다."
+	SWEP.Description = "못을 높은 속도로 발사한다."
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 	
@@ -48,7 +48,7 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "GaussEnergy"
 SWEP.Primary.Sound = Sound("Weapon_Nailgun.Single")
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
-SWEP.Primary.Damage = 50
+SWEP.Primary.Damage = 10
 SWEP.Primary.Delay = 1     
 SWEP.Primary.DefaultClip = 1
 SWEP.Recoil = 1.8
@@ -58,60 +58,92 @@ SWEP.ConeMin = 0.005
 
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
+
 function SWEP.BulletCallback(attacker, tr, dmginfo)
-	local hitent = tr.Entity
+	local trent = tr.Entity
 	local effectdata = EffectData()
 	effectdata:SetOrigin(tr.HitPos)
 	effectdata:SetNormal(tr.HitNormal)
 	util.Effect("MetalSpark", effectdata)
-	if hitent:IsValid() then
-		if hitent:IsNailed() and hitent:IsSameTeam(self.Owner) then
-			local healstrength = GAMEMODE.NailHealthPerRepair * (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength
-			local oldhealth = hitent:GetBarricadeHealth()
-			if oldhealth <= 0 or oldhealth >= hitent:GetMaxBarricadeHealth() or hitent:GetBarricadeRepairs() <= 0 then return end
 
-			hitent:SetBarricadeHealth(math.min(hitent:GetMaxBarricadeHealth(), hitent:GetBarricadeHealth() + math.min(hitent:GetBarricadeRepairs(), healstrength)))
-			local healed = hitent:GetBarricadeHealth() - oldhealth
-			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed, self)
-			hitent:EmitSound("buttons/lever"..math.random(7, 8)..".wav", 70, math.random(100, 105))
-			local effectdata = EffectData()
-				effectdata:SetOrigin(tr.HitPos)
-				effectdata:SetNormal(tr.HitNormal)
-				effectdata:SetMagnitude(1)
-			util.Effect("nailrepaired", effectdata, true, true)
+	local trent = tr.Entity
+
+	if not trent:IsValid()
+	or not util.IsValidPhysicsObject(trent, tr.PhysicsBone)
+	or tr.Fraction == 0
+	or trent:GetMoveType() ~= MOVETYPE_VPHYSICS and not trent:GetNailFrozen()
+	or trent.NoNails
+	or trent:IsNailed() and (#trent.Nails >= 8 or trent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)
+	or trent:GetMaxHealth() == 1 and trent:Health() == 0 and not trent.TotalHealth
+	or not trent:IsNailed() and not trent:GetPhysicsObject():IsMoveable() 
+	or (trent:IsNailed() and trent:GetNailedPropOwner():IsPlayer() and trent:GetNailedPropOwner():Team() ~= attacker:Team())
+	then GenericBulletCallback(attacker, tr, dmginfo) return end
+
+	if not gamemode.Call("CanPlaceNail", attacker, tr) then return end
+
+	local count = 0
+	for _, nail in pairs(trent:GetNails()) do
+		if nail:GetDeployer() == attacker then
+			count = count + 1
+			if count >= 3 then
+				return
+			end
 		end
 	end
-	GenericBulletCallback(attacker, tr, dmginfo)
-end
 
-function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
-	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self:SetNextReload(CurTime() + 0.7)
-	self:EmitFireSound()
-	self:TakeAmmo()
-	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
-end
+	if tr.MatType == MAT_GRATE or tr.MatType == MAT_CLIP or tr.MatType == MAT_GLASS then return end
 
-
-function SWEP:SecondaryAttack()
-
-end
-function SWEP:Reload()
-	self:SetShotsFired(0)
-	if self.Owner:IsHolding() then return end
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.75)
-		self.IdleAnimation = CurTime() + self:SequenceDuration()*4/3
-		self:SetNextReload(self.IdleAnimation)
-		self:SetNextPrimaryAttack(self.IdleAnimation+0.1)
-		self.Owner:DoReloadEvent()
-		if self.ReloadSound then
-			self:EmitSound(self.ReloadSound)
+	if trent:IsValid() then
+		for _, nail in pairs(ents.FindByClass("prop_nail")) do
+			if trent:GetBarricadeHealth() <= 0 and trent:GetMaxBarricadeHealth() > 0 then
+			return end
 		end
 	end
+
+	local aimvec = attacker:GetAimVector()
+
+	local trtwo = util.TraceLine({start = tr.HitPos, endpos = tr.HitPos + aimvec * 24, filter = {attacker, trent}, mask = MASK_SOLID})
+
+	if trtwo.HitSky then return end
+
+	local ent = trtwo.Entity
+	if trtwo.HitWorld
+	or ent:IsValid() and util.IsValidPhysicsObject(ent, trtwo.PhysicsBone) and (ent:GetMoveType() == MOVETYPE_VPHYSICS or ent:GetNailFrozen()) and not ent.NoNails and not (not ent:IsNailed() and not ent:GetPhysicsObject():IsMoveable()) and not (ent:GetMaxHealth() == 1 and ent:Health() == 0 and not ent.TotalHealth) then
+		if trtwo.MatType == MAT_GRATE or trtwo.MatType == MAT_CLIP or trtwo.MatType == MAT_GLASS then return end
+
+		if ent and ent:IsValid() and (ent.NoNails or ent:IsNailed() and (#ent.Nails >= 8 or ent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)) then return end
+
+		if ent:GetBarricadeHealth() <= 0 and ent:GetMaxBarricadeHealth() > 0 then return end
+
+		if GAMEMODE:EntityWouldBlockSpawn(ent) then return end
+
+		local cons = constraint.Weld(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone, 0, true)
+		if cons ~= nil then
+			for _, oldcons in pairs(constraint.FindConstraints(trent, "Weld")) do
+				if oldcons.Ent1 == ent or oldcons.Ent2 == ent then
+					cons = oldcons.Constraint
+					break
+				end
+			end
+		end
+
+		if not cons then return end
+
+		trent:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
+		trent:SetNWEntity("LastNailOwner", attacker)
+		local nail = ents.Create("prop_nail")
+		if nail:IsValid() then
+			nail:SetActualOffset(tr.HitPos, trent)
+			nail:SetPos(tr.HitPos - aimvec * 8)
+			nail:SetAngles(aimvec:Angle())
+			nail:AttachTo(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone)
+			nail:Spawn()
+			nail:SetDeployer(attacker)
+			
+			cons:DeleteOnRemove(nail)
+
+			gamemode.Call("OnNailCreated", trent, ent, nail)
+		end
+	end	
+	
 end

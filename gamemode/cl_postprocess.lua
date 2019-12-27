@@ -197,7 +197,7 @@ function GM:_PostDrawOpaqueRenderables()
 				end
 			end
 		end
-		self:DrawCraftingEntity()
+
 		local holding = MySelf.status_human_holding
 		if holding and holding:IsValid() and holding:GetIsHeavy() then
 			local object = holding:GetObject()

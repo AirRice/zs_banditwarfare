@@ -7,9 +7,6 @@ ENT.LifeTime = 10
 ENT.OwnerPos = nil
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
-	if SERVER then
-		hook.Add("PlayerShouldTakeDamage", self, self.PlayerShouldTakeDamage)
-	end
 	if CLIENT then
 		hook.Add("PrePlayerDraw", self, self.PrePlayerDraw)
 		hook.Add("PostPlayerDraw", self, self.PostPlayerDraw)
@@ -17,29 +14,21 @@ function ENT:Initialize()
 	self.DieTime = CurTime() + self.LifeTime
 end
 
-function ENT:PlayerShouldTakeDamage( ply, attacker )
-	if ply ~= self:GetOwner() then return true end
-	return false
-end
 if SERVER then 
 function ENT:Think()
-	if self.DieTime <= CurTime() and self.OwnerPos != self:GetOwner():GetPos() then
-		self:Remove()
-		return
-	end
-	self.OwnerPos = self:GetOwner():GetPos()
 	local numoutsidespawns = 0
 	local teamspawns = {}
 	teamspawns = team.GetValidSpawnPoint(self:GetOwner():Team())
 	for _, ent in pairs(teamspawns) do
-		if ent:GetPos():Distance(self:GetOwner():GetPos()) >= 350 and self:GetOwner():Alive() then
+		if ent:GetPos():Distance(self:GetOwner():GetPos()) >= 256 and self:GetOwner():Alive() then
 			numoutsidespawns = numoutsidespawns + 1
 		end
 	end
-	if numoutsidespawns >= #teamspawns then
+	if self.DieTime <= CurTime() and self.OwnerPos != self:GetOwner():GetPos() and numoutsidespawns >= #teamspawns then
 		self:Remove()
 		return
 	end
+	self.OwnerPos = self:GetOwner():GetPos()
 end
 end
 

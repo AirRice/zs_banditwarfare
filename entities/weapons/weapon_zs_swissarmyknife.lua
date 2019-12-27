@@ -61,6 +61,8 @@ function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
 	end
 end
 
+
+
 if SERVER then
 	function SWEP:InitializeHoldType()
 		self.ActivityTranslate = {}

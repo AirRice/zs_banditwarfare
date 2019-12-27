@@ -2,11 +2,7 @@ AddCSLuaFile()
 
 SWEP.PrintName = "주먹"
 
-if GAMEMODE.ZombieEscape then
-	SWEP.WalkSpeed = SPEED_ZOMBIEESCAPE_NORMAL
-else
-	SWEP.WalkSpeed = SPEED_NORMAL
-end
+SWEP.WalkSpeed = SPEED_NORMAL
 
 SWEP.IsMelee = true
 
@@ -204,11 +200,7 @@ function SWEP:Think()
 	if idle_holdtype_time > 0 and curtime >= idle_holdtype_time then
 		--self:SetWeaponHoldType("normal")
 		self:SetNextIdleHoldType(0)
-		if GAMEMODE.ZombieEscape then 
-			self.WalkSpeed = SPEED_ZOMBIEESCAPE_NORMAL
-		else
-			self.WalkSpeed = SPEED_NORMAL
-		end
+		self.WalkSpeed = SPEED_NORMAL
 		self.Owner:ResetSpeed()
 	end
 	

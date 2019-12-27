@@ -29,8 +29,6 @@ SWEP.IronSightsHoldType = "ar2"
 
 SWEP.IronSightsPos = Vector(0, 0, 0)
 
-SWEP.EmptyWhenPurchased = true
-
 SWEP.AngleAdded = {
 	Pitch = 0,
 	Yaw = 0,
@@ -109,11 +107,7 @@ function SWEP:DoRecoil()
 	if (self:GetIronsights()) then
 		mul = mul - 0.15
 	end
-	
-	if (self.Owner.BuffTightGrip) then
-		mul = mul - 0.15
-	end
-	
+
 	recoil = recoil * mul
 	
 	if SERVER then
@@ -139,15 +133,15 @@ function SWEP:GetCone()
 	end
 	
 	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1) * 0.5
-	if not self.Owner:Crouching() then multiplier = multiplier + 0.25 end
-	if not self:GetIronsights() then multiplier = multiplier + 0.25 end
+	if not self.Owner:Crouching() then multiplier = multiplier + 0.15 end
+	if self:GetIronsights() then multiplier = multiplier - 0.15 end
 
 	-- if (SERVER) then
 	-- PrintMessage(3, tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
 	-- else
 	-- chat.AddText(Color(255, 0, 0), tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
 	-- end
-	return (basecone + self:GetConeAdderLength()) + conedelta * multiplier ^ self.ConeRamp
+	return math.min(((basecone + self:GetConeAdderLength()) + conedelta * multiplier ^ self.ConeRamp),self.ConeMax*1.2)
 end
 
 function SWEP:PrimaryAttack()

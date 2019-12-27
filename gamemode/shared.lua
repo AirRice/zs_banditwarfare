@@ -34,13 +34,10 @@ include("sh_colors.lua")
 include("sh_serialization.lua")
 
 include("sh_globals.lua")
-include("sh_crafts.lua")
 include("sh_util.lua")
 include("sh_options.lua")
 include("sh_animations.lua")
 include("sh_channel.lua")
-
-include("noxapi/noxapi.lua")
 
 include("obj_vector_extend.lua")
 include("obj_entity_extend.lua")
@@ -52,7 +49,6 @@ include("workshopfix.lua")
 ----------------------
 
 GM.EndRound = false
-GM.StartingWorth = 100
 GM.BoughtEquipment = {}
 
 team.SetUp(TEAM_BANDIT, "Bandits", Color(255, 160, 0, 255))
@@ -68,7 +64,7 @@ vector_tiny = Vector(0.001, 0.001, 0.001)
 GM.SoundDuration = {
 	["zombiesurvival/music_win.ogg"] = 33.149,
 	["zombiesurvival/music_lose.ogg"] = 45.714,
-	["zombiesurvival/lasthuman.ogg"] = 120.503,
+	["zombiesurvival/lasthuman.ogg"] = 122,
 	["music/HL2_song29.mp3"] = 136,
 	["music/HL2_song20_submix0.mp3"] = 104,
 	--["music/HL2_song15.mp3"] = 70,
@@ -131,15 +127,6 @@ end
 
 function GM:GetBanditComms()
 	return GetGlobalInt("banditcomms", 0)
-end
-
-
-function GM:SetRedeemBrains(amount)
-	SetGlobalInt("redeembrains", amount)
-end
-
-function GM:GetRedeemBrains()
-	return GetGlobalInt("redeembrains", self.DefaultRedeem)
 end
 
 function GM:PlayerIsAdmin(pl)
@@ -272,9 +259,7 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 		pl:PreventSkyCade()
 	end
 	local mul = 1
-	if pl.BuffStrongShoes then
-		mul = 0.75
-	end
+
 	pl:SetVelocity(- pl:GetVelocity() / 2)
 	local damage = (0.1 * (speed - 525)) ^ 1.45
 	damage = damage * mul
@@ -296,10 +281,6 @@ function GM:PlayerCanBeHealed(pl)
 	return true
 end
 
-function GM:PlayerCanPurchase(pl)
-	return (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() --and not self:GetWaveActive() and pl:NearArsenalCrate()
-end
-
 local TEAM_SPECTATOR = TEAM_SPECTATOR
 function GM:PlayerCanHearPlayersVoice(listener, talker)
 	return true
@@ -314,9 +295,8 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	end
 	
 	if dmginfo:GetAttacker():IsPlayer() then
-		local enemyteam = (dmginfo:GetAttacker():Team() == TEAM_HUMAN and TEAM_BANDIT or TEAM_HUMAN)
-		if #team.GetPlayers(enemyteam) > #team.GetPlayers(dmginfo:GetAttacker():Team()) then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 1.2)
+		if dmginfo:GetAttacker():LessPlayersOnTeam() then
+			dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
 		end
 	end
 	if hitgroup == HITGROUP_HEAD then
@@ -324,9 +304,9 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	elseif hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_GEAR then
 		dmginfo:SetDamage(dmginfo:GetDamage() * 0.5)
 	elseif hitgroup == HITGROUP_STOMACH or hitgroup == HITGROUP_LEFTARM or hitgroup == HITGROUP_RIGHTARM then
-		dmginfo:SetDamage(dmginfo:GetDamage() )
+		dmginfo:SetDamage(dmginfo:GetDamage())
 	end
-
+	
 	if SERVER and (hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG) and self:PlayerShouldTakeDamage(pl, dmginfo:GetAttacker()) then
 		pl:AddLegDamage(dmginfo:GetDamage()/2)
 	end
@@ -526,9 +506,6 @@ function GM:IsSpecialPerson(pl, image)
 	elseif pl:IsAdmin() then
 		img = "VGUI/servers/icon_robotron"
 		tooltip = "Admin"
-	elseif pl:IsNoxSupporter() then
-		img = "noxiousnet/noxicon.png"
-		tooltip = "Nox Supporter"
 	end
 
 	if img then
@@ -570,19 +547,6 @@ end
 
 function GM:GetWaveActive()
 	return GetGlobalBool("waveactive", false)
-end
-
-function GM:PlayerSwitchWeapon(pl, old, new)
-	if !IsValid(pl) then
-		return
-	end
-	
-	if (IsValid(new)) then
-		if (pl.BuffTightGrip and !new.IsMelee and new.Recoil and !new.BuffTightGrip) then
-			new.BuffTightGrip = true
-			new.Primary.Delay = new.Primary.Delay * 1.05
-		end
-	end
 end
 
 function GM:SetWaveActive(active)

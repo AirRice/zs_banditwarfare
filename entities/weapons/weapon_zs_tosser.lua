@@ -27,7 +27,7 @@ SWEP.ReloadSound = Sound("Weapon_SMG1.Reload")
 SWEP.Primary.Sound = Sound("Weapon_AR2.NPC_Single")
 SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.13
+SWEP.Primary.Delay = 0.124
 
 SWEP.Primary.ClipSize = 25
 SWEP.Primary.Automatic = true
@@ -37,7 +37,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.12
+SWEP.ConeMax = 0.18
 SWEP.ConeMin = 0.029
 SWEP.Recoil = 0.25
 SWEP.WalkSpeed = SPEED_NORMAL

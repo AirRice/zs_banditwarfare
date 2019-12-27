@@ -7,5 +7,5 @@ ENT.m_NoNailUnfreeze = true
 ENT.NoNails = true
 
 function ENT:ShouldNotCollide(ent)
-	return not ent:IsPlayer() --and not ent:IsProjectile()
+	return false
 end

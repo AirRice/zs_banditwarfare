@@ -1,11 +1,3 @@
-GM.ZombieEscapeWeapons = {
-	"weapon_zs_zedeagle",
-	"weapon_zs_zeakbar",
-	"weapon_zs_zesweeper",
-	"weapon_zs_zesmg",
-	"weapon_zs_zestubber",
-	"weapon_zs_zebulletstorm"
-}
 
 -- Change this if you plan to alter the cost of items or you severely change how Worth works.
 -- Having separate cart files allows people to have separate loadouts for different servers.
@@ -179,32 +171,25 @@ GM:AddStartingItem("5spd", "체대 출신", "이동 속도를 약간 증가시�
 GM:AddStartingItem("10spd", "육상선수", "이동 속도를 증가시킨다.", ITEMCAT_TRAITS, 15, nil, function(pl) pl.HumanSpeedAdder = (pl.HumanSpeedAdder or 0) + 14 pl:ResetSpeed() end, "models/props_lab/jar01a.mdl")
 GM:AddStartingItem("bfhandy", "공돌이", "수리 시 수리량을 25% 증가시킨다.", ITEMCAT_TRAITS, 25, nil, function(pl) pl.HumanRepairMultiplier = (pl.HumanRepairMultiplier or 1) + 0.25 end, "models/props_c17/tools_wrench01a.mdl")
 GM:AddStartingItem("bfsurgeon", "의대 출신", "자신이 소유하는 의료기기를 강화시킨다.", ITEMCAT_TRAITS, 25, nil, function(pl) pl.HumanHealMultiplier = (pl.HumanHealMultiplier or 1) + 0.3 end, "models/healthvial.mdl")
-GM:AddStartingItem("bfresist", "항체", "독 데미지가 더욱 빨리 회복된다.", ITEMCAT_TRAITS, 20, nil, function(pl) pl.BuffResistant = true end, "models/healthvial.mdl")
-GM:AddStartingItem("bfregen", "리제네레이터", "체력이 4초에 1씩 회복된다.", ITEMCAT_TRAITS, 25, nil, function(pl) pl.BuffRegenerative = true end, "models/healthvial.mdl")
-GM:AddStartingItem("bfmusc", "근육돼지", "무거운 물체도 들어 나를 수 있으며, 20%의 추가 피해를 근접무기로 입힌다.", ITEMCAT_TRAITS, 25, nil, function(pl) pl.BuffMuscular = true if SERVER then pl:DoMuscularBones() end end, "models/props_c17/FurnitureCouch001a.mdl")
 GM:AddStartingItem("bfcannibal", "식인종", "바닥에 떨어진 살점을 먹어 체력을 회복할 수 있다.", ITEMCAT_TRAITS, 40, nil, function(pl) pl.Cannibalistic = true end, "models/props_lab/cleaver.mdl")
 
 GM:AddStartingItem("dbfweak", "약골", "최대 체력이 30 줄어든다.", ITEMCAT_RETURNS, -20, nil, function(pl) if SERVER then pl:SetMaxHealth(math.max(1, pl:GetMaxHealth() - 30)) pl:SetHealth(pl:GetMaxHealth()) end pl.IsWeak = true end, "models/gibs/HGIBS.mdl")
 GM:AddStartingItem("dbfslow", "느림보", "최대 속도가 줄어든다.", ITEMCAT_RETURNS, -15, nil, function(pl) pl.HumanSpeedAdder = (pl.HumanSpeedAdder or 0) - 20 pl:ResetSpeed() pl.IsSlow = true end, "models/gibs/HGIBS.mdl")
-GM:AddStartingItem("dbfpalsy", "수전증", "정확히 조준할 수 없게 된다.", ITEMCAT_RETURNS, -10, nil, function(pl) if SERVER then pl:SetPalsy(true) end end, "models/gibs/HGIBS.mdl")
-GM:AddStartingItem("dbfhemo", "헤모필리아", "다칠 경우 출혈로 데미지를 더 입는다.", ITEMCAT_RETURNS, -20, nil, function(pl) if SERVER then pl:SetHemophilia(true) end end, "models/gibs/HGIBS.mdl")
-GM:AddStartingItem("dbfunluc", "거지", "상점 상자에서 아무것도 구매할 수 없다.", ITEMCAT_RETURNS, -100, nil, function(pl) if SERVER then pl:SetUnlucky(true) end end, "models/gibs/HGIBS.mdl")
-GM:AddStartingItem("dbfclumsy", "골다공증", "매우 쉽게 넉다운된다.", ITEMCAT_RETURNS, -30, nil, function(pl) pl.Clumsy = true end, "models/gibs/HGIBS.mdl")
-GM:AddStartingItem("dbfnoghosting", "뚱땡이", "바리케이드를 통과해 지나갈 수 없다.", ITEMCAT_RETURNS, -20, nil, function(pl) pl.NoGhosting = true end, "models/gibs/HGIBS.mdl").NoClassicMode = true
+
 GM:AddStartingItem("dbfnopickup", "팔 장애", "물체를 들 수 없다.", ITEMCAT_RETURNS, -15, nil, function(pl) pl.NoObjectPickup = true if SERVER then pl:DoNoodleArmBones() end end, "models/gibs/HGIBS.mdl")
 ]]
 ------------
 -- Points --
 ------------
---GM:AddPointShopItem("btlax", "'배틀액스' 권총", nil, ITEMCAT_GUNS, 0, "weapon_zs_battleaxe")
---GM:AddPointShopItem(0,"pshtr", "'피슈터' 권총", nil, ITEMCAT_GUNS, 15, "weapon_zs_peashooter")
+GM:AddPointShopItem(0,"btlax", "'배틀액스' 권총", nil, ITEMCAT_GUNS, 10, "weapon_zs_battleaxe")
+GM:AddPointShopItem(0,"pshtr", "'피슈터' 권총", nil, ITEMCAT_GUNS, 10, "weapon_zs_peashooter")
 GM:AddPointShopItem(0,"owens", "'오웬스' 권총", nil, ITEMCAT_GUNS, 15, "weapon_zs_owens")
 GM:AddPointShopItem(0,"blstr", "'블래스터' 산탄총", nil, ITEMCAT_GUNS, 15, "weapon_zs_blaster")
-GM:AddPointShopItem(0,"tossr", "'토저' SMG", nil, ITEMCAT_GUNS, 15, "weapon_zs_tosser")
+GM:AddPointShopItem(0,"tossr", "'토저' SMG", nil, ITEMCAT_GUNS, 10, "weapon_zs_tosser")
 GM:AddPointShopItem(0,"stbbr", "'스터버' 소총", nil, ITEMCAT_GUNS, 15, "weapon_zs_stubber")
-GM:AddPointShopItem(0,"crklr", "'크래클러' 돌격 소총", nil, ITEMCAT_GUNS, 15, "weapon_zs_crackler")
+GM:AddPointShopItem(0,"crklr", "'크래클러' 돌격 소총", nil, ITEMCAT_GUNS, 10, "weapon_zs_crackler")
 GM:AddPointShopItem(0,"z9000", "'Z9000' 펄스 권총", nil, ITEMCAT_GUNS, 15, "weapon_zs_z9000")
-GM:AddPointShopItem(0,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 15, "weapon_zs_deagle")
+GM:AddPointShopItem(0,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 25, "weapon_zs_deagle")
 
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
@@ -212,8 +197,8 @@ GM:AddPointShopItem(1,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUN
 GM:AddPointShopItem(1,"shredder", "'슈레더' SMG", nil, ITEMCAT_GUNS, 60, "weapon_zs_smg")
 GM:AddPointShopItem(1,"akbar", "'아크바' 돌격소총", nil, ITEMCAT_GUNS, 70, "weapon_zs_akbar")
 GM:AddPointShopItem(1,"annabelle", "'애나멜' 소총", nil, ITEMCAT_GUNS, 60, "weapon_zs_annabelle")
-GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 55, "weapon_zs_neutrino")
-GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴", nil, ITEMCAT_GUNS, 65, "weapon_zs_doublebarrel")
+GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 65, "weapon_zs_neutrino")
+GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
 
 GM:AddPointShopItem(2,"uzi", "'스프레이어' Uzi 9mm", nil, ITEMCAT_GUNS, 100, "weapon_zs_uzi")
 GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100, "weapon_zs_ender")
@@ -238,9 +223,9 @@ GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 225, "weapon_z
 GM:AddPointShopItem(4,"blitz", "'블리츠' 돌격소총", nil, ITEMCAT_GUNS, 225, "weapon_zs_blitz")
 GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 225, "weapon_zs_sg550")
 GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 225, "weapon_zs_crossbow")
-GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 225, "weapon_zs_boomstick")
-GM:AddPointShopItem(4,"slugrifle", "'티니' 슬러그 소총", nil, ITEMCAT_GUNS, 225, "weapon_zs_slugrifle")
-GM:AddPointShopItem(4,"positron", "'포지트론' 입자포", nil, ITEMCAT_GUNS, 225, "weapon_zs_positron")
+GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 235, "weapon_zs_boomstick")
+GM:AddPointShopItem(4,"slugrifle", "'티니' 슬러그 소총", nil, ITEMCAT_GUNS, 256, "weapon_zs_slugrifle")
+GM:AddPointShopItem(4,"positron", "'포지트론' 입자포", nil, ITEMCAT_GUNS, 230, "weapon_zs_positron")
 
 GM:AddPointShopItem(nil,"pistolammo", "권총 탄약", nil, ITEMCAT_AMMO, 3, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["pistol"] or 12, "pistol", true) end, "models/Items/BoxSRounds.mdl")
 GM:AddPointShopItem(nil,"shotgunammo", "샷건 탄약", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["buckshot"] or 8, "buckshot", true) end, "models/Items/BoxBuckshot.mdl")
@@ -256,14 +241,15 @@ GM:AddPointShopItem(nil,"nails", "못 2개", nil, ITEMCAT_AMMO, 5, nil, function
 GM:AddPointShopItem(nil,"axe", "도끼", nil, ITEMCAT_MELEE, 25, "weapon_zs_axe")
 GM:AddPointShopItem(nil,"crowbar", "빠루", nil, ITEMCAT_MELEE, 27, "weapon_zs_crowbar")
 GM:AddPointShopItem(nil,"stunbaton", "전기충격기", nil, ITEMCAT_MELEE, 23, "weapon_zs_stunbaton")
---GM:AddPointShopItem("knife", "칼", nil, ITEMCAT_MELEE, 5, "weapon_zs_swissarmyknife")
-GM:AddPointShopItem(nil,"shovel", "삽", nil, ITEMCAT_MELEE, 30, "weapon_zs_shovel")
-GM:AddPointShopItem(nil,"sledgehammer", "오함마", nil, ITEMCAT_MELEE, 35, "weapon_zs_sledgehammer")
+GM:AddPointShopItem(nil,"knife", "칼", nil, ITEMCAT_MELEE, 5, "weapon_zs_swissarmyknife")
+GM:AddPointShopItem(nil,"shovel", "삽", nil, ITEMCAT_MELEE, 45, "weapon_zs_shovel")
+GM:AddPointShopItem(nil,"sledgehammer", "오함마", nil, ITEMCAT_MELEE, 70, "weapon_zs_sledgehammer")
+GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 140, "weapon_zs_energysword")
 GM:AddPointShopItem(nil,"zpplnk", "판자", nil, ITEMCAT_MELEE, 10, "weapon_zs_plank")
 GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 17, "weapon_zs_fryingpan")
 GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 22, "weapon_zs_pot")
 GM:AddPointShopItem(nil,"butcher", "정육점 칼", nil, ITEMCAT_MELEE, 25, "weapon_zs_butcherknife")
-GM:AddPointShopItem(nil,"pipe", "납 파이프", nil, ITEMCAT_MELEE, 28, "weapon_zs_pipe")
+GM:AddPointShopItem(nil,"pipe", "납 파이프", nil, ITEMCAT_MELEE, 40, "weapon_zs_pipe")
 GM:AddPointShopItem(nil,"hook", "갈고리", nil, ITEMCAT_MELEE, 20, "weapon_zs_hook")
 
 GM:AddPointShopItem(nil,"crphmr", "목수의 망치", nil, ITEMCAT_TOOLS, 30, "weapon_zs_hammer").NoClassicMode = true
@@ -276,7 +262,7 @@ GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 50, "weapon_z
 local item = GM:AddPointShopItem(nil,"infturret", "자동 터렛", nil, ITEMCAT_TOOLS, 60, nil, function(pl)
 	pl:GiveEmptyWeapon("weapon_zs_gunturret")
 	pl:GiveAmmo(1, "thumper")
-	--pl:GiveAmmo(250, "smg1")
+	pl:GiveAmmo(250, "smg1")
 end)
 item.Countables = {"weapon_zs_gunturret", "prop_gunturret"}
 item.NoClassicMode = true
@@ -287,7 +273,7 @@ GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_TOOLS, 25,
 GM:AddPointShopItem(nil,"ffemitter", "방어막 생성기", nil, ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
 GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_TOOLS, 5, "weapon_zs_objectiveradar").NoClassicMode = true
 GM:AddPointShopItem(nil,"enemytracker", "생체 탐지기", nil, ITEMCAT_TOOLS, 10, "weapon_zs_enemyradar")
-GM:AddPointShopItem(nil,"boardpack", "판자 2장", nil, ITEMCAT_TOOLS, 15, "weapon_zs_boardpack").NoClassicMode = true
+GM:AddPointShopItem(nil,"boardpack", "판자 5장", nil, ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_OTHER, 35, "weapon_zs_backdoor").NoClassicMode = true
 GM:AddPointShopItem(nil,"grenade", "수류탄", nil, ITEMCAT_OTHER, 20, "weapon_zs_grenade")
@@ -295,22 +281,22 @@ GM:AddPointShopItem(nil,"extrahp", "추가 방탄복", nil, ITEMCAT_OTHER, 45, "
 GM:AddPointShopItem(nil,"flashbang", "섬광탄", nil, ITEMCAT_OTHER, 15, "weapon_zs_flashbang")
 GM:AddPointShopItem(nil,"smoke", "연막탄", nil, ITEMCAT_OTHER, 10, "weapon_zs_smokegrenade")
 GM:AddPointShopItem(nil,"detpck", "C4", nil, ITEMCAT_OTHER, 40, "weapon_zs_detpack")
-GM:AddPointShopItem(nil,"grenadelauncher", "유탄발사기", nil, ITEMCAT_OTHER, 115, "weapon_zs_grenadelauncher")
-GM:AddPointShopItem(nil,"glgrenade", "유탄", nil, ITEMCAT_OTHER, 30, nil, function(pl) pl:GiveAmmo(1, "grenlauncher", true) end, "models/items/ar2_grenade.mdl")
+GM:AddPointShopItem(nil,"grenadelauncher", "유탄발사기", nil, ITEMCAT_OTHER, 125, "weapon_zs_grenadelauncher")
+GM:AddPointShopItem(nil,"glgrenade", "유탄", nil, ITEMCAT_OTHER, 40, nil, function(pl) pl:GiveAmmo(1, "grenlauncher", true) end, "models/items/ar2_grenade.mdl")
 
 -- These are the honorable mentions that come at the end of the round.
 
 local function genericcallback(pl, magnitude) return pl:Name(), magnitude end
 GM.HonorableMentions = {}
-GM.HonorableMentions[HM_MOSTENEMYKILLED] = {Name = "살인마", String = "%s. %d명의 적을 죽였다.", Callback = genericcallback}
-GM.HonorableMentions[HM_MOSTDAMAGETOENEMY] = {Name = "전쟁광", String = "%s. 전체 %d 대미지를 적에게 주었다.", Callback = genericcallback}
-GM.HonorableMentions[HM_PACIFIST] = {Name = "비폭력주의자", String = "%s는 한 명의 적도 죽이지 않았다.", Callback = genericcallback}
-GM.HonorableMentions[HM_MOSTHELPFUL] = {Name = "조력자", String = "%s는 동료가 %d명의 적을 죽일 수 있도록 도왔다.", Callback = genericcallback}
-GM.HonorableMentions[HM_LASTHUMAN] = {Name = "Last-Stand", String = "%s가 최후의 생존자이다.", Callback = genericcallback, Color = COLOR_CYAN}
-GM.HonorableMentions[HM_OUTLANDER] = {Name = "도망자", String = "%s는 좀비 스폰 지점에서 %d피트나 떨어진 장소에서 살해당했다.", Callback = genericcallback, Color = COLOR_CYAN}
-GM.HonorableMentions[HM_GOODDOCTOR] = {Name = "의사양반", String = "%s는 팀의 체력을 %d만큼 책임졌다.", Callback = genericcallback}
-GM.HonorableMentions[HM_HANDYMAN] = {Name = "공학자", String = "%s는 %d만큼 바리케이드를 수리했다.", Callback = genericcallback}
-GM.HonorableMentions[HM_SCARECROW] = {Name = "죄 없는 까마귀", String = "플레이어 %s님이 까마귀 %d마리를 무참히 살해했다.", Callback = genericcallback, Color = COLOR_WHITE}
+GM.HonorableMentions[HM_MOSTENEMYKILLED] = {Name = "살인마", String = "%s - %d명의 적을 죽였다.", Callback = genericcallback}
+GM.HonorableMentions[HM_MOSTDAMAGETOENEMY] = {Name = "전쟁광", String = "%s - 전체 %d 대미지를 적에게 주었다.", Callback = genericcallback}
+GM.HonorableMentions[HM_PACIFIST] = {Name = "비폭력주의자", String = "%s - 한 명의 적도 죽이지 않았다.", Callback = genericcallback}
+GM.HonorableMentions[HM_MOSTHELPFUL] = {Name = "조력자", String = "%s - 동료가 %d명의 적을 죽일 수 있도록 도왔다.", Callback = genericcallback}
+GM.HonorableMentions[HM_LASTHUMAN] = {Name = "Last-Stand", String = "%s - 최후의 생존자이다.", Callback = genericcallback, Color = COLOR_CYAN}
+GM.HonorableMentions[HM_OUTLANDER] = {Name = "도망자", String = "%s - 좀비 스폰 지점에서 %d피트나 떨어진 장소에서 살해당했다.", Callback = genericcallback, Color = COLOR_CYAN}
+GM.HonorableMentions[HM_GOODDOCTOR] = {Name = "의사양반", String = "%s - 팀의 체력을 %d만큼 책임졌다.", Callback = genericcallback}
+GM.HonorableMentions[HM_HANDYMAN] = {Name = "공학자", String = "%s - %d만큼 바리케이드를 수리했다.", Callback = genericcallback}
+GM.HonorableMentions[HM_SCARECROW] = {Name = "죄 없는 까마귀", String = "%s - 까마귀 %d마리를 무참히 살해했다.", Callback = genericcallback, Color = COLOR_WHITE}
 GM.HonorableMentions[HM_MOSTBRAINSEATEN] = {Name = "인간 학살자", String = "BJ %s님의 인간 뇌 먹방! 오늘은 %d명의 뇌를 먹어치워보겠습니다!", Callback = genericcallback, Color = COLOR_LIMEGREEN}
 GM.HonorableMentions[HM_MOSTDAMAGETOHUMANS] = {Name = "너 나한테 시비 걸었냐?", String = "플레이어 %s님이 시비를 거는 인간들에게 %d 데미지로 응징했다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
 GM.HonorableMentions[HM_LASTBITE] = {Name = "심판자", String = "플레이어 %s님이 최후의 인간을 먹어치웠다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
@@ -321,21 +307,24 @@ GM.HonorableMentions[HM_WAREHOUSE] = {Name = "창고장", String = "%s는 자신
 GM.HonorableMentions[HM_SPAWNPOINT] = {Name = "살아있는 스폰지점", String = "플레이어 %s님이 %d마리의 좀비를 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
 GM.HonorableMentions[HM_CROWFIGHTER] = {Name = "King of Crows", String = "플레이어 %s님이 %d마리의 까마귀를 전멸시켰다.", Callback = genericcallback, Color = COLOR_WHITE}
 GM.HonorableMentions[HM_CROWBARRICADEDAMAGE] = {Name = "쥐꼬리만한 골칫거리", String = "플레이어 %s님이 까마귀로 바리케이드에 총합 %d 데미지를 가했다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_BARRICADEDESTROYER] = {Name = "철거단원", String = "%s는 적의 바리케이드에 %d의 대미지를 주었다.", Callback = genericcallback}
-GM.HonorableMentions[HM_NESTDESTROYER] = {Name = "네스트 디스트로이어", String = "플레이어 %s님이 %d개의 둥지를 흔적도 없이 날려버렸다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_NESTMASTER] = {Name = "네스트 마스터", String = "플레이어 %s님이 %d마리의 좀비를 자신의 둥지에서 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s 는 %d개의 송신기를 탈환했다.", Callback = genericcallback}
+GM.HonorableMentions[HM_BARRICADEDESTROYER] = {Name = "철거단원", String = "%s - %d의 대미지를 주었다.", Callback = genericcallback}
+GM.HonorableMentions[HM_NESTDESTROYER] = {Name = "네스트 디스트로이어", String = "%s - %d개의 둥지를 흔적도 없이 날려버렸다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
+GM.HonorableMentions[HM_NESTMASTER] = {Name = "네스트 마스터", String = "%s - %d마리의 좀비를 자신의 둥지에서 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
+GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s - %d개의 송신기를 탈환했다.", Callback = genericcallback}
 
 
--- Don't let humans use these models because they look like undead models. Must be lower case.
+-- Zombine: has no head.
+-- Skeleton: doesn't have flesh therefore making the hitboxes seem wonky
 GM.RestrictedModels = {
-	"models/player/zombie_classic.mdl",
 	"models/player/zombine.mdl",
 	"models/player/zombie_soldier.mdl",
+	"models/player/skeleton.mdl"
+	
+	--[["models/player/zombie_classic.mdl",
 	"models/player/zombie_fast.mdl",
 	"models/player/corpse1.mdl",
 	"models/player/charple.mdl",
-	"models/player/skeleton.mdl"
+	]]
 }
 GM.MapWhitelist = {
 	"cs_assault",
@@ -354,6 +343,7 @@ GM.MapWhitelist = {
 	"de_inferno",
 	"de_nuke",
 	"de_piranesi",
+	"de_nightfever",
 	"de_port",
 	"de_prodigy",
 	"de_school",
@@ -366,20 +356,21 @@ GM.MapWhitelist = {
 	"zs_ambush_v4",
 	"zs_ancient_castle_opt",
 	"zs_clav_oblivion",
-	"zs_coasthouse",
+	--"zs_coasthouse",
 	"zs_countryside_b1",
 	"zs_deadmount_reborn_v1",
 	"zs_dryfield_v2",
 	"zs_eaglecity_fourside_b3",
 	"zs_gravity_v4",
 	"zs_hazard_v2",
-	"zs_insurance",
+	--"zs_insurance",
 	"zs_laboratory",
+	"zs_lockup",
 	"zs_lockup_v2",
 	"zs_outpost_gold_v2",
 	"zs_placid",
-	"zs_plague",
-	"zs_port_v4",
+	--"zs_plague",
+	--"zs_port_v4",
 	"zs_raunchyhouse_v2",
 	"zs_ravine",
 	"zs_scrapmetal_v2_fixed",
@@ -402,61 +393,31 @@ function GM:SetupDefaultClip(tab)
 	tab.DefaultClip = math.ceil(tab.ClipSize * self.SurvivalClips * (tab.ClipMultiplier or 1))
 end
 
-GM.MaxSigils = CreateConVar("zs_maxsigils", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many sigils to spawn. 0 for none."):GetInt()
-cvars.AddChangeCallback("zs_maxsigils", function(cvar, oldvalue, newvalue)
+GM.MaxSigils = CreateConVar("zsb_maxsigils", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many sigils to spawn. 0 for none."):GetInt()
+cvars.AddChangeCallback("zsb_maxsigils", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MaxSigils = math.Clamp(tonumber(newvalue) or 0, 0, 10)
 end)
 
-GM.DefaultRedeem = CreateConVar("zs_redeem", "4", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The amount of kills a zombie needs to do in order to redeem. Set to 0 to disable."):GetInt()
-cvars.AddChangeCallback("zs_redeem", function(cvar, oldvalue, newvalue)
-	GAMEMODE.DefaultRedeem = math.max(0, tonumber(newvalue) or 0)
-end)
-
-GM.WaveOneZombies = math.ceil(100 * CreateConVar("zs_waveonezombies", "0.1", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The percentage of players that will start as zombies when the game begins."):GetFloat()) * 0.01
-cvars.AddChangeCallback("zs_waveonezombies", function(cvar, oldvalue, newvalue)
-	GAMEMODE.WaveOneZombies = math.ceil(100 * (tonumber(newvalue) or 1)) * 0.01
-end)
-
-GM.NumberOfWaves = CreateConVar("zs_numberofwaves", "9", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Number of waves in a game."):GetInt()
-cvars.AddChangeCallback("zs_numberofwaves", function(cvar, oldvalue, newvalue)
+GM.NumberOfWaves = CreateConVar("zsb_numberofwaves", "9", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Number of waves in a game."):GetInt()
+cvars.AddChangeCallback("zsb_numberofwaves", function(cvar, oldvalue, newvalue)
 	GAMEMODE.NumberOfWaves = tonumber(newvalue) or 1
 end)
 
--- Game feeling too easy? Just change these values!
-GM.ZombieSpeedMultiplier = math.ceil(100 * CreateConVar("zs_zombiespeedmultiplier", "1", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Zombie running speed will be scaled by this value."):GetFloat()) * 0.01
-cvars.AddChangeCallback("zs_zombiespeedmultiplier", function(cvar, oldvalue, newvalue)
-	GAMEMODE.ZombieSpeedMultiplier = math.ceil(100 * (tonumber(newvalue) or 1)) * 0.01
-end)
-
--- This is a resistance, not for claw damage. 0.5 will make zombies take half damage, 0.25 makes them take 1/4, etc.
-GM.ZombieDamageMultiplier = math.ceil(100 * CreateConVar("zs_zombiedamagemultiplier", "1", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Scales the amount of damage that zombies take. Use higher values for easy zombies, lower for harder."):GetFloat()) * 0.01
-cvars.AddChangeCallback("zs_zombiedamagemultiplier", function(cvar, oldvalue, newvalue)
-	GAMEMODE.ZombieDamageMultiplier = math.ceil(100 * (tonumber(newvalue) or 1)) * 0.01
-end)
-
-GM.TimeLimit = CreateConVar("zs_timelimit", "15", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Time in minutes before the game will change maps. It will not change maps if a round is currently in progress but after the current round ends. -1 means never switch maps. 0 means always switch maps."):GetInt() * 60
-cvars.AddChangeCallback("zs_timelimit", function(cvar, oldvalue, newvalue)
-	GAMEMODE.TimeLimit = tonumber(newvalue) or 15
-	if GAMEMODE.TimeLimit ~= -1 then
-		GAMEMODE.TimeLimit = GAMEMODE.TimeLimit * 60
-	end
-end)
-
-GM.RoundLimit = CreateConVar("zs_roundlimit", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many times the game can be played on the same map. -1 means infinite or only use time limit. 0 means once."):GetInt()
-cvars.AddChangeCallback("zs_roundlimit", function(cvar, oldvalue, newvalue)
+GM.RoundLimit = CreateConVar("zsb_roundlimit", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many times the game can be played on the same map. -1 means infinite or only use time limit. 0 means once."):GetInt()
+cvars.AddChangeCallback("zsb_roundlimit", function(cvar, oldvalue, newvalue)
 	GAMEMODE.RoundLimit = tonumber(newvalue) or 3
 end)
 
 -- Static values that don't need convars...
 
 -- Initial length for wave 1.
-GM.WaveOneLength = 600
+GM.WaveOneLength = 420
 
 -- For Classic Mode
 GM.WaveOneLengthClassic = 120
 
 -- Add this many seconds for each additional wave.
-GM.TimeLostPerWave = 0
+GM.TimeLostPerWave = 15
 
 -- For Classic Mode
 GM.TimeAddedPerWaveClassic = 10
@@ -468,10 +429,10 @@ GM.NoNewHumansWave = 2
 GM.NoSuicideWave = 0
 
 -- How long 'wave 0' should last in seconds. This is the time you should give for new players to join and get ready.
-GM.WaveZeroLength = 120
+GM.WaveZeroLength = 40
 
 -- Time humans have between waves to do stuff without NEW zombies spawning. Any dead zombies will be in spectator (crow) view and any living ones will still be living.
-GM.WaveIntermissionLength = 60
+GM.WaveIntermissionLength = 35
 
 -- For Classic Mode
 GM.WaveIntermissionLengthClassic = 20
@@ -483,7 +444,7 @@ GM.EndGameTime = 20
 GM.SurvivalClips = 2
 
 -- Put your unoriginal, 5MB Rob Zombie and Metallica music here.
-GM.LastHumanSound = Sound("zombiesurvival/lasthuman.ogg")
+GM.SuddenDeathSound = Sound("zombiesurvival/lasthuman.ogg")
 
 -- Sound played when humans all die.
 GM.AllLoseSound = Sound("zombiesurvival/music_lose.ogg")

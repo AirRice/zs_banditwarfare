@@ -23,7 +23,7 @@ function GM:OnSigilTaken(ent, justtakenby)
 		end
 		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "one_sigil_taken_by_x",translatestring))
 	end
-	if self.SuddenDeath then 
+	--[[if self.SuddenDeath then 
 		for _, pl in pairs(player.GetAll()) do
 			if justtakenby == TEAM_BANDIT then
 				translatestring = translate.ClientGet(pl,"teamname_bandit")
@@ -33,7 +33,7 @@ function GM:OnSigilTaken(ent, justtakenby)
 			pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "sigil_comms_finished_by_x",translatestring), {killicon = "default"})
 		end
 		timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", justtakenby) end)
-	end
+	end]]
 end
 GM.LastCommLink = 0
 function GM:SigilCommsThink()
@@ -54,11 +54,15 @@ function GM:SigilCommsThink()
 		self.LastCommLink = CurTime() + 1
 	elseif not self.CommsEnd then 
 		if self:GetBanditComms() >= 200 and self:GetHumanComms() >= 200 then
-			self.SuddenDeath = true
+			--self.SuddenDeath = true
 			self.CommsEnd = true
-			net.Start("zs_suddendeath")
+			--[[net.Start("zs_suddendeath")
 				net.WriteBool( true )
-			net.Broadcast()
+			net.Broadcast()]]
+			for _, pl in pairs(player.GetAll()) do
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "sigil_comms_tied"), {killicon = "default"})
+			end
+			timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", nil) end)
 		elseif self:GetBanditComms() >= 200 then
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "sigil_comms_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})

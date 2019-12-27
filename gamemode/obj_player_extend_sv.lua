@@ -29,64 +29,12 @@ function meta:FakeDeath(sequenceid, modelscale, length)
 	return ent
 end
 
-local MuscularBones = {
-	["ValveBiped.Bip01_R_Upperarm"] = Vector(1, 2, 2),
-	["ValveBiped.Bip01_R_Forearm"] = Vector(1, 2, 2),
-	["ValveBiped.Bip01_L_Upperarm"] = Vector(1, 2, 2),
-	["ValveBiped.Bip01_L_Forearm"] = Vector(1, 2, 2)
-}
-function meta:DoMuscularBones()
-	if self.BuffMuscular and self:Team() == TEAM_HUMAN then
-		self.MuscularBones = {}
-
-		for bonename, newscale in pairs(MuscularBones) do
-			local boneid = self:LookupBone(bonename)
-			if boneid and boneid > 0 then
-				table.insert(self.MuscularBones, boneid)
-				self:ManipulateBoneScale(boneid, newscale)
-			end
-		end
-	elseif self.MuscularBones then
-		for _, boneid in pairs(self.MuscularBones) do
-			self:ManipulateBoneScale(boneid, Vector(1, 1, 1))
-		end
-		self.MuscularBones = nil
-	end
-end
-
-local NoodleArmBones = {
-	["ValveBiped.Bip01_R_Upperarm"] = Vector(1, 0.4, 0.4),
-	["ValveBiped.Bip01_R_Forearm"] = Vector(1, 0.4, 0.4),
-	["ValveBiped.Bip01_L_Upperarm"] = Vector(1, 0.4, 0.4),
-	["ValveBiped.Bip01_L_Forearm"] = Vector(1, 0.4, 0.4)
-}
-function meta:DoNoodleArmBones()
-	if self.NoObjectPickup and self:Team() == TEAM_HUMAN then
-		self.NoodleArmBones = {}
-
-		for bonename, newscale in pairs(NoodleArmBones) do
-			local boneid = self:LookupBone(bonename)
-			if boneid and boneid > 0 then
-				table.insert(self.NoodleArmBones, boneid)
-				self:ManipulateBoneScale(boneid, newscale)
-			end
-		end
-	elseif self.NoodleArmBones then
-		for _, boneid in pairs(self.NoodleArmBones) do
-			self:ManipulateBoneScale(boneid, Vector(1, 1, 1))
-		end
-		self.NoodleArmBones = nil
-	end
-end
-
 function meta:ChangeTeam(teamid)
 	local oldteam = self:Team()
 	self:SetTeam(teamid)
 	if oldteam ~= teamid then
 		gamemode.Call("OnPlayerChangedTeam", self, oldteam, teamid)
 	end
-	self:DoNoodleArmBones()
-	self:DoMuscularBones()
 	self:CollisionRulesChanged()
 end
 
@@ -398,45 +346,75 @@ function meta:CreateRagdoll()
 end
 
 function meta:DropWeaponByType(class)
-	if GAMEMODE.ZombieEscape then return end
-
 	local wep = self:GetWeapon(class)
 	if wep and wep:IsValid() and not wep.Undroppable then
 		local ent = ents.Create("prop_weapon")
 		if ent:IsValid() then
 			ent:SetWeaponType(class)
 			ent:Spawn()
+
+			if wep.AmmoIfHas then
+				local ammocount = wep:GetPrimaryAmmoCount()
+				local desiredrop = math.min(ammocount, wep.Primary.ClipSize) - wep:Clip1()
+				if desiredrop > 0 then
+					wep:TakeCombinedPrimaryAmmo(desiredrop)
+					wep:SetClip1(desiredrop)
+				end
+			end
 			ent:SetClip1(wep:Clip1())
 			ent:SetClip2(wep:Clip2())
+			ent.DroppedTime = CurTime()
 
 			self:StripWeapon(class)
-
 			return ent
 		end
 	end
 end
-
 function meta:DropAllWeapons()
 	local vPos = self:GetPos()
 	local vVel = self:GetVelocity()
 	local zmax = self:OBBMaxs().z * 0.75
 	for _, wep in pairs(self:GetWeapons()) do
-		local ent = self:DropWeaponByType(wep:GetClass())
-		if ent and ent:IsValid() then
-			ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
-			ent:SetAngles(VectorRand():Angle())
-			local phys = ent:GetPhysicsObject()
-			if phys:IsValid() then
-				phys:AddAngleVelocity(Vector(math.Rand(-720, 720), math.Rand(-720, 720), math.Rand(-720, 720)))
-				phys:ApplyForceCenter(phys:GetMass() * (math.Rand(32, 328) * VectorRand():GetNormalized() + vVel))
+		if wep:IsValid() then
+			if GAMEMODE:IsClassicMode() then 
+				local ent = self:DropWeaponByType(wep:GetClass())
+				if ent and ent:IsValid() then
+					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
+					ent:SetAngles(VectorRand():Angle())
+					local phys = ent:GetPhysicsObject()
+					if phys:IsValid() then
+						phys:AddAngleVelocity(Vector(math.Rand(-720, 720), math.Rand(-720, 720), math.Rand(-720, 720)))
+						phys:ApplyForceCenter(phys:GetMass() * (math.Rand(32, 328) * VectorRand():GetNormalized() + vVel))
+					end
+				end
+			else
+				local shoptab = FindItembyClass(wep:GetClass())
+				if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE) then
+					self:StripWeapon(wep:GetClass())
+				else
+				local ent = self:DropWeaponByType(wep:GetClass())
+				if ent and ent:IsValid() then
+					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
+					ent:SetAngles(VectorRand():Angle())
+					local phys = ent:GetPhysicsObject()
+					if phys:IsValid() then
+						phys:AddAngleVelocity(Vector(math.Rand(-720, 720), math.Rand(-720, 720), math.Rand(-720, 720)))
+						phys:ApplyForceCenter(phys:GetMass() * (math.Rand(32, 328) * VectorRand():GetNormalized() + vVel))
+					end
+				end
+				end
 			end
 		end
 	end
 end
 
+function meta:StripAmmoByType(ammotype)
+	local mycount = self:GetAmmoCount(ammotype)
+	if not mycount or mycount <= 0 then return end
+	self:RemoveAmmo(mycount, ammotype)
+end
+
 function meta:DropAmmoByType(ammotype, amount)
-	if GAMEMODE.ZombieEscape then return end
-	
 	local mycount = self:GetAmmoCount(ammotype)
 	amount = math.min(mycount, amount or mycount)
 	if not amount or amount <= 0 then return end

@@ -1,8 +1,57 @@
 local meta = FindMetaTable("Player")
 if not meta then return end
 
+function meta:SetWeapon1(weaponstring)
+	self:SetDTString(0, weaponstring)
+end
+
+function meta:GetWeapon1()
+	return self:GetDTString(0)
+end
+
+function meta:SetWeapon2(weaponstring)
+	self:SetDTString(1, weaponstring)
+end
+
+function meta:GetWeapon2()
+	return self:GetDTString(1)
+end
+
+function meta:SetWeaponMelee(weaponstring)
+	self:SetDTString(2, weaponstring)
+end
+
+function meta:GetWeaponMelee()
+	return self:GetDTString(2)
+end
+
+function meta:SetPoints(points)
+	self:SetDTInt(1, points)
+end
+
+function meta:GetPoints()
+	return self:GetDTInt(1)
+end
+
+function meta:SetKills(kills)
+	self:SetDTInt(2, kills)
+end
+
+function meta:GetKills()
+	return self:GetDTInt(2)
+end
+
+
 function meta:GetMaxHealthEx()
 	return self:GetMaxHealth()
+end
+
+function meta:LessPlayersOnTeam()
+	if self:Team() == TEAM_BANDIT then
+		return #team.GetPlayers(self:Team()) < #team.GetPlayers(TEAM_HUMAN)
+	elseif self:Team() == TEAM_HUMAN then
+		return #team.GetPlayers(self:Team()) < #team.GetPlayers(TEAM_BANDIT)
+	else return false end
 end
 
 function meta:Dismember(dismembermenttype)
@@ -85,77 +134,6 @@ function meta:MeleeViewPunch(damage)
 	self:ViewPunch(Angle(math.Rand(minpunch, maxpunch), math.Rand(minpunch, maxpunch), math.Rand(minpunch, maxpunch)))
 end
 
-function meta:NearArsenalCrate()
-	local pos = self:EyePos()
-
-	for _, ent in pairs(ents.FindByClass("prop_arsenalcrate")) do
-		local nearest = ent:NearestPoint(pos)
-		if pos:Distance(nearest) <= 80 and (WorldVisible(pos, nearest) or self:TraceLine(80).Entity == ent) then
-			return true
-		end
-	end
-
-	return false
-end
-meta.IsNearArsenalCrate = meta.NearArsenalCrate
-
-function meta:NearestArsenalCrateOwnedByOther()
-	local pos = self:EyePos()
-
-	for _, ent in pairs(ents.FindByClass("prop_arsenalcrate")) do
-		local nearest = ent:NearestPoint(pos)
-		local owner = ent:GetObjectOwner()
-		if owner ~= self and owner:IsValid() and owner:IsPlayer() and owner:Team() == TEAM_HUMAN and pos:Distance(nearest) <= 80 and (WorldVisible(pos, nearest) or self:TraceLine(80).Entity == ent) then
-			return ent
-		end
-	end
-end
-
-function meta:SetPoints(points)
-	self:SetDTInt(1, points)
-end
-
-function meta:GetPoints()
-	return self:GetDTInt(1)
-end
-
-function meta:SetKills(kills)
-	self:SetDTInt(2, kills)
-end
-
-function meta:GetKills()
-	return self:GetDTInt(2)
-end
-
-function meta:SetPalsy(onoff, nosend)
-	self.m_Palsy = onoff
-	if SERVER and not nosend then
-		self:SendLua("LocalPlayer():SetPalsy("..tostring(onoff)..")")
-	end
-end
-
-function meta:GetPalsy()
-	return self.m_Palsy
-end
-
-function meta:SetHemophilia(onoff, nosend)
-	self.m_Hemophilia = onoff
-	if SERVER and not nosend then
-		self:SendLua("LocalPlayer():SetHemophilia("..tostring(onoff)..")")
-	end
-end
-
-function meta:GetHemophilia()
-	return self.m_Hemophilia
-end
-
-function meta:SetUnlucky(onoff)
-	self.m_Unlucky = onoff
-end
-
-function meta:GetUnlucky()
-	return self.m_Unlucky
-end
 
 function meta:AddLegDamage(damage)
 	self:SetLegDamage(self:GetLegDamage() + damage)
@@ -209,24 +187,6 @@ function meta:ProcessDamage(dmginfo)
 			end
 			if dolegdamage then
 				self:RawCapLegDamage(self:GetLegDamage() + CurTime() + damage * 0.04 * (inflictor.SlowDownScale or 1))
-			end
-		end
-
-		if self:GetHemophilia() and damage >= 5 then
-			local dmgtype = dmginfo:GetDamageType()
-			if dmgtype == 0
-				or bit.band(dmgtype, DMG_SLASH) ~= 0
-				or bit.band(dmgtype, DMG_CLUB) ~= 0
-				or bit.band(dmgtype, DMG_BULLET) ~= 0
-				or bit.band(dmgtype, DMG_BUCKSHOT) ~= 0
-				or bit.band(dmgtype, DMG_CRUSH) ~= 0 then
-				local bleed = self:GiveStatus("bleed")
-				if bleed and bleed:IsValid() then
-					bleed:AddDamage(damage * 0.2)
-					if attacker:IsValid() and attacker:IsPlayer() then
-						bleed.Damager = attacker
-					end
-				end
 			end
 		end
 	end
@@ -344,8 +304,6 @@ function meta:ResetJumpPower(noset)
 end
 
 function meta:SetBarricadeGhosting(b)
-	if b and self.NoGhosting then return end
-
 	self:SetDTBool(0, b)
 	self:CollisionRulesChanged()
 

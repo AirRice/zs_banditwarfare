@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.m_Health = 40
+ENT.m_Health = 75
 
 function ENT:Initialize()
 	self:SetModel("models/props_lab/lab_flourescentlight002b.mdl")
@@ -38,7 +38,7 @@ function ENT:OnTakeDamage(dmginfo)
 
 	if not self.Destroyed then
 		local attacker = dmginfo:GetAttacker()
-		if not (attacker:IsValid() and attacker:IsPlayer() and self:GetObjectOwner():IsPlayer() and attacker:Team() ~= self:GetObjectOwner():Team()) then
+		if not (attacker:IsValid() and attacker:IsPlayer() and self:GetObjectOwner():IsPlayer() and attacker:Team() == self:GetObjectOwner():Team()) then
 			if attacker.LifeBarricadeDamage ~= nil then
 				attacker:AddLifeBarricadeDamage(dmginfo:GetDamage())
 			end

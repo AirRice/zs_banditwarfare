@@ -23,7 +23,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_FAMAS.Clipout")
 SWEP.Primary.Sound = Sound("Weapon_FAMAS.Single")
-SWEP.Primary.Damage = 13
+SWEP.Primary.Damage = 12
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.135
 

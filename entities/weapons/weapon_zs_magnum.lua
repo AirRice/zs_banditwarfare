@@ -26,7 +26,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_357.Single")
 SWEP.Primary.Delay = 0.7
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 22
 SWEP.Primary.NumShots = 1
 
 SWEP.Primary.ClipSize = 6

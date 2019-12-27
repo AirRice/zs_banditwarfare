@@ -264,7 +264,7 @@ function PANEL:Paint()
 
 		if self.m_Flash then
 			mul = 0.6 + math.abs(math.sin(RealTime() * 6)) * 0.4
-		elseif GAMEMODE:IsClassicMode() and not pl:Alive() then 
+		elseif (GAMEMODE:IsClassicMode() or GAMEMODE.IsInSuddenDeath) and not pl:Alive() then 
 			mul = 0.1
 		elseif pl == MySelf then
 			mul = 0.8

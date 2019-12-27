@@ -58,7 +58,7 @@ SWEP.UseHands = true
 SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "gravity"
-SWEP.Primary.DefaultClip = 1
+SWEP.Primary.DefaultClip = 3
 
 SWEP.Primary.Sound = Sound("Weapon_EMPgun.Single")
 SWEP.Primary.Damage = 1
@@ -67,7 +67,7 @@ SWEP.Primary.Delay = 0.7
 SWEP.Recoil = 1.66
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.ConeMax = 0.1
-SWEP.ConeMin = 0.02
+SWEP.ConeMin = 0
 SWEP.TracerName = "ToolTracer"
 SWEP.IronSightsPos = Vector(-6.5, 0, -0.65)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
@@ -108,6 +108,13 @@ function BulletCallback(attacker, tr, dmginfo)
 			if ent:GetClass() == "prop_obj_sigil" then
 				if (ent:GetSigilTeam() == TEAM_BANDIT or ent:GetSigilTeam() == TEAM_HUMAN) and attacker:IsPlayer() and ent:GetSigilTeam() ~= attacker:Team() and SERVER then
 					ent:DoStopComms()
+				end
+			elseif ent:GetClass() == "prop_ffemitterfield" then
+				if ent:GetOwner() and ent:GetOwner():GetClass() == "prop_ffemitter" and not ent:GetOwner():IsSameTeam(attacker) then
+					local effectdata = EffectData()
+						effectdata:SetOrigin(tr.HitPos)
+					util.Effect("Explosion", effectdata, true, true)
+					ent:GetOwner():Remove()
 				end
 			elseif ent:GetClass() == "prop_drone" or ent:GetClass() == "prop_manhack" and not ent:IsSameTeam(attacker) and SERVER then
 				ent:Destroy()

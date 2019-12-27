@@ -51,6 +51,7 @@ SWEP.ReloadDelay = 1
 SWEP.Primary.ClipSize = 2
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "buckshot"
+SWEP.ClipMultiplier = 4
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.3

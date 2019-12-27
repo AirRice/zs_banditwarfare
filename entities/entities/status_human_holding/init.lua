@@ -47,7 +47,7 @@ function ENT:Initialize()
 
 			self:SetObjectMass(objectphys:GetMass())
 
-			if owner.BuffMuscular or (objectphys:GetMass() < CARRY_DRAG_MASS and (object:OBBMins():Length() + object:OBBMaxs():Length() < CARRY_DRAG_VOLUME or object.NoVolumeCarryCheck)) then
+			if (objectphys:GetMass() < CARRY_DRAG_MASS and (object:OBBMins():Length() + object:OBBMaxs():Length() < CARRY_DRAG_VOLUME or object.NoVolumeCarryCheck)) then
 				objectphys:AddGameFlag(FVPHYSICS_PLAYER_HELD)
 				object._OriginalMass = objectphys:GetMass()
 

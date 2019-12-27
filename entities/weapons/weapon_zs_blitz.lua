@@ -49,43 +49,10 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.IronSightsPos = Vector(-2.52, 3.819, 3.599)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
-SWEP.Count = 0
-SWEP.DetectRange = 256
-
-function SWEP:Think()
-	local owner = self.Owner
-	local pos = owner:GetPos()
-	local count = 0
-	for _, pl in pairs(player.GetAll()) do
-		if owner:IsPlayer() and pl:Team() == owner:Team() and pl:Alive() and pl~=owner then
-			local dist = pl:NearestPoint(pos):Distance(pos)
-			if dist <= self.DetectRange then
-				count = count+1
-			end
-		end
-	end
-	self.Count = count
-	if self.BaseClass.Think then
-		self.BaseClass.Think(self)
-	end
-end
-
-function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
-	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
-	self:EmitFireSound()
-	self:TakeAmmo()
-	local dmgmul = 0
-	if self.Count != 0 then
-		dmgmul = math.min(2.5*self.Count,30)*0.01
-	end
-	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*dmgmul, self.Primary.NumShots, self:GetCone())
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
-end
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
+
 if CLIENT then
 SWEP.IronsightsMultiplier = 0.25
 	function SWEP:GetViewModelPosition(pos, ang)
@@ -117,18 +84,5 @@ SWEP.IronsightsMultiplier = 0.25
 			end
 		end
 	end
-	function SWEP:DrawHUD()
-	surface.SetFont("ZSHUDFontSmall")
-	local counter = "거리 "..self.DetectRange.." 내 동료 "..self.Count.."명"
-	local nTEXW, nTEXH = surface.GetTextSize(counter)
-	draw.SimpleTextBlurry(counter, "ZSHUDFontSmall", ScrW() - nTEXW * 0.5 - 24, ScrH() - nTEXH * 8, COLOR_WHITE, TEXT_ALIGN_CENTER)
-	if self.Count != 0 then
-		local finalmul =  "대미지 +"..math.min(5*self.Count,50).."%"
-		draw.SimpleTextBlurry(finalmul, "ZSHUDFontBig", ScrW() - 150, ScrH() - 216, COLOR_YELLOW, TEXT_ALIGN_CENTER)
-	end
-	if self.BaseClass.DrawHUD then
-		self.BaseClass.DrawHUD(self)
-	end
-end
 end
 

@@ -310,7 +310,7 @@ function meta:ThrowFromPosition(pos, force, noknockdown)
 		self:SetGroundEntity(NULL)
 		if SERVER and not noknockdown and self:IsPlayer() then
 			local absforce = math.abs(force)
-			if absforce >= 512 or self.Clumsy and self:Team() == TEAM_HUMAN and absforce >= 32 then
+			if absforce >= 512 and (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and absforce >= 32 then
 				self:KnockDown()
 			end
 		end
@@ -342,7 +342,7 @@ function meta:ThrowFromPositionSetZ(pos, force, zmul, noknockdown)
 		self:SetGroundEntity(NULL)
 		if SERVER and not noknockdown and self:IsPlayer() then
 			local absforce = math.max(math.abs(force) * math.abs(zmul), math.abs(force))
-			if absforce >= 512 or self.Clumsy and self:Team() == TEAM_HUMAN and absforce >= 32 then
+			if absforce >= 512 and (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and absforce >= 32 then
 				self:KnockDown()
 			end
 		end
@@ -367,12 +367,6 @@ function meta:PoisonDamage(damage, attacker, inflictor, hitpos, noreduction)
 
 	if self:IsPlayer() then
 		if not (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) then return end
-
-		if self.BuffResistant then
-			damage = damage / 2
-		end
-
-		--self:ViewPunch(Angle(math.random(-10, 10), math.random(-10, 10), math.random(-20, 20)))
 		self:EmitSound("player/pl_pain"..math.random(5, 7)..".wav")
 
 		if SERVER then

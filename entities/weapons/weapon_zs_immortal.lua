@@ -58,7 +58,7 @@ SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.TracerName = "AirboatGunHeavyTracer"
 SWEP.ConeMax = 0.06
-SWEP.ConeMin = 0
+SWEP.ConeMin = 0.001
 
 SWEP.IronSightsPos = Vector(-4.6, 0, -0.12)
 SWEP.IronSightsAng = Vector(0, 0, 0)

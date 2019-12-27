@@ -1,47 +1,4 @@
--- Weapon sets that humans can start with if they choose RANDOM.
-GM.StartLoadouts = {
-	{"pshtr", "3pcp", "2pcp", "csknf"},
-	{"btlax", "3pcp", "zpaxe", "stone"},
-	{"stbbr", "3rcp", "zpcpot", "stone"},
-	{"tossr", "3smgcp", "2smgcp", "zpplnk", "stone"},
-	{"blstr", "3sgcp", "2sgcp", "csknf"},
-	{"owens", "3pcp", "2pcp", "csknf"},
-	{"tossr", "medkit"},
-	{"crklr", "3arcp", "2arcp", "zpplnk", "stone"},
-	{"crphmr", "pshtr", "csknf", "stone"},
-	{"blstr", "3sgcp","zpcpot"},
-	{"z9000", "3pls","crwbar"},
-	{"10hp","5spd", "blstr", "2sgcp"},
-	{"hook","owens","zpplnk","2pcp"},
-	{"crklr", "2arcp","detpck"},
-	{"tracker","pipe","z9000"}
-}
-
-
-GM.BossZombies = CreateConVar("zs_bosszombies", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Summon a boss zombie in the middle of each wave break."):GetBool()
-cvars.AddChangeCallback("zs_bosszombies", function(cvar, oldvalue, newvalue)
-	GAMEMODE.BossZombies = tonumber(newvalue) == 1
-end)
-
-GM.OutnumberedHealthBonus = CreateConVar("zs_outnumberedhealthbonus", "4", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Give zombies some extra maximum health if there are less than or equal to this many zombies. 0 to disable."):GetInt()
-cvars.AddChangeCallback("zs_outnumberedhealthbonus", function(cvar, oldvalue, newvalue)
-	GAMEMODE.OutnumberedHealthBonus = tonumber(newvalue) or 0
-end)
-
-GM.PantsMode = CreateConVar("zs_pantsmode", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Only the dead can know peace from this evil."):GetBool()
-cvars.AddChangeCallback("zs_pantsmode", function(cvar, oldvalue, newvalue)
-	GAMEMODE:SetPantsMode(tonumber(newvalue) == 1)
-end)
-
-GM.BabyMode = CreateConVar("zs_babymode", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Babby mode."):GetBool()
-cvars.AddChangeCallback("zs_babymode", function(cvar, oldvalue, newvalue)
-	GAMEMODE:SetBabyMode(tonumber(newvalue) == 1)
-end)
-
-GM.EndWaveHealthBonus = CreateConVar("zs_endwavehealthbonus", "0", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Humans will get this much health after every wave. 0 to disable."):GetInt()
-cvars.AddChangeCallback("zs_endwavehealthbonus", function(cvar, oldvalue, newvalue)
-	GAMEMODE.EndWaveHealthBonus = tonumber(newvalue) or 0
-end)
+CreateConVar("zsb_classicmode", "0", FCVAR_ARCHIVE, "Gamemode is in kill everyone to win mode or not. Gameplay differs quite a bit between this mode and normal mode.")
 
 GM.GibLifeTime = CreateConVar("zs_giblifetime", "25", FCVAR_ARCHIVE, "Specifies how many seconds player gibs will stay in the world if not eaten or destroyed."):GetFloat()
 cvars.AddChangeCallback("zs_giblifetime", function(cvar, oldvalue, newvalue)

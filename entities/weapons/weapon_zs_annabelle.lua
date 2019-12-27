@@ -155,7 +155,7 @@ end
 
 local function DoRicochet(attacker, hitpos, hitnormal, normal, damage)
 	attacker.RicochetBullet = true
-	attacker:FireBullets({Num = 8, Src = hitpos, Dir = hitnormal, Spread = Vector(0.2, 0.2, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage*0.75, Callback = GenericBulletCallback})
+	attacker:FireBullets({Num = 10, Src = hitpos, Dir = hitnormal, Spread = Vector(0.3, 0.3, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage*0.75, Callback = GenericBulletCallback})
 	attacker.RicochetBullet = nil
 end
 function SWEP.BulletCallback(attacker, tr, dmginfo)

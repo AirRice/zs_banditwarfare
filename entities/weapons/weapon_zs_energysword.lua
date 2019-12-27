@@ -30,16 +30,16 @@ SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
 SWEP.UseHands = true
 SWEP.HitDecal = "Manhackcut"
 
-SWEP.MeleeDamage = 60
+SWEP.MeleeDamage = 30
 SWEP.MeleeRange = 90
 SWEP.MeleeSize = 2
 
-SWEP.WalkSpeed = 300
+SWEP.WalkSpeed = SPEED_FASTEST+10
 
-SWEP.Primary.Delay = 0.65
-
-
-
+SWEP.Primary.Delay = 0.7
+SWEP.Secondary.Delay = 8
+SWEP.SwiftStriking = false
+SWEP.NoFallDamage = true
 SWEP.HitAnim = ACT_VM_MISSCENTER
 
 function SWEP:PlayHitSound()
@@ -51,6 +51,7 @@ end
 function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/flesh/flesh_bloody_break.wav", 80, math.Rand(90, 100))
 end
+
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	local ent = tr.Entity
 	local edata = EffectData()
@@ -74,4 +75,100 @@ function SWEP:PrimaryAttack()
 		self:StartSwinging()
 	end
 end
+function SWEP:Think()
 	
+
+	local curtime = CurTime()
+	local owner = self.Owner
+
+	if self.SwiftStriking then
+			local dir = owner:GetAimVector()
+			dir.z = math.Clamp(dir.z, -0.5, 0.9)
+			dir:Normalize()
+
+			owner:LagCompensation(true)
+
+			local traces = owner:PenetratingMeleeTrace(24, 12, nil, owner:LocalToWorld(owner:OBBCenter()), dir)
+			local damage = 5
+
+			local hit = false
+			for _, trace in ipairs(traces) do
+				if not trace.Hit then continue end
+				if trace.HitWorld then
+					if trace.HitNormal.z < 0.8 then
+						hit = true
+						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+					end
+				else
+					local ent = trace.Entity
+					if ent and ent:IsValid() then
+						hit = true
+						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+						local nearest = ent:NearestPoint(trace.StartPos)
+						ent:ThrowFromPositionSetZ(self.Owner:GetPos(), damage * 40)
+						self:ApplyMeleeDamage(ent, trace, damage)
+					end
+				end
+			end
+
+			if SERVER and hit then
+				owner:EmitSound("npc/strider/strider_skewer1.wav")
+			end
+
+			owner:LagCompensation(false)
+
+			if hit then
+				self.SwiftStriking = false
+			end
+	end
+	self.BaseClass.Think(self)
+	self:NextThink(curtime)
+	return true
+
+end
+
+function SWEP:ApplyMeleeDamage(ent, trace, damage)
+	ent:EmitSound("npc/manhack/grind_flesh1.wav")
+	if ent:IsPlayer() then
+		ent:TakeSpecialDamage(damage, self.DamageType, self.Owner, self, trace.HitPos)
+	else
+		local dmgtype, owner, hitpos = self.DamageType, self.Owner, trace.HitPos
+		timer.Simple(0, function() -- Avoid prediction errors.
+			if ent:IsValid() then
+				ent:TakeSpecialDamage(damage, dmgtype, owner, self, hitpos)
+			end
+		end)
+	end
+end
+
+function SWEP:SecondaryAttack()
+	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() then
+	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+	self:EmitSound("npc/env_headcrabcanister/incoming.wav", 80, math.Rand(90, 100))
+	if SERVER then
+		local fwd = 1200
+		self.Owner:SetAnimation( PLAYER_ATTACK1 )
+		local pushvel = self.Owner:GetEyeTrace().Normal * fwd
+        self.Owner:SetGroundEntity(nil)
+        self.Owner:SetLocalVelocity( self.Owner:GetVelocity() + pushvel)
+		self.SwiftStriking = true
+		self.Owner:SetGravity(0.01)
+		local ownerplayer = self.Owner
+		hook.Add( "DoPlayerDeath", "remove_energy_sword_float", function(ply, a, dmg)
+			if ply == ownerplayer  then 
+			ownerplayer:SetGravity(1)
+			hook.Remove( "DoPlayerDeath", "remove_energy_sword_float" )
+			end
+		end )
+		timer.Simple( 0.5, function() 
+			if self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
+				self.Owner:SetGravity(1)
+				self.SwiftStriking = false
+				--self.Owner:SetMoveType(MOVETYPE_NONE)
+				self.Owner:SetLocalVelocity(Vector(0,0,0))
+			end 
+		end)
+		
+    end
+	end
+end

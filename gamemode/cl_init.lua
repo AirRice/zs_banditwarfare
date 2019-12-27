@@ -21,6 +21,7 @@ include("vgui/dteamcounter.lua")
 include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
 include("vgui/dammocounter.lua")
+include("vgui/dweaponloadoutbutton.lua")
 include("vgui/dteamheading.lua")
 include("vgui/dmodelkillicon.lua")
 
@@ -206,25 +207,6 @@ function GM:_InputMouseApply(cmd, x, y, ang)
 	end
 end
 
-function GM:_GUIMousePressed(mc)
-	if self.HumanMenuPanel and self.HumanMenuPanel:Valid() and self.HumanMenuPanel:IsVisible() and MySelf:KeyDown(self.MenuKey) then
-		local dir = gui.ScreenToVector(gui.MousePos())
-		local ent = util.TraceLine({start = MySelf:EyePos(), endpos = MySelf:EyePos() + dir * self.CraftingRange, filter = MySelf, mask = MASK_SOLID}).Entity
-		if ent:IsValid() and not ent:IsPlayer() and (ent:GetMoveType() == MOVETYPE_NONE or ent:GetMoveType() == MOVETYPE_VPHYSICS) and ent:GetSolid() == SOLID_VPHYSICS then
-			if mc == MOUSE_LEFT then
-				if ent == self.CraftingEntity then
-					self.CraftingEntity = nil
-				else
-					self.CraftingEntity = ent
-				end
-			elseif mc == MOUSE_RIGHT and self.CraftingEntity and self.CraftingEntity:IsValid() then
-				RunConsoleCommand("_zs_craftcombine", self.CraftingEntity:EntIndex(), ent:EntIndex())
-				self.CraftingEntity = nil
-			end
-		end
-	end
-end
-
 function GM:TryHumanPickup(pl, entity)
 end
 
@@ -232,11 +214,7 @@ function GM:AddExtraOptions(list, window)
 end
 
 function GM:SpawnMenuEnabled()
-	return false
-end
-
-function GM:SpawnMenuOpen()
-	return false
+	return true
 end
 
 function GM:ContextMenuOpen()
@@ -404,7 +382,6 @@ function GM:LocalPlayerFound()
 	self.PrePlayerDraw = self._PrePlayerDraw
 	self.PostPlayerDraw = self._PostPlayerDraw
 	self.InputMouseApply = self._InputMouseApply
-	self.GUIMousePressed = self._GUIMousePressed
 	self.HUDWeaponPickedUp = self._HUDWeaponPickedUp
 
 	LocalPlayer().LegDamage = 0
@@ -471,7 +448,7 @@ function GM:_Think()
 	end
 
 	local myteam = MySelf:Team()
-	self:PlayBeats(myteam)
+	self:PlayBeats()
 	if myteam == TEAM_HUMAN or myteam == TEAM_BANDIT then
 		local wep = MySelf:GetActiveWeapon()
 		if wep:IsValid() and wep.GetIronsights and wep:GetIronsights() then
@@ -493,23 +470,35 @@ function GM:_Think()
 	end
 end
 
-function GM:ShouldPlayBeats(teamid)
-	return not self.RoundEnded and not GetGlobalBool("beatsdisabled", false) and self:GetWaveActive()
+function GM:ShouldPlayBeats()
+	return not self.RoundEnded and (self:GetWaveActive() or self.IsInSuddenDeath)
 end
 
 
-local cv_ShouldPlayMusic = CreateClientConVar("zs_playmusic", 1, true, false)
+local cv_ShouldPlayMusic = CreateClientConVar("zsb_playmusic", 1, true, false)
 local NextBeat = 0
 local LastBeatLevel = 0
 
-function GM:PlayBeats(teamid)
-	if RealTime() <= NextBeat or not gamemode.Call("ShouldPlayBeats", teamid) or not cv_ShouldPlayMusic:GetBool() then return end
+function GM:PlayBeats()
 
+	if RealTime() <= NextBeat or not gamemode.Call("ShouldPlayBeats") or not cv_ShouldPlayMusic:GetBool() then return end
+	
+	if self.IsInSuddenDeath then
+		MySelf:EmitSound(self.SuddenDeathSound, 0, 100, self.BeatsVolume)
+		NextBeat = RealTime() + SoundDuration(self.SuddenDeathSound) - 0.025
+		return
+	end
+	
 	local snd = self.Beats[math.random(1,#self.Beats)]
 	if snd then
 		MySelf:EmitSound(snd, 0, 100, self.BeatsVolume)
 		NextBeat = RealTime() + (self.SoundDuration[snd] or SoundDuration(snd))
 	end
+end
+
+function GM:RestartBeats()
+	RunConsoleCommand("stopsound")
+	timer.Simple(0.5, function() NextBeat = 0; end)
 end
 
 local colPackUp = Color(20, 255, 20, 220)
@@ -574,15 +563,6 @@ function GM:HumanHUD(screenscale)
 		end
 	end
 	
-	if gamemode.Call("PlayerCanPurchase", MySelf) then
-		if self:GetWaveActive() then
-			draw_SimpleTextBlurry(translate.Get("press_f2_for_the_points_shop"), "ZSHUDFontSmall", w * 0.5, 48, COLOR_GRAY, TEXT_ALIGN_CENTER)
-		else
-			local th = draw_GetFontHeight("ZSHUDFontSmall")
-			draw_SimpleTextBlurry(translate.Get("press_f2_for_the_points_shop"), "ZSHUDFontSmall", w * 0.5, 8, COLOR_GRAY, TEXT_ALIGN_CENTER)
-			draw_SimpleTextBlurry(translate.Format("x_discount_for_buying_between_waves", self.ArsenalCrateDiscountPercentage), "ZSHUDFontSmall", w * 0.5, 9 + th, COLOR_GRAY, TEXT_ALIGN_CENTER)
-		end
-	end
 	if self.IsInSuddenDeath then 
 		draw_SimpleTextBlurry("SUDDEN DEATH", "ZSHUDFont", w * 0.5, 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	end
@@ -680,7 +660,7 @@ function GM:ObserverHUD(obsmode)
 			--dyn = self:GetDynamicSpawning() and self:DynamicSpawnIsValid(target)
 		end
 	end
-	if not self:IsClassicMode() and MySelf:Team() ~= TEAM_SPECTATOR then
+	if not self:IsClassicMode() and not self.IsInSuddenDeath and MySelf:Team() ~= TEAM_SPECTATOR then
 	if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
 		draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 	elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
@@ -968,25 +948,7 @@ function GM:_HUDPaintBackground()
 	end
 end
 
-local function GiveWeapon()
-	RunConsoleCommand("zsgiveweapon")
-end
-local function GiveWeaponClip()
-	RunConsoleCommand("zsgiveweaponclip")
-end
-local function DropWeapon()
-	RunConsoleCommand("zsdropweapon")
-end
-local function EmptyClip()
-	RunConsoleCommand("zsemptyclip")
-end
 function GM:HumanMenu()
-	local ent = MySelf:MeleeTrace(48, 2).Entity
-	if self:ValidMenuLockOnTarget(MySelf, ent) then
-		self.HumanMenuLockOn = ent
-	else
-		self.HumanMenuLockOn = nil
-	end
 
 	if self.HumanMenuPanel and self.HumanMenuPanel:Valid() then
 		self.HumanMenuPanel:SetVisible(true)
@@ -998,26 +960,12 @@ function GM:HumanMenu()
 	self.HumanMenuPanel = panel
 
 	local screenscale = BetterScreenScale()
-	for k, v in pairs(self.AmmoNames) do
-		local b = vgui.Create("DAmmoCounter", panel)
-		b:SetAmmoType(k)
-		b:SetTall(screenscale * 36)
-		panel:AddItem(b)
+	for i=1, 3 do
+		local wepbutton = vgui.Create("DWeaponLoadoutPanel", panel)
+		wepbutton:SetWeaponSlot(i)
+		wepbutton:SetTall(screenscale * 156)
+		panel:AddItem(wepbutton)
 	end
-
-	local b = EasyButton(panel, "무기 주기", 8, 4)
-	b.DoClick = GiveWeapon
-	panel:AddItem(b)
-	b = EasyButton(panel, "무기와 탄창 5개 주기", 8, 4)
-	b.DoClick = GiveWeaponClip
-	panel:AddItem(b)
-	b = EasyButton(panel, "무기 던지기", 8, 4)
-	b.DoClick = DropWeapon
-	panel:AddItem(b)
-	b = EasyButton(panel, "탄창 비우기", 8, 4)
-	b.DoClick = EmptyClip
-	panel:AddItem(b)
-
 	panel:OpenMenu()
 end
 
@@ -1145,37 +1093,6 @@ function GM:_CreateMove(cmd)
 	end
 
 	local myteam = MySelf:Team()
-	if myteam == TEAM_HUMAN or myteam == TEAM_BANDIT then
-		if MySelf:Alive() then
-			local lockon = self.HumanMenuLockOn
-			if lockon then
-				if self:ValidMenuLockOnTarget(MySelf, lockon) and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and self.HumanMenuPanel:IsVisible() and MySelf:KeyDown(self.MenuKey) then
-					local oldang = cmd:GetViewAngles()
-					local newang = (lockon:EyePos() - EyePos()):Angle()
-					--oldang.pitch = math.ApproachAngle(oldang.pitch, newang.pitch, FrameTime() * math.max(45, math.abs(math.AngleDifference(oldang.pitch, newang.pitch)) ^ 1.3))
-					oldang.yaw = math.ApproachAngle(oldang.yaw, newang.yaw, FrameTime() * math.max(45, math.abs(math.AngleDifference(oldang.yaw, newang.yaw)) ^ 1.3))
-					cmd:SetViewAngles(oldang)
-				else
-					self.HumanMenuLockOn = nil
-				end
-			else
-				local maxhealth = MySelf:GetMaxHealth()
-				local threshold = MySelf:GetPalsy() and maxhealth - 1 or maxhealth * 0.25
-				local health = MySelf:Health()
-				if health <= threshold then
-					local ft = FrameTime()
-
-					staggerdir = (staggerdir + ft * 8 * VectorRand()):GetNormalized()
-
-					local ang = cmd:GetViewAngles()
-					local rate = ft * ((threshold - health) / threshold) * 7
-					ang.pitch = math.NormalizeAngle(ang.pitch + staggerdir.z * rate)
-					ang.yaw = math.NormalizeAngle(ang.yaw + staggerdir.x * rate)
-					cmd:SetViewAngles(ang)
-				end
-			end
-		end
-	end
 end
 
 function GM:CreateMoveTaunt(cmd)
@@ -1262,34 +1179,6 @@ function GM:_PostPlayerDraw(pl)
 		render.SetMaterial(matFriendRing)
 		render.DrawQuadEasy(pos, Vector(0, 0, 1), 32, 32, colFriend)
 		render.DrawQuadEasy(pos, Vector(0, 0, -1), 32, 32, colFriend)
-	end
-end
-
-function GM:DrawCraftingEntity()
-	local craftingentity = self.CraftingEntity
-	if craftingentity and craftingentity:IsValid() then
-		if self.HumanMenuPanel and self.HumanMenuPanel:Valid() and self.HumanMenuPanel:IsVisible() and MySelf:KeyDown(self.MenuKey) then
-			local scale = craftingentity:GetModelScale()
-			if not scale then return end
-
-			render.ModelMaterialOverride(matWhite)
-			render.SuppressEngineLighting(true)
-			render.SetBlend(0.025)
-			local extrascale = 1.05 + math.abs(math.sin(RealTime() * 7)) * 0.1
-			craftingentity:SetModelScale(scale * extrascale, 0)
-
-			local oldpos = craftingentity:GetPos()
-			craftingentity:SetPos(oldpos - craftingentity:LocalToWorld(oldpos))
-			craftingentity:DrawModel()
-			craftingentity:SetPos(oldpos)
-
-			craftingentity:SetModelScale(scale, 0)
-			render.SetBlend(1)
-			render.SuppressEngineLighting(false)
-			render.ModelMaterialOverride(0)
-		else
-			self.CraftingEntity = nil
-		end
 	end
 end
 
@@ -1393,18 +1282,31 @@ function GM:LocalPlayerDied(attackername)
 	surface_PlaySound(self.DeathSound)
 	if attackername then
 		self:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Get("you_have_died"))
-		self:CenterNotify(COLOR_RED, translate.Format(self.PantsMode and "you_were_kicked_by_x" or "you_were_killed_by_x", tostring(attackername)))
+		self:CenterNotify(COLOR_RED, translate.Format("you_were_killed_by_x", tostring(attackername)))
 	else
 		self:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Get("you_have_died"))
 	end
 end
 
-function GM:KeyPress(pl, key)
-	if key == self.MenuKey then
-		if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() and not pl:IsHolding() then
+function GM:OnSpawnMenuOpen()
+	
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) then
+		if not self:IsClassicMode() then
 			gamemode.Call("HumanMenu")
+		elseif MySelf:Alive() then
+			self:OpenPointsShop()
 		end
-	elseif key == IN_SPEED then
+	end
+end
+
+function GM:OnSpawnMenuClose()
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and not self:IsClassicMode() then
+		self.HumanMenuPanel:CloseMenu()
+	end
+end
+
+function GM:KeyPress(pl, key)
+	if key == IN_SPEED then
 		if pl:Alive() then
 			if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
 				pl:DispatchAltUse()
@@ -1579,7 +1481,7 @@ net.Receive("zs_wavestart", function(length)
 
 	gamemode.Call("SetWave", wave)
 	gamemode.Call("SetWaveEnd", time)
-
+	GAMEMODE.LastHumanPosition = nil
 	if wave == GAMEMODE:GetNumberOfWaves() then
 		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Get("final_wave"), {killicon = "default"})
 		GAMEMODE:CenterNotify(translate.Get("final_wave_sub"))
@@ -1603,7 +1505,8 @@ net.Receive("zs_suddendeath", function(length)
 	if check then
 		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Format("sudden_death"), {killicon = "default"})
 		GAMEMODE.IsInSuddenDeath = true
-		surface.PlaySound("ambient/energy/whiteflash.wav")
+		gamemode.Call("RestartBeats")
+		timer.Simple(0.1, function() surface_PlaySound("ambient/energy/whiteflash.wav")end)
 	end	
 end)
 
@@ -1616,7 +1519,8 @@ net.Receive("zs_waveend", function(length)
 	local wave = net.ReadInt(16)
 	local time = net.ReadFloat()
 	local winner = net.ReadUInt(8)
-	GAMEMODE.IsInSuddenDeath = false
+	--GAMEMODE.IsInSuddenDeath = false
+	gamemode.Call("RestartBeats")
 	if winner == TEAM_HUMAN then
 		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.ClientGet(pl,"teamname_human")) ,{killicon = "default"})
 	elseif winner == TEAM_BANDIT then
@@ -1630,7 +1534,7 @@ net.Receive("zs_waveend", function(length)
 		GAMEMODE:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Format("wave_x_is_over", wave))
 		GAMEMODE:CenterNotify(translate.Format("wave_x_is_over_sub", GAMEMODE.ArsenalCrateDiscountPercentage))
 		--GAMEMODE:CenterNotify(translate.Format("wave_x_is_over_sub",))
-		surface_PlaySound("ambient/atmosphere/cave_hit"..math.random(6)..".wav")
+		timer.Simple(0.1, function() surface_PlaySound("ambient/atmosphere/cave_hit"..math.random(6)..".wav") end)
 	end	
 end)
 

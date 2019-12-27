@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("weapons/ar2/npc_ar2_altfire.wav")
-SWEP.Primary.Damage = 25
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.1
 SWEP.Recoil = 0.72

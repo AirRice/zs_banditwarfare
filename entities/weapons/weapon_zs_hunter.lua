@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'헌터' 소총"
-	SWEP.Description = "대구경 탄환을 발사한다. 장전속도는 느리지만 강력한 한 방을 쏜다."
+	SWEP.Description = "대구경 탄환을 발사한다. 장전속도는 느리지만 특수한 탄환을 쏜다. 이 총알은 머리에 맞을 시 더 고통스럽다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -36,7 +36,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 50
+SWEP.Primary.Damage = 30
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -96,7 +96,9 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("hit_hunter", effectdata)
-
+	if tr.HitGroup == HITGROUP_HEAD then
+		dmginfo:AddDamage(dmginfo:GetDamage()*0.5)
+	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
 

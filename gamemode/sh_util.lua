@@ -42,6 +42,20 @@ function FindStartingItem(id)
 	if t and t.WorthShop then return t end
 end
 
+function FindItembyClass(class)
+	if not class then return end
+
+	local t
+	for i, tab in pairs(GAMEMODE.Items) do
+		if tab.SWEP == class then
+			t = tab
+			break
+		end
+	end
+
+	return t
+end
+
 function FindItem(id)
 	if not id then return end
 

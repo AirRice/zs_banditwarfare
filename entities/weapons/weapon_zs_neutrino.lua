@@ -60,7 +60,7 @@ sound.Add( {
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
 SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
 SWEP.Recoil = 0.5
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.17
 

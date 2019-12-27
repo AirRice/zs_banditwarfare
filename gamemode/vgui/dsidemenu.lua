@@ -1,7 +1,6 @@
 local PANEL = {}
 
 PANEL.Spacing = 8
-PANEL.SlideTime = 0 --0.2
 
 function PANEL:Init()
 	self:RefreshSize()
@@ -10,26 +9,15 @@ function PANEL:Init()
 	self.Items = {}
 end
 
-function PANEL:Think()
-	if self.CloseTime and RealTime() >= self.CloseTime then
-		self.CloseTime = nil
-		self:SetVisible(false)
-	elseif self.StartChecking and RealTime() >= self.StartChecking and not MySelf:KeyDown(GAMEMODE.MenuKey) then
-		self:CloseMenu()
-	end
-end
 
 function PANEL:RefreshSize()
 	self:SetSize(BetterScreenScale() * 256, ScrH())
 end
 
 function PANEL:OpenMenu()
-	if self.StartChecking and RealTime() < self.StartChecking then return end
-
-	self.CloseTime = nil
 
 	self:RefreshSize()
-	self:SetPos(ScrW() - self:GetWide(), 0, self.SlideTime, 0, self.SlideTime * 0.8) --self:MoveTo(ScrW() - self:GetWide(), 0, self.SlideTime, 0, self.SlideTime * 0.8)
+	self:SetPos(ScrW() - self:GetWide(), 0, 0, 0, 0)
 	self:SetVisible(true)
 	self:MakePopup()
 	self.StartChecking = RealTime() + 0.1
@@ -38,10 +26,7 @@ function PANEL:OpenMenu()
 end
 
 function PANEL:CloseMenu()
-	if self.CloseTime then return end
-	self.CloseTime = RealTime() + self.SlideTime
-
-	--self:MoveTo(ScrW() - 1, 0, self.SlideTime, 0, self.SlideTime * 0.8)
+	self:SetVisible(false)
 end
 
 local texRightEdge = surface.GetTextureID("gui/gradient")

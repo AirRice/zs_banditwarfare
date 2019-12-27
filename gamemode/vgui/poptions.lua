@@ -72,7 +72,7 @@ function MakepOptions()
 	
 	local check = vgui.Create("DCheckBoxLabel", Window)
 	check:SetText("음악 재생 허용")
-	check:SetConVar("zs_playmusic")
+	check:SetConVar("zsb_playmusic")
 	check:SizeToContents()
 	list:AddItem(check)
 	

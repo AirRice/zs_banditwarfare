@@ -12,7 +12,7 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
 	self:SetPos( Vector( self:GetPos().x, self:GetPos().y, self:GetPos().z+35.3 )) 
-	self:SetSigilMaxHealth(15*(1+math.floor(#player.GetAll()/10)))
+	self:SetSigilMaxHealth(10+5*(math.floor(#player.GetAll()/5)))
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)

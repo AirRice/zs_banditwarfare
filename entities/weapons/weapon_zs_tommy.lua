@@ -39,7 +39,7 @@ SWEP.UseHands = true
 SWEP.ShowViewModel = false
 
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
-SWEP.Primary.Damage = 20
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.075
 
@@ -48,10 +48,10 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.078
+SWEP.ConeMax = 0.09
 SWEP.ConeMin = 0.01
 
-SWEP.Recoil = 0.5
+SWEP.Recoil = 0.6
 
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()
