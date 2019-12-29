@@ -12,160 +12,172 @@ LANGUAGE.teamname_bandit							= "Bandits"
 LANGUAGE.teamname_human								= "Survivors"
 LANGUAGE.win										= "%s Win"
 LANGUAGE.draw										= "Draw"
+LANGUAGE.deathmatch_mode							= "DEATHMATCH"
+LANGUAGE.transmission_mode							= "TRANSMISSION"
 
--- Various gamemode stuff
-LANGUAGE.minute_points_added						= "No damage received for a whole minute! Added %d points."
-LANGUAGE.infliction_reached_class_unlocked			= "%d%% infliction has been reached! %s unlocked!"
-LANGUAGE.infliction_reached							= "%d%% of humans have died!"
-LANGUAGE.x_unlocked									= "%s unlocked!"
-LANGUAGE.disconnect_killed							= "%s was disconnect killed by %s."
-LANGUAGE.nail_removed_by							= "%s removed a nail belonging to %s."
-LANGUAGE.banned_for_life_warning					= "You're banned for life so you can't purchase anything!"
-LANGUAGE.need_to_be_near_arsenal_crate				= "You need to be near an Arsenal Crate to purchase items!"
-LANGUAGE.cant_purchase_right_now					= "You can't purchase anything right now."
-LANGUAGE.dont_have_enough_points					= "You don't have enough points."
-LANGUAGE.prepare_yourself							= "Prepare yourself..."
+LANGUAGE.loser_points_added							= "You get %d points for being on the losing team."
+LANGUAGE.winner_points_added						= "You get %d points for being on the winning team."
+LANGUAGE.draw_points_added							= "Draw. You get %d points."
+
+LANGUAGE.disconnect_killed							= "%s ragequit after being killed by %s."
+LANGUAGE.nail_removed_by							= "%s removed %s's nail."
+LANGUAGE.cant_purchase_right_now					= "You cannot purchase this right now."
+LANGUAGE.dont_have_enough_points					= "Not enough points."
+LANGUAGE.prepare_yourself							= "Prepare for the battle..."
 LANGUAGE.purchased_x_for_y_points					= "Purchased %s for %d points!"
-LANGUAGE.give_time_before_suicide					= "Give others time to spawn before suiciding."
-LANGUAGE.no_spare_ammo_to_give						= "No spare ammo to give!"
-LANGUAGE.no_person_in_range							= "No person in range!"
+LANGUAGE.will_appear_after_respawn					= "This will be given to you after respawning."
+
 LANGUAGE.that_life									= "That life..."
-LANGUAGE.x_damage_to_barricades						= "%d damage to barricades"
-LANGUAGE.x_damage_to_humans							= "%d damage to enemies"
-LANGUAGE.x_brains_eaten								= "%d kills"
-LANGUAGE.press_jump_to_free_roam					= "Press JUMP to free roam"
-LANGUAGE.press_rmb_to_cycle_targets					= "Press RMB to cycle targets"
-LANGUAGE.press_lmb_to_spawn_on_them					= "Press LMB to spawn on them"
-LANGUAGE.press_lmb_to_spawn_x_respawns				= "Press LMB to spawn (%d Respawns remaining)"
-LANGUAGE.respawn_after_x_seconds					= "Respawning after %d seconds..."
+LANGUAGE.x_damage_to_barricades						= "Dealt %d damage to barricades"
+LANGUAGE.x_damage_to_enemies						= "Dealt %d damage to enemies"
+LANGUAGE.x_kills									= "Killed %d enemies"
 
-LANGUAGE.press_reload_to_spawn_at_normal_point		= "Press RELOAD to spawn at a normal spawn point"
-LANGUAGE.press_walk_to_spawn_as_x					= "Press WALK to spawn as a %s"
-LANGUAGE.observing_x								= "Observing %s (%d)"
-LANGUAGE.waiting_for_next_wave						= "Waiting for the next wave to begin..."
+LANGUAGE.press_jump_to_free_roam					= "Press JUMP to use free roam camera"
+LANGUAGE.press_rmb_to_cycle_targets					= "Right Mouse Button to change spectate target"
+LANGUAGE.press_lmb_to_spawn							= "Left Mouse Button to respawn"
+LANGUAGE.you_respawned								= "You respawned."
+
+LANGUAGE.respawn_after_x_seconds					= "%d seconds before respawning..."
+LANGUAGE.observing_x								= "Spectating: %s (%d)"
+LANGUAGE.waiting_for_next_wave						= "Waiting for next wave..."
 LANGUAGE.impossible									= "Impossible."
-LANGUAGE.trying_to_put_nails_in_glass				= "Trying to put nails in glass is a silly thing to do."
-LANGUAGE.boss_class_select							= "You will be %s the next time you're a boss zombie."
-LANGUAGE.person_has_weapon							= "They already have that weapon."
-LANGUAGE.cant_do_that_in_classic_mode				= "You can't do that in Classic Mode."
-LANGUAGE.cant_use_x_in_classic_mode					= "You can't use %s in Classic Mode."
-LANGUAGE.cant_use_x_in_zombie_escape				= "You can't use %s in Zombie Escape."
-LANGUAGE.no_class_switch_in_this_mode				= "The current mode doesn't allow you to switch classes."
-LANGUAGE.press_sprint_to_get_up						= "Press SPRINT to get up"
-LANGUAGE.zombie_escape								= "Zombie Escape!"
-LANGUAGE.nothing_for_this_ammo						= "You don't have anything that uses this type of ammo."
-LANGUAGE.you_decide_to_leave_some					= "You can't hold more."
-LANGUAGE.you_cant_purchase_now						= "You can't purchase items right now."
-LANGUAGE.no_ammo_here								= "There's no ammo here right now."
-LANGUAGE.you_redeemed								= "You have respawned!"
+LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 
-LANGUAGE.kill_the_last_human						= "Kill the last human!"
-LANGUAGE.kick_the_last_human						= "Kick the last human!"
-LANGUAGE.you_are_the_last_human						= "YOU ARE THE LAST HUMAN!"
-LANGUAGE.x_zombies_out_to_get_you					= "%d ZOMBIES ARE OUT TO GET YOU!"
-LANGUAGE.x_pants_out_to_get_you						= "%d PANTS ARE OUT TO GET YOU!"
-LANGUAGE.you_have_died								= "You have died."
-LANGUAGE.you_were_killed_by_x						= "You were killed by %s"
-LANGUAGE.you_were_kicked_by_x						= "You were kicked in the shins by %s"
-LANGUAGE.arsenal_upgraded							= "Arsenal Upgraded"
-LANGUAGE.final_wave									= "THE FINAL WAVE HAS BEGUN!"
-LANGUAGE.final_wave_sub								= "The final struggle begins!"
-LANGUAGE.wave_x_has_begun							= "Wave %d has begun!"
-LANGUAGE.x_unlocked									= "%s unlocked!"
-LANGUAGE.wave_x_is_over								= "Wave %d is over!"
-LANGUAGE.wave_x_is_over_sub							= "All purchases from the Points Shop is %d%% off."
-LANGUAGE.you_are_x									= "You are %s!"
-LANGUAGE.x_has_risen_as_y							= "%s has risen as %s!!"
-LANGUAGE.x_has_risen								= "%s has risen!"
-LANGUAGE.cant_use_worth_anymore						= "You can't use the Worth menu any more!"
-LANGUAGE.class_not_unlocked_will_be_unlocked_x		= "That class is not unlocked yet. It will be unlocked at the start of wave %d."
-LANGUAGE.you_are_already_a_x						= "You are already a %s."
-LANGUAGE.you_will_spawn_as_a_x						= "You will spawn as a %s."
-LANGUAGE.crafting_successful						= "Crafting successful!"
-LANGUAGE.x_crafted_y								= "%s crafted %s."
-LANGUAGE.escape_from_the_zombies					= "Escape from the zombies!"
-LANGUAGE.too_close_to_another_nail					= "Too close to another nail."
-LANGUAGE.object_too_damaged_to_be_used				= "That object is too damaged to be used anymore."
-LANGUAGE.thanks_for_being_a_fan_of_zs				= "Thanks for being a fan of Zombie Survival!"
-LANGUAGE.cant_remove_nails_of_superior_player		= "You can't remove the nails of a player doing so much better than you."
+LANGUAGE.one_sigil_taken_by_x						= "%s have taken a transmitter!"
+LANGUAGE.sigil_comms_finished_by_x					= "%s have finished their transmission."
+LANGUAGE.sigil_comms_tied							= "Both teams finished their transmissions."
+
+LANGUAGE.sigil_comms_disrupted_x					= "The %s' transmitter has been hacked! The opposite team now controls it."
+LANGUAGE.x_killed_all_enemies					    = "%s have killed all enemies."
+LANGUAGE.before_wave_cant_go_outside_spawn			= "You cannot leave the spawn before the round starts!"
+LANGUAGE.you_have_died								= "You have died"
+LANGUAGE.you_were_killed_by_x						= "Killed by %s"
+LANGUAGE.arsenal_upgraded							= "Obtained"
+LANGUAGE.final_wave									= "Final wave!"
+LANGUAGE.cant_do_that_in_classic_mode				= "You may not do that in deathmatch mode."
+LANGUAGE.cant_use_x_in_classic_mode					= "You cannot use %s in deathmatch mode!"
+LANGUAGE.all_dead									= "All players have died."
+
+LANGUAGE.final_wave_sub								= "The last battle begins!"
+LANGUAGE.wave_x_has_begun							= "Wave %d begins!"
+LANGUAGE.wave_x_is_over								= "Wave %d is over."
+LANGUAGE.sudden_death								= "SUDDEN DEATH! First team to kill all enemies wins!"
+
+LANGUAGE.too_close_to_another_nail					= "You can't put a nail so close to another one."
+LANGUAGE.object_too_damaged_to_be_used				= "This object is too damaged to hammer back in."
 LANGUAGE.x_turned_on_noclip							= "%s turned on noclip."
 LANGUAGE.x_turned_off_noclip						= "%s turned off noclip."
-LANGUAGE.unlocked_on_wave_x							= "Unlocked on wave %d"
-LANGUAGE.brains_eaten_x								= "Brains eaten: %s"
-LANGUAGE.points_x									= "Points: %s"
-LANGUAGE.next_wave_in_x								= "Next wave in %s"
-LANGUAGE.wave_ends_in_x								= "Wave ends in %s"
-LANGUAGE.wave_x_of_y								= "Wave %d of %d"
-LANGUAGE.zombie_invasion_in_x						= "The round starts in %s"
+
+LANGUAGE.points_x									= "Points: %s points"
+LANGUAGE.next_wave_in_x								= "Next wave in %s seconds"
+LANGUAGE.wave_ends_in_x								= "Wave ends in %s seconds"
+LANGUAGE.wave_x_of_y								= "Wave %d/%d"
+LANGUAGE.zombie_invasion_in_x						= "Round begins in %s seconds"
 LANGUAGE.intermission								= "Intermission"
-LANGUAGE.press_f2_for_the_points_shop				= "Press F2 for the Points Shop!"
-LANGUAGE.breath										= "Breath"
-LANGUAGE.zombie_volunteers							= "Zombie Volunteers"
-LANGUAGE.x_will_be_y_soon							= "%s will become %s soon!"
-LANGUAGE.you_will_be_x_soon							= "You will become %s soon!"
-LANGUAGE.x_discount_for_buying_between_waves		= "%d%% discount for buying between waves!"
-LANGUAGE.number_of_initial_zombies_this_game		= "Number of initial zombies this game (%d%%): %d"
-LANGUAGE.humans_closest_to_spawns_are_zombies		= "Prepare for battle."
+LANGUAGE.breath										= "O2"
 LANGUAGE.waiting_for_players						= "Waiting for players..."
 LANGUAGE.requires_x_people							= "Requires %d people"
-LANGUAGE.packing_others_object						= "Packing other person's object"
-LANGUAGE.packing									= "Packing"
-LANGUAGE.ze_humans_are_frozen_until_x				= "Humans are frozen until %d seconds before the round starts."
+LANGUAGE.packing_others_object						= "Packing up someone else's object"
+LANGUAGE.packing									= "Packing up"
 LANGUAGE.loading									= "Loading..."
-LANGUAGE.next_round_in_x							= "Next round in: %s"
+LANGUAGE.next_round_in_x							= "Map change in %s"
 LANGUAGE.warning									= "Warning!"
-LANGUAGE.ok_and_no_reminder							= "OK and don't pop this message up anymore"
+LANGUAGE.ok_and_no_reminder							= "Don't see again"
 
-LANGUAGE.resist_x									= "Resist: %d%%"
-LANGUAGE.right_click_to_hammer_nail					= "Right click to hammer in a nail."
+LANGUAGE.right_click_to_hammer_nail					= "Right click to hammer a nail in."
 LANGUAGE.nails_x									= "Nails: %d"
-LANGUAGE.resupply_box								= "Resupply Box"
-LANGUAGE.purchase_now								= "Purchase now!"
-LANGUAGE.integrity_x								= "Integrity: %d%%"
+LANGUAGE.resupply_box								= "Resupply"
+LANGUAGE.integrity_x								= "Health: %d%%"
 LANGUAGE.empty										= "EMPTY"
-LANGUAGE.manual_control								= "MANUAL CONTROL"
-LANGUAGE.arsenal_crate								= "Arsenal Crate"
+LANGUAGE.manual_control								= "MANUAL OVERRIDE"
 
-LANGUAGE.no_free_channel							= "Radio interference from too many already being placed!"
-
--- Sigils point objectives
-LANGUAGE.one_sigil_taken_by_x						= "A Transmitter has been taken by the %s!"						
-LANGUAGE.all_sigils_taken							= "All Transmitters have been taken."
-LANGUAGE.everyone_dead								= "All players are dead. Nobody Wins."
-LANGUAGE.before_wave_cant_go_outside_spawn			= "You cannot leave the spawn point before the wave starts!"
-
-LANGUAGE.message_beacon_1							= "Meet up here"
-LANGUAGE.message_beacon_2							= "Need defense here"
-LANGUAGE.message_beacon_3							= "Need turrets here"
-LANGUAGE.message_beacon_4							= "Need arsenal crates here"
-LANGUAGE.message_beacon_5							= "Need medics here"
-LANGUAGE.message_beacon_6							= "Ammunition box here"
-LANGUAGE.message_beacon_7							= "Arsenal crate here"
-LANGUAGE.message_beacon_8							= "Need force fields here"
-LANGUAGE.message_beacon_9							= "Need explosives here"
-LANGUAGE.message_beacon_10							= "Zombies come from here"
-LANGUAGE.message_beacon_11							= "Do not enter!!"
-LANGUAGE.message_beacon_12							= "Don't go out"
-LANGUAGE.message_beacon_13							= "Defend this area"
-LANGUAGE.message_beacon_14							= "Defend this spot"
-LANGUAGE.message_beacon_15							= "Medics here"
-LANGUAGE.message_beacon_16							= "Buy from my crate"
-LANGUAGE.message_beacon_17							= "Barricade here"
-LANGUAGE.message_beacon_18							= "Don't barricade here"
-LANGUAGE.message_beacon_19							= "Don't let zombies in here"
-LANGUAGE.message_beacon_20							= "This will break"
-LANGUAGE.message_beacon_21							= "This place is dangerous!"
-LANGUAGE.message_beacon_22							= "Beware of poison!"
-LANGUAGE.message_beacon_23							= "Zombies are breaking through here!"
-LANGUAGE.message_beacon_24							= "Zombies are coming. Build a barricade!"
-LANGUAGE.message_beacon_25							= "Plan B here"
-
-LANGUAGE.help_cat_introduction						= "ZS:Bandits"
-LANGUAGE.help_cat_survival							= "Various Tips"
+-- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
+LANGUAGE.help_cat_introduction						= "Zombie Survival: Bandit Warfare"
+LANGUAGE.help_cat_keys								= "Controls"
+LANGUAGE.help_cat_tips								= "Tips"
 LANGUAGE.help_cat_barricading						= "Barricading"
-LANGUAGE.help_cat_upgrades							= "Points/Shops"
+LANGUAGE.help_cat_upgrades							= "Points"
 
-LANGUAGE.help_cont_introduction						= [[<p>  --COMING SOON-- </p>]]
-LANGUAGE.help_cont_survival							= [[<p>  --COMING SOON-- </p>]]
-LANGUAGE.help_cont_barricading						= [[<p>  --COMING SOON-- </p>]]
-LANGUAGE.help_cont_upgrades							= [[<p>  --COMING SOON-- </p>]]
+LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between antagonistic bandits and hardened survivors after the zombie apocalypse.</p><br>
+<h1>Who will survive?</h1> <br>
+<p><h3>There are two gamemodes in Bandit Warfare.</h3></p>
+<h2>Transmission</h2> <br>
+<p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for help before the other team. Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
+<p>If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter adds 0.5 percent to the overall transmission progress once they are controlled.</p>
+<p>Remember that the transmitters are the most important in this mode! Even if you kill members of the opposite team you cannot win if you do not control these. If you purchase a "Transmitter Radar", it can help you locate them by showing where they are and how far you are from them.</p>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons and replace your original weapon with it. Every time you respawn you will spawn with the three weapons in your loadout, but they will not be given to you until your next respawn.</p>
+<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from using it to send a transmission temporarily. A hacking tool may be used to immediately take over an enemy transmitter while corrupting part of their existing transmission, reducing their progress. You can purchase these by pressing F2 and are given to you when you buy them immediately unlike weapons.</p>
+<p>Points are obtained by killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
+<br>
+<h2>Deathmatch</h2> <br>
+<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using the F2 menu (Also openable with the spawnmenu key). In this mode weapons and other tools are given to you directly.</p>
+<p>With deathmatch the entire game is faster paced and you have less time to complete the objective (kill everyone). In addition, when you die in this mode you drop everything you have, including weapons and ammunition. Furthermore, all purchases are 25% cheaper!</p>
+]]
+
+LANGUAGE.help_cont_keys					= 
+[[<table>
+  <caption>Controls</caption>
+  <tr>
+    <th>Key</th>
+    <th>Default Binding</th>
+    <th>What they do</th>
+  </tr>
+  <tr>
+    <td>Use</td>
+    <td>E</td>
+    <td>Open doors/Pick up items/Interact</td>
+  </tr>
+  <tr>
+    <td>gmod_undo</td>
+    <td>Z</td>
+    <td>Slowly phase through your team's barricades while holding this down.</td>
+  </tr>
+  <tr>
+    <td>Help</td>
+    <td>F1</td>
+    <td>Show menu with various options</td>
+  </tr>
+  <tr>
+    <td>Spawnmenu</td>
+    <td>Q</td>
+    <td>Open weapon loadout (Transmission)/Open shop(Deathmatch)</td>
+  </tr>
+  <tr>
+    <td>Shop</td>
+    <td>F2</td>
+    <td>Open shop</td>
+  </tr>
+  <tr>
+    <td>Information</td>
+    <td>F3</td>
+    <td>Check weapon stats</td>
+  </tr>
+  <tr>
+    <td>Options</td>
+    <td>F4</td>
+    <td>Show options menu</td>
+  </tr>
+   <tr>
+    <td>Rotate</td>
+    <td>Left Alt</td>
+    <td>Press and hold while holding a prop and you can rotate said prop.</td>
+  </tr>
+</table>]]
+
+LANGUAGE.help_cont_tips								= [[<p>Tips:
+<ul><li>Press 'gmod_undo' (Default Z) to enter phase mode where you can phase through friendly barricaded props.</li>
+<li>You deal more damage to enemies when you are outnumbered - 25% more to be exact.</li>
+<li>More expensive weapons are generally more powerful, but it is crucial to purchase the weapon best suited for the current situation.</li>
+<li>Placable tools are placed with the "Attack" key (Default Left Mouse Button), and Reload/Alternate Fire (R and Right Mouse respectively) rotates them before placement.<br> Press and hold Run (Default Shift) to pack them back up for later.</li>
+<li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default E).</li>
+<li>You can block pathways with heavy props but you won't be able to phase past them if they aren't nailed down.</li>
+<li>You can earn points by healing and supplying ammo for your teammates.</li>
+<li>You do not collide nor deal damage to your teammates and can recognize them from the icon that appears over their heads.</li>
+<li>In Transmission, use the tools to your advantage. EMP tools are great for slowing down the enemy transmission while you take control of their transmitters. Hacking tools can help you gain an edge if you use them on enemy transmitters. Drones can capture transmitters remotely.</li>
+<li>Force field barriers are impervious except for their base. shoot them in the base to destroy them.</li>
+<li>Scoring headshots mean more damage!</li>
+<li>There is a slow down effect if you get hit in the leg. If an enemy is charging at you try shooting them in the knees.</li>
+</ul></p>
+]]
+LANGUAGE.help_cont_barricading						= [[<p>COMING SOON</p>]]
+LANGUAGE.help_cont_upgrades							= [[<p>COMING SOON</p>]]

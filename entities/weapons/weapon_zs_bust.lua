@@ -27,7 +27,7 @@ SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel = Model("models/props_combine/breenbust.mdl")
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 45
+SWEP.MeleeDamage = 58
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 1.4
 

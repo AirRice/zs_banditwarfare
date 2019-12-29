@@ -5,31 +5,6 @@ cvars.AddChangeCallback("zs_giblifetime", function(cvar, oldvalue, newvalue)
 	GAMEMODE.GibLifeTime = tonumber(newvalue) or 1
 end)
 
-GM.GriefForgiveness = math.ceil(100 * CreateConVar("zs_grief_forgiveness", "0.5", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Scales the damage given to griefable objects by this amount. Does not actually prevent damage, it only decides how much of a penalty to give the player. Use smaller values for more forgiving, larger for less forgiving."):GetFloat()) * 0.01
-cvars.AddChangeCallback("zs_grief_forgiveness", function(cvar, oldvalue, newvalue)
-	GAMEMODE.GriefForgiveness = math.ceil(100 * (tonumber(newvalue) or 1)) * 0.01
-end)
-
-GM.GriefStrict = CreateConVar("zs_grief_strict", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Anti-griefing system. Gives points and eventually health penalties to humans who destroy friendly barricades."):GetBool()
-cvars.AddChangeCallback("zs_grief_strict", function(cvar, oldvalue, newvalue)
-	GAMEMODE.GriefStrict = tonumber(newvalue) == 1
-end)
-
-GM.GriefMinimumHealth = CreateConVar("zs_grief_minimumhealth", "100", FCVAR_ARCHIVE + FCVAR_NOTIFY, "The minimum health for an object to be considered griefable."):GetInt()
-cvars.AddChangeCallback("zs_grief_minimumhealth", function(cvar, oldvalue, newvalue)
-	GAMEMODE.GriefMinimumHealth = tonumber(newvalue) or 100
-end)
-
-GM.GriefDamageMultiplier = math.ceil(100 * CreateConVar("zs_grief_damagemultiplier", "0.5", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Multiplies damage done to griefable objects from humans by this amount."):GetFloat()) * 0.01
-cvars.AddChangeCallback("zs_grief_damagemultiplier", function(cvar, oldvalue, newvalue)
-	GAMEMODE.GriefDamageMultiplier = math.ceil(100 * (tonumber(newvalue) or 0.5)) * 0.01
-end)
-
-GM.GriefReflectThreshold = CreateConVar("zs_grief_reflectthreshold", "-5", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Start giving damage if the player has less than this many points."):GetInt()
-cvars.AddChangeCallback("zs_grief_reflectthreshold", function(cvar, oldvalue, newvalue)
-	GAMEMODE.GriefReflectThreshold = tonumber(newvalue) or -5
-end)
-
 GM.MaxPropsInBarricade = CreateConVar("zs_maxpropsinbarricade", "8", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Limits the amount of props that can be in one 'contraption' of nails."):GetInt()
 cvars.AddChangeCallback("zs_maxpropsinbarricade", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MaxPropsInBarricade = tonumber(newvalue) or 8
@@ -112,6 +87,13 @@ GM.HonorableMentions[HM_MOSTDAMAGETOENEMY].GetPlayer = function(self)
 	end
 end
 
+GM.HonorableMentions[HM_BLACKCOW].GetPlayer = function(self)
+	local pl, amount = GetMostKey("PointsSpent")
+	if pl and amount then
+		return pl, math.ceil(amount)
+	end
+end
+
 GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 	for _, pl in pairs(player.GetAll()) do
 		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
@@ -138,17 +120,9 @@ GM.HonorableMentions[HM_BARRICADEDESTROYER].GetPlayer = function(self)
 end
 
 GM.HonorableMentions[HM_COMMSUNIT].GetPlayer = function(self)
-	local top = 0
-	local toppl
-	for _, pl in pairs(player.GetAll()) do
-		if pl.ObjectiveSigilsTaken and pl.ObjectiveSigilsTaken > top then
-			top = pl.ObjectiveSigilsTaken
-			toppl = pl
-		end
-	end
-
-	if toppl and top >= 1 then
-		return toppl, math.ceil(top)
+	local pl, amount = GetMostKey("ObjectiveSigilsTaken")
+	if pl and amount then
+		return pl, math.ceil(amount)
 	end
 end
 
@@ -160,10 +134,10 @@ GM.HonorableMentions[HM_USEFULTOOPPOSITE].GetPlayer = function(self)
 end
 
 
-GM.HonorableMentions[HM_SALESMAN].GetPlayer = function(self)
+--[[GM.HonorableMentions[HM_SALESMAN].GetPlayer = function(self)
 	return GetMostKey("PointsCommission")
 end
 
 GM.HonorableMentions[HM_WAREHOUSE].GetPlayer = function(self)
 	return GetMostKey("ResupplyBoxUsedByOthers")
-end
+end]]

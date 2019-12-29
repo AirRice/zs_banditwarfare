@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "에너지 소드"
-
+	SWEP.Description = "최신 기술의 집약체. 오른쪽 클릭으로 빠르게 앞으로 돌진할 수 있다."
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 70
 
@@ -30,7 +30,7 @@ SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
 SWEP.UseHands = true
 SWEP.HitDecal = "Manhackcut"
 
-SWEP.MeleeDamage = 30
+SWEP.MeleeDamage = 24
 SWEP.MeleeRange = 90
 SWEP.MeleeSize = 2
 

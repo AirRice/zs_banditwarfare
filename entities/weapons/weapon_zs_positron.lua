@@ -47,14 +47,14 @@ SWEP.ShowWorldModel = true
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
-SWEP.Primary.Damage = 5
+SWEP.Primary.Damage = 12
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.05
+SWEP.Primary.Delay = 0.04
 
 SWEP.Primary.ClipSize = 0
+SWEP.Primary.DefaultClip = 100
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
-GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0
 SWEP.ConeMin = 0
@@ -98,7 +98,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Owner:RemoveAmmo(2, self.Primary.Ammo, false)
+	self.Owner:RemoveAmmo(math.Rand(2,3), self.Primary.Ammo, false)
 	if (!IsValid(self.Owner)) then
 		return
 	end

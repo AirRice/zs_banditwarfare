@@ -43,7 +43,7 @@ SWEP.Secondary.Ammo = "none"
 SWEP.WalkSpeed = SPEED_NORMAL
 
 SWEP.HoldType = "slam"
-SWEP.ScanDelay = 10
+SWEP.ScanDelay = 13
 SWEP.LastScan = 0
 SWEP.targets = {}
 function SWEP:PrimaryAttack()

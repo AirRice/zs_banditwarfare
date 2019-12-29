@@ -32,7 +32,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_Alyx_Gun.Reload")
 SWEP.Primary.Sound = Sound("Weapon_Alyx_Gun.Single")
-SWEP.Primary.Damage = 15
+SWEP.Primary.Damage = 17
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.2
 
@@ -52,7 +52,7 @@ SWEP.TracerName = "AR2Tracer"
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() then
-		ent:AddLegDamage(8)
+		ent:AddLegDamage(14)
 	end
 
 	local e = EffectData()

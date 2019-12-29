@@ -57,7 +57,7 @@ sound.Add(
 
 SWEP.Recoil = 4.1
 SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 7
+SWEP.Primary.NumShots = 6
 SWEP.Primary.Delay = 0.5
 SWEP.ReloadDelay = 1
 SWEP.Primary.ClipSize = 8
@@ -68,8 +68,8 @@ SWEP.ReloadSound = Sound("ambient/machines/combine_terminal_idle4.wav")
 SWEP.Primary.Sound = Sound("Weapon_pulseboom.Single")
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.22
-SWEP.ConeMin = 0.04
+SWEP.ConeMax = 0.39
+SWEP.ConeMin = 0.03
 SWEP.Recoil = 3.76
 SWEP.WalkSpeed = SPEED_SLOWER
 

@@ -90,40 +90,11 @@ function meta:DoHulls()
 		end
 end
 
-function meta:GivePenalty(amount)
-	surface.PlaySound("ambient/alarms/klaxon1.wav")
-end
-
---[[function meta:SetZombieClass(cl)
-	self:CallZombieFunction("SwitchedAway")
-
-	local classtab = GAMEMODE.ZombieClasses[cl]
-	if classtab then
-		self.Class = classtab.Index or cl
-		self:CallZombieFunction("SwitchedTo")
-	end
-end]]
-
-net.Receive("zs_penalty", function(length)
-	local penalty = net.ReadUInt(16)
-
-	MySelf:GivePenalty(penalty)
-end)
-
 net.Receive("zs_dohulls", function(length)
 	local ent = net.ReadEntity()
 	if ent:IsValid() then
 		ent:DoHulls()
 	end
-end)
-
-net.Receive("zs_zclass", function(length)
-	local ent = net.ReadEntity()
-	local id = net.ReadUInt(8)
-
-	--[[if ent:IsValid() and ent:IsPlayer() then
-		ent:SetZombieClass(id)
-	end]]
 end)
 
 net.Receive("zs_floatscore", function(length)

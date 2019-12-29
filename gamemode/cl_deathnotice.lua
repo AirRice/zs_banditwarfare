@@ -167,14 +167,6 @@ killicon.Add("weapon_zs_shovel", "killicon/zs_shovel", color_white)
 killicon.AddFont("weapon_zs_crowbar", "zsdeathnotice", "6", color_white)
 killicon.AddFont("weapon_zs_stunbaton", "zsdeathnotice", "!", color_white)
 
-net.Receive("zs_crow_kill_crow", function(length)
-	local victim = net.ReadString()
-	local attacker = net.ReadString()
-
-	--gamemode.Call("AddDeathNotice", attacker, TEAM_UNDEAD, "weapon_zs_crow", victim, TEAM_UNDEAD)
-	GAMEMODE:TopNotify(attacker, " ", {killicon = "weapon_zs_crow"}, " ", victim)
-end)
-
 net.Receive("zs_pl_kill_pl", function(length)
 	local victim = net.ReadEntity()
 	local attacker = net.ReadEntity()
@@ -263,7 +255,7 @@ net.Receive("zs_playerredeemed", function(length)
 		GAMEMODE:TopNotify(pl, " 부활", {killicon = "redeem"})
 
 		if pl == MySelf then
-			GAMEMODE:CenterNotify(COLOR_CYAN, translate.Get("you_redeemed"))
+			GAMEMODE:CenterNotify(COLOR_CYAN, translate.Get("you_respawned"))
 		end
 	end
 end)

@@ -26,7 +26,7 @@ SWEP.WorldModel = "models/weapons/w_pist_deagle.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Deagle.Single")
-SWEP.Primary.Damage = 20
+SWEP.Primary.Damage = 24
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.32
 SWEP.Primary.KnockbackScale = 2
@@ -36,5 +36,5 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.13
+SWEP.ConeMax = 0.11
 SWEP.ConeMin = 0.007

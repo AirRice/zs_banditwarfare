@@ -21,7 +21,7 @@ HM_MOSTENEMYKILLED = 1
 HM_MOSTDAMAGETOENEMY = 2
 HM_PACIFIST = 3
 HM_MOSTHELPFUL = 4
-HM_LASTHUMAN = 5
+HM_BLACKCOW = 5
 HM_OUTLANDER = 6
 HM_GOODDOCTOR = 7
 HM_HANDYMAN = 8
@@ -74,11 +74,6 @@ GM.MaxLegDamage = 3
 
 GM.UtilityKey = IN_SPEED
 
--- Cost multiplier for being near an arsenal crate.
-GM.ArsenalCrateMultiplier = 0.8
-GM.ArsenalCrateDiscount = 1 - GM.ArsenalCrateMultiplier
-GM.ArsenalCrateDiscountPercentage = GM.ArsenalCrateDiscount * 100
-
 SPEED_NORMAL = 195
 SPEED_SLOWEST = SPEED_NORMAL - 20
 SPEED_SLOWER = SPEED_NORMAL - 14
@@ -91,7 +86,7 @@ MASK_HOVER = bit.bor(CONTENTS_OPAQUE, CONTENTS_GRATE, CONTENTS_HITBOX, CONTENTS_
 
 
 GM.BarricadeHealthMin = 50
-GM.BarricadeHealthMax = 1100
+GM.BarricadeHealthMax = 600
 GM.BarricadeHealthMassFactor = 1
 GM.BarricadeHealthVolumeFactor = 2
 
@@ -119,27 +114,6 @@ GM.PropHealthMultipliers = {
 GM.CleanupFilter = {
 	"zs_hands"
 }
-
-GM.AmmoNames = {}
-GM.AmmoNames["ar2"] = "5.56"
-GM.AmmoNames["pistol"] = "권총"
-GM.AmmoNames["smg1"] = "SMG"
-GM.AmmoNames["357"] = "소총"
-GM.AmmoNames["xbowbolt"] = "화살"
-GM.AmmoNames["buckshot"] = "산탄총"
-GM.AmmoNames["sniperround"] = "판자"
---GM.AmmoNames["grenade"] = "수류탄"
---GM.AmmoNames["thumper"] = "터렛"
-GM.AmmoNames["battery"] = "메디컬 에너지"
-GM.AmmoNames["gaussenergy"] = "못"
---GM.AmmoNames["airboatgun"] = "상점 상자"
---GM.AmmoNames["striderminigun"] = "비컨"
---GM.AmmoNames["slam"] = "방어막 생성기"
---GM.AmmoNames["spotlamp"] = "스팟램프"
---GM.AmmoNames["stone"] = "돌"
-GM.AmmoNames["pulse"] = "펄스탄"
-GM.AmmoNames["gravity"] = "EMP 배터리"
-GM.AmmoNames["grenlauncher"] = "유탄"
 
 GM.AmmoTranslations = {}
 GM.AmmoTranslations["weapon_physcannon"] = "pistol"

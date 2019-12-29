@@ -83,7 +83,8 @@ end
 function SWEP:SetConeAndFire()
 	self:SetLastFire(CurTime())
 	if (self:GetConeAdder():Length() < (self.MaxConeAdder or 1.0)) then
-		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.2)
+		addMagnitude = math.Rand(0, 0.05)
+		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(addMagnitude,addMagnitude,addMagnitude) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)))
 	end
 end
 
@@ -101,21 +102,21 @@ function SWEP:DoRecoil()
 	local mul = 1
 	
 	if (self.Owner:Crouching()) then
-		mul = mul - 0.2
+		mul = mul - 0.3
 	end
 	
-	if (self:GetIronsights()) then
-		mul = mul - 0.15
+	if not (self:GetIronsights()) then
+		mul = mul - 0.25
 	end
 
 	recoil = recoil * mul
 	
 	if SERVER then
 		
-		self.Owner:ViewPunch(Angle(math.Rand(-recoil * 3, 0), math.Rand(-recoil, recoil), 0))
+		self.Owner:ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 	else
 		local curAng = self.Owner:EyeAngles()
-		curAng.pitch = curAng.pitch - math.Rand(recoil * 3, 0)
+		curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
 		curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
 		curAng.Roll = 0
 		self.Owner:SetEyeAngles(curAng)
@@ -132,16 +133,16 @@ function SWEP:GetCone()
 		basecone = basecone * 1.2
 	end
 	
-	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1) * 0.5
+	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1) * 0.3
 	if not self.Owner:Crouching() then multiplier = multiplier + 0.15 end
-	if self:GetIronsights() then multiplier = multiplier - 0.15 end
+	if not self:GetIronsights() then multiplier = multiplier + 0.2 end
 
 	-- if (SERVER) then
 	-- PrintMessage(3, tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
 	-- else
 	-- chat.AddText(Color(255, 0, 0), tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
 	-- end
-	return math.min(((basecone + self:GetConeAdderLength()) + conedelta * multiplier ^ self.ConeRamp),self.ConeMax*1.2)
+	return math.min(((basecone + self:GetConeAdderLength())*0.9 + conedelta * multiplier ^ self.ConeRamp),self.ConeMax)
 end
 
 function SWEP:PrimaryAttack()

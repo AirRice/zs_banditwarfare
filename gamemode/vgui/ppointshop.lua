@@ -1,3 +1,34 @@
+local PANEL = {}
+PANEL.m_ItemID = 0
+PANEL.RefreshTime = 1
+PANEL.NextRefresh = 0
+
+function PANEL:Init()
+	self:SetFont("DefaultFontSmall")
+end
+
+function PANEL:Think()
+	if CurTime() >= self.NextRefresh then
+		self.NextRefresh = CurTime() + self.RefreshTime
+		self:Refresh()
+	end
+end
+
+function PANEL:Refresh()
+	local count = GAMEMODE:GetCurrentEquipmentCount(self:GetItemID(),LocalPlayer():Team())
+	if count == 0 then
+		self:SetText(" ")
+	else
+		self:SetText(count)
+	end
+
+	self:SizeToContents()
+end
+
+function PANEL:SetItemID(id) self.m_ItemID = id end
+function PANEL:GetItemID() return self.m_ItemID end
+
+vgui.Register("ItemAmountCounter", PANEL, "DLabel")
 
 PANEL = {}
 

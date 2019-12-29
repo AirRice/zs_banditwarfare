@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "붐스틱"
-	SWEP.Description = "이 전설적인 산탄총은 한 번에 4개의 탄환을 장전해 한꺼번에 발사한다. 재장전 키를 누르고 있으면 빠르게 장전한다."
+	SWEP.Description = "이 전설적인 산탄총은 한 번에 4개의 탄환을 장전해 한꺼번에 발사한다. 재장전 키를 누르고 있으면 빠르게 장전한다.\n이 총은 너무나 강력해, 쏜 사람조차 쓰러지게 만든다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -28,7 +28,7 @@ SWEP.ReloadDelay = 0.7
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
 SWEP.Primary.Recoil = 22.75
 SWEP.Primary.Damage = 12
-SWEP.Primary.NumShots = 8
+SWEP.Primary.NumShots = 10
 SWEP.Primary.Delay = 1.5
 
 SWEP.Primary.ClipSize = 4
@@ -36,8 +36,8 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 28
 
-SWEP.ConeMax = 0.53
-SWEP.ConeMin = 0.14
+SWEP.ConeMax = 0.93
+SWEP.ConeMin = 0.12
 SWEP.Recoil = 3.2
 SWEP.WalkSpeed = SPEED_SLOWEST
 

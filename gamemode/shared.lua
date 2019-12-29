@@ -93,21 +93,7 @@ function GM:AddCustomAmmo()
 
 	game.AddAmmoType({name = "dummy"})
 	game.AddAmmoType({name = "grenlauncher"})
-	game.AddAmmoType({name = "m249"})
-	
-	game.AddAmmoType({name = "twister"})
 end
-
-function GM:CanRemoveOthersNail(pl, nailowner, ent)
-	local plpoints = pl:Frags()
-	local ownerpoints = nailowner:Frags()
-	if plpoints >= 75 or ownerpoints < 75 then return true end
-
-	pl:PrintTranslatedMessage(HUD_PRINTCENTER, "cant_remove_nails_of_superior_player")
-
-	return false
-end
-
 
 function GM:SetComms(bamount,hamount)
 	SetGlobalInt("banditcomms", bamount)

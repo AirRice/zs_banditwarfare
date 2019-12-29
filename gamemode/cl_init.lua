@@ -20,7 +20,6 @@ include("vgui/dsigilcounter.lua")
 include("vgui/dteamcounter.lua")
 include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
-include("vgui/dammocounter.lua")
 include("vgui/dweaponloadoutbutton.lua")
 include("vgui/dteamheading.lua")
 include("vgui/dmodelkillicon.lua")
@@ -35,10 +34,8 @@ include("vgui/mainmenu.lua")
 include("vgui/pmainmenu.lua")
 include("vgui/poptions.lua")
 include("vgui/phelp.lua")
-include("vgui/pclassselect.lua")
 include("vgui/pweapons.lua")
 include("vgui/pendboard.lua")
-include("vgui/pworth.lua")
 include("vgui/psigils.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
@@ -545,7 +542,6 @@ function GM:HumanHUD(screenscale)
 		if self:GetWave() == 0 and not self:GetWaveActive() then
 			local txth = draw_GetFontHeight("ZSHUDFontSmall")
 			draw_SimpleTextBlurry(translate.Get("waiting_for_players").." "..util.ToMinutesSeconds(math.max(0, self:GetWaveStart() - curtime)), "ZSHUDFontSmall", w * 0.5, h * 0.25, COLOR_GRAY, TEXT_ALIGN_CENTER)
-			draw_SimpleTextBlurry(translate.Get("humans_closest_to_spawns_are_zombies"), "ZSHUDFontSmall", w * 0.5, h * 0.25 + txth, COLOR_GRAY, TEXT_ALIGN_CENTER)
 
 			local y = h * 0.75 + txth * 2
 
@@ -580,12 +576,12 @@ function GM:HumanHUD(screenscale)
 			draw_SimpleTextBlur(translate.Format("x_damage_to_barricades", self.LifeStatsBarricadeDamage), "ZSHUDFontSmall", x, y, colLifeStats, TEXT_ALIGN_LEFT)
 			y = y + th
 		end
-		--[[if self.LifeStatsEnemyDamage > 0 then
-			draw_SimpleTextBlur(translate.Format("x_damage_to_humans", self.LifeStatsEnemyDamage), "ZSHUDFontSmall", x, y, colLifeStats, TEXT_ALIGN_LEFT)
+		if self.LifeStatsEnemyDamage > 0 then
+			draw_SimpleTextBlur(translate.Format("x_damage_to_enemies", self.LifeStatsEnemyDamage), "ZSHUDFontSmall", x, y, colLifeStats, TEXT_ALIGN_LEFT)
 			y = y + th
-		end]]
+		end
 		if self.LifeStatsEnemyKilled > 0 then
-			draw_SimpleTextBlur(translate.Format("x_brains_eaten", self.LifeStatsEnemyKilled), "ZSHUDFontSmall", x, y, colLifeStats, TEXT_ALIGN_LEFT)
+			draw_SimpleTextBlur(translate.Format("x_kills", self.LifeStatsEnemyKilled), "ZSHUDFontSmall", x, y, colLifeStats, TEXT_ALIGN_LEFT)
 			y = y + th
 		end
 	end
@@ -615,9 +611,9 @@ function GM:_HUDPaint()
 	if self.FilmMode then return end
 
 	if self:IsClassicMode() then
-		draw_SimpleTextBlurry("섬멸전", "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("deathmatch_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	else
-		draw_SimpleTextBlurry("점령전", "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("transmission_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
 	end
 	
 	local screenscale = BetterScreenScale()
@@ -654,18 +650,18 @@ function GM:ObserverHUD(obsmode)
 		local target = MySelf:GetObserverTarget()
 		if target and target:IsValid() then
 			if (target:IsPlayer() and target:Team() == MySelf:Team()) or MySelf:Team() == TEAM_SPECTATOR then
-					draw_SimpleTextBlur(translate.Format("observing_x", target:Name(), math.max(0, target:Health())), "ZSHUDFontSmall", w * 0.5, h * 0.75 - texh - 32, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+				draw_SimpleTextBlur(translate.Format("observing_x", target:Name(), math.max(0, target:Health())), "ZSHUDFontSmall", w * 0.5, h * 0.75 - texh - 32, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 			end
 
 			--dyn = self:GetDynamicSpawning() and self:DynamicSpawnIsValid(target)
 		end
 	end
 	if not self:IsClassicMode() and not self.IsInSuddenDeath and MySelf:Team() ~= TEAM_SPECTATOR then
-	if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
-		draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
-	elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
-		draw_SimpleTextBlur(translate.Format("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
-	end
+		if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
+			draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+		elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
+			draw_SimpleTextBlur(translate.Format("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+		end
 	end
 	local space = texh + 8
 		draw_SimpleTextBlur(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_DARKRED, TEXT_ALIGN_CENTER)
@@ -1337,19 +1333,6 @@ function GM:PlayerCanCheckout(pl)
 	return pl:IsValid() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() and self:GetWave() <= 0
 end
 
-function GM:OpenWorth()
-	if gamemode.Call("PlayerCanCheckout", MySelf) then
-		MakepWorth()
-	end
-end
-
-function GM:CloseWorth()
-	if pWorth and pWorth:Valid() then
-		pWorth:Remove()
-		pWorth = nil
-	end
-end
-
 function GM:SuppressArsenalUpgrades(suppresstime)
 	self.SuppressArsenalTime = math.max(CurTime() + suppresstime, self.SuppressArsenalTime)
 end
@@ -1510,11 +1493,6 @@ net.Receive("zs_suddendeath", function(length)
 	end	
 end)
 
-
-net.Receive("zs_classunlock", function(length)
-	GAMEMODE:CenterNotify(COLOR_GREEN, net.ReadString())
-end)
-
 net.Receive("zs_waveend", function(length)
 	local wave = net.ReadInt(16)
 	local time = net.ReadFloat()
@@ -1532,8 +1510,6 @@ net.Receive("zs_waveend", function(length)
 	
 	if wave < GAMEMODE:GetNumberOfWaves() and wave > 0 then
 		GAMEMODE:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Format("wave_x_is_over", wave))
-		GAMEMODE:CenterNotify(translate.Format("wave_x_is_over_sub", GAMEMODE.ArsenalCrateDiscountPercentage))
-		--GAMEMODE:CenterNotify(translate.Format("wave_x_is_over_sub",))
 		timer.Simple(0.1, function() surface_PlaySound("ambient/atmosphere/cave_hit"..math.random(6)..".wav") end)
 	end	
 end)

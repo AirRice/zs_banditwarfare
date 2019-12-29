@@ -5,7 +5,7 @@ if CLIENT then
 
 	SWEP.ViewModelFOV = 50
 
-	SWEP.Description = "다른 근접 무기보다는 느리지만, 상대를 잠시동안 느리게 만든다."
+	SWEP.Description = "다른 근접 무기보다는 약하지만, 상대를 잠시동안 느리게 하고 행동불능 상태로 만든다."
 end
 
 SWEP.Base = "weapon_zs_basemelee"
@@ -16,7 +16,7 @@ SWEP.UseHands = true
 
 SWEP.HoldType = "melee"
 
-SWEP.MeleeDamage = 27
+SWEP.MeleeDamage = 20
 SWEP.StunDamage = 20
 SWEP.MeleeRange = 49
 SWEP.MeleeSize = 1.5
@@ -42,5 +42,6 @@ end
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() then
 		hitent:AddLegDamage(self.StunDamage)
+		hitent:KnockDown(0.3)
 	end
 end

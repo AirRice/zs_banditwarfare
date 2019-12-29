@@ -568,43 +568,6 @@ meta.GetBrains = meta.Frags
 	end
 end]]
 
-function meta:AntiGrief(dmginfo, overridenostrict)
-	if GAMEMODE.GriefStrict and not overridenostrict then
-		dmginfo:SetDamage(0)
-		dmginfo:ScaleDamage(0)
-		return
-	end
-
-	dmginfo:SetDamage(dmginfo:GetDamage() * GAMEMODE.GriefForgiveness)
-
-	self:GivePenalty(math.ceil(dmginfo:GetDamage() * 0.5))
-	self:ReflectDamage(dmginfo:GetDamage())
-end
-
-function meta:GivePenalty(amount)
-	self.m_PenaltyCarry = (self.m_PenaltyCarry or 0) + amount * 0.1
-	local frags = math.floor(self.m_PenaltyCarry)
-	if frags > 0 then
-		self.m_PenaltyCarry = self.m_PenaltyCarry - frags
-		self:GivePointPenalty(frags)
-	end
-end
-
-function meta:GivePointPenalty(amount)
-	self:SetFrags(self:Frags() - amount)
-
-	net.Start("zs_penalty")
-		net.WriteUInt(amount, 16)
-	net.Send(self)
-end
-
-function meta:ReflectDamage(damage)
-	local frags = self:Frags()
-	if frags < GAMEMODE.GriefReflectThreshold then
-		self:TakeDamage(math.ceil(damage * frags * -0.05 * GAMEMODE.GriefDamageMultiplier))
-	end
-end
-
 function meta:GiveWeaponByType(weapon, plyr, ammo)
 	if ammo then
 		local wep = self:GetActiveWeapon()

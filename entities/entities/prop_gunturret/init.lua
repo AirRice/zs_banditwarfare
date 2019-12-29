@@ -109,11 +109,11 @@ function ENT:FireTurret(src, dir)
 	if self:GetNextFire() <= CurTime() then
 		local curammo = self:GetAmmo()
 		if curammo > 0 then
-			self:SetNextFire(CurTime() + 0.05)
+			self:SetNextFire(CurTime() + 0.02)
 			self:SetAmmo(curammo - 1)
 
 			self:StartBulletKnockback()
-			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 6, Callback = BulletCallback})
+			self:FireBullets({Num = 2, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback})
 			self:DoBulletKnockback(0.04)
 			self:EndBulletKnockback()
 		else

@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_smg_tmp.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_TMP.Single")
-SWEP.Primary.Damage = 16
+SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.06
 SWEP.Recoil = 0.24
