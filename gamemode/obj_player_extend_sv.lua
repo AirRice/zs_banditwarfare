@@ -389,7 +389,7 @@ function meta:DropAllWeapons()
 				end
 			else
 				local shoptab = FindItembyClass(wep:GetClass())
-				if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE) then
+				if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) then
 					self:StripWeapon(wep:GetClass())
 				else
 				local ent = self:DropWeaponByType(wep:GetClass())

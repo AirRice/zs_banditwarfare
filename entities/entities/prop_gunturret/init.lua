@@ -14,7 +14,6 @@ local function RefreshTurretOwners(pl)
 	end
 end
 hook.Add("PlayerDisconnected", "GunTurret.PlayerDisconnected", RefreshTurretOwners)
-hook.Add("DoPlayerDeath", "GunTurret.DoPlayerDeath", RefreshTurretOwners)
 
 function ENT:Initialize()
 	self:SetModel("models/Combine_turrets/Floor_turret.mdl")
@@ -30,7 +29,7 @@ function ENT:Initialize()
 	end
 
 	self:SetAmmo(self.DefaultAmmo)
-	self:SetMaxObjectHealth(250)
+	self:SetMaxObjectHealth(150)
 	self:SetObjectHealth(self:GetMaxObjectHealth())
 end
 
@@ -109,12 +108,12 @@ function ENT:FireTurret(src, dir)
 	if self:GetNextFire() <= CurTime() then
 		local curammo = self:GetAmmo()
 		if curammo > 0 then
-			self:SetNextFire(CurTime() + 0.02)
+			self:SetNextFire(CurTime() + 0.03)
 			self:SetAmmo(curammo - 1)
 
 			self:StartBulletKnockback()
-			self:FireBullets({Num = 2, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback})
-			self:DoBulletKnockback(0.04)
+			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback})
+			self:DoBulletKnockback(0.01)
 			self:EndBulletKnockback()
 		else
 			self:SetNextFire(CurTime() + 2)
@@ -133,7 +132,7 @@ function ENT:Think()
 	self:CalculatePoseAngles()
 
 	local owner = self:GetObjectOwner()
-	if owner:IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" then
+	if owner:IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
 		if self:GetManualControl() then
 			if owner:KeyDown(IN_ATTACK) then
 				if not self:IsFiring() then self:SetFiring(true) end
@@ -202,7 +201,7 @@ function ENT:OnPackedUp(pl)
 	pl:GiveEmptyWeapon("weapon_zs_gunturret")
 	pl:GiveAmmo(1, "thumper")
 
-	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth())
+	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth(), self:GetAmmo())
 	pl:GiveAmmo(self:GetAmmo(), "smg1")
 
 	self:Remove()

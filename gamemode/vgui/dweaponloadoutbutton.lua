@@ -20,6 +20,8 @@ function PANEL:Think()
 		wep = MySelf:GetWeapon2()
 	elseif wepslot == WEAPONLOADOUT_MELEE then
 		wep = MySelf:GetWeaponMelee()
+	elseif wepslot == WEAPONLOADOUT_TOOLS then
+		wep = MySelf:GetWeaponToolslot()	
 	else return 
 	end
 	if self:GetWeapon() ~= wep then
@@ -63,7 +65,7 @@ function PANEL:Paint()
 end
  
 function PANEL:SetWeaponSlot(wepslot)
-	if not wepslot or wepslot < 1 or wepslot > 3 then return end
+	if not wepslot or wepslot < 1 or wepslot > 4 then return end
 	local wep = ""
 	if wepslot == WEAPONLOADOUT_SLOT1 then
 		wep = MySelf:GetWeapon1()
@@ -71,11 +73,14 @@ function PANEL:SetWeaponSlot(wepslot)
 		wep = MySelf:GetWeapon2()
 	elseif wepslot == WEAPONLOADOUT_MELEE then
 		wep = MySelf:GetWeaponMelee()
+	elseif wepslot == WEAPONLOADOUT_TOOLS then
+		wep = MySelf:GetWeaponToolslot()
 	else return 
 	end
 	self.m_WeaponSlot = wepslot
 	local sweptable = weapons.GetStored(wep)
 	if not sweptable then return end
+	self:SetTooltip(sweptable.Description)
 	self.m_Weapon = wep
 	self.m_WeaponModelButton:SetModel(sweptable.WorldModel)
 	local wepent = self.m_WeaponModelButton.Entity

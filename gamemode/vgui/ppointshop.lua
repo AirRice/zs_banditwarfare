@@ -41,6 +41,7 @@ local function ItemButtonThink(self)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon1() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
+		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponToolslot() == itemtab.SWEP)
 		and not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()))
 		if newstate ~= self.m_LastAbleToBuy then
 			self.m_LastAbleToBuy = newstate
@@ -103,7 +104,7 @@ function PANEL:DoClick()
 		return
 	else
 		surface.PlaySound("buttons/button17.wav")
-		if (tab.Category == ITEMCAT_GUNS or tab.Category == ITEMCAT_MELEE) then
+		if (tab.Category == ITEMCAT_GUNS or tab.Category == ITEMCAT_MELEE or tab.Category == ITEMCAT_TOOLS) then
 		Derma_Query("이 무기를 구매하시겠습니까?", tab.Name or "",
 			"네", function() 
 				RunConsoleCommand("zs_pointsshopbuy", self.ID, self.m_LoadoutSlot)
@@ -203,6 +204,7 @@ local ammonames = {
 	["XBowBolt"] = "crossbowammo",
 	["pulse"] = "pulseammo",
 	["Battery"] = "medicammo",
+	["grenlauncher"] = "glgrenade",
 	["gravity"] = "empround",
 	["GaussEnergy"] = "nails"
 }
@@ -314,8 +316,9 @@ function GM:OpenPointsShop(weaponslot)
 
 		if hasitems and 
 		((weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) and catid == ITEMCAT_GUNS 
-		or weaponslot == WEAPONLOADOUT_MELEE and catid == ITEMCAT_MELEE
-		or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) and (GAMEMODE:IsClassicMode() or (catid ~= ITEMCAT_MELEE and catid ~= ITEMCAT_GUNS))) then
+		or weaponslot == WEAPONLOADOUT_MELEE and catid == ITEMCAT_MELEE 
+		or weaponslot == WEAPONLOADOUT_TOOLS and catid == ITEMCAT_TOOLS
+		or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) and (GAMEMODE:IsClassicMode() or (catid ~= ITEMCAT_MELEE and catid ~= ITEMCAT_GUNS and catid ~= ITEMCAT_TOOLS))) then
 			local list = vgui.Create("DPanelList", propertysheet)
 			list:SetPaintBackground(false)
 			propertysheet:AddSheet(catname, list, GAMEMODE.ItemCategoryIcons[catid], false, false)

@@ -94,6 +94,13 @@ GM.HonorableMentions[HM_BLACKCOW].GetPlayer = function(self)
 	end
 end
 
+GM.HonorableMentions[HM_HACKER].GetPlayer = function(self)
+	local pl, amount = GetMostKey("BackdoorsUsed")
+	if pl and amount then
+		return pl, math.ceil(amount)
+	end
+end
+
 GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 	for _, pl in pairs(player.GetAll()) do
 		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
@@ -101,7 +108,10 @@ GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 end
 
 GM.HonorableMentions[HM_GOODDOCTOR].GetPlayer = function(self)
-	return GetMostKey("HealedThisRound")
+	local pl, amount = GetMostKey("HealedThisRound")
+	if pl and amount then
+		return pl, math.ceil(amount)
+	end
 end
 
 GM.HonorableMentions[HM_HANDYMAN].GetPlayer = function(self)
@@ -120,7 +130,7 @@ GM.HonorableMentions[HM_BARRICADEDESTROYER].GetPlayer = function(self)
 end
 
 GM.HonorableMentions[HM_COMMSUNIT].GetPlayer = function(self)
-	local pl, amount = GetMostKey("ObjectiveSigilsTaken")
+	local pl, amount = GetMostKey("TimeCapping")
 	if pl and amount then
 		return pl, math.ceil(amount)
 	end

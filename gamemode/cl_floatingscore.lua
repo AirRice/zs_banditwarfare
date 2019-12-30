@@ -19,7 +19,7 @@ function GM:ReceivedCommission(crate, buyer, points)
 end
 
 function GM:CapturingPoint(other, points)
-	gamemode.Call("FloatingScore", other, "floatingscore", points, nil, true)
+	gamemode.Call("FloatingScore", other, "floatingscore_com", points)
 end
 
 function GM:HealedOtherPlayer(other, points)

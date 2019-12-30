@@ -956,7 +956,7 @@ function GM:HumanMenu()
 	self.HumanMenuPanel = panel
 
 	local screenscale = BetterScreenScale()
-	for i=1, 3 do
+	for i=1, 4 do
 		local wepbutton = vgui.Create("DWeaponLoadoutPanel", panel)
 		wepbutton:SetWeaponSlot(i)
 		wepbutton:SetTall(screenscale * 156)

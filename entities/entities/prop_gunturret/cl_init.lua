@@ -14,7 +14,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if self:GetObjectOwner():IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" then
+	if self:GetObjectOwner():IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
 		self.ScanningSound:PlayEx(0.55, 100 + math.sin(CurTime()))
 		if self:IsFiring() or self:GetTarget():IsValid() then
 			self.ShootingSound:PlayEx(1, 100 + math.cos(CurTime()))

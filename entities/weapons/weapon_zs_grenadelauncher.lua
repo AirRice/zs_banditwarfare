@@ -43,7 +43,7 @@ SWEP.Primary.Delay = 1
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "grenlauncher"
-GAMEMODE:SetupDefaultClip(SWEP.Primary)
+SWEP.Primary.DefaultClip = 3
 
 SWEP.ConeMax = 0
 SWEP.ConeMin = 0

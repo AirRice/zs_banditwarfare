@@ -76,11 +76,8 @@ function SWEP:PrimaryAttack()
 		local stored = owner:PopPackedItem(ent:GetClass())
 		if stored then
 			ent:SetObjectHealth(stored[1])
+			ent:SetAmmo(stored[2])
 		end
-
-		local ammo = math.min(owner:GetAmmoCount("smg1"), 250)
-		ent:SetAmmo(ammo)
-		owner:RemoveAmmo(ammo, "smg1")
 
 		if not owner:HasWeapon("weapon_zs_gunturretcontrol") then
 			owner:Give("weapon_zs_gunturretcontrol")

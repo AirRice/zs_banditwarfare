@@ -1158,7 +1158,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.LegDamage = 0
 
 	pl.DamageDealt = 0
-	pl.ObjectiveSigilsTaken = 0
+	pl.TimeCapping = 0
 	pl.LifeBarricadeDamage = 0
 	pl.LifeEnemyDamage = 0
 	pl.LifeEnemyKills = 0
@@ -1174,6 +1174,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.CarryOverRepair = 0
 	pl.PointsSpent = 0
 	pl.CarryOverCommision = 0
+	pl.BackdoorsUsed = 0
 	
 	pl.SpawnedTime = CurTime()
 	if pl:GetInfo("zsb_spectator") == "1" then
@@ -1227,7 +1228,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	else
 		pl:SetWeapon2("weapon_zs_peashooter")
 	end
-
+	pl:SetWeaponToolslot("weapon_zs_signalbooster")
 	pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 		timer.Simple(0.2, function() pl:Kill() end)
@@ -1429,7 +1430,7 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 				return
 			end
-			if itemtab.Category == ITEMCAT_GUNS or itemtab.Category == ITEMCAT_MELEE then return end
+			if itemtab.Category == ITEMCAT_GUNS or itemtab.Category == ITEMCAT_MELEE or itemtab.Category == ITEMCAT_TOOLS then return end
 			if itemtab.Callback then
 				itemtab.Callback(sender)
 			elseif itemtab.SWEP then
@@ -1439,9 +1440,6 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 					return
 				else
 					sender:Give(itemtab.SWEP)
-					if weapons.GetStored(itemtab.SWEP) and weapons.GetStored(itemtab.SWEP).Primary.DefaultClip then
-						sender:GiveAmmo(weapons.GetStored(itemtab.SWEP).Primary.DefaultClip, weapons.GetStored(itemtab.SWEP).Primary.Ammo)
-					end
 				end
 			else
 				return
@@ -1456,8 +1454,6 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 						return	
 					elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
 						local wep = sender:Give(itemtab.SWEP)
-						local storedwep = weapons.GetStored(itemtab.SWEP)
-						sender:GiveAmmo(storedwep.Primary.DefaultClip, storedwep.Primary.Ammo)
 						local oldwep
 						if slot == WEAPONLOADOUT_SLOT1 then 
 							oldwep = sender:GetWeapon1()
@@ -1497,6 +1493,21 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 				else
 					sender:SetWeaponMelee(itemtab.SWEP)
 				end
+			elseif slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS and itemtab.SWEP then
+				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponToolslot() == itemtab.SWEP then
+					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+					return	
+				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
+					local wep = sender:Give(itemtab.SWEP)
+					local oldwep = sender:GetWeaponToolslot()
+					if sender:HasWeapon(oldwep) then
+						sender:StripWeapon(oldwep)
+					end
+					sender:SetWeaponToolslot(itemtab.SWEP)
+				else
+					sender:SetWeaponToolslot(itemtab.SWEP)
+				end
 			end
 		end
 	else
@@ -1512,9 +1523,6 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 				return	
 			else
 				local wep = sender:Give(itemtab.SWEP)
-				if weapons.GetStored(itemtab.SWEP).Primary.DefaultClip then
-					sender:GiveAmmo(weapons.GetStored(itemtab.SWEP).Primary.DefaultClip, weapons.GetStored(itemtab.SWEP).Primary.Ammo)
-				end
 			end
 		elseif itemtab.Callback then
 			itemtab.Callback(sender)
@@ -2058,7 +2066,7 @@ function GM:KeyPress(pl, key)
 		local currentwep = pl:GetActiveWeapon()
 		if currentwep:IsValid() then
 			local shoptab = FindItembyClass(currentwep:GetClass())
-			if self:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE)) then
+			if self:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS)) then
 			local ent = pl:DropWeaponByType(currentwep:GetClass())
 				if ent and ent:IsValid() then
 					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
@@ -2503,7 +2511,7 @@ function GM:PlayerSpawn(pl)
 			else
 				pl:SetWeapon2("weapon_zs_peashooter")
 			end
-			
+			pl:SetWeaponToolslot("weapon_zs_signalbooster")
 			pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 		end
 	end
@@ -2566,16 +2574,14 @@ function GM:PlayerSpawn(pl)
 			local storedwep1 = weapons.GetStored(pl:GetWeapon1())
 			if storedwep1 then
 				pl:Give(wep1)
-				pl:GiveAmmo(storedwep1.Primary.DefaultClip, storedwep1.Primary.Ammo)
 			end
 			
 			local wep2 = pl:GetWeapon2()
 			local storedwep2 = weapons.GetStored(pl:GetWeapon2())
 			if storedwep2 then
 				pl:Give(wep2)
-				pl:GiveAmmo(storedwep2.Primary.DefaultClip, storedwep2.Primary.Ammo)
 			end
-			
+			local weptool = pl:Give(pl:GetWeaponToolslot())
 			local wepmelee = pl:Give(pl:GetWeaponMelee())	
 		else
 			local pist = "weapon_zs_peashooter"
@@ -2584,7 +2590,6 @@ function GM:PlayerSpawn(pl)
 			end
 			local storedpist = weapons.GetStored(pist)
 			pl:Give(pist)
-			pl:GiveAmmo(storedpist.Primary.DefaultClip, storedpist.Primary.Ammo)
 			pl:Give("weapon_zs_swissarmyknife")
 		end
 	end
@@ -2785,15 +2790,14 @@ function GM:WaveStateChanged(newstate)
 	end
 	gamemode.Call("OnWaveStateChanged")
 end
+function GM:AddPlayerCaptime(pl)
+	if pl:IsPlayer() then pl.TimeCapping = pl.TimeCapping +1 end
+end
 
-function GM:SetObjectiveSigilsTaken(pl,new)
-	if not pl:IsPlayer() then return end
-	pl.ObjectiveSigilsTaken = new
+function GM:OnPlayerUsedBackdoor(pl)
+	if pl:IsPlayer() then pl.BackdoorsUsed = pl.BackdoorsUsed +1 end
 end
-function GM:GetObjectiveSigilsTaken(pl)
-	if not pl:IsPlayer() then return nil end
-	return pl.ObjectiveSigilsTaken
-end
+
 function GM:PlayerSwitchFlashlight(pl, newstate)
 	return (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT)
 end

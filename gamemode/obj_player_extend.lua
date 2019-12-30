@@ -25,6 +25,14 @@ function meta:GetWeaponMelee()
 	return self:GetDTString(2)
 end
 
+function meta:SetWeaponToolslot(weaponstring)
+	self:SetDTString(3, weaponstring)
+end
+
+function meta:GetWeaponToolslot()
+	return self:GetDTString(3)
+end
+
 function meta:SetPoints(points)
 	self:SetDTInt(1, points)
 end

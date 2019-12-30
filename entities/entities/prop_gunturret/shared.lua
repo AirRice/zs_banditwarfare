@@ -3,10 +3,8 @@ ENT.RenderGroup = RENDERGROUP_BOTH
 
 ENT.SearchDistance = 768
 ENT.MinimumAimDot = 0.5
-ENT.DefaultAmmo = 0 --250
+ENT.DefaultAmmo = 250
 ENT.MaxAmmo = 1000
-
-ENT.NoReviveFromKills = true
 
 ENT.PosePitch = 0
 ENT.PoseYaw = 0
@@ -51,7 +49,7 @@ end
 
 function ENT:CalculatePoseAngles()
 	local owner = self:GetObjectOwner()
-	if not owner:IsValid() or self:GetAmmo() <= 0 or self:GetMaterial() ~= "" then
+	if not owner:IsValid() or self:GetAmmo() <= 0 or self:GetMaterial() ~= "" or not GAMEMODE:GetWaveActive() then
 		self.PoseYaw = math.Approach(self.PoseYaw, 0, FrameTime() * 60)
 		self.PosePitch = math.Approach(self.PosePitch, 15, FrameTime() * 30)
 		return
@@ -69,8 +67,8 @@ function ENT:CalculatePoseAngles()
 			self.PosePitch = math.Approach(self.PosePitch, math.Clamp(math.NormalizeAngle(ang.pitch), -15, 15), FrameTime() * 100)
 		else
 			local ct = CurTime()
-			self.PoseYaw = math.Approach(self.PoseYaw, math.sin(ct) * 45, FrameTime() * 60)
-			self.PosePitch = math.Approach(self.PosePitch, math.cos(ct * 1.4) * 15, FrameTime() * 30)
+			self.PoseYaw = math.Approach(self.PoseYaw, math.sin(ct*1.6) * 75, FrameTime() * 60)
+			self.PosePitch = math.Approach(self.PosePitch, math.cos(ct * 3) * 5, FrameTime() * 30)
 		end
 	end
 end

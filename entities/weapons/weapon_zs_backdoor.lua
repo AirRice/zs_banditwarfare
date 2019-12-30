@@ -74,14 +74,17 @@ function SWEP:PrimaryAttack()
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 			self.Weapon:SetNextPrimaryFire(CurTime()+self.Owner:GetViewModel():SequenceDuration()+1)
 			timer.Simple(self.Owner:GetViewModel():SequenceDuration(), function()
-				self.Owner:SetAnimation(PLAYER_ATTACK1)
-				self.Weapon:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
-				self.IsHacking = false
-				self:EmitSound("ambient/machines/thumper_shutdown1.wav")
-				if SERVER then
-					self.Owner:Freeze(false)
-					trace.Entity:DoDamageComms(self.Owner:Team())
-					self.Owner:StripWeapon(self:GetClass())
+				if SERVER then self.Owner:Freeze(false) end
+				if self.Owner:Alive() then
+					self.Owner:SetAnimation(PLAYER_ATTACK1)
+					self.Weapon:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+					self.IsHacking = false
+					self:EmitSound("ambient/machines/thumper_shutdown1.wav")
+					if SERVER then 
+						self.Owner:Freeze(false)
+						trace.Entity:DoDamageComms(self.Owner:Team(),self.Owner)
+						self.Owner:StripWeapon(self:GetClass())
+					end
 				end
 			end)
 		else
