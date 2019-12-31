@@ -25,15 +25,15 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 21
+SWEP.Primary.Damage = 20
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.25
 SWEP.Recoil = 1.76
-
+SWEP.DefaultRecoil = 1.76
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "ar2"
-SWEP.Primary.DefaultClip = 20
+SWEP.Primary.DefaultClip = 60
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
@@ -52,11 +52,18 @@ SWEP.TracerName = "Tracer"
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
-
+function SWEP:Think()
+	if (self.Owner:Crouching() and self:GetIronsights()) then
+		self.Recoil = self.DefaultRecoil*0.1
+	else
+		self.Recoil = self.DefaultRecoil
+	end
+	self.BaseClass.Think(self)
+end
 function BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
-	if ent:IsPlayer() and attacker:IsPlayer() and ent:Team() ~= attacker:Team() and tr.HitPos:Distance(attacker:GetPos()) > 300 then
-		dmginfo:AddDamage(math.min(math.floor(tr.HitPos:Distance(attacker:GetPos())/100),18))
+	if ent:IsPlayer() and attacker:IsPlayer() and ent:Team() ~= attacker:Team() and tr.HitPos:Distance(attacker:GetPos()) > 50 then
+		dmginfo:AddDamage(math.min(math.floor(tr.HitPos:Distance(attacker:GetPos())/50),45))
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end

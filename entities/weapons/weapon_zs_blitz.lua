@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'블리츠' SG552"
-	SWEP.Description ="주변에 동료가 많을수록 입히는 대미지가 증가한다."
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -26,7 +25,7 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_SG552.Single")
 SWEP.Primary.Damage = 22
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.1
+SWEP.Primary.Delay = 0.12
 SWEP.Primary.ClipSize = 30
 
 SWEP.Recoil = 0.5

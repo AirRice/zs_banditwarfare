@@ -60,8 +60,10 @@ function SWEP:PrimaryAttack()
 	self:TakeAmmo()
 	for i = 0, 2 do
 		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, 0.1 * i, 1, function()
-			self:EmitFireSound()
-			self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+			if (self:IsValid() and self.Owner:Alive()) then
+				self:EmitFireSound()
+				self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+			end
 		end)
 	end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)

@@ -26,7 +26,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_SMG1.Reload")
 SWEP.Primary.Sound = Sound("Airboat.FireGunHeavy")
-SWEP.Primary.Damage = 32
+SWEP.Primary.Damage = 26
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.2
 

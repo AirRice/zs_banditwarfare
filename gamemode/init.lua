@@ -2062,16 +2062,21 @@ function GM:KeyPress(pl, key)
 		end
 	elseif key == IN_WALK then
 		local vPos = pl:GetPos()
+		local vAng = pl:EyeAngles()
 		local zmax = pl:OBBMaxs().z * 0.75
 		local currentwep = pl:GetActiveWeapon()
 		if currentwep:IsValid() then
 			local shoptab = FindItembyClass(currentwep:GetClass())
 			if self:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS)) then
-			local ent = pl:DropWeaponByType(currentwep:GetClass())
+				local ent = pl:DropWeaponByType(currentwep:GetClass())
 				if ent and ent:IsValid() then
+					pl:EmitSound("weapons/slam/throw.wav", 65, math.random(95, 105))
 					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
 					ent:SetAngles(VectorRand():Angle())
 					local phys = ent:GetPhysicsObject()
+					if IsValid(phys) then
+						phys:ApplyForceCenter(vAng:Forward() * 300)
+					end
 				end
 			end
 		end

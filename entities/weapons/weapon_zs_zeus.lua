@@ -41,7 +41,7 @@ SWEP.ReloadDelay = SWEP.Primary.Delay
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "357"
-SWEP.Primary.DefaultClip = 10
+SWEP.Primary.DefaultClip = 30
 SWEP.Primary.KnockbackScale = 0.1
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
@@ -49,7 +49,8 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
 SWEP.ConeMax = 0.15
 SWEP.ConeMin = 0.001
-SWEP.Recoil = 3.23
+SWEP.Recoil = 2.23
+SWEP.DefaultRecoil = 2.23
 SWEP.IronSightsPos = Vector(5.427, -5.026, 2.21)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
@@ -60,7 +61,14 @@ SWEP.TracerName = "Tracer"
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
-
+function SWEP:Think()
+	if (self.Owner:Crouching() and self:GetIronsights()) then
+		self.Recoil = self.DefaultRecoil*0.1
+	else
+		self.Recoil = self.DefaultRecoil
+	end
+	self.BaseClass.Think(self)
+end
 --[[function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 85, 80)
 end]]

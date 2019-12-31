@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'아크바' 돌격소총"
-	SWEP.Description = "피격대상이 피해를 이미 입은 만큼 데미지가 높아진다."
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -25,7 +24,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AK47.Clipout")
 SWEP.Primary.Sound = Sound("Weapon_AK47.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.13
 
@@ -42,13 +41,3 @@ SWEP.Recoil = 0.49
 SWEP.WalkSpeed = SPEED_SLOW
 
 SWEP.IronSightsPos = Vector(-6.6, 20, 3.1)
-
-function BulletCallback(attacker, tr, dmginfo)
-	local ent = tr.Entity
-	if ent:IsPlayer() and attacker:IsPlayer() and ent:Team() ~= attacker:Team() then
-		local mul = 1-ent:Health()/ent:GetMaxHealth()
-		dmginfo:AddDamage(dmginfo:GetDamage()*mul)
-	end
-	GenericBulletCallback(attacker, tr, dmginfo)
-end
-SWEP.BulletCallback = BulletCallback

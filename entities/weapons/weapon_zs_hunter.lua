@@ -97,7 +97,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("hit_hunter", effectdata)
 	if tr.HitGroup == HITGROUP_HEAD then
-		dmginfo:SetDamage(99)
+		dmginfo:SetDamage(65)
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
