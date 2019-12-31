@@ -962,6 +962,21 @@ function GM:HumanMenu()
 		wepbutton:SetTall(screenscale * 156)
 		panel:AddItem(wepbutton)
 	end
+	
+	local but = vgui.Create("DButton", panel)
+	but:SetFont("ZSHUDFontSmall")
+	but:SetText("탄약/소모품 구매")
+	but:SetTall(32)
+	but:SizeToContents()
+	but:SetContentAlignment(8)
+	but:Dock(TOP)
+	but:DockMargin(0,64,0,16)
+	but:SetZPos(1100)
+	but.DoClick = 
+	function() 
+		GAMEMODE:OpenPointsShop(WEAPONLOADOUT_NULL)
+		surface.PlaySound("buttons/button15.wav") 
+	end
 	panel:OpenMenu()
 end
 

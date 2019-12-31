@@ -261,6 +261,8 @@ function GM:OpenPointsShop(weaponslot)
 		title:SetText("무기 2 구매")
 	elseif weaponslot == WEAPONLOADOUT_MELEE then
 		title:SetText("근접 무기 구매")
+	elseif weaponslot == WEAPONLOADOUT_TOOLS then
+		title:SetText("도구 구매")
 	end
 	title:SizeToContents()
 	title:CenterHorizontal()

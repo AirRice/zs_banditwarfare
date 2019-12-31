@@ -19,13 +19,14 @@ function ENT:Think()
 	if parent:IsValid() and parent:IsPlayer() then
 		if parent:Alive() and parent:Team() ~= ownerteam and self.TicksLeft >= 1 then
 			if CurTime() >= self.NextDamage then
-				self.NextDamage = CurTime() + 0.5
+				self.NextDamage = CurTime() + 0.4
 				self.TicksLeft = self.TicksLeft - 1
 
 				util.Blood((parent:NearestPoint(self:GetPos()) + parent:WorldSpaceCenter()) / 2, math.random(4, 9), Vector(0, 0, 1), 100)
-				parent:TakeDamage(2, self:GetOwner(), self)
+				parent:TakeDamage(8, self:GetOwner(), self)
 			end
 		else
+			if GAMEMODE:IsClassicMode() then
 			local ent = ents.Create("prop_weapon")
 			if ent:IsValid() then
 				ent:SetWeaponType("weapon_zs_hook")
@@ -46,7 +47,7 @@ function ENT:Think()
 					phys:SetVelocityInstantaneous(Vector(0, 0, 200) + parent:GetVelocity())
 				end
 			end
-
+			end
 			self:Remove()
 		end
 	else

@@ -2,7 +2,8 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "갈고리"
-
+	SWEP.Description = "공격이 맞을 시 피격대상에게 갈고리가 박히면서 지속적인 피해를 입힌다."
+	
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
 
@@ -25,7 +26,7 @@ SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel = "models/props_junk/meathook001a.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 34
+SWEP.MeleeDamage = 10
 SWEP.MeleeRange = 50
 SWEP.MeleeSize = 1.15
 
@@ -33,7 +34,7 @@ SWEP.HitGesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE
 SWEP.MissGesture = SWEP.HitGesture
 
 SWEP.SwingRotation = Angle(30, -30, -30)
-SWEP.SwingTime = 0.75
+SWEP.SwingTime = 0.65
 SWEP.SwingHoldType = "grenade"
 
 function SWEP:PlaySwingSound()

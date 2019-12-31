@@ -114,7 +114,7 @@ GM:AddPointShopItem(0,"z9000", "'Z9000' 펄스 권총", nil, ITEMCAT_GUNS, 15, "
 GM:AddPointShopItem(0,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 25, "weapon_zs_deagle")
 GM:AddPointShopItem(0,"nailgun", "리벳건", nil, ITEMCAT_GUNS, 30, "weapon_zs_nailgun").NoClassicMode = true
 
-GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
+GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴 샷건", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
 GM:AddPointShopItem(1,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 60, "weapon_zs_eraser")
@@ -125,31 +125,31 @@ GM:AddPointShopItem(1,"akbar", "'아크바' 돌격소총", nil, ITEMCAT_GUNS, 75
 
 GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 85, "weapon_zs_waraxe")
 GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100, "weapon_zs_ender")
-GM:AddPointShopItem(2,"annabelle", "'애나멜' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_annabelle")
+GM:AddPointShopItem(2,"annabelle", "'애나벨' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_annabelle")
 GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 GM:AddPointShopItem(2,"uzi", "'스프레이어' Uzi 9mm", nil, ITEMCAT_GUNS, 115, "weapon_zs_uzi")
 GM:AddPointShopItem(2,"stalker", "'스토커' M4", nil, ITEMCAT_GUNS, 120, "weapon_zs_m4")
 GM:AddPointShopItem(2,"immortal", "'불멸' 권총", nil, ITEMCAT_GUNS, 130, "weapon_zs_immortal")
-GM:AddPointShopItem(2,"ioncannon", "이온캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
+GM:AddPointShopItem(2,"ioncannon", "이온 캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
 
 GM:AddPointShopItem(3,"terminator", "'터미네이터' 권총", nil, ITEMCAT_GUNS, 155, "weapon_zs_terminator")
 GM:AddPointShopItem(3,"bulletstorm", "'총알비' SMG", nil, ITEMCAT_GUNS, 155, "weapon_zs_bulletstorm")
 GM:AddPointShopItem(3,"silencer", "'사일런서' SMG", nil, ITEMCAT_GUNS, 170, "weapon_zs_silencer")
 GM:AddPointShopItem(3,"inquisition", "'인퀴지션' 소형 석궁", nil, ITEMCAT_GUNS, 155, "weapon_zs_inquisition")
-GM:AddPointShopItem(3,"practition", "'프랙티션' 돌격소총", nil, ITEMCAT_GUNS, 135, "weapon_zs_practition")
+GM:AddPointShopItem(3,"practition", "'프랙티션' 의료소총", nil, ITEMCAT_GUNS, 135, "weapon_zs_practition")
 GM:AddPointShopItem(3,"inferno", "'인페르노' AUG", nil, ITEMCAT_GUNS, 155, "weapon_zs_inferno")
-GM:AddPointShopItem(3,"sweeper", "'스위퍼' 샷건", nil, ITEMCAT_GUNS, 155, "weapon_zs_sweepershotgun")
-GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 소총", nil, ITEMCAT_GUNS, 145, "weapon_zs_pulserifle")
+GM:AddPointShopItem(3,"sweeper", "'스위퍼' 산탄총", nil, ITEMCAT_GUNS, 155, "weapon_zs_sweepershotgun")
+GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 돌격소총", nil, ITEMCAT_GUNS, 145, "weapon_zs_pulserifle")
 GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 155, "weapon_zs_zeus")
 
 GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 215, "weapon_zs_crossbow")
 GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 225, "weapon_zs_reaper")
-GM:AddPointShopItem(4,"blitz", "'블리츠' 돌격소총", nil, ITEMCAT_GUNS, 225, "weapon_zs_blitz")
+GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 225, "weapon_zs_blitz")
 GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 225, "weapon_zs_sg550")
-GM:AddPointShopItem(4,"positron", "'포지트론' 입자포", nil, ITEMCAT_GUNS, 230, "weapon_zs_positron")
+GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 230, "weapon_zs_positron")
 GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 235, "weapon_zs_boomstick")
 GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 256, "weapon_zs_tommy")
-GM:AddPointShopItem(4,"slugrifle", "'티니' 슬러그 소총", nil, ITEMCAT_GUNS, 300, "weapon_zs_slugrifle")
+GM:AddPointShopItem(4,"slugrifle", "'타이니' 슬러그 소총", nil, ITEMCAT_GUNS, 300, "weapon_zs_slugrifle")
 
 GM:AddPointShopItem(nil,"pistolammo", "권총 탄약", nil, ITEMCAT_AMMO, 3, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["pistol"] or 12, "pistol", true) end, "models/Items/BoxSRounds.mdl")
 GM:AddPointShopItem(nil,"shotgunammo", "샷건 탄약", nil, ITEMCAT_AMMO, 6, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["buckshot"] or 8, "buckshot", true) end, "models/Items/BoxBuckshot.mdl")
@@ -171,7 +171,7 @@ GM:AddPointShopItem(nil,"stunbaton", "전기충격기", nil, ITEMCAT_MELEE, 23, 
 GM:AddPointShopItem(nil,"knife", "칼", nil, ITEMCAT_MELEE, 5, "weapon_zs_swissarmyknife")
 GM:AddPointShopItem(nil,"shovel", "삽", nil, ITEMCAT_MELEE, 45, "weapon_zs_shovel")
 GM:AddPointShopItem(nil,"sledgehammer", "오함마", nil, ITEMCAT_MELEE, 70, "weapon_zs_sledgehammer")
-GM:AddPointShopItem(nil,"zpplnk", "판자", nil, ITEMCAT_MELEE, 10, "weapon_zs_plank")
+GM:AddPointShopItem(nil,"zpplnk", "판자조각", nil, ITEMCAT_MELEE, 10, "weapon_zs_plank")
 GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 17, "weapon_zs_fryingpan")
 GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 22, "weapon_zs_pot")
 GM:AddPointShopItem(nil,"butcher", "정육점 칼", nil, ITEMCAT_MELEE, 25, "weapon_zs_butcherknife")
@@ -182,7 +182,7 @@ GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 1
 GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun").NoClassicMode = true
 GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_TOOLS, 45, "weapon_zs_backdoor").NoClassicMode = true
 GM:AddPointShopItem(nil,"sgnlboost", "신호 증폭기", nil, ITEMCAT_TOOLS, 7, "weapon_zs_signalbooster").NoClassicMode = true
-GM:AddPointShopItem(nil,"medgun", "메디컬 건", nil, ITEMCAT_TOOLS, 45, "weapon_zs_medicgun")
+GM:AddPointShopItem(nil,"medgun", "'세이비어'메디컬 건", nil, ITEMCAT_TOOLS, 45, "weapon_zs_medicgun")
 GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 50, "weapon_zs_medicalkit")
 GM:AddPointShopItem(nil,"ammokit", "탄약킷", nil, ITEMCAT_TOOLS, 12, "weapon_zs_ammokit")
 
@@ -201,7 +201,7 @@ item.NoClassicMode = true
 GM:AddPointShopItem(nil,"ffemitter", "방어막 생성기", nil, ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
 
 GM:AddPointShopItem(nil,"barricadekit", "'이지스' 바리케이드 킷", nil, ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
-GM:AddPointShopItem(nil,"boardpack", "판자 5장", nil, ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
+GM:AddPointShopItem(nil,"boardpack", "판자 묶음", nil, ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_OTHER, 5, "weapon_zs_objectiveradar").NoClassicMode = true
 GM:AddPointShopItem(nil,"enemytracker", "생체 탐지기", nil, ITEMCAT_OTHER, 10, "weapon_zs_enemyradar")
@@ -246,12 +246,13 @@ GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s - 
 GM.RestrictedModels = {
 	"models/player/zombine.mdl",
 	"models/player/zombie_soldier.mdl",
-	"models/player/skeleton.mdl"
+	"models/player/skeleton.mdl",
+	"models/player/charple.mdl"
 	
 	--[["models/player/zombie_classic.mdl",
 	"models/player/zombie_fast.mdl",
 	"models/player/corpse1.mdl",
-	"models/player/charple.mdl",
+	,
 	]]
 }
 GM.MapWhitelist = {
@@ -366,7 +367,7 @@ GM.WaveIntermissionLengthClassic = 25
 GM.EndGameTime = 25
 
 -- How many clips of ammo guns from the Worth menu start with. Some guns such as shotguns and sniper rifles have multipliers on this.
-GM.SurvivalClips = 2
+GM.SurvivalClips = 4
 
 -- Put your unoriginal, 5MB Rob Zombie and Metallica music here.
 GM.SuddenDeathSound = Sound("zombiesurvival/lasthuman.ogg")

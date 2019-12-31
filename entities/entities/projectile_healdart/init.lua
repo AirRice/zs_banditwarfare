@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.Heal = 12
+ENT.Heal = 35
 
 function ENT:Initialize()
 	self:SetModel("models/Items/CrossbowRounds.mdl")

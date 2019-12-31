@@ -2,7 +2,7 @@
 {
 	"base"				"base"
 	"title"				"ZS:Bandit Warfare"
-	"maps"				"^cs_|^de_|^zs_|^zm_|^zh_|^zps_|^zr_|^ze_|^zsb_"
+	"maps"				"^cs_|^de_|^zs_|^zm_|^zsb_"
 	"menusystem"		"1"
 	"workshopid"		""
 

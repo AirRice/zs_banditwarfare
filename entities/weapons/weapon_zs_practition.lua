@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'프렉티션' 의료소총"
-	SWEP.Description = "메디컬 에너지를 사용해 지속적인 피해를 입히는 탄환을 발사한다.\n 보조 공격 시 탄창 전체를 소비해 피격 지점 주변의 아군을 치료하는 탄환을 발사한다."
+	SWEP.Description = "메디컬 에너지를 사용해 지속적인 피해를 입히는 탄환을 발사한다.\n 보조 공격 시 15발을 소비해 피격 지점 주변의 아군을 치료하는 탄환을 발사한다."
 
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
@@ -63,7 +63,7 @@ SWEP.ToxicTick = 0.2
 SWEP.ToxDuration = 1.4
 SWEP.WalkSpeed = SPEED_SLOW
 
-SWEP.ChargeRequiredClip = 30
+SWEP.ChargeRequiredClip = 15
 SWEP.ChargeShotSound = "beams/beamstart5.wav"
 
 SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)
@@ -100,9 +100,9 @@ end
 
 function SWEP:SecondaryAttack()
 	if not self:CanPrimaryAttack() then return end
-	if self:Clip1() == self.ChargeRequiredClip then
+	if self:Clip1() >= self.ChargeRequiredClip then
 		self:EmitSound(self.ChargeShotSound)
-		self:TakePrimaryAmmo(self:Clip1())		
+		self:TakePrimaryAmmo(self.ChargeRequiredClip)		
 		self:ShootChargedBullet()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*5)
@@ -133,16 +133,25 @@ end
 
 function SWEP.SpecialBulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
+	if tr.HitSky then return end
 	local effectdata = EffectData()
 		effectdata:SetOrigin(tr.HitPos)
 	util.Effect("bonemeshexplode", effectdata)
+	effectdata:SetNormal(tr.HitNormal)
+	effectdata:SetMagnitude(5)
+	if tr.Entity:IsValid() then
+		effectdata:SetEntity(tr.Entity)
+	else
+		effectdata:SetEntity(NULL)
+	end
+	util.Effect("hit_healdart", effectdata)
 	if not (attacker and attacker:IsValid() and attacker:IsPlayer()) then return end
 	local epicenter = tr.HitPos
 	local radius =  100
 	for _, ent in pairs(ents.FindInSphere(epicenter, radius)) do
 		if ent and ent:IsValid()and ent:IsPlayer() and ent:Team() == attacker:Team() then
 				local oldhealth = ent:Health()
-				local newhealth = math.min(oldhealth + 20, ent:GetMaxHealth())
+				local newhealth = math.min(oldhealth + 10, ent:GetMaxHealth())
 				if oldhealth ~= newhealth then
 					ent:SetHealth(newhealth)
 					ent:EmitSound("items/medshot4.wav")

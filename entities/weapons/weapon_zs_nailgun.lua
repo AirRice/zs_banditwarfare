@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "리벳건"
-	SWEP.Description = "못을 높은 속도로 발사한다."
+	SWEP.Description = "못을 높은 속도로 발사한다. 이 무기를 이용하면 장거리에서 프롭에 못을 박을 수 있다."
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 	
@@ -48,9 +48,9 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "GaussEnergy"
 SWEP.Primary.Sound = Sound("Weapon_Nailgun.Single")
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 30
 SWEP.Primary.Delay = 1     
-SWEP.Primary.DefaultClip = 1
+SWEP.Primary.DefaultClip = 5
 SWEP.Recoil = 1.8
 SWEP.Primary.KnockbackScale = 3
 SWEP.ConeMax = 0.05

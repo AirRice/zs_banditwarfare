@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'뉴트리노' LMG"
+	SWEP.PrintName = "'뉴트리노' 펄스 LMG"
 	SWEP.Description = "탄창이 없는 신식 무기로 공격을 거듭할수록 발사속도가 빨라진다."
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0

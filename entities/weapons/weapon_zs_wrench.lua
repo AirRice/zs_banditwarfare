@@ -28,7 +28,7 @@ SWEP.UseHands = true
 SWEP.HoldType = "melee"
 
 SWEP.Primary.Delay = 0.8
-SWEP.MeleeDamage = 20
+SWEP.MeleeDamage = 28
 SWEP.MeleeRange = 50
 SWEP.MeleeSize = 0.875
 

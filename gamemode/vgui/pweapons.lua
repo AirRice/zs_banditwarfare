@@ -13,6 +13,7 @@ local Features = {
 
 {"Recoil", "반동"},
 {"ClipSize", "탄창 용량", 0, 50, false, "Primary"},
+{"DefaultClip", "기본 지급 탄약", 0, 200, false, "Primary"},
 {"Damage", "대미지", 2, 100, false, "Primary"},
 {"NumShots", "탄환 수", 1, 12, false, "Primary"},
 {"Delay", "발사 딜레이", 0.05, 3, true, "Primary"},
