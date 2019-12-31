@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'아도니스' 펄스 돌격소총"
-	SWEP.Description = "큰 피해를 입히며 적을 느리게 한다."
+	SWEP.Description = "반동이 적은 신식 무기로 연사속도는 느리지만 적을 느리게 한다."
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -26,7 +26,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_SMG1.Reload")
 SWEP.Primary.Sound = Sound("Airboat.FireGunHeavy")
-SWEP.Primary.Damage = 26
+SWEP.Primary.Damage = 23
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.2
 
