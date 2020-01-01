@@ -27,7 +27,7 @@ SWEP.NoDroppedWorldModel = true
 --[[SWEP.BoxPhysicsMax = Vector(8, 1, 4)
 SWEP.BoxPhysicsMin = Vector(-8, -1, -4)]]
 
-SWEP.MeleeDamage = 28
+SWEP.MeleeDamage = 29
 SWEP.MeleeRange = 48
 SWEP.MeleeSize = 0.875
 SWEP.Primary.Delay = 0.35
@@ -55,8 +55,8 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav")
 end
 
---[[function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
+function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() and hitent:Health() <= 0 then
 		hitent:Dismember(hitent:NearestDismemberableBone(tr.HitPos))
 	end
-end]]
+end

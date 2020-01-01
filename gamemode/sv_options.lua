@@ -101,6 +101,13 @@ GM.HonorableMentions[HM_HACKER].GetPlayer = function(self)
 	end
 end
 
+GM.HonorableMentions[HM_COMMSUNIT].GetPlayer = function(self)
+	local pl, amount = GetMostKey("TimeCapping")
+	if pl and amount then
+		return pl, math.ceil(amount)
+	end
+end
+
 GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 	for _, pl in pairs(player.GetAll()) do
 		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
@@ -127,13 +134,6 @@ end
 
 GM.HonorableMentions[HM_BARRICADEDESTROYER].GetPlayer = function(self)
 	return GetMostKey("BarricadeDamage")
-end
-
-GM.HonorableMentions[HM_COMMSUNIT].GetPlayer = function(self)
-	local pl, amount = GetMostKey("TimeCapping")
-	if pl and amount then
-		return pl, math.ceil(amount)
-	end
 end
 
 GM.HonorableMentions[HM_USEFULTOOPPOSITE].GetPlayer = function(self)

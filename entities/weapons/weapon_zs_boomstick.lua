@@ -27,8 +27,8 @@ SWEP.ReloadDelay = 0.7
 
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
 SWEP.Primary.Recoil = 22.75
-SWEP.Primary.Damage = 12
-SWEP.Primary.NumShots = 10
+SWEP.Primary.Damage = 10
+SWEP.Primary.NumShots = 8
 SWEP.Primary.Delay = 1.5
 
 SWEP.Primary.ClipSize = 4
@@ -36,11 +36,12 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 28
 
-SWEP.ConeMax = 0.93
-SWEP.ConeMin = 0.12
+SWEP.ConeMax = 0.18
+SWEP.ConeMin = 0.17
 SWEP.Recoil = 3.2
 SWEP.WalkSpeed = SPEED_SLOWEST
-
+SWEP.MovingConeOffset = 0.08
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 function SWEP:SetIronsights()
 end
 
@@ -59,7 +60,6 @@ function SWEP:Reload()
 		self:SetNextReload(CurTime() + self:SequenceDuration())
 	end
 	
-	self:ResetConeAdder()
 end
 
 function SWEP:PrimaryAttack()

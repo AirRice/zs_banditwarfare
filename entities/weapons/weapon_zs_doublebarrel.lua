@@ -54,8 +54,9 @@ SWEP.Primary.Ammo = "buckshot"
 SWEP.ClipMultiplier = 4
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.5
-SWEP.ConeMin = 0.046
+SWEP.ConeMax = 0.11
+SWEP.ConeMin = 0.076
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOWER
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
@@ -76,14 +77,13 @@ function SWEP:Reload()
 		self:SetNextReload(CurTime() + self:SequenceDuration())
 	end
 	self:SetIronsights(false)
-	self:ResetConeAdder()
 end
 
 function SWEP:SecondaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitSound("weapons/shotgun/shotgun_dbl_fire.wav")
 	local clip = self:Clip1()
-	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * 1.5, self:GetCone())
+	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * 1.75, self:GetCone())
 	self:TakePrimaryAmmo(clip)
 end
 

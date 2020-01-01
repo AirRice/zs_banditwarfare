@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'애나벨' 소총"
-	SWEP.Description = "이 사냥용 소총은 벽에 부딪히면 사방으로 파편을 날리는 특수탄환을 사용한다."
+	SWEP.Description = "이 사냥용 소총은 벽에 부딪히면 폭발해 반대쪽으로 파편을 날리는 특수탄환을 사용한다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 	
@@ -35,8 +35,10 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
 SWEP.Primary.DefaultClip = 24
 
-SWEP.ConeMax = 0.16
-SWEP.ConeMin = 0.005
+SWEP.ConeMax = 0.006
+SWEP.ConeMin = 0.004
+SWEP.MovingConeOffset = 0.1
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
 
@@ -57,7 +59,6 @@ function SWEP:Reload()
 		self.Owner:DoReloadEvent()
 	end
 	
-	self:ResetConeAdder()
 end
 
 if SERVER then
@@ -92,7 +93,7 @@ function SWEP:Think()
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
-	self:DevineConeAdder()
+	self.BaseClass.Think(self)
 end
 end
 
@@ -155,7 +156,7 @@ end
 
 local function DoRicochet(attacker, hitpos, hitnormal, normal, damage)
 	attacker.RicochetBullet = true
-	attacker:FireBullets({Num = 10, Src = hitpos, Dir = hitnormal, Spread = Vector(0.2, 0.2, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage*0.75, Callback = GenericBulletCallback})
+	attacker:FireBullets({Num = 10, Src = hitpos, Dir = hitnormal, Spread = Vector(0.15, 0.15, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage, Callback = GenericBulletCallback})
 	attacker.RicochetBullet = nil
 end
 function SWEP.BulletCallback(attacker, tr, dmginfo)

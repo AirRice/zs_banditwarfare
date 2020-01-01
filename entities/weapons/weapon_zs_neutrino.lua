@@ -56,9 +56,17 @@ sound.Add( {
 	pitch = 110,
 	sound = "weapons/gauss/chargeloop.wav"
 } )
+sound.Add( {
+	name = "Loop_Neutrino_Firing",
+	channel = CHAN_WEAPON,
+	volume = 1,
+	level = 75,
+	pitch = 115,
+	sound = "weapons/smg1/smg1_fire1.wav"
+} )
 
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
-SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
+SWEP.Primary.Sound = Sound("Loop_Neutrino_Firing")
 SWEP.Recoil = 0.5
 SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
@@ -69,8 +77,17 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 100
 
-SWEP.ConeMax = 0.15
-SWEP.ConeMin = 0.06
+SWEP.ConeMax = 0.11
+SWEP.ConeMin = 0.03
+
+-- 에임이 늘어나는 단위
+SWEP.AimExpandUnit = 0.009
+
+-- 에임이 늘어난 상태가 유지되는 기간
+SWEP.AimExpandStayDuration = 0.05
+
+-- 에임이 줄어드는 단위
+SWEP.AimCollapseUnit = 0.1
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.TracerName = "Ar2Tracer"
@@ -79,13 +96,6 @@ function SWEP:SetIronsights()
 end
 
 function SWEP:Reload()
-end
-
-function SWEP:SetConeAndFire()
-	self:SetLastFire(CurTime())
-	if (self:GetConeAdder():Length() < (self.MaxConeAdder or 1.0)) then
-		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.01)
-	end
 end
 
 function SWEP:PrimaryAttack()
@@ -100,7 +110,7 @@ function SWEP:PrimaryAttack()
 		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 40) and 2 or (self:GetDTInt(4) >= 80) and 3 or 1), self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
-		self:SetNextPrimaryFire(CurTime() + math.max(0.03, self.Primary.Delay * (1 - combo / 90)))
+		self:SetNextPrimaryFire(CurTime() + math.max(0.033, self.Primary.Delay * (1 - combo / 90)))
 		self:SetDTInt(4, combo + 1)
 	end
 end

@@ -36,7 +36,7 @@ SWEP.ViewModel = "models/weapons/cstrike/c_pist_fiveseven.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("weapons/fiveseven/fiveseven-1.wav")
-SWEP.Primary.Damage = 21
+SWEP.Primary.Damage = 31
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.08
 SWEP.Recoil = 1.16
@@ -44,9 +44,10 @@ SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
-SWEP.ConeMax = 0.05
+SWEP.ConeMax = 0.03
 SWEP.ConeMin = 0.003
 SWEP.IronSightsPos = Vector(-6.2, 0, 2.5)
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 function SWEP:ShootPulseBullets()	
 	local dmg = self.Primary.Damage*2

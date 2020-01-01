@@ -36,5 +36,7 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.11
-SWEP.ConeMin = 0.007
+SWEP.ConeMax = 0.01
+SWEP.ConeMin = 0.004
+SWEP.MovingConeOffset = 0.07
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

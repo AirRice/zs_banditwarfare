@@ -82,7 +82,13 @@ function PANEL:SetWeaponSlot(wepslot)
 	if not sweptable then return end
 	self:SetTooltip(sweptable.Description)
 	self.m_Weapon = wep
-	self.m_WeaponModelButton:SetModel(sweptable.WorldModel)
+	local wepmodel = "error.mdl"
+	if (sweptable.Base ~= "weapon_zs_base" and sweptable.Base ~= "weapon_zs_basemelee") then
+		wepmodel = sweptable.BaseClass.WorldModel
+	else
+		wepmodel = sweptable.WorldModel
+	end
+	self.m_WeaponModelButton:SetModel(wepmodel)
 	local wepent = self.m_WeaponModelButton.Entity
 	if IsValid(wepent) then
 		local mins, maxs = wepent:GetRenderBounds()

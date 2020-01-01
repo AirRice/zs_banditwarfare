@@ -1,7 +1,7 @@
 include("shared.lua")
 
 SWEP.PrintName = "방어막"
-SWEP.Description = "총알 등 투사체를 막아내지만 사람은 통과할 수 있는 방어막을 세운다. \n주 공격:배치.\n보조 공격,재장전:회전."
+SWEP.Description = "총알은 막아내지만 사람과 수류탄 등은 통과할 수 있는 방어막을 세운다. \n주 공격:배치.\n보조 공격,재장전:회전."
 SWEP.DrawCrosshair = false
 
 SWEP.Slot = 4

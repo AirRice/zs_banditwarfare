@@ -32,11 +32,11 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.4
-SWEP.ConeMin = 0.045
+SWEP.ConeMax = 0.078
+SWEP.ConeMin = 0.065
 SWEP.Recoil = 2.8
 SWEP.WalkSpeed = SPEED_SLOWER
-
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 
@@ -52,8 +52,6 @@ function SWEP:Reload()
 	end
 
 	self:SetIronsights(false)
-	
-	self:ResetConeAdder()
 end
 
 function SWEP:Think()

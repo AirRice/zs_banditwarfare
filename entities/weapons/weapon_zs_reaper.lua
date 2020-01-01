@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_smg_ump45.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_UMP45.Single")
-SWEP.Primary.Damage = 17
+SWEP.Primary.Damage = 24
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.0975
 
@@ -35,8 +35,9 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_AR2
 
-SWEP.ConeMax = 0.095
-SWEP.ConeMin = 0.0195
+SWEP.ConeMax = 0.065
+SWEP.ConeMin = 0.0155
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 0.768
 SWEP.WalkSpeed = SPEED_SLOW
 

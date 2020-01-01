@@ -33,8 +33,9 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.06
-SWEP.ConeMin = 0.03
+SWEP.ConeMax = 0.07
+SWEP.ConeMin = 0.01
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-5.95, 0, 2.5)
 

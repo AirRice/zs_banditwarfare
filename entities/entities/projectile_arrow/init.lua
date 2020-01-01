@@ -2,7 +2,7 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
 include('shared.lua')
-
+ENT.Damage = 100
 function ENT:Initialize()
 	self.Touched = {}
 	self.OriginalAngles = self:GetAngles()
@@ -56,6 +56,6 @@ function ENT:StartTouch(ent)
 
 	self.Touched[ent] = true
 
-	ent:TakeDamage(100, owner, self)
+	ent:TakeDamage(self.Damage, owner, self)
 	ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 end

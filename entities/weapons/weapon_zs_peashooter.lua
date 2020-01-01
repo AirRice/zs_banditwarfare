@@ -36,3 +36,5 @@ SWEP.ConeMax = 0.08
 SWEP.ConeMin = 0.018
 
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
+
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

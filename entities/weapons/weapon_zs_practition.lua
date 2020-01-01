@@ -54,13 +54,15 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.DefaultClip = 150
 SWEP.TracerName = "HelicopterTracer"
 
-SWEP.ConeMax = 0.14
+SWEP.ConeMax = 0.07
 SWEP.ConeMin = 0.015
+SWEP.MovingConeOffset = 0.07
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.NoAmmo = false
 SWEP.Recoil = 0.26
 SWEP.ToxicDamage = 2
 SWEP.ToxicTick = 0.2
-SWEP.ToxDuration = 1.4
+SWEP.ToxDuration = 1
 SWEP.WalkSpeed = SPEED_SLOW
 
 SWEP.ChargeRequiredClip = 15
@@ -82,18 +84,25 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		end
 	util.Effect("hit_healdart", effectdata)
 	if ent:IsPlayer() and ent:Team() ~= attacker:Team() and SERVER then
-				local wep = attacker:GetWeapon("weapon_zs_practition")
-				if IsValid(wep) and attacker:IsValid() and attacker:IsPlayer() then
-					local tox = ent:GiveStatus("tox")
-					if tox and tox:IsValid() then
-						tox:AddTime(wep.ToxDuration)
-						tox.Damage = wep.ToxicDamage
-						tox.Damager = attacker
-						tox.TimeInterval = wep.ToxicTick
-						tox.Owner = attacker
-					end
-				end
+		local wep = attacker:GetWeapon("weapon_zs_practition")
+		if IsValid(wep) and attacker:IsValid() and attacker:IsPlayer() then
+			local tox = ent:GetStatus("tox")
+			if (tox and tox:IsValid()) then
+				tox:AddTime(wep.ToxDuration)
+				tox.Owner = ent
+				tox.Damage = wep.ToxicDamage
+				tox.Damager = attacker
+				tox.TimeInterval = wep.ToxicTick
+			else
+				stat = ent:GiveStatus("tox")
+				stat:SetTime(wep.ToxDuration)
+				stat.Owner = ent
+				stat.Damage = wep.ToxicDamage
+				stat.Damager = attacker
+				stat.TimeInterval = wep.ToxicTick
 			end
+		end
+	end	
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
 

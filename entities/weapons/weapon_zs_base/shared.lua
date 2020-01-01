@@ -6,10 +6,17 @@ SWEP.Primary.Delay = 0.15
 
 SWEP.ConeMax = 0.03
 SWEP.ConeMin = 0.01
-SWEP.ConeRamp = 3
+SWEP.MovingConeOffset = 0
+
+-- 에임이 늘어나는 단위
+SWEP.AimExpandUnit = 0.15
+-- 에임이 늘어난 상태가 유지되는 기간
+SWEP.AimExpandStayDuration = 0.2
+-- 에임이 줄어드는 단위
+SWEP.AimCollapseUnit = 0.25
 
 SWEP.CSMuzzleFlashes = true
-
+SWEP.AimStartTime = 0
 
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.DefaultClip = 0
@@ -39,8 +46,7 @@ SWEP.AngleAdded = {
 }
 
 function SWEP:SetupDataTables()
-	self:NetworkVar("Vector", 31, "ConeAdder")
-	self:NetworkVar("Float", 31, "LastFire")
+	self:NetworkVar("Float", 31, "ConeAdder")
 end
 
 function SWEP:Initialize()
@@ -50,46 +56,11 @@ function SWEP:Initialize()
 	self:SetDeploySpeed(1.1)
 
 	-- Maybe we didn't want to convert the weapon to the new system...
-	if self.Cone then
-		self.ConeMin = self.ConeIronCrouching
-		self.ConeMax = self.ConeMoving
-		self.ConeRamp = 3
-	end
-
+	self:SetConeAdder(0)
 	if CLIENT then
 		self:CheckCustomIronSights()
 		self:Anim_Initialize()
 	end
-end
-
-function SWEP:DevineConeAdder() 
-	if (IsValid(self.Owner) and self:GetLastFire() + (self.Primary.Delay or 0) + FrameTime() <= CurTime()) then
-		self:SetConeAdder(self:GetConeAdder() / 2)
-	end
-end
-
--- function SWEP:SetConeAdder()
-	-- self:SetNWFloat("LastFire", CurTime())
-	-- self:SetNWVector("ConeAdder", self:GetConeAdder() + Vector(math.Rand(0, 1), math.Rand(0, 1), math.Rand(0, 1)) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)) * 0.2)
--- end
-
--- function SWEP:GetConeAdder()
-	-- return self:GetNWVector("ConeAdder")
--- end
-function SWEP:ResetConeAdder()
-	self:SetConeAdder(Vector(0, 0, 0))
-end
-
-function SWEP:SetConeAndFire()
-	self:SetLastFire(CurTime())
-	if (self:GetConeAdder():Length() < (self.MaxConeAdder or 1.0)) then
-		addMagnitude = math.Rand(0, 0.05)
-		self:SetConeAdder((self:GetConeAdder() or Vector(0, 0, 0)) + Vector(addMagnitude,addMagnitude,addMagnitude) * math.Min(self.ConeMax, math.Rand(self.ConeMin, self.ConeMax)))
-	end
-end
-
-function SWEP:GetConeAdderLength()
-	return self:GetConeAdder():Length()
 end
 
 function SWEP:DoRecoil()
@@ -124,27 +95,23 @@ function SWEP:DoRecoil()
 end
 
 function SWEP:GetCone()
-	-- if not self.Owner:OnGround() or self.ConeMax == self.ConeMin then return self.ConeMax end
-
 	local basecone = self.ConeMin
-	local conedelta = self.ConeMax - basecone
-
+	local conediff = self.ConeMax - self.ConeMin + self.MovingConeOffset
+	
+	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1)*0.5
 	if !self.Owner:OnGround() then
 		basecone = basecone * 1.2
+		multiplier = 0.55
 	end
-	
-	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1) * 0.3
-	if not self.Owner:Crouching() then multiplier = multiplier + 0.15 end
-	if not self:GetIronsights() then multiplier = multiplier + 0.2 end
+	if self.Owner:Crouching() then 
+		multiplier = multiplier - 0.1 
+	end
+	if self:GetIronsights() then 
+		multiplier = multiplier - 0.1 
+	end
 
-	-- if (SERVER) then
-	-- PrintMessage(3, tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
-	-- else
-	-- chat.AddText(Color(255, 0, 0), tostring(basecone) .. "\t" .. tostring(self:GetConeAdderLength()) .. "\t" .. tostring(conedelta) .. "\t" .. tostring(multiplier) .. "\t" .. tostring(self.ConeRamp))
-	-- end
-	return math.min(((basecone + self:GetConeAdderLength())*0.9 + conedelta * multiplier ^ self.ConeRamp),self.ConeMax)
+	return (basecone + self:GetConeAdder()) + conediff*math.max(multiplier,0)
 end
-
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -246,8 +213,6 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
-	
-	self:ResetConeAdder()
 end
 
 function SWEP:GetIronsights()
@@ -311,14 +276,33 @@ end
 function SWEP:SendWeaponAnimation()
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 end
+function SWEP:SetConeAndFire()
+	self.AimStartTime = CurTime()
+	hook.Add("Think", self, function(s)
+		s:SetConeAdder(math.Clamp(s:GetConeAdder()+s.AimExpandUnit * FrameTime(), 0, s.ConeMax-s.ConeMin))
+
+		 if (s.AimStartTime + s.Primary.Delay <= CurTime()) then
+			s.CollapseStartTime = CurTime()
+
+			hook.Add("Think", s, function(_)
+				if (_.CollapseStartTime + _.AimExpandStayDuration > CurTime()) then
+					return
+				end      
+				_:SetConeAdder(math.Clamp(_:GetConeAdder() - _.AimCollapseUnit * FrameTime(), 0, _.ConeMax-_.ConeMin))
+				if (_:GetConeAdder() <= 0) then
+					hook.Remove("Think", _)
+				end
+			end)
+		end
+	end)
+end
+
 
 SWEP.BulletCallback = GenericBulletCallback
 function SWEP:ShootBullets(dmg, numbul, cone)	
-	if SERVER then
-		self:SetConeAndFire()
-	end
+	self:SetConeAndFire()
 	self:DoRecoil()
-	
+
 	local owner = self.Owner
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()

@@ -13,6 +13,4 @@ function SWEP:Think()
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
-	
-	self:DevineConeAdder()
 end

@@ -984,8 +984,8 @@ function GM:PlayerBindPress(pl, bind, wasin)
 	if bind == "gmod_undo" or bind == "undo" then
 		RunConsoleCommand("+zoom")
 		timer.CreateEx("ReleaseZoom", 1, 1, RunConsoleCommand, "-zoom")
-	--elseif bind == "+menu_context" then
-		--self.ZombieThirdPerson = not self.ZombieThirdPerson
+	elseif bind == "+menu_context" then
+		RunConsoleCommand("zsb_dropactiveweapon")
 	end
 end
 

@@ -35,13 +35,15 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_AR2
 
-SWEP.ConeMax = 0.08
-SWEP.ConeMin = 0.01
+SWEP.ConeMax = 0.03
+SWEP.ConeMin = 0.005
+SWEP.MovingConeOffset = 0.07
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 0.38
 SWEP.WalkSpeed = SPEED_SLOW
 
 SWEP.IronSightsAng = Vector(-1, -1, 0)
-SWEP.IronSightsPos = Vector(-3, 4, 3)
+SWEP.IronSightsPos = Vector(5, 0, -2)
 
 
 function SWEP:IsScoped()
@@ -49,13 +51,12 @@ function SWEP:IsScoped()
 end
 
 if CLIENT then
-	SWEP.IronsightsMultiplier = 0.35
+	SWEP.IronsightsMultiplier = 0.5
 
 	function SWEP:GetViewModelPosition(pos, ang)
 		if self:IsScoped() then
-			return pos + ang:Up() * 256, ang
+			return pos + ang:Up(), ang
 		end
-
 		return self.BaseClass.GetViewModelPosition(self, pos, ang)
 	end
 

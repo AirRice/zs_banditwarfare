@@ -48,7 +48,7 @@ SWEP.WorldModel = "models/weapons/w_357.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Immortal.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
@@ -57,8 +57,10 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.TracerName = "AirboatGunHeavyTracer"
-SWEP.ConeMax = 0.06
+SWEP.ConeMax = 0.003
 SWEP.ConeMin = 0.001
+SWEP.MovingConeOffset = 0.08
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-4.6, 0, -0.12)
 SWEP.IronSightsAng = Vector(0, 0, 0)
@@ -69,6 +71,6 @@ function SWEP:PrimaryAttack()
 
 	self:EmitFireSound()
 	self:TakeAmmo()
-	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*(1-self.Owner:Health()/self.Owner:GetMaxHealth()), self.Primary.NumShots, self:GetCone())
+	self:ShootBullets(self.Primary.Damage+35*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end

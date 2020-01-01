@@ -39,17 +39,18 @@ SWEP.UseHands = true
 SWEP.ShowViewModel = false
 
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
-SWEP.Primary.Damage = 15
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.065
+SWEP.Primary.Delay = 0.055
 
 SWEP.Primary.ClipSize = 75
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.28
-SWEP.ConeMin = 0.02
+SWEP.ConeMax = 0.18
+SWEP.ConeMin = 0.01
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.Recoil = 0.6
 
@@ -75,5 +76,4 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
-	self:ResetConeAdder()
 end

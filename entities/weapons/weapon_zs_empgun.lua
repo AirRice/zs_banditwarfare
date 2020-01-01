@@ -66,8 +66,10 @@ SWEP.Primary.NumShots = 0
 SWEP.Primary.Delay = 0.7
 SWEP.Recoil = 1.66
 SWEP.WalkSpeed = SPEED_SLOWEST
-SWEP.ConeMax = 0.1
+SWEP.ConeMax = 0
 SWEP.ConeMin = 0
+SWEP.MovingConeOffset = 0.1
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.TracerName = "ToolTracer"
 SWEP.IronSightsPos = Vector(-6.5, 0, -0.65)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
@@ -90,7 +92,6 @@ function SWEP:Reload()
 		end
 	end
 	
-	self:ResetConeAdder()
 end
 
 function BulletCallback(attacker, tr, dmginfo)

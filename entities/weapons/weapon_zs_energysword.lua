@@ -161,7 +161,7 @@ function SWEP:SecondaryAttack()
 			end
 		end )
 		timer.Simple( 0.5, function() 
-			if self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
+			if self and self:IsValid() and self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
 				self.Owner:SetGravity(1)
 				self.SwiftStriking = false
 				--self.Owner:SetMoveType(MOVETYPE_NONE)

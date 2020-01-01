@@ -345,6 +345,28 @@ function meta:CreateRagdoll()
 	end
 end
 
+function meta:DropActiveWeapon()
+	local vPos = self:GetPos()
+	local vAng = self:EyeAngles()
+	local zmax = self:OBBMaxs().z * 0.75
+	local currentwep = self:GetActiveWeapon()
+	if currentwep:IsValid() then
+		local shoptab = FindItembyClass(currentwep:GetClass())
+		if GAMEMODE:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS)) then
+			local ent = self:DropWeaponByType(currentwep:GetClass())
+			if ent and ent:IsValid() then
+				self:EmitSound("weapons/slam/throw.wav", 65, math.random(95, 105))
+				ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
+				ent:SetAngles(VectorRand():Angle())
+				local phys = ent:GetPhysicsObject()
+				if IsValid(phys) then
+					phys:ApplyForceCenter(vAng:Forward() * 300)
+				end
+			end
+		end
+	end
+end
+
 function meta:DropWeaponByType(class)
 	local wep = self:GetWeapon(class)
 	if wep and wep:IsValid() and not wep.Undroppable then

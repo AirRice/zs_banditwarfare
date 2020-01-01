@@ -3,7 +3,8 @@ AddCSLuaFile()
 ENT.Type = "anim"
 ENT.Base = "status__base"
 
-ENT.LifeTime = 1.5
+
+ENT.LifeTime = 1
 
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)

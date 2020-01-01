@@ -34,7 +34,7 @@ SWEP.ReloadSound = Sound("Weapon_Alyx_Gun.Reload")
 SWEP.Primary.Sound = Sound("Weapon_Alyx_Gun.Single")
 SWEP.Primary.Damage = 17
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.2
+SWEP.Primary.Delay = 0.14
 
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.Automatic = false
@@ -42,8 +42,9 @@ SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 50
 
 SWEP.ConeMax = 0.04
-SWEP.ConeMin = 0.03
+SWEP.ConeMin = 0.01
 SWEP.Recoil = 0.08
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 

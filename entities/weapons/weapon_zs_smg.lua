@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_smg_mp5.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_MP5Navy.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.09
 
@@ -35,8 +35,11 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SHOTGUN
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.11
-SWEP.ConeMin = 0.016
+SWEP.ConeMax = 0.09
+SWEP.ConeMin = 0.01
+
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+
 SWEP.Recoil = 0.3
 SWEP.WalkSpeed = SPEED_SLOW
 

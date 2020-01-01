@@ -128,6 +128,8 @@ killicon.AddFont("weapon_zs_peashooter", "zsdeathnoticecs", "a", color_white)
 killicon.AddFont("weapon_zs_medicalkit", "zsdeathnoticecs", "F", color_white)
 killicon.AddFont("weapon_zs_medicgun", "zsdeathnoticecs", "F", color_white)
 killicon.AddFont("weapon_zs_practition", "zsdeathnoticecs", "F", color_white)
+killicon.AddFont("status_tox", "zsdeathnoticecs", "F", color_white)
+
 killicon.AddFont("weapon_zs_slugrifle", "zsdeathnoticecs", "n", color_white)
 killicon.AddFont("weapon_zs_smg", "zsdeathnoticecs", "x", color_white)
 killicon.AddFont("weapon_zs_swissarmyknife", "zsdeathnoticecs", "j", color_white)
@@ -213,10 +215,16 @@ net.Receive("zs_pls_kill_pl", function(length)
 		local attackername = attacker:Name()
 		local assistername = assister:Name()
 
-		if victim == MySelf and victimteam == TEAM_HUMAN or victimteam == TEAM_BANDIT  then
-			gamemode.Call("LocalPlayerDied", attackername.." and "..assistername)
+		if victim == MySelf then
+			if victimteam == TEAM_HUMAN or victimteam == TEAM_BANDIT then
+				gamemode.Call("LocalPlayerDied", attackername..", "..assistername)
+			end
+		elseif attacker == MySelf or assister == MySelf then
+			if attacker:Team() == TEAM_BANDIT or attacker:Team() == TEAM_HUMAN then
+				gamemode.Call("FloatingScore", victim, "floatingscore_kill", 1, 0)
+			end
 		end
-
+		
 		print(attackername.." and "..assistername.." killed "..victimname.." with "..inflictor..".")
 
 		--gamemode.Call("AddDeathNotice", attackername.." and "..assistername, attackerteam, inflictor, victimname, victimteam, headshot)

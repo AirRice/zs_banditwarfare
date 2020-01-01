@@ -41,7 +41,7 @@ function PANEL:Init()
 
 		return 0
 	end
-	spawnbuffstatus.MemberMaxValue = 5
+	spawnbuffstatus.MemberMaxValue = 3
 	spawnbuffstatus:Dock(TOP)
 	
 	local poisonstatus = vgui.Create("ZSHealthStatus", contents)
@@ -70,12 +70,12 @@ function PANEL:Init()
 		if lp:IsValid() then
 			local status = lp:GetStatus("tox")
 			if status and status:IsValid() then
-				return math.max(status:GetTime()*10, 0)
+				return math.Clamp(status:GetTime(), 0,10)
 			end
 		end
 		return 0
 	end
-	toxstatus.MemberMaxValue = 20
+	toxstatus.MemberMaxValue = 10
 	toxstatus:Dock(TOP)
 	
 	local bleedstatus = vgui.Create("ZSHealthStatus", contents)

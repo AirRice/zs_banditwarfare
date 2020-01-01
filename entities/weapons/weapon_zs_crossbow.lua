@@ -25,11 +25,12 @@ SWEP.UseHands = true
 
 SWEP.CSMuzzleFlashes = false
 
+SWEP.Primary.Damage = 100
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "XBowBolt"
 SWEP.Primary.Delay = 2.0
-SWEP.Primary.DefaultClip = 15
+SWEP.Primary.DefaultClip = 7
 
 SWEP.SecondaryDelay = 0.25
 SWEP.Recoil = 0.42
@@ -60,6 +61,7 @@ if SERVER then
 				ent:SetAngles(owner:GetAimVector():Angle())
 				ent.Team = owner:Team()
 				ent:SetGravity(0.5)
+				ent.Damage = self.Primary.Damage
 				ent:Spawn()
 				local phys = ent:GetPhysicsObject()
 				if phys:IsValid() then
@@ -78,8 +80,6 @@ if SERVER then
 			self:DefaultReload(ACT_VM_RELOAD)
 			self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
 			self:SetNextReload(CurTime() + self:SequenceDuration())
-			
-			self:ResetConeAdder()
 		end
 	end
 

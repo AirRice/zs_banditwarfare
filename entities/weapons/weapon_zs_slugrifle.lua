@@ -49,9 +49,11 @@ SWEP.Primary.DefaultClip = 10
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.14
-SWEP.ConeMin = 0.003
+SWEP.ConeMax = 0.003
+SWEP.ConeMin = 0.00
 SWEP.Recoil = 3.25
+SWEP.MovingConeOffset = 0.19
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
 SWEP.IronSightsAng = Vector(0, -1, 0)
 
@@ -111,7 +113,6 @@ function SWEP:Reload()
 		timer.Simple(0.25, function()
 			if self:IsValid() and IsValid(owner) then
 				self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
-				self:ResetConeAdder()
 			end
 		end)
 	end

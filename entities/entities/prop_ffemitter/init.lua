@@ -3,7 +3,7 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.m_Health = 30
+ENT.m_Health = 100
 
 function ENT:Initialize()
 	self:SetModel("models/props_lab/lab_flourescentlight002b.mdl")

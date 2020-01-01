@@ -23,8 +23,8 @@ AddCSLuaFile("sh_globals.lua")
 AddCSLuaFile("sh_util.lua")
 AddCSLuaFile("sh_options.lua")
 AddCSLuaFile("sh_animations.lua")
-AddCSLuaFile("sh_sigils.lua")
 AddCSLuaFile("sh_channel.lua")
+AddCSLuaFile("sh_voiceset.lua")
 
 AddCSLuaFile("cl_draw.lua")
 AddCSLuaFile("cl_util.lua")
@@ -628,29 +628,6 @@ function GM:Think()
 			if self:GetWaveEnd() <= time and self:GetWaveEnd() ~= -1 then
 				gamemode.Call("SetWaveActive", false)
 			end
-			if self:IsClassicMode() or self.SuddenDeath and not self.m_AllDead then
-				local banditcount = 0
-				local humancount = 0
-				for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
-					if bandit:Alive() then banditcount = banditcount +1 end
-				end
-				for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
-					if human:Alive() then humancount = humancount +1 end
-				end
-				if humancount == 0 and banditcount == 0 then
-					self.m_AllDead = true
-					local timetoWin = math.min(2,self:GetWaveEnd()-CurTime()-0.1)
-					timer.Simple(timetoWin, function() 
-					gamemode.Call("WaveEndWithWinner", nil) end)
-					self.SuddenDeath = false
-					net.Start("zs_suddendeath")
-						net.WriteBool( false )
-					net.Broadcast()
-					for _, pl in pairs(player.GetAll()) do
-						pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "all_dead"))
-					end
-				end
-			end
 			if not self:IsClassicMode() and not self.SuddenDeath then
 				gamemode.Call("SigilCommsThink")
 			end
@@ -926,7 +903,6 @@ function GM:DoRestartGame()
 	for _, ent in pairs(ents.FindByClass("prop_ammo")) do
 		ent:Remove()
 	end
-	self:SetUseSigils(true)
 
 	net.Start("zs_currentsigils")
 		net.WriteTable({})
@@ -992,12 +968,17 @@ function GM:InitPostEntityMap()
 	gamemode.Call("ReplaceMapAmmo")
 	gamemode.Call("ReplaceMapBatteries")
 	gamemode.Call("SetupProps")
-
-	for _, ent in pairs(ents.FindByClass("prop_ammo")) do ent.PlacedInMap = true end
-	for _, ent in pairs(ents.FindByClass("prop_weapon")) do ent.PlacedInMap = true end
+	for _, ent in pairs(ents.FindByClass("prop_ammo")) do 
+	if GAMEMODE:IsClassicMode() then 
+		ent.PlacedInMap = true 
+	else 
+		ent:Remove() 
+		end 
+	end
+	for _, ent in pairs(ents.FindByClass("prop_weapon")) do if GAMEMODE:IsClassicMode() then ent.PlacedInMap = true else ent:Remove() end end
 end
 
-local function EndRoundPlayerShouldTakeDamage(pl, attacker) return false end
+local function EndRoundPlayerShouldTakeDamage(pl, attacker) return attacker:IsPlayer() end
 local function EndRoundPlayerCanSuicide(pl) return true end
 
 local function EndRoundSetupPlayerVisibility(pl)
@@ -1392,6 +1373,11 @@ local function TimedOut(pl)
 		--gamemode.Call("GiveRandomEquipment", pl)
 	end
 end
+
+concommand.Add("zsb_dropactiveweapon", function(sender, command)
+	if not (sender:IsValid() and sender:IsConnected() and sender:Alive()) then return end
+	sender:DropActiveWeapon()
+end)
 
 concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 	if not (sender:IsValid() and sender:IsConnected()) or #arguments == 0 then return end
@@ -2060,26 +2046,8 @@ function GM:KeyPress(pl, key)
 				pl:DispatchAltUse()
 			end
 		end
-	elseif key == IN_WALK then
-		local vPos = pl:GetPos()
-		local vAng = pl:EyeAngles()
-		local zmax = pl:OBBMaxs().z * 0.75
-		local currentwep = pl:GetActiveWeapon()
-		if currentwep:IsValid() then
-			local shoptab = FindItembyClass(currentwep:GetClass())
-			if self:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS)) then
-				local ent = pl:DropWeaponByType(currentwep:GetClass())
-				if ent and ent:IsValid() then
-					pl:EmitSound("weapons/slam/throw.wav", 65, math.random(95, 105))
-					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
-					ent:SetAngles(VectorRand():Angle())
-					local phys = ent:GetPhysicsObject()
-					if IsValid(phys) then
-						phys:ApplyForceCenter(vAng:Forward() * 300)
-					end
-				end
-			end
-		end
+	--elseif key == IN_WALK then
+
 	elseif key == IN_ZOOM then
 		if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() and pl:IsOnGround() then
 			pl:SetBarricadeGhosting(true)
@@ -2168,24 +2136,33 @@ function GM:PostPlayerDeath(pl)
 			net.WriteVector(self.LastHumanPosition)
 		net.Broadcast()
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
-		if humancount == 0 and banditcount >=1 then			
-			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_BANDIT) end)
+		if humancount == 0 and banditcount == 0 then
+			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", nil) end)
 			for _, pl in pairs(player.GetAll()) do
-				pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_bandit")))
-				self.SuddenDeath = false
-				net.Start("zs_suddendeath")
-					net.WriteBool( false )
-				net.Broadcast()
+				pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "all_dead"))
 			end
+			self.SuddenDeath = false
+			net.Start("zs_suddendeath")
+				net.WriteBool( false )
+			net.Broadcast()
 		elseif banditcount == 0 and humancount >=1 then
 			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_HUMAN) end)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_human")))
-				self.SuddenDeath = false
-				net.Start("zs_suddendeath")
-					net.WriteBool( false )
-				net.Broadcast()
 			end
+			self.SuddenDeath = false
+			net.Start("zs_suddendeath")
+				net.WriteBool( false )
+			net.Broadcast()
+		elseif humancount == 0 and banditcount >=1 then			
+			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_BANDIT) end)
+			for _, pl in pairs(player.GetAll()) do
+				pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_bandit")))
+			end
+			self.SuddenDeath = false
+			net.Start("zs_suddendeath")
+				net.WriteBool( false )
+			net.Broadcast()
 		end
 	end
 end
@@ -2198,9 +2175,6 @@ local function SortDist(a, b)
 end
 
 function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicide)
-
-	-- Simply distributes based on damage but also do some stuff for assists.
-
 	local totaldamage = 0
 	for otherpl, dmg in pairs(pl.DamagedBy) do
 		if otherpl:IsValid() and otherpl:Team() ~= pl:Team() then
@@ -2234,9 +2208,7 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 		attacker:PointCashOut(pl, FM_NONE)
 	end
 	local killerstreak = attacker.LifeEnemyKills
-	if killerstreak > 1 then
-		--PrintMessage( HUD_PRINTCENTER, attacker:Name().."님의 "..attacker.LifeEnemyKills.."연킬!" )
-	end
+
 	net.Start("zs_killstreak")
 		net.WriteEntity(attacker)
 		net.WriteInt(killerstreak,16)
@@ -2296,7 +2268,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
 	end
-
 	
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
@@ -2306,7 +2277,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 
 	pl:RemoveStatus("overridemodel", false, true)
 
-	local revive
 	local assistpl
 
 	pl:PlayDeathSound()
@@ -2317,8 +2287,8 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			net.WriteUInt(pl.LifeEnemyKills or 0, 16)
 		net.Send(pl)
 	end
-	if attacker:IsPlayer() and attacker ~= pl then
-		gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
+	if attacker:IsValid() and attacker:IsPlayer() and attacker ~= pl then
+		assistpl = gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
 	end
 
 	pl:DropAll()
@@ -2422,24 +2392,6 @@ function GM:PlayerStepSoundTime(pl, iType, bWalking)
 	return fStepTime
 end
 
-local VoiceSetTranslate = {}
-VoiceSetTranslate["models/player/alyx.mdl"] = "alyx"
-VoiceSetTranslate["models/player/barney.mdl"] = "barney"
-VoiceSetTranslate["models/player/breen.mdl"] = "male"
-VoiceSetTranslate["models/player/combine_soldier.mdl"] = "combine"
-VoiceSetTranslate["models/player/combine_soldier_prisonguard.mdl"] = "combine"
-VoiceSetTranslate["models/player/combine_super_soldier.mdl"] = "combine"
-VoiceSetTranslate["models/player/eli.mdl"] = "male"
-VoiceSetTranslate["models/player/gman_high.mdl"] = "male"
-VoiceSetTranslate["models/player/kleiner.mdl"] = "male"
-VoiceSetTranslate["models/player/monk.mdl"] = "monk"
-VoiceSetTranslate["models/player/mossman.mdl"] = "female"
-VoiceSetTranslate["models/player/odessa.mdl"] = "male"
-VoiceSetTranslate["models/player/police.mdl"] = "combine"
-VoiceSetTranslate["models/player/brsp.mdl"] = "female"
-VoiceSetTranslate["models/player/moe_glados_p.mdl"] = "female"
-VoiceSetTranslate["models/grim.mdl"] = "combine"
-VoiceSetTranslate["models/jason278-players/gabe_3.mdl"] = "monk"
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
 	pl:RemoveStatus("confusion", false, true)
@@ -2525,17 +2477,21 @@ function GM:PlayerSpawn(pl)
 		pl.m_PointQueue = 0
 		pl.PackedItems = {}
 		local desiredname = pl:GetInfo("cl_playermodel")
-		local modelname = player_manager.TranslatePlayerModel(#desiredname == 0 and self.RandomPlayerModels[math.random(#self.RandomPlayerModels)] or desiredname)
-		local lowermodelname = string.lower(modelname)
-		if table.HasValue(self.RestrictedModels, lowermodelname) then
-			modelname = "models/player/kleiner.mdl"
-			lowermodelname = modelname
+		local randommodel = self.RandomPlayerModels[math.random(#self.RandomPlayerModels)]
+		if #desiredname == 0 then
+			desiredname = randommodel
 		end
+		
+		local modelname = player_manager.TranslatePlayerModel(desiredname)
+		if table.HasValue(self.RestrictedModels, lowermodelname) then
+			modelname = player_manager.TranslatePlayerModel(randommodel)
+		end
+		local lowermodelname = string.lower(modelname)
 		pl:SetModel(modelname)
 		
 		-- Cache the voice set.
-		if VoiceSetTranslate[lowermodelname] then
-			pl.VoiceSet = VoiceSetTranslate[lowermodelname]
+		if self.VoiceSetTranslate[lowermodelname] then
+			pl.VoiceSet = self.VoiceSetTranslate[lowermodelname]
 		elseif string.find(lowermodelname, "female", 1, true) then
 			pl.VoiceSet = "female"
 		else
@@ -2744,9 +2700,8 @@ function GM:WaveStateChanged(newstate)
 				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
 			else
 				pl:UnSpectateAndSpawn()	
-				--pl:SendLua("GAMEMODE:OpenPointsShop()")
 			end
-			--pl:SetMaxHealth(pl:GetMaxHealth() + 20)
+			
 			pl:SetHealth(pl:GetMaxHealth())
 			local toadd = 10*(1+self:GetWave())
 			if (self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_BANDIT) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_HUMAN) then
@@ -2766,7 +2721,6 @@ function GM:WaveStateChanged(newstate)
 				pl:PrintMessage(HUD_PRINTTALK, "팀 인원이 비교적 적어 10포인트를 받았다.")
 			end
 		end
-		--print(self:GetHumanScore())
 		
 		net.Start("zs_waveend")
 			net.WriteInt(self:GetWave(), 16)

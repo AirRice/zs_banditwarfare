@@ -25,7 +25,7 @@ SWEP.ViewModel = "models/weapons/c_stunstick.mdl"
 SWEP.WorldModel = "models/props_interiors/pot02a.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 35
+SWEP.MeleeDamage = 45
 SWEP.MeleeRange = 50
 SWEP.MeleeSize = 1.25
 

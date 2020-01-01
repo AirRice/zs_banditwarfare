@@ -38,6 +38,7 @@ include("sh_util.lua")
 include("sh_options.lua")
 include("sh_animations.lua")
 include("sh_channel.lua")
+include("sh_voiceset.lua")
 
 include("obj_vector_extend.lua")
 include("obj_entity_extend.lua")

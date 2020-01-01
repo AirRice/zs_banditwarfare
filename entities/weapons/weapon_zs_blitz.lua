@@ -41,8 +41,10 @@ end
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_AR2
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_AR2
 
-SWEP.ConeMax = 0.09
-SWEP.ConeMin = 0.019
+SWEP.ConeMax = 0.02
+SWEP.ConeMin = 0.004
+SWEP.MovingConeOffset = 0.11
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
 SWEP.IronSightsPos = Vector(-2.52, 3.819, 3.599)

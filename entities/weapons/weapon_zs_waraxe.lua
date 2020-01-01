@@ -22,16 +22,17 @@ end
 
 SWEP.Primary.Damage = 12
 SWEP.Primary.NumShots = 3
-SWEP.Primary.Delay = 0.2
+SWEP.Primary.Delay = 0.2 
 
 SWEP.Primary.ClipSize = 14
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.18
-SWEP.ConeMin = 0.06
+SWEP.ConeMax = 0.1
+SWEP.ConeMin = 0.04
 SWEP.Recoil = 0.8
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 80, 75)
+	print(self.BaseClass.WorldModel)
 end

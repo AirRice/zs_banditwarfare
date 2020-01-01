@@ -32,9 +32,10 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "ar2"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.047
-SWEP.ConeMin = 0.021
+SWEP.ConeMax = 0.055
+SWEP.ConeMin = 0.007
 SWEP.Recoil = 0.475
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
 

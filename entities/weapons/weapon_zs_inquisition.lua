@@ -41,7 +41,7 @@ SWEP.WorldModel = "models/weapons/w_pist_p228.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
-SWEP.Primary.Damage = 23
+SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1
 
@@ -50,7 +50,9 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "XBowBolt"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-
+SWEP.ConeMax = 0.009
+SWEP.ConeMin = 0.0085
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 1.8
 
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)

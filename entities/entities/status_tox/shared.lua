@@ -1,6 +1,6 @@
 ENT.Type = "anim"
 ENT.Base = "status__base"
-ENT.TimeInterval = 0.5
+ENT.TimeInterval = 0.2
 function ENT:SetupDataTables()
 	self:NetworkVar( "Float", 0, "RemainingTime" )
 end

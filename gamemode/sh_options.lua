@@ -128,6 +128,7 @@ GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100,
 GM:AddPointShopItem(2,"annabelle", "'애나벨' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_annabelle")
 GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 GM:AddPointShopItem(2,"uzi", "'스프레이어' Uzi 9mm", nil, ITEMCAT_GUNS, 115, "weapon_zs_uzi")
+GM:AddPointShopItem(2,"whirlwind", "'비르벨빈트' 국지방어기", nil, ITEMCAT_GUNS, 98, "weapon_zs_whirlwind")
 GM:AddPointShopItem(2,"stalker", "'스토커' M4", nil, ITEMCAT_GUNS, 120, "weapon_zs_m4")
 GM:AddPointShopItem(2,"immortal", "'불멸' 권총", nil, ITEMCAT_GUNS, 130, "weapon_zs_immortal")
 GM:AddPointShopItem(2,"ioncannon", "이온 캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
@@ -163,20 +164,20 @@ GM:AddPointShopItem(nil,"glgrenade", "유탄", nil, ITEMCAT_AMMO, 9, nil, functi
 GM:AddPointShopItem(nil,"empround", "EMP 배터리", "EMP건의 추가 탄환이다.", ITEMCAT_AMMO, 10, nil, function(pl) pl:GiveAmmo(3, "gravity", true) end, "models/items/Battery.mdl").NoClassicMode = true
 GM:AddPointShopItem(nil,"nails", "못 2개", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(2, "GaussEnergy", true) end, "models/crossbow_bolt.mdl").NoClassicMode = true
 
-GM:AddPointShopItem(nil,"crphmr", "목수의 망치", nil, ITEMCAT_MELEE, 30, "weapon_zs_hammer").NoClassicMode = true
+GM:AddPointShopItem(nil,"crphmr", "목수의 망치", nil, ITEMCAT_MELEE, 20, "weapon_zs_hammer").NoClassicMode = true
 GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_MELEE, 25, "weapon_zs_wrench").NoClassicMode = true
-GM:AddPointShopItem(nil,"axe", "도끼", nil, ITEMCAT_MELEE, 25, "weapon_zs_axe")
+GM:AddPointShopItem(nil,"axe", "도끼", nil, ITEMCAT_MELEE, 35, "weapon_zs_axe")
 GM:AddPointShopItem(nil,"crowbar", "빠루", nil, ITEMCAT_MELEE, 27, "weapon_zs_crowbar")
 GM:AddPointShopItem(nil,"stunbaton", "전기충격기", nil, ITEMCAT_MELEE, 23, "weapon_zs_stunbaton")
-GM:AddPointShopItem(nil,"knife", "칼", nil, ITEMCAT_MELEE, 5, "weapon_zs_swissarmyknife")
+GM:AddPointShopItem(nil,"knife", "칼", nil, ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
 GM:AddPointShopItem(nil,"shovel", "삽", nil, ITEMCAT_MELEE, 45, "weapon_zs_shovel")
 GM:AddPointShopItem(nil,"sledgehammer", "오함마", nil, ITEMCAT_MELEE, 70, "weapon_zs_sledgehammer")
-GM:AddPointShopItem(nil,"zpplnk", "판자조각", nil, ITEMCAT_MELEE, 10, "weapon_zs_plank")
-GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 17, "weapon_zs_fryingpan")
-GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 22, "weapon_zs_pot")
-GM:AddPointShopItem(nil,"butcher", "정육점 칼", nil, ITEMCAT_MELEE, 25, "weapon_zs_butcherknife")
-GM:AddPointShopItem(nil,"pipe", "납 파이프", nil, ITEMCAT_MELEE, 40, "weapon_zs_pipe")
-GM:AddPointShopItem(nil,"hook", "갈고리", nil, ITEMCAT_MELEE, 20, "weapon_zs_hook")
+GM:AddPointShopItem(nil,"zpplnk", "판자조각", nil, ITEMCAT_MELEE, 12, "weapon_zs_plank")
+GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
+GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 32, "weapon_zs_pot")
+GM:AddPointShopItem(nil,"butcher", "정육점 칼", nil, ITEMCAT_MELEE, 29, "weapon_zs_butcherknife")
+GM:AddPointShopItem(nil,"pipe", "납 파이프", nil, ITEMCAT_MELEE, 42, "weapon_zs_pipe")
+GM:AddPointShopItem(nil,"hook", "갈고리", nil, ITEMCAT_MELEE, 23, "weapon_zs_hook")
 GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 140, "weapon_zs_energysword")
 
 GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun").NoClassicMode = true
@@ -219,8 +220,8 @@ GM.HonorableMentions = {}
 GM.HonorableMentions[HM_MOSTENEMYKILLED] = {Name = "살인마", String = "%s - %d명의 적을 죽였다.", Callback = genericcallback}
 GM.HonorableMentions[HM_MOSTDAMAGETOENEMY] = {Name = "전쟁광", String = "%s - 전체 %d 대미지를 적에게 주었다.", Callback = genericcallback}
 GM.HonorableMentions[HM_PACIFIST] = {Name = "비폭력주의자", String = "%s - 한 명의 적도 죽이지 않았다.", Callback = genericcallback}
-GM.HonorableMentions[HM_MOSTHELPFUL] = {Name = "조력자", String = "%s - 동료가 %d명의 적을 죽일 수 있도록 도왔다.", Callback = genericcallback}
-GM.HonorableMentions[HM_BLACKCOW] = {Name = "흑우", String = "%s - 물건을 사는 데 %d포인트를 사용했다.", Callback = genericcallback, Color = COLOR_CYAN}
+GM.HonorableMentions[HM_MOSTHELPFUL] = {Name = "조력자", String = "%s - 동료가 %d명의 적을 죽일 수 있도록 도왔다.", Callback = genericcallback, Color = COLOR_YELLOW}
+GM.HonorableMentions[HM_BLACKCOW] = {Name = "흑우", String = "%s - 물건을 사는 데 %d포인트를 사용했다.", Callback = genericcallback}
 GM.HonorableMentions[HM_HACKER] = {Name = "어나니머스", String = "%s - 백도어 장치를 이용해 %d개의 송신기를 탈환했다.", Callback = genericcallback, Color = COLOR_CYAN}
 GM.HonorableMentions[HM_GOODDOCTOR] = {Name = "의사양반", String = "%s - 팀의 체력을 %d만큼 책임졌다.", Callback = genericcallback}
 GM.HonorableMentions[HM_HANDYMAN] = {Name = "공돌이", String = "%s - %d만큼 바리케이드를 수리했다.", Callback = genericcallback}
@@ -238,7 +239,7 @@ GM.HonorableMentions[HM_USEFULTOOPPOSITE] = {Name = "자살특공대", String = 
 GM.HonorableMentions[HM_BARRICADEDESTROYER] = {Name = "철거단원", String = "%s - %d의 대미지를 주었다.", Callback = genericcallback}
 --GM.HonorableMentions[HM_NESTDESTROYER] = {Name = "네스트 디스트로이어", String = "%s - %d개의 둥지를 흔적도 없이 날려버렸다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
 --GM.HonorableMentions[HM_NESTMASTER] = {Name = "네스트 마스터", String = "%s - %d마리의 좀비를 자신의 둥지에서 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s - %d초동안 송신기 옆에 있었다.", Callback = genericcallback}
+GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s - 송신기 점령에 %d초를 소비했다.", Callback = genericcallback}
 
 
 -- Zombine: has no head.
@@ -297,7 +298,7 @@ GM.MapWhitelist = {
 	--"zs_placid",
 	--"zs_plague",
 	--"zs_port_v4",
-	"zs_raunchyhouse_v2",
+	--"zs_raunchyhouse_v2",
 	"zs_ravine",
 	"zs_scrapmetal_v2_fixed",
 	"zs_slugde_fixed",
@@ -319,6 +320,13 @@ function GM:SetupDefaultClip(tab)
 	tab.DefaultClip = math.max(math.ceil(tab.ClipSize * self.SurvivalClips * (tab.ClipMultiplier or 1)),30)
 end
 
+-- Utility function to setup weapon default aim stats.
+function GM:SetupAimDefaults(tab,primtab)
+	tab.AimExpandUnit = math.Round((tab.ConeMax - tab.ConeMin)/math.min(primtab.Delay*primtab.ClipSize,1),4)
+	tab.AimCollapseUnit = (tab.ConeMax - tab.ConeMin)*2
+	tab.AimExpandStayDuration = tab.Primary.Delay*0.75
+end
+	
 GM.MaxSigils = CreateConVar("zsb_maxsigils", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many sigils to spawn. 0 for none."):GetInt()
 cvars.AddChangeCallback("zsb_maxsigils", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MaxSigils = math.Clamp(tonumber(newvalue) or 0, 0, 10)

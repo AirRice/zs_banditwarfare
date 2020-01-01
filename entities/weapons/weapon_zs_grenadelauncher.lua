@@ -88,15 +88,14 @@ function SWEP:Reload()
 	end
 
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.2)
-		self:EmitSound("vehicles/tank_readyfire1.wav", 70, 130)
-		self.IdleAnimation = CurTime() + self:SequenceDuration()*5+0.3
-		self:SetNextPrimaryFire(self.IdleAnimation)
+		self.Owner:GetViewModel():SetPlaybackRate(0.5)
+		self:EmitSound("items/ammocrate_open.wav", 70, 100)
+		self.IdleAnimation = CurTime() + self:SequenceDuration()+0.3
+		self:SetNextPrimaryFire(self.IdleAnimation+1)
 		self:SetNextReload(self.IdleAnimation)
 		self.Owner:DoReloadEvent()
 		if self.ReloadSound then
 			self:EmitSound(self.ReloadSound)
 		end
 	end
-	self:ResetConeAdder()
 end

@@ -49,8 +49,10 @@ SWEP.Recoil = 3
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.115
-SWEP.ConeMin = 0.001
+SWEP.ConeMax = 0.001
+SWEP.ConeMin = 0
+SWEP.MovingConeOffset = 0.2
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(5.015, -8, 2.52)
 SWEP.IronSightsAng = Vector(0, 0, 0)
@@ -88,7 +90,6 @@ function SWEP:Reload()
 			self:EmitSound(self.ReloadSound)
 		end
 	end
-	self:ResetConeAdder()
 end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)

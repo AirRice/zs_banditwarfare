@@ -81,11 +81,20 @@ function GM:SigilCommsThink()
 end
 
 local function SortDistFromLast(a, b)
-	return a.d < b.d
+	if a.diff then
+		if b.diff then
+			return a.diff < b.diff
+		else
+			return true
+		end
+	else
+		return false
+	end
 end
+
 function GM:CreateSigils()
+	print ("creating sigils")
 	if #self.ProfilerNodes < self.MaxSigils then
-		self:SetUseSigils(false)
 		return
 	end
 
@@ -97,68 +106,64 @@ function GM:CreateSigils()
 		nodes[#nodes + 1] = {v = vec}
 	end
 
-	local spawns = {}
-	table.Add(spawns,team.GetSpawnPoint(TEAM_BANDIT))
-	table.Add(spawns,team.GetSpawnPoint(TEAM_HUMAN))
+	local bspawns = {}
+	local hspawns = {}
+	table.Add(bspawns,team.GetSpawnPoint(TEAM_BANDIT))
+	table.Add(hspawns,team.GetSpawnPoint(TEAM_HUMAN))
+	for _, n in pairs(nodes) do
+		n.hd = 999999
+		n.bd = 999999
+		n.diff = 999999
+		for __, spawn in pairs(hspawns) do
+			n.hd = math.min(n.hd, n.v:Distance(spawn:GetPos()))
+		end
+		for __, spawn in pairs(bspawns) do
+			n.bd = math.min(n.bd, n.v:Distance(spawn:GetPos()))
+		end
+		n.diff = math.abs(n.bd-n.hd)
+			
+		if n.diff > 3000 then 
+			table.remove(nodes, _)
+		end
+	end
+	table.sort(nodes, SortDistFromLast)
 	for i=1, self.MaxSigils do
 		local id
 		local sigs = ents.FindByClass("prop_obj_sigil")
-		local nodeindex = 1
-		for _, n in pairs(nodes) do
-			n.d = 999999
-
-			for __, spawn in pairs(spawns) do
-				n.d = math.min(n.d, n.v:Distance(spawn:GetPos()))
-			end
-			local flag = false
-			for __, sig in pairs(sigs) do
+		local flag = false
+		for __, sig in pairs(sigs) do
+			for _, n in pairs(nodes) do
 				if n.v:Distance(sig.NodePos) <= 512 then
-					flag = true
+					table.remove(nodes, _)
 				end
-				n.d = math.min(n.d, n.v:Distance(sig.NodePos))
 			end
-			local tr = util.TraceLine({start = n.v + Vector(0, 0, 8), endpos = n.v + Vector(0, 0, 512), mask = MASK_SOLID_BRUSHONLY})
-			n.d = n.d * (2 - tr.Fraction)
-			if flag then 
-				n.d = -99999
+		end
+		
+		-- Sort the nodes by their distances.
+		-- Select node with algorithm that randomly selects while selecting closer ids more
+		local id = 1
+		if #nodes >=8 then
+			if math.random(1,4) == 1 then
+				id = math.random(math.floor(#nodes/2),#nodes)
+			elseif math.random(1,4) == 4 then
+				id = math.random(1,3)
+			else
+				id = math.random(4,math.floor(#nodes/2))
 			end
-			nodeindex = nodeindex+1
+		else
+			id = math.random(1,#nodes)
 		end
 
-		-- Sort the nodes by their distances.
-		table.sort(nodes, SortDistFromLast)
-
-		-- Now select a node using an exponential weight.
-		-- We use a random float between 0 and 1 then sqrt it.
-		-- This way we're much more likely to get a lower index but a higher index is still possible.
-		id = math.Rand(0, 0.7) ^ 0.3
-		id = math.Clamp(math.ceil(id * #nodes), 1, #nodes)
-
 		-- Remove the chosen point from the temp table and make the sigil.
-		if nodes[id].d > 0 then
-			local point = nodes[id].v
-			table.remove(nodes, id)
-			local ent = ents.Create("prop_obj_sigil")
+		local point = nodes[id].v
+		table.remove(nodes, id)
+		local ent = ents.Create("prop_obj_sigil")
 
-			if ent:IsValid() then
-				ent:SetPos(point)
-				ent:Spawn()
-				ent.NodePos = point
-			end
-			--print(ent.NodePos)
+		if ent:IsValid() then
+			ent:SetPos(point)
+			ent:Spawn()
+			ent.NodePos = point
 		end
 	end
 	GAMEMODE.Objectives = {}
-	self:SetUseSigils(#ents.FindByClass("prop_obj_sigil") > 0)
-end
-
-function GM:SetUseSigils(use)
-	if self:GetUseSigils() ~= use then
-		self.UseSigils = use
-		SetGlobalBool("sigils", true)
-	end
-end
-
-function GM:GetUseSigils(use)
-	return self.UseSigils
 end

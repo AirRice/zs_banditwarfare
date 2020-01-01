@@ -47,10 +47,13 @@ SWEP.Primary.KnockbackScale = 0.1
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.15
-SWEP.ConeMin = 0.001
+SWEP.ConeMax = 0.01
+SWEP.ConeMin = 0.002
 SWEP.Recoil = 2.23
 SWEP.DefaultRecoil = 2.23
+SWEP.MovingConeOffset = 0.14
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+
 SWEP.IronSightsPos = Vector(5.427, -5.026, 2.21)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
@@ -63,7 +66,7 @@ function SWEP:IsScoped()
 end
 function SWEP:Think()
 	if (self.Owner:Crouching() and self:GetIronsights()) then
-		self.Recoil = self.DefaultRecoil*0.1
+		self.Recoil = self.DefaultRecoil*0.3
 	else
 		self.Recoil = self.DefaultRecoil
 	end

@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "생체 탐지기"
-	SWEP.Description = "적의 위치를 10초마다 한 번 보여준다."
+	SWEP.Description = "적의 위치를 13초마다 한 번 보여준다."
 
 	SWEP.ViewModelFOV = 70
 

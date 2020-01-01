@@ -1,4 +1,5 @@
 ENT.Type = "anim"
+ENT.m_IsProjectile = true
 
 util.PrecacheModel("models/Items/CrossbowRounds.mdl")
 util.PrecacheSound("weapons/crossbow/bolt_fly4.wav")

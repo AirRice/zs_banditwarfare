@@ -35,9 +35,11 @@ SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_PISTOL
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.18
+SWEP.ConeMax = 0.003
 SWEP.ConeMin = 0.001
 SWEP.Recoil = 2.82
+SWEP.MovingConeOffset = 0.11
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-4.65, 4, 0.25)
 SWEP.IronSightsAng = Vector(0, 0, 1)
