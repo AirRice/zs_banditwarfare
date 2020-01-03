@@ -14,16 +14,19 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if self:GetObjectOwner():IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
-		self.ScanningSound:PlayEx(0.55, 100 + math.sin(CurTime()))
-		if self:IsFiring() or self:GetTarget():IsValid() then
-			self.ShootingSound:PlayEx(1, 100 + math.cos(CurTime()))
+	if self:GetObjectOwner():IsValid() then
+		local owner = self:GetObjectOwner()
+		if self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
+			self.ScanningSound:PlayEx(0.55, 100 + math.sin(CurTime()))
+			if self:IsFiring() or self:GetTarget():IsValid() then
+				self.ShootingSound:PlayEx(1, 100 + math.cos(CurTime()))
+			else
+				self.ShootingSound:Stop()
+			end
 		else
+			self.ScanningSound:Stop()
 			self.ShootingSound:Stop()
 		end
-	else
-		self.ScanningSound:Stop()
-		self.ShootingSound:Stop()
 	end
 end
 
@@ -129,12 +132,15 @@ function ENT:DrawTranslucent()
 	local lightpos = self:LightPos()
 
 	local ang = self:GetGunAngles()
-
+	local owner = self:GetObjectOwner()
 	local colBeam = self.BeamColor
-
+	if owner:IsPlayer() and (owner:Team() == TEAM_BANDIT or owner:Team()  == TEAM_HUMAN) then
+		colBeam = team.GetColor(owner:Team())
+	end
 	local hasowner = self:GetObjectOwner():IsValid()
 	local hasammo = self:GetAmmo() > 0
 	local manualcontrol = self:GetManualControl()
+	local waveactive = GAMEMODE:GetWaveActive()
 
 	local tr = util.TraceLine({start = lightpos, endpos = lightpos + ang:Forward() * (manualcontrol and 4096 or self.SearchDistance), mask = MASK_SHOT, filter = self:GetCachedScanFilter()})
 
@@ -153,6 +159,11 @@ function ENT:DrawTranslucent()
 		colBeam.r = math.Approach(colBeam.r, 255, rate)
 		colBeam.g = math.Approach(colBeam.g, 255, rate)
 		colBeam.b = math.Approach(colBeam.b, 0, rate)
+	elseif not waveactive then
+		local rate = FrameTime() * 512
+		colBeam.r = math.Approach(colBeam.r, 130, rate)
+		colBeam.g = math.Approach(colBeam.g, 130, rate)
+		colBeam.b = math.Approach(colBeam.b, 130, rate)
 	else
 		local rate = FrameTime() * 200
 		colBeam.r = math.Approach(colBeam.r, 0, rate)
@@ -160,7 +171,7 @@ function ENT:DrawTranslucent()
 		colBeam.b = math.Approach(colBeam.b, 0, rate)
 	end
 
-	if hasowner and hasammo then
+	if hasowner and hasammo and waveactive then
 		render.SetMaterial(matBeam)
 		render.DrawBeam(lightpos, tr.HitPos, 1, 0, 1, COLOR_WHITE)
 		render.DrawBeam(lightpos, tr.HitPos, 4, 0, 1, colBeam)

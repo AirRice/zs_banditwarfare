@@ -22,17 +22,18 @@ SWEP.WorldModel = "models/weapons/w_rif_galil.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Galil.Single")
-SWEP.Primary.Damage = 4
-SWEP.Primary.NumShots = 5
-SWEP.Primary.Delay = 0.3
+SWEP.Primary.Damage = 5
+SWEP.Primary.NumShots = 6
+SWEP.Primary.Delay = 0.25
 SWEP.Recoil = 1.72
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.1
-SWEP.ConeMin = 0.04
+SWEP.ConeMax = 0.07
+SWEP.ConeMin = 0.06
+SWEP.MovingConeOffset = 0.1
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOWER

@@ -53,9 +53,9 @@ SWEP.Primary.Delay = 1
 SWEP.Primary.DefaultClip = 5
 SWEP.Recoil = 1.8
 SWEP.Primary.KnockbackScale = 3
-SWEP.ConeMax = 0.05
+SWEP.ConeMax = 0.02
 SWEP.ConeMin = 0.005
-
+SWEP.MovingConeOffset = 0.03
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 

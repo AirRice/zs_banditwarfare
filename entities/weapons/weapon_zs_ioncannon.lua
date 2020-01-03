@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "이온 캐논"
-	--SWEP.Description = "펄스탄 6개를 한번에 발사해 큰 집중대미지를 입힌다."
+	SWEP.Description = "다른 무기와는 다르게 거듭해 쏠수록 정확해진다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -57,8 +57,8 @@ sound.Add(
 
 SWEP.Recoil = 4.1
 SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 6
-SWEP.Primary.Delay = 0.5
+SWEP.Primary.NumShots = 7
+SWEP.Primary.Delay = 0.45
 SWEP.ReloadDelay = 1
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = true
@@ -68,11 +68,48 @@ SWEP.ReloadSound = Sound("ambient/machines/combine_terminal_idle4.wav")
 SWEP.Primary.Sound = Sound("Weapon_pulseboom.Single")
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.08
-SWEP.ConeMin = 0.026
-GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.ConeMax = 0.09
+SWEP.ConeMin = 0.007
+SWEP.MovingConeOffset = 0.09
+SWEP.AimSubtractUnit = 0.03
+SWEP.AimReleaseUnit = 0.2
+SWEP.AimExpandStayDuration = 0.1
+
 SWEP.Recoil = 2.76
 SWEP.WalkSpeed = SPEED_SLOWER
+
+function SWEP:Initialize()
+	if not self:IsValid() then return end
+	self:SetWeaponHoldType(self.HoldType)
+	self:SetDeploySpeed(1.1)
+
+	self:SetConeAdder(self.ConeMax)
+	if CLIENT then
+		self:CheckCustomIronSights()
+		self:Anim_Initialize()
+	end
+end
+
+function SWEP:SetConeAndFire()
+	self.AimStartTime = CurTime()
+	hook.Add("Think", self, function(s)
+		s:SetConeAdder(math.Clamp(s:GetConeAdder()- s.AimSubtractUnit * FrameTime(), 0, s.ConeMax-s.ConeMin))
+
+		 if (s.AimStartTime + s.Primary.Delay <= CurTime()) then
+			s.CollapseStartTime = CurTime()
+
+			hook.Add("Think", s, function(_)
+				if (_.CollapseStartTime + _.AimExpandStayDuration > CurTime()) then
+					return
+				end      
+				_:SetConeAdder(math.Clamp(_:GetConeAdder() +_.AimReleaseUnit * FrameTime(), 0, _.ConeMax-_.ConeMin))
+				if (_:GetConeAdder() >= _.ConeMax-_.ConeMin) then
+					hook.Remove("Think", _)
+				end
+			end)
+		end
+	end)
+end
 
 function SWEP:Reload()
 	if self.Owner:IsHolding() then return end
@@ -92,8 +129,12 @@ function SWEP:Reload()
 		end
 	end
 end
+
 function SWEP.BulletCallback(attacker, tr, dmginfo)
-	GenericBulletCallback(attacker, tr, dmginfo)
+	local ent = tr.Entity
+	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() then
+		ent:AddLegDamage(4)
+	end
 	local e = EffectData()
 		e:SetOrigin(tr.HitPos)
 		e:SetNormal(tr.HitNormal)
@@ -101,4 +142,5 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		e:SetMagnitude(1)
 		e:SetScale(1)
 	util.Effect("ar2_hit", e)
+	GenericBulletCallback(attacker, tr, dmginfo)	
 end

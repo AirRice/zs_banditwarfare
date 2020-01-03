@@ -48,7 +48,7 @@ SWEP.TracerName = "AR2Tracer"
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() then
-		ent:AddLegDamage(6)
+		ent:AddLegDamage(15)
 	end
 
 	local e = EffectData()

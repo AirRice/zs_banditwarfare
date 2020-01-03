@@ -67,8 +67,8 @@ function ENT:CalculatePoseAngles()
 			self.PosePitch = math.Approach(self.PosePitch, math.Clamp(math.NormalizeAngle(ang.pitch), -15, 15), FrameTime() * 100)
 		else
 			local ct = CurTime()
-			self.PoseYaw = math.Approach(self.PoseYaw, math.sin(ct*1.6) * 75, FrameTime() * 60)
-			self.PosePitch = math.Approach(self.PosePitch, math.cos(ct * 3) * 5, FrameTime() * 30)
+			self.PoseYaw = math.Approach(self.PoseYaw, math.sin(ct*1.8) * 75, FrameTime() * 60)
+			self.PosePitch = math.Approach(self.PosePitch, math.cos(ct * 3) * 5+5, FrameTime() * 30)
 		end
 	end
 end

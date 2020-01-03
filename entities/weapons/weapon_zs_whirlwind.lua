@@ -64,15 +64,11 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
 SWEP.LastAttack = 0
-SWEP.Shootingdown = false
 SWEP.SearchRadius = 160
 function SWEP:SecondaryAttack()
 end
 
 function SWEP:Attack(proj)
-	if (proj:GetOwner():IsPlayer() and self.Owner:IsPlayer() and proj:GetOwner():Team() == self.Owner:Team()) then
-		return
-	end
 	if (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) and proj:IsValid() then
 		local phys = proj:GetPhysicsObject()
 		self.Owner:EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
@@ -93,33 +89,27 @@ function SWEP:Attack(proj)
 			ed:SetMagnitude(1)
 			ed:SetScale(1)
 		util.Effect("MetalSpark", ed)
-		self.Owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = 	self.BulletCallback})
+		self.Owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		if SERVER then
 			proj:Remove()
 		end
-		self.Shootingdown = false
 	end
 end
 
 function SWEP:Think()
 	local curTime = CurTime()
-
-	if (self.LastAttack + self.Primary.Delay*0.75 < curTime ) and self:Clip1() > 0 and not self.Shootingdown then
+	if self.IdleAnimation and self.IdleAnimation <= CurTime() then
+		self.IdleAnimation = nil
+		self:SendWeaponAnim(ACT_VM_IDLE)
+	end
+	self.BaseClass.Think(self)	
+	if (self.LastAttack + self.Primary.Delay*0.75 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
-		local projs = {}
-		
-		local attacked = 0
-		
-		local td = {}
-		
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
-			local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
-			if dot >= 0.55 and (TrueVisibleFilters(center, ent:GetPos(), self, ent, self.Owner)) then
-				if (ent == self or not ent:IsProjectile()) then
-					continue
-				else					
-					self.Shootingdown = true
+			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and ent.Owner:IsPlayer() and ent:GetOwner():Team() == ent.Owner:Team())) then					
+				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
+				if dot >= 0.55 and (TrueVisibleFilters(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)
 					self.LastAttack = curTime
 					self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*0.75)
@@ -128,10 +118,4 @@ function SWEP:Think()
 			end
 		end
 	end
-	if self.IdleAnimation and self.IdleAnimation <= CurTime() then
-		self.IdleAnimation = nil
-		self:SendWeaponAnim(ACT_VM_IDLE)
-	end
-	
-	self.BaseClass.Think(self)
 end

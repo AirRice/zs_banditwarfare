@@ -25,8 +25,8 @@ SWEP.UseHands = true
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_357.Single")
-SWEP.Primary.Delay = 0.7
-SWEP.Primary.Damage = 22
+SWEP.Primary.Delay = 0.6
+SWEP.Primary.Damage = 33
 SWEP.Primary.NumShots = 1
 
 SWEP.Primary.ClipSize = 6
@@ -38,7 +38,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.ConeMax = 0.003
 SWEP.ConeMin = 0.001
 SWEP.Recoil = 2.82
-SWEP.MovingConeOffset = 0.11
+SWEP.MovingConeOffset = 0.12
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-4.65, 4, 0.25)

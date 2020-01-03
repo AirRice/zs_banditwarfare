@@ -105,19 +105,19 @@ GM.AmmoResupply["grenlauncher"] = 1
 ------------
 GM:AddPointShopItem(0,"btlax", "'배틀액스' 권총", nil, ITEMCAT_GUNS, 10, "weapon_zs_battleaxe")
 GM:AddPointShopItem(0,"pshtr", "'피슈터' 권총", nil, ITEMCAT_GUNS, 10, "weapon_zs_peashooter")
-GM:AddPointShopItem(0,"owens", "'오웬스' 권총", nil, ITEMCAT_GUNS, 15, "weapon_zs_owens")
-GM:AddPointShopItem(0,"blstr", "'블래스터' 산탄총", nil, ITEMCAT_GUNS, 15, "weapon_zs_blaster")
-GM:AddPointShopItem(0,"tossr", "'토저' SMG", nil, ITEMCAT_GUNS, 10, "weapon_zs_tosser")
+GM:AddPointShopItem(0,"owens", "'오웬스' 권총", nil, ITEMCAT_GUNS, 12, "weapon_zs_owens")
+GM:AddPointShopItem(0,"blstr", "'블래스터' 산탄총", nil, ITEMCAT_GUNS, 13, "weapon_zs_blaster")
+GM:AddPointShopItem(0,"tossr", "'토저' SMG", nil, ITEMCAT_GUNS, 15, "weapon_zs_tosser")
 GM:AddPointShopItem(0,"stbbr", "'스터버' 소총", nil, ITEMCAT_GUNS, 15, "weapon_zs_stubber")
-GM:AddPointShopItem(0,"crklr", "'크래클러' 돌격 소총", nil, ITEMCAT_GUNS, 10, "weapon_zs_crackler")
+GM:AddPointShopItem(0,"crklr", "'크래클러' 돌격 소총", nil, ITEMCAT_GUNS, 15, "weapon_zs_crackler")
 GM:AddPointShopItem(0,"z9000", "'Z9000' 펄스 권총", nil, ITEMCAT_GUNS, 15, "weapon_zs_z9000")
 GM:AddPointShopItem(0,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 25, "weapon_zs_deagle")
-GM:AddPointShopItem(0,"nailgun", "리벳건", nil, ITEMCAT_GUNS, 30, "weapon_zs_nailgun").NoClassicMode = true
+GM:AddPointShopItem(0,"nailgun", "리벳건", nil, ITEMCAT_GUNS, 17, "weapon_zs_nailgun").NoClassicMode = true
 
 GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴 샷건", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
-GM:AddPointShopItem(1,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 60, "weapon_zs_eraser")
+GM:AddPointShopItem(1,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 70, "weapon_zs_eraser")
 GM:AddPointShopItem(1,"shredder", "'슈레더' SMG", nil, ITEMCAT_GUNS, 60, "weapon_zs_smg")
 GM:AddPointShopItem(1,"hunter", "'헌터' 소총", nil, ITEMCAT_GUNS, 65, "weapon_zs_hunter")
 GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 65, "weapon_zs_neutrino")
@@ -133,24 +133,24 @@ GM:AddPointShopItem(2,"stalker", "'스토커' M4", nil, ITEMCAT_GUNS, 120, "weap
 GM:AddPointShopItem(2,"immortal", "'불멸' 권총", nil, ITEMCAT_GUNS, 130, "weapon_zs_immortal")
 GM:AddPointShopItem(2,"ioncannon", "이온 캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
 
-GM:AddPointShopItem(3,"practition", "'프랙티션' 의료소총", nil, ITEMCAT_GUNS, 135, "weapon_zs_practition")
-GM:AddPointShopItem(3,"inquisition", "'인퀴지션' 소형 석궁", nil, ITEMCAT_GUNS, 145, "weapon_zs_inquisition")
-GM:AddPointShopItem(3,"terminator", "'터미네이터' 권총", nil, ITEMCAT_GUNS, 155, "weapon_zs_terminator")
-GM:AddPointShopItem(3,"bulletstorm", "'총알비' SMG", nil, ITEMCAT_GUNS, 165, "weapon_zs_bulletstorm")
-GM:AddPointShopItem(3,"silencer", "'사일런서' SMG", nil, ITEMCAT_GUNS, 170, "weapon_zs_silencer")
-GM:AddPointShopItem(3,"inferno", "'인페르노' AUG", nil, ITEMCAT_GUNS, 155, "weapon_zs_inferno")
-GM:AddPointShopItem(3,"sweeper", "'스위퍼' 산탄총", nil, ITEMCAT_GUNS, 155, "weapon_zs_sweepershotgun")
-GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 155, "weapon_zs_zeus")
+GM:AddPointShopItem(3,"practition", "'프랙티션' 의료소총", nil, ITEMCAT_GUNS, 145, "weapon_zs_practition")
+GM:AddPointShopItem(3,"inquisition", "'인퀴지션' 소형 석궁", nil, ITEMCAT_GUNS, 155, "weapon_zs_inquisition")
+GM:AddPointShopItem(3,"terminator", "'터미네이터' 권총", nil, ITEMCAT_GUNS, 165, "weapon_zs_terminator")
+GM:AddPointShopItem(3,"bulletstorm", "'총알비' SMG", nil, ITEMCAT_GUNS, 175, "weapon_zs_bulletstorm")
+GM:AddPointShopItem(3,"silencer", "'사일런서' SMG", nil, ITEMCAT_GUNS, 180, "weapon_zs_silencer")
+GM:AddPointShopItem(3,"inferno", "'인페르노' AUG", nil, ITEMCAT_GUNS, 165, "weapon_zs_inferno")
+GM:AddPointShopItem(3,"sweeper", "'스위퍼' 산탄총", nil, ITEMCAT_GUNS, 165, "weapon_zs_sweepershotgun")
+GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 165, "weapon_zs_zeus")
 GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 돌격소총", nil, ITEMCAT_GUNS, 185, "weapon_zs_pulserifle")
 
-GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 215, "weapon_zs_crossbow")
-GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 225, "weapon_zs_reaper")
-GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 225, "weapon_zs_blitz")
-GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 225, "weapon_zs_sg550")
-GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 230, "weapon_zs_positron")
-GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 235, "weapon_zs_boomstick")
-GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 256, "weapon_zs_tommy")
-GM:AddPointShopItem(4,"slugrifle", "'타이니' 슬러그 소총", nil, ITEMCAT_GUNS, 300, "weapon_zs_slugrifle")
+GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 225, "weapon_zs_crossbow")
+GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 235, "weapon_zs_reaper")
+GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 235, "weapon_zs_blitz")
+GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 235, "weapon_zs_sg550")
+GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 240, "weapon_zs_positron")
+GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 245, "weapon_zs_boomstick")
+GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 270, "weapon_zs_tommy")
+GM:AddPointShopItem(4,"slugrifle", "'타이니' 슬러그 소총", nil, ITEMCAT_GUNS, 320, "weapon_zs_slugrifle")
 
 GM:AddPointShopItem(nil,"pistolammo", "권총 탄약", nil, ITEMCAT_AMMO, 3, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["pistol"] or 12, "pistol", true) end, "models/Items/BoxSRounds.mdl")
 GM:AddPointShopItem(nil,"shotgunammo", "샷건 탄약", nil, ITEMCAT_AMMO, 6, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["buckshot"] or 8, "buckshot", true) end, "models/Items/BoxBuckshot.mdl")
@@ -182,9 +182,9 @@ GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 1
 
 GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun").NoClassicMode = true
 GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_TOOLS, 45, "weapon_zs_backdoor").NoClassicMode = true
-GM:AddPointShopItem(nil,"sgnlboost", "신호 증폭기", nil, ITEMCAT_TOOLS, 7, "weapon_zs_signalbooster").NoClassicMode = true
-GM:AddPointShopItem(nil,"medgun", "'세이비어'메디컬 건", nil, ITEMCAT_TOOLS, 45, "weapon_zs_medicgun")
-GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 50, "weapon_zs_medicalkit")
+GM:AddPointShopItem(nil,"sgnlboost", "신호 증폭기", nil, ITEMCAT_TOOLS, 30, "weapon_zs_signalbooster").NoClassicMode = true
+GM:AddPointShopItem(nil,"medgun", "'세이비어'메디컬 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_medicgun")
+GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 60, "weapon_zs_medicalkit")
 GM:AddPointShopItem(nil,"ammokit", "탄약킷", nil, ITEMCAT_TOOLS, 12, "weapon_zs_ammokit")
 
 local item = GM:AddPointShopItem(nil,"infturret", "자동 터렛", nil, ITEMCAT_TOOLS, 60, "weapon_zs_gunturret")
@@ -204,10 +204,10 @@ GM:AddPointShopItem(nil,"ffemitter", "방어막 생성기", nil, ITEMCAT_TOOLS, 
 GM:AddPointShopItem(nil,"barricadekit", "'이지스' 바리케이드 킷", nil, ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
 GM:AddPointShopItem(nil,"boardpack", "판자 묶음", nil, ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
 
-GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_OTHER, 5, "weapon_zs_objectiveradar").NoClassicMode = true
+--GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_OTHER, 5, "weapon_zs_objectiveradar").NoClassicMode = true
 GM:AddPointShopItem(nil,"enemytracker", "생체 탐지기", nil, ITEMCAT_OTHER, 10, "weapon_zs_enemyradar")
-GM:AddPointShopItem(nil,"extrahp", "추가 방탄복", nil, ITEMCAT_OTHER, 20, "weapon_zs_extrahealth")
-GM:AddPointShopItem(nil,"extraspd", "아드레날린", nil, ITEMCAT_OTHER, 17, "weapon_zs_extraspeed")
+GM:AddPointShopItem(nil,"bodyarmor", "추가 방탄복", nil, ITEMCAT_OTHER, 35, "weapon_zs_bodyarmor")
+GM:AddPointShopItem(nil,"extraspd", "아드레날린", nil, ITEMCAT_OTHER, 15, "weapon_zs_extraspeed")
 GM:AddPointShopItem(nil,"grenade", "수류탄", nil, ITEMCAT_OTHER, 15, "weapon_zs_grenade")
 GM:AddPointShopItem(nil,"flashbang", "섬광탄", nil, ITEMCAT_OTHER, 10, "weapon_zs_flashbang")
 GM:AddPointShopItem(nil,"smoke", "연막탄", nil, ITEMCAT_OTHER, 7, "weapon_zs_smokegrenade")
@@ -219,42 +219,31 @@ local function genericcallback(pl, magnitude) return pl:Name(), magnitude end
 GM.HonorableMentions = {}
 GM.HonorableMentions[HM_MOSTENEMYKILLED] = {Name = "살인마", String = "%s - %d명의 적을 죽였다.", Callback = genericcallback}
 GM.HonorableMentions[HM_MOSTDAMAGETOENEMY] = {Name = "전쟁광", String = "%s - 전체 %d 대미지를 적에게 주었다.", Callback = genericcallback}
+GM.HonorableMentions[HM_KILLSTREAK] = {Name = "특전사", String = "%s - 죽지 않고 연속으로 적 %d명을 죽였다.", Callback = genericcallback}
 GM.HonorableMentions[HM_PACIFIST] = {Name = "비폭력주의자", String = "%s - 한 명의 적도 죽이지 않았다.", Callback = genericcallback}
 GM.HonorableMentions[HM_MOSTHELPFUL] = {Name = "조력자", String = "%s - 동료가 %d명의 적을 죽일 수 있도록 도왔다.", Callback = genericcallback, Color = COLOR_YELLOW}
+GM.HonorableMentions[HM_USEFULTOOPPOSITE] = {Name = "자살특공대", String = "%s는 적에게 %d번 죽었다.", Callback = genericcallback, Color = COLOR_DARKRED}
 GM.HonorableMentions[HM_BLACKCOW] = {Name = "흑우", String = "%s - 물건을 사는 데 %d포인트를 사용했다.", Callback = genericcallback}
 GM.HonorableMentions[HM_HACKER] = {Name = "어나니머스", String = "%s - 백도어 장치를 이용해 %d개의 송신기를 탈환했다.", Callback = genericcallback, Color = COLOR_CYAN}
-GM.HonorableMentions[HM_GOODDOCTOR] = {Name = "의사양반", String = "%s - 팀의 체력을 %d만큼 책임졌다.", Callback = genericcallback}
-GM.HonorableMentions[HM_HANDYMAN] = {Name = "공돌이", String = "%s - %d만큼 바리케이드를 수리했다.", Callback = genericcallback}
---GM.HonorableMentions[HM_SCARECROW] = {Name = "죄 없는 까마귀", String = "%s - 까마귀 %d마리를 무참히 살해했다.", Callback = genericcallback, Color = COLOR_WHITE}
---GM.HonorableMentions[HM_MOSTBRAINSEATEN] = {Name = "인간 학살자", String = "BJ %s님의 인간 뇌 먹방! 오늘은 %d명의 뇌를 먹어치워보겠습니다!", Callback = genericcallback, Color = COLOR_LIMEGREEN}
---GM.HonorableMentions[HM_MOSTDAMAGETOHUMANS] = {Name = "너 나한테 시비 걸었냐?", String = "플레이어 %s님이 시비를 거는 인간들에게 %d 데미지로 응징했다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
---GM.HonorableMentions[HM_LASTBITE] = {Name = "심판자", String = "플레이어 %s님이 최후의 인간을 먹어치웠다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_USEFULTOOPPOSITE] = {Name = "자살특공대", String = "%s는 적에게 %d번 죽었다.", Callback = genericcallback}
---GM.HonorableMentions[HM_STUPID] = {Name = "똥멍청이", String = "플레이어 %s님은 좀비 스폰 지점에서 겨우 %d피트 떨어진 곳에서 살해당했다.", Callback = genericcallback, Color = COLOR_RED}
---GM.HonorableMentions[HM_SALESMAN] = {Name = "세일즈맨", String = "%s는 장사를 통해 %d포인트를 벌었다.", Callback = genericcallback}
---GM.HonorableMentions[HM_WAREHOUSE] = {Name = "창고장", String = "%s는 자신의 보급 상자로 %d번 동료를 도왔다.", Callback = genericcallback}
---GM.HonorableMentions[HM_SPAWNPOINT] = {Name = "살아있는 스폰지점", String = "플레이어 %s님이 %d마리의 좀비를 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
---GM.HonorableMentions[HM_CROWFIGHTER] = {Name = "King of Crows", String = "플레이어 %s님이 %d마리의 까마귀를 전멸시켰다.", Callback = genericcallback, Color = COLOR_WHITE}
---GM.HonorableMentions[HM_CROWBARRICADEDAMAGE] = {Name = "쥐꼬리만한 골칫거리", String = "플레이어 %s님이 까마귀로 바리케이드에 총합 %d 데미지를 가했다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_BARRICADEDESTROYER] = {Name = "철거단원", String = "%s - %d의 대미지를 주었다.", Callback = genericcallback}
---GM.HonorableMentions[HM_NESTDESTROYER] = {Name = "네스트 디스트로이어", String = "%s - %d개의 둥지를 흔적도 없이 날려버렸다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
---GM.HonorableMentions[HM_NESTMASTER] = {Name = "네스트 마스터", String = "%s - %d마리의 좀비를 자신의 둥지에서 부활시켰다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
-GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신사 직원", String = "%s - 송신기 점령에 %d초를 소비했다.", Callback = genericcallback}
-
+GM.HonorableMentions[HM_COMMSUNIT] = {Name = "통신병", String = "%s - 송신기 점령에 %d초를 소비했다.", Callback = genericcallback, Color = COLOR_CYAN}
+GM.HonorableMentions[HM_GOODDOCTOR] = {Name = "의사양반", String = "%s - 팀의 체력을 %d만큼 책임졌다.", Callback = genericcallback, Color = COLOR_LIMEGREEN}
+GM.HonorableMentions[HM_HANDYMAN] = {Name = "공돌이", String = "%s - %d만큼 바리케이드를 수리했다.", Callback = genericcallback, Color = COLOR_WHITE}
+GM.HonorableMentions[HM_BARRICADEDESTROYER] = {Name = "철거단원", String = "%s - 바리케이드에 %d의 대미지를 주었다.", Callback = genericcallback}
+GM.HonorableMentions[HM_WARRIOR] = {Name = "백병전 마스터", String = "%s는 근접전에서 %d명의 적을 사살하였다.", Callback = genericcallback}
+GM.HonorableMentions[HM_HEADSHOTS] = {Name = "헤드헌터", String = "%s - 적 %d명의 머리를 뚫어버렸다.", Callback = genericcallback}
+GM.HonorableMentions[HM_BESTAIM] = {Name = "정확한 에임", String = "%s - 발사한 탄환의 %d%%가 명중하였다.", Callback = genericcallback}
 
 -- Zombine: has no head.
 -- Skeleton: doesn't have flesh therefore making the hitboxes seem wonky
+
 GM.RestrictedModels = {
 	"models/player/zombine.mdl",
 	"models/player/zombie_soldier.mdl",
 	"models/player/skeleton.mdl",
-	"models/player/charple.mdl"
-	
-	--[["models/player/zombie_classic.mdl",
-	"models/player/zombie_fast.mdl",
-	"models/player/corpse1.mdl",
-	,
-	]]
+	"models/player/charple.mdl",
+	"models/player/zombie_classic.mdl"
+	--"models/player/zombie_fast.mdl"
+	--"models/player/corpse1.mdl"
 }
 GM.MapWhitelist = {
 	--"cs_assault",
@@ -322,8 +311,8 @@ end
 
 -- Utility function to setup weapon default aim stats.
 function GM:SetupAimDefaults(tab,primtab)
-	tab.AimExpandUnit = math.Round((tab.ConeMax - tab.ConeMin)/math.min(primtab.Delay*primtab.ClipSize,1),4)
-	tab.AimCollapseUnit = (tab.ConeMax - tab.ConeMin)*2
+	tab.AimExpandUnit = math.Round((tab.ConeMax - tab.ConeMin)/math.min(primtab.Delay*primtab.ClipSize,1.45),4)
+	tab.AimCollapseUnit = (tab.ConeMax - tab.ConeMin)*4
 	tab.AimExpandStayDuration = tab.Primary.Delay*0.75
 end
 	

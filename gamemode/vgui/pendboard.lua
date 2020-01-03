@@ -7,7 +7,7 @@ function GM:AddHonorableMention(pl, mentionid, ...)
 	if not mentiontab then return end
 
 	local pan = vgui.Create("DEndBoardPlayerPanel", pEndBoard.List)
-	pan:SetPlayer(pl, team.GetColor(pl:Team()), string.format(mentiontab.String, mentiontab.Callback(pl, ...)), nil, mentiontab.Name)
+	pan:SetPlayer(pl, mentiontab.Color and mentiontab.Color or team.GetColor(pl:Team()), string.format(mentiontab.String, mentiontab.Callback(pl, ...)), nil, mentiontab.Name)
 	pEndBoard.List:AddItem(pan)
 end
 

@@ -51,7 +51,7 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() and hitent:Health() > self.MeleeDamage then
-		hitent:AddLegDamage(30)
+		hitent:AddLegDamage(50)
 
 		if SERVER then
 			local ang = self.Owner:EyeAngles()

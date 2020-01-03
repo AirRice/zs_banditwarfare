@@ -51,7 +51,7 @@ function ENT:Explode()
 				if (!tr.HitWorld)  or (tr.Fraction == 1 or tr.Entity == pEntity) then
 					pl:PlayEyePoisonedSound()
 					if pl:Team() ~= owner:Team() and math.random(4) == 1 then
-						pl:KnockDown(2)
+						--pl:KnockDown(2)
 					end
 					pl:SetDSP( 36 , false )
 					pl:ScreenFade( SCREENFADE.IN , COLOR_WHITE, 1 , 3 )

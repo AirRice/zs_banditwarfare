@@ -37,12 +37,14 @@ function MakepPlayerModel()
 	grid:SetRowHeight(68)
 	
 	for name, mdl in pairs(player_manager.AllValidModels()) do
-		local button = vgui.Create("SpawnIcon", grid)
-		button:SetPos(0, 0)
-		button:SetModel(mdl)
-		button.m_ModelName = name
-		button.OnMousePressed = SwitchPlayerModel
-		grid:AddItem(button)
+		if not table.HasValue(GAMEMODE.RestrictedModels, string.lower(mdl)) then
+			local button = vgui.Create("SpawnIcon", grid)
+			button:SetPos(0, 0)
+			button:SetModel(mdl)
+			button.m_ModelName = name
+			button.OnMousePressed = SwitchPlayerModel
+			grid:AddItem(button)
+		end
 	end
 	grid:SetSize(wid - 16, math.ceil(table.Count(player_manager.AllValidModels()) / numcols) * grid:GetRowHeight())
 

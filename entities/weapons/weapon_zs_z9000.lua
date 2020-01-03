@@ -41,9 +41,10 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 50
 
-SWEP.ConeMax = 0.04
+SWEP.ConeMax = 0.02
 SWEP.ConeMin = 0.01
 SWEP.Recoil = 0.08
+SWEP.MovingConeOffset = 0.02
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
@@ -53,7 +54,7 @@ SWEP.TracerName = "AR2Tracer"
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() then
-		ent:AddLegDamage(14)
+		ent:AddLegDamage(20)
 	end
 
 	local e = EffectData()

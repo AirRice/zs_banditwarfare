@@ -20,16 +20,16 @@ if CLIENT then
 	}
 end
 
-SWEP.Primary.Damage = 12
-SWEP.Primary.NumShots = 3
-SWEP.Primary.Delay = 0.2 
+SWEP.Primary.Damage = 9
+SWEP.Primary.NumShots = 4
+SWEP.Primary.Delay = 0.27
 
-SWEP.Primary.ClipSize = 14
+SWEP.Primary.ClipSize = 9
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.1
+SWEP.ConeMax = 0.11
 SWEP.ConeMin = 0.04
 SWEP.Recoil = 0.8
 function SWEP:EmitFireSound()

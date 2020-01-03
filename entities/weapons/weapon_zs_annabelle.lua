@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 50
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1
 SWEP.ReloadDelay = 0.4
@@ -37,7 +37,7 @@ SWEP.Primary.DefaultClip = 24
 
 SWEP.ConeMax = 0.006
 SWEP.ConeMin = 0.004
-SWEP.MovingConeOffset = 0.1
+SWEP.MovingConeOffset = 0.11
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW

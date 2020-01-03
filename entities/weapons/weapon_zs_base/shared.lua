@@ -3,6 +3,7 @@ SWEP.Primary.Damage = 30
 SWEP.Primary.KnockbackScale = 1
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.15
+SWEP.IsFirearm = true
 
 SWEP.ConeMax = 0.03
 SWEP.ConeMin = 0.01
@@ -260,6 +261,10 @@ end
 function GenericBulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if ent:IsValid() then
+		if attacker:IsPlayer() and attacker.LastShotWeapon and attacker:GetActiveWeapon():GetClass() == attacker.LastShotWeapon 
+		and not attacker.RicochetBullet and not tr.HitWorld and not tr.HitSky and tr.Hit and SERVER then
+			attacker.ShotsHit = attacker.ShotsHit + 1
+		end
 		if ent:IsPlayer() then
 			if attacker:IsPlayer() and ent:Team() ~= attacker:Team() and tempknockback then
 				tempknockback[ent] = ent:GetVelocity()
@@ -307,7 +312,12 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-
+	
+	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
+		owner.ShotsFired = owner.ShotsFired + numbul
+		owner.LastShotWeapon = self:GetClass()
+	end
+	
 	self:StartBulletKnockback()
 	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)

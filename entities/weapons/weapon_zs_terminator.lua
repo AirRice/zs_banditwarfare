@@ -2,7 +2,7 @@
 
 if CLIENT then
 	SWEP.PrintName = "'터미네이터' 권총"
-	SWEP.Description = "펄스탄약을 추가로 사용하면 2배의 대미지를 입힐 수 있다."
+	SWEP.Description = "소총탄약을 추가로 사용하면 2배의 대미지를 입힐 수 있다."
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -36,10 +36,10 @@ SWEP.ViewModel = "models/weapons/cstrike/c_pist_fiveseven.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("weapons/fiveseven/fiveseven-1.wav")
-SWEP.Primary.Damage = 31
+SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.08
-SWEP.Recoil = 1.16
+SWEP.Recoil = 1.36
 SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
@@ -49,7 +49,7 @@ SWEP.ConeMin = 0.003
 SWEP.IronSightsPos = Vector(-6.2, 0, 2.5)
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-function SWEP:ShootPulseBullets()	
+function SWEP:ShootRifledBullets()	
 	local dmg = self.Primary.Damage*2
 	local numbul = self.Primary.NumShots
 	local cone = self:GetCone()
@@ -62,7 +62,12 @@ function SWEP:ShootPulseBullets()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-
+	
+	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
+		owner.ShotsFired = owner.ShotsFired + numbul
+		owner.LastShotWeapon = self:GetClass()
+	end
+	
 	self:StartBulletKnockback()
 	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = "AirboatGunHeavyTracer", Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
@@ -71,12 +76,12 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	if self.Owner:GetAmmoCount("pulse") > 0 then
+	if self.Owner:GetAmmoCount("357") > 0 then
 		self:EmitFireSound()
 		self:EmitSound("weapons/gauss/fire1.wav",75,110,1,CHAN_AUTO)
 		self:TakeAmmo()
-		self.Owner:RemoveAmmo( 1, "pulse")
-		self:ShootPulseBullets()
+		self.Owner:RemoveAmmo( 1, "357")
+		self:ShootRifledBullets()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	else
 		self:EmitFireSound()
@@ -90,12 +95,12 @@ if not CLIENT then return end
 function SWEP:DrawHUD()
 
 	surface.SetFont("ZSHUDFontSmall")
-	local label = "펄스탄: "
-	local pulsecount = self.Owner:GetAmmoCount("pulse")
-	local text = label..pulsecount
+	local label = "소총탄: "
+	local riflecount = self.Owner:GetAmmoCount("357")
+	local text = label..riflecount
 	local nTEXW, nTEXH = surface.GetTextSize(text)
 
-	draw.SimpleTextBlurry(text, "ZSHUDFont", ScrW() - nTEXW * 0.5 - 56, ScrH() - nTEXH * 3, pulsecount > 3 and COLOR_LIMEGREEN or COLOR_RED, TEXT_ALIGN_CENTER)
+	draw.SimpleTextBlurry(text, "ZSHUDFont", ScrW() - nTEXW * 0.5 - 56, ScrH() - nTEXH * 3, riflecount > 3 and COLOR_LIMEGREEN or COLOR_RED, TEXT_ALIGN_CENTER)
 
 	if GetConVarNumber("crosshair") ~= 1 then return end
 	self:DrawCrosshairDot()

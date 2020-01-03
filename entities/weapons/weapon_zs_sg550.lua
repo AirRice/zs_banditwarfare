@@ -25,7 +25,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 20
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.25
 SWEP.Recoil = 1.76
@@ -38,7 +38,7 @@ SWEP.Primary.DefaultClip = 60
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.01
+SWEP.ConeMax = 0.005
 SWEP.ConeMin = 0.001
 
 SWEP.MovingConeOffset = 0.14
@@ -65,8 +65,8 @@ function SWEP:Think()
 end
 function BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
-	if ent:IsPlayer() and attacker:IsPlayer() and ent:Team() ~= attacker:Team() and tr.HitPos:Distance(attacker:GetPos()) > 50 then
-		dmginfo:AddDamage(math.min(math.floor(tr.HitPos:Distance(attacker:GetPos())/50),45))
+	if ent:IsValid() and tr.HitPos:Distance(attacker:GetPos()) > 100 then
+		dmginfo:AddDamage(math.min(math.floor((tr.HitPos:Distance(attacker:GetPos())-100)/80),30))
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end

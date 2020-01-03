@@ -62,10 +62,10 @@ SWEP.NoAmmo = false
 SWEP.Recoil = 0.26
 SWEP.ToxicDamage = 2
 SWEP.ToxicTick = 0.2
-SWEP.ToxDuration = 1
+SWEP.ToxDuration = 1.2
 SWEP.WalkSpeed = SPEED_SLOW
 
-SWEP.ChargeRequiredClip = 15
+SWEP.ChargeRequiredClip = 20
 SWEP.ChargeShotSound = "beams/beamstart5.wav"
 
 SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)
@@ -132,8 +132,8 @@ function SWEP:ShootChargedBullet()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
+
 	self:StartBulletKnockback()
-	
 	owner:FireBullets({Num = 1, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(0.0001, 0.0001, 0), Tracer = 1, TracerName = self.TracerName, Force = self.Primary.Damage * 0.1, Damage = self.Primary.Damage  * 2, Callback = self.SpecialBulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
 	self:EndBulletKnockback()
@@ -160,11 +160,11 @@ function SWEP.SpecialBulletCallback(attacker, tr, dmginfo)
 	for _, ent in pairs(ents.FindInSphere(epicenter, radius)) do
 		if ent and ent:IsValid()and ent:IsPlayer() and ent:Team() == attacker:Team() then
 				local oldhealth = ent:Health()
-				local newhealth = math.min(oldhealth + 10, ent:GetMaxHealth())
+				local newhealth = math.min(oldhealth + 15, ent:GetMaxHealth())
 				if oldhealth ~= newhealth then
 					ent:SetHealth(newhealth)
 					ent:EmitSound("items/medshot4.wav")
-					if  attacker:IsPlayer() and newhealth - oldhealth > 5 then
+					if  attacker:IsPlayer() and newhealth - oldhealth > 5 and attacker ~= ent then
 						gamemode.Call("PlayerHealedTeamMember",  attacker, ent, newhealth - oldhealth, attacker:GetWeapon("weapon_zs_practition"))
 					end
 				end

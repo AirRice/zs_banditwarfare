@@ -15,7 +15,7 @@ if CLIENT then
 		["base"] = { type = "Model", model = "models/props_c17/tools_wrench01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(2, 1, 0), angle = Angle(190, 90, 90), size = Vector(1.5, 1.5, 1.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/props_c17/metalladder001", skin = 0, bodygroup = {} }
 	}
 
-	SWEP.Description = "이 도구로 송신기를 포함한 특수 도구들을 고칠 수 있다."
+	SWEP.Description = "이 도구로 터렛이나 이지스 판자 등을 고칠 수 있다."
 end
 
 SWEP.Base = "weapon_zs_basemelee"
@@ -40,7 +40,7 @@ SWEP.SwingRotation = Angle(30, -30, -30)
 SWEP.SwingOffset = Vector(0, -30, 0)
 SWEP.SwingHoldType = "grenade"
 
-SWEP.HealStrength = 13
+SWEP.HealStrength = 30
 
 function SWEP:PlayHitSound()
 	self:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg", 75, math.random(120, 125))

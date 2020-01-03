@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'헌터' 소총"
-	SWEP.Description = "대구경 탄환을 발사한다. 장전속도는 느리지만 특수한 탄환을 쏜다. 이 총알은 머리에 맞을 시 조금이라도 다친 사람을 즉시 처치한다."
+	SWEP.Description = "대구경 탄환을 발사한다. 장전속도는 느리지만 특수한 탄환을 쏜다. 이 총알은 몸에 맞으면 그렇게 아프지 않지만 머리에 맞을 시 조금이라도 다친 사람을 즉시 처치한다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -36,7 +36,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -48,10 +48,11 @@ SWEP.Primary.DefaultClip = 15
 SWEP.Recoil = 3
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
+SWEP.NoScaleToLessPlayers = true
 
 SWEP.ConeMax = 0.001
 SWEP.ConeMin = 0
-SWEP.MovingConeOffset = 0.2
+SWEP.MovingConeOffset = 0.21
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(5.015, -8, 2.52)

@@ -26,6 +26,7 @@ SWEP.Secondary.Automatic = true
 SWEP.WalkSpeed = SPEED_FAST
 
 SWEP.IsMelee = true
+SWEP.IsFirearm = false
 
 SWEP.HoldType = "melee"
 SWEP.SwingHoldType = "grenade"

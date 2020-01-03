@@ -23,7 +23,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_Scout.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Scout.Single")
-SWEP.Primary.Damage = 25
+SWEP.Primary.Damage = 35
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -39,7 +39,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 SWEP.ConeMax = 0.003
 SWEP.ConeMin = 0.001
 SWEP.Recoil = 2.42
-SWEP.MovingConeOffset = 0.09
+SWEP.MovingConeOffset = 0.13
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(5.015, -8, 2.52)
 SWEP.IronSightsAng = Vector(0, 0, 0)

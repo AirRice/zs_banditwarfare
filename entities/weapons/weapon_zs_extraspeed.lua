@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "아드레날린"
-	SWEP.Description = "사용시 피해를 30 입으며 이동속도는 20 증가한다."
+	SWEP.Description = "사용시 최대 체력이 10 하락하며 이동속도는 20 증가한다."
 	SWEP.ViewModelFOV = 70
 	SWEP.ViewModelFlip = false
 	SWEP.Slot = 4
@@ -44,14 +44,21 @@ function SWEP:PrimaryAttack()
 	if (self:CanPrimaryAttack()) then
 		local owner = self.Owner
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		if (IsValid(owner)) then
-			owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) +20
-			owner:ResetSpeed() 
-			if SERVER then 
-				owner:TakeDamage(30, owner, self)
+		if (IsValid(owner)) and owner:IsPlayer() then
+			if not owner.HumanSpeedAdder or owner.HumanSpeedAdder  <= 100 then
+				owner.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) +20
+				owner:ResetSpeed() 
+				if SERVER then 
+					owner:SetMaxHealth(owner:GetMaxHealth()-10)
+					owner:SetHealth(owner:GetMaxHealth())
+				end
+				self:TakePrimaryAmmo(1)
+				self:EmitSound("player/suit_sprint.wav")	
+			else
+				self.Owner:PrintMessage(HUD_PRINTCENTER, "아드레날린을 더 사용하는 것은 자살행위다.")
+				return
 			end
-			self:TakePrimaryAmmo(1)
-			self:EmitSound("player/suit_sprint.wav")		
+				
 		else
 			if SERVER then
 				owner:StripWeapon(self:GetClass())

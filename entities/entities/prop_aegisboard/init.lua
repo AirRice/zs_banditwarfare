@@ -13,7 +13,7 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
-	self:SetMaxObjectHealth(450)
+	self:SetMaxObjectHealth(550)
 	self:SetObjectHealth(self:GetMaxObjectHealth())
 end
 

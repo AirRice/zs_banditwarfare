@@ -34,7 +34,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-5.9, 12, 2.3)
 
-SWEP.ConeMax = 0.06
+SWEP.ConeMax = 0.013
 SWEP.ConeMin = 0.01
-
+SWEP.MovingConeOffset = 0.06
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

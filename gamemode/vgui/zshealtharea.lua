@@ -44,6 +44,21 @@ function PANEL:Init()
 	spawnbuffstatus.MemberMaxValue = 3
 	spawnbuffstatus:Dock(TOP)
 	
+	local armorstatus = vgui.Create("ZSHealthStatus", contents)
+	armorstatus:SetTall(20)
+	armorstatus:SetAlpha(200)
+	armorstatus:SetColor(Color(10, 10, 255))
+	armorstatus:SetMemberName("방탄복")
+	armorstatus.GetMemberValue = function(me)
+		local lp = LocalPlayer()
+		if lp:IsValid() then
+			return lp:GetBodyArmor()
+		end
+		return 0
+	end
+	armorstatus.MemberMaxValue = 100
+	armorstatus:Dock(TOP)
+	
 	local poisonstatus = vgui.Create("ZSHealthStatus", contents)
 	poisonstatus:SetTall(20)
 	poisonstatus:SetAlpha(200)
@@ -64,7 +79,7 @@ function PANEL:Init()
 	toxstatus:SetTall(20)
 	toxstatus:SetAlpha(200)
 	toxstatus:SetColor(Color(50, 100, 0))
-	toxstatus:SetMemberName("과다 복용!")
+	toxstatus:SetMemberName("중독됨!")
 	toxstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then

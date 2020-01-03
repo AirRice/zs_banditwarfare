@@ -52,14 +52,14 @@ SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.04
 
 SWEP.Primary.ClipSize = 0
-SWEP.Primary.DefaultClip = 250
+SWEP.Primary.DefaultClip = 150
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 
 SWEP.ConeMax = 0
 SWEP.ConeMin = 0
 SWEP.NoAmmo = false
-SWEP.Recoil = 0.15
+SWEP.Recoil = 0.2
 
 SWEP.WalkSpeed = SPEED_SLOW
 

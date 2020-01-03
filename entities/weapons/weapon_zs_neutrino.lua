@@ -68,26 +68,26 @@ sound.Add( {
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
 SWEP.Primary.Sound = Sound("Loop_Neutrino_Firing")
 SWEP.Recoil = 0.5
-SWEP.Primary.Damage = 8
+SWEP.Primary.Damage = 9
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.17
+SWEP.Primary.Delay = 0.2
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 100
 
-SWEP.ConeMax = 0.11
-SWEP.ConeMin = 0.03
+SWEP.ConeMax = 0.075
+SWEP.ConeMin = 0.02
 
 -- 에임이 늘어나는 단위
-SWEP.AimExpandUnit = 0.009
+SWEP.AimExpandUnit = 0.007
 
 -- 에임이 늘어난 상태가 유지되는 기간
-SWEP.AimExpandStayDuration = 0.05
+SWEP.AimExpandStayDuration = 0.01
 
 -- 에임이 줄어드는 단위
-SWEP.AimCollapseUnit = 0.1
+SWEP.AimCollapseUnit = 0.2
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.TracerName = "Ar2Tracer"
@@ -110,7 +110,7 @@ function SWEP:PrimaryAttack()
 		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 40) and 2 or (self:GetDTInt(4) >= 80) and 3 or 1), self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
-		self:SetNextPrimaryFire(CurTime() + math.max(0.033, self.Primary.Delay * (1 - combo / 90)))
+		self:SetNextPrimaryFire(CurTime() + math.max(0.033, self.Primary.Delay * (1 - combo / 60)))
 		self:SetDTInt(4, combo + 1)
 	end
 end

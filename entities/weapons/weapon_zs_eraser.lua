@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("weapons/ar2/npc_ar2_altfire.wav")
-SWEP.Primary.Damage = 16
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.1
 SWEP.Recoil = 0.72
@@ -33,8 +33,9 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.07
-SWEP.ConeMin = 0.01
+SWEP.ConeMax = 0.025
+SWEP.ConeMin = 0.007
+SWEP.MovingConeOffset = 0.03
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(-5.95, 0, 2.5)
@@ -44,7 +45,7 @@ function SWEP:EmitFireSound()
 end
 
 function SWEP:ShootBullets(dmg, numbul, cone)
-	if self:Clip1() == 1 then
+	if self:Clip1() == 0 then
 		dmg = dmg * 3
 	else
 		dmg = dmg + dmg * (1 - self:Clip1() / self.Primary.ClipSize)
