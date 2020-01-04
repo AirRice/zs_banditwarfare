@@ -50,7 +50,7 @@ SWEP.Primary.Sound = Sound("Weapon_Nailgun.Single")
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
 SWEP.Primary.Damage = 30
 SWEP.Primary.Delay = 1     
-SWEP.Primary.DefaultClip = 5
+SWEP.Primary.DefaultClip = 10
 SWEP.Recoil = 1.8
 SWEP.Primary.KnockbackScale = 3
 SWEP.ConeMax = 0.02
@@ -58,6 +58,20 @@ SWEP.ConeMin = 0.005
 SWEP.MovingConeOffset = 0.03
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
+
+function SWEP:CanPrimaryAttack()
+	if self.Owner:GetBarricadeGhosting() then return false end
+	if self.Owner:IsCarrying() then
+		self.Owner.status_human_holding:RemoveNextFrame()
+	end
+	if self:Clip1() < self.RequiredClip then
+		self:EmitSound("Weapon_Pistol.Empty")
+		self:SetNextPrimaryFire(CurTime() + math.max(0.25, self.Primary.Delay))
+		return false
+	end
+
+	return self:GetNextPrimaryFire() <= CurTime()
+end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local trent = tr.Entity

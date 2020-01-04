@@ -43,7 +43,7 @@ function ENT:Initialize()
 	self:SetPlaybackRate(1)
 	self:UseClientSideAnimation(true)
 
-	local ent = ents.Create("fhb")
+	--[[local ent = ents.Create("fhb")
 	if ent:IsValid() then
 		ent:SetPos(self:GetPos())
 		ent:SetAngles(self:GetAngles())
@@ -51,7 +51,7 @@ function ENT:Initialize()
 		ent:SetOwner(self)
 		ent.Size = self.HitBoxSize
 		ent:Spawn()
-	end
+	end]]
 
 	ent = ents.Create("env_projectedtexture")
 	if ent:IsValid() then
@@ -63,17 +63,9 @@ function ENT:Initialize()
 		ent:SetKeyValue("lightfov", 80)
 		local owner = self:GetOwner()
 		if owner:IsValid() and owner:IsPlayer() then
-			local vcol = owner:GetPlayerColor()
+			local vcol = team.GetColor(owner:Team())
 			if vcol then
-				if vcol == vector_origin then
-					vcol.x = 1 vcol.y = 1 vcol.z = 1
-				end
-				vcol:Normalize()
-				vcol = (vcol * 2 + Vector(1, 1, 1)) / 3
-				vcol.x = math.Clamp(math.ceil(vcol.x * 255), 0, 255)
-				vcol.y = math.Clamp(math.ceil(vcol.y * 255), 0, 255)
-				vcol.z = math.Clamp(math.ceil(vcol.z * 255), 0, 255)
-				ent:SetKeyValue("lightcolor", vcol.x.." "..vcol.y.." "..vcol.z.." "..255)
+				ent:SetKeyValue("lightcolor", vcol.r.." "..vcol.g.." "..vcol.b.." "..255)
 			else
 				ent:SetKeyValue("lightcolor", "200 220 255 255")
 			end
@@ -198,7 +190,12 @@ function ENT:PhysicsSimulate(phys, frametime)
 	phys:EnableGravity(false)
 	phys:SetAngleDragCoefficient(10000)
 	phys:SetVelocityInstantaneous(vel)
-	phys:AddAngleVelocity(Vector(0, 0, math.Clamp(math.AngleDifference(eyeangles.yaw, phys:GetAngles().yaw), -32, 32) * frametime * 3))
+	local diff = math.AngleDifference(eyeangles.yaw, phys:GetAngles().yaw)
+	local z = math.Clamp(diff, -32, 32) * frametime * 10
+	local curz = phys:GetAngleVelocity().z
+	z = z - curz * (frametime * math.min(1, math.abs(z - curz) ^ 2 * 0.02))
+
+	phys:AddAngleVelocity(Vector(0, 0, z))
 
 	return SIM_NOTHING
 end
@@ -343,68 +340,3 @@ function ENT:SetupPlayerVisibility(pl)
 end
 
 if CLIENT then return end
-
-local ENT = {}
-
-ENT.Type = "anim"
-
-function ENT:Initialize()
-	local size = self.Size or 16
-
-	self:SetNoDraw(true)
-	self:DrawShadow(false)
-
-	self:SetCollisionGroup(COLLISION_GROUP_WORLD)
-
-	local vecsize = Vector(size, size, size)
-	self:PhysicsInitBox(vecsize * -1, vecsize)
-	self:SetSolid(SOLID_BBOX)
-	self:SetMoveType(MOVETYPE_NONE)
-	self:SetCollisionBounds(vecsize * -1, vecsize)
-
-	self:SetUseType(SIMPLE_USE)
-end
-
---[[function ENT:OnTakeDamage(dmginfo)
-	local parent = self:GetParent()
-	if parent:IsValid() then
-		parent._AllowDamage = true
-		parent:TakePhysicsDamage(dmginfo)
-		parent:TakeDamage(dmginfo)
-		parent._AllowDamage = false
-	end
-end]]
-
-function ENT:Use(ent)
-	local parent = self:GetParent()
-	if parent:IsValid() then
-		parent:Use(ent, ent, 0, 0)
-	end
-end
-
--- Unfortunately I couldn't come up with a way to do this without hijacking these rather expensive functions.
-local oldtl = util.TraceLine
-function util.TraceLine(t)
-	local r = oldtl(t)
-	local e = r.Entity
-	if e:IsValid() and e:GetClass() == "fhb" then
-		r.Entity = e:GetParent()
-	end
-	return r
-end
-
-local oldth = util.TraceHull
-function util.TraceHull(t)
-	local r = oldth(t)
-	local e = r.Entity
-	if e:IsValid() and e:GetClass() == "fhb" then
-		r.Entity = e:GetParent()
-	end
-	return r
-end
-
-function ENT:UpdateTransmitState()
-	return TRANSMIT_NEVER
-end
-
-scripted_ents.Register(ENT, "fhb")

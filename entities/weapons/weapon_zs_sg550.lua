@@ -2,7 +2,7 @@
 
 if CLIENT then
 	SWEP.PrintName = "'헬베티카' DMR"
-	SWEP.Description = "피격 지점이 사용자에게서 멀어질수록 추가적인 피해를 입힌다."
+	SWEP.Description = "적 몸의 어느 부분을 맞추든 똑같은 피해가 들어간다."
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -25,20 +25,20 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 16
+SWEP.Primary.Damage = 48
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.25
+SWEP.Primary.Delay = 0.27
 SWEP.Recoil = 1.76
 SWEP.DefaultRecoil = 1.76
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = "ar2"
-SWEP.Primary.DefaultClip = 60
+SWEP.Primary.Ammo = "357"
+SWEP.Primary.DefaultClip = 40
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.005
+SWEP.ConeMax = 0.006
 SWEP.ConeMin = 0.001
 
 SWEP.MovingConeOffset = 0.14
@@ -49,28 +49,21 @@ SWEP.IronSightsAng = Vector(0, 0, 0)
 
 
 SWEP.WalkSpeed = SPEED_SLOW
-
-SWEP.TracerName = "Tracer"
+SWEP.IgnoreDamageScaling = true
+SWEP.TracerName = "AR2Tracer"
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
 function SWEP:Think()
 	if (self.Owner:Crouching() and self:GetIronsights()) then
-		self.Recoil = self.DefaultRecoil*0.1
+		self.Recoil = self.DefaultRecoil*0.4
 	else
 		self.Recoil = self.DefaultRecoil
 	end
 	self.BaseClass.Think(self)
 end
-function BulletCallback(attacker, tr, dmginfo)
-	local ent = tr.Entity
-	if ent:IsValid() and tr.HitPos:Distance(attacker:GetPos()) > 100 then
-		dmginfo:AddDamage(math.min(math.floor((tr.HitPos:Distance(attacker:GetPos())-100)/80),30))
-	end
-	GenericBulletCallback(attacker, tr, dmginfo)
-end
-SWEP.BulletCallback = BulletCallback
+
 if CLIENT then
 	SWEP.IronsightsMultiplier = 0.1
 

@@ -1471,7 +1471,7 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 						if not oldwep and weapons.GetStored(oldwep) then return end
 						if sender:HasWeapon(oldwep) then
 							local oldammotype = weapons.GetStored(oldwep).Primary.Ammo
-							sender:StripAmmoByType(oldammotype)
+							--sender:StripAmmoByType(oldammotype)
 							sender:StripWeapon(oldwep)
 						end
 					else
@@ -2130,7 +2130,10 @@ end
 function GM:PlayerDeath(pl, inflictor, attacker)
 	pl.NextSpawnTime = nil
 	if self.PreviouslyDied[pl:UniqueID()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
-		pl.NextSpawnTime = CurTime()+16*(self:CanRespawnQuicker(pl) and 0.5 or 1)
+		local mult = 1
+		if self:CanRespawnQuicker(pl) then mult = mult - 0.25 end
+		if pl:LessPlayersOnTeam() then mult = mult - 0.25 end
+		pl.NextSpawnTime = CurTime()+16*mult
 		net.Start("zs_playerrespawntime")
 			net.WriteFloat(pl.NextSpawnTime)
 			net.WriteEntity(pl)
@@ -2228,8 +2231,11 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 		attacker.HeadshotKilled = attacker.HeadshotKilled + 1
 	end
 	if pl.BountyModifier >0 then
-		pl.BountyModifier = 0
-		if pl.BountyModifier > -10 then
+		if pl.BountyModifier > 6 then 
+			pl.BountyModifier = pl.BountyModifier -2
+		elseif pl.BountyModifier > 0 then
+			pl.BountyModifier = 0
+		elseif pl.BountyModifier > -10 then
 			if pl.BountyModifier < -5 then
 				pl.BountyModifier = pl.BountyModifier-1
 			end
@@ -2237,6 +2243,9 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 		end
 	end
 	if attacker.BountyModifier < 0 then
+		if attacker.BountyModifier < -6 then
+			attacker.BountyModifier = attacker.BountyModifier+2
+		end
 		attacker.BountyModifier = 0
 	else
 		attacker.BountyModifier = attacker.BountyModifier+5
@@ -2276,7 +2285,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	local suicide = attacker == pl or attacker:IsWorld()
 	pl:Freeze(false)
 
-	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1
+	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1 and not inflictor.IgnoreDamageScaling
 	
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()

@@ -9,7 +9,7 @@ if CLIENT then
 	SWEP.HUD3DScale = 0.02
 	
 	SWEP.ViewModelFOV = 60
-	SWEP.Slot = 4
+	SWEP.Slot = 2
 	SWEP.ViewModelFlip = false
 
 	SWEP.VElements = {
@@ -45,9 +45,9 @@ SWEP.WorldModel = "models/weapons/w_smg1.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_Alyx_Gun.Reload")
 SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.18
+SWEP.Primary.Delay = 0.07
 
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
@@ -70,7 +70,6 @@ end
 
 function SWEP:Attack(proj)
 	if (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) and proj:IsValid() then
-		local phys = proj:GetPhysicsObject()
 		self.Owner:EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
 		self:TakeAmmo()
 	
@@ -107,13 +106,13 @@ function SWEP:Think()
 	if (self.LastAttack + self.Primary.Delay*0.75 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
-			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and ent.Owner:IsPlayer() and ent:GetOwner():Team() == ent.Owner:Team())) then					
+			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then				
+				print(ent:GetClass())
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
-				if dot >= 0.55 and (TrueVisibleFilters(center, ent:GetPos(), self, ent, self.Owner)) then
+				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)
 					self.LastAttack = curTime
 					self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*0.75)
-					break
 				end
 			end
 		end

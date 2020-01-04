@@ -38,6 +38,30 @@ function meta:ChangeTeam(teamid)
 	self:CollisionRulesChanged()
 end
 
+function meta:ProcessDamage(dmginfo)
+	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
+	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
+	local lasthitgroup = self:LastHitGroup()
+	if attacker:IsPlayer() then
+		if attacker:LessPlayersOnTeam() and attackweapon and not attackweapon.NoScaleToLessPlayers then
+			dmginfo:ScaleDamage(1.25)
+		end
+		if self:GetBodyArmor() and self:GetBodyArmor() > 0 then
+			if attackweapon and attackweapon.IsMelee or dmginfo:IsDamageType(DMG_BLAST) then
+				dmginfo:ScaleDamage(0.4)
+			elseif !dmginfo:IsDamageType(DMG_NERVEGAS) and !dmginfo:IsDamageType(DMG_DISSOLVE) and !dmginfo:IsDamageType(DMG_DIRECT) 
+			and not attackweapon.IgnoreDamageScaling and not (lasthitgroup == HITGROUP_HEAD) and attackweapon then
+				dmginfo:ScaleDamage(0.5)
+			end
+			local ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
+			self:AddBodyArmor(dmginfo:GetDamage()*-ratio)
+		end
+	end
+	if self.DamageVulnerability then
+		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageVulnerability)
+	end
+end
+
 function meta:AddLifeBarricadeDamage(amount)
 	self.LifeBarricadeDamage = self.LifeBarricadeDamage + amount
 
@@ -168,23 +192,6 @@ function meta:UpdateBodyArmor()
 end
 
 function meta:SendHint()
-end
-
-function meta:GiveBallisticShield(health)
-	local curtime = CurTime()
-	if self:IsOnGround() and self:Alive() then
-		local ent = ents.Create("prop_ballisticshield")
-		if ent:IsValid() then
-			ent:SetPos(self:GetPos() + self:GetRight() * -48)
-			ent:SetAngles(self:GetAngles())
-			ent:SetOwner(self)
-			ent:Spawn()
-			if health then
-				ent:SetMaxObjectHealth(health)
-				ent:SetObjectHealth(ent:GetMaxObjectHealth())
-			end
-		end
-	end
 end
 
 local function RemoveSkyCade(groundent, timername)

@@ -174,13 +174,6 @@ function meta:WouldDieFrom(damage, hitpos)
 	return self:Health() <= damage
 end
 
-function meta:ProcessDamage(dmginfo)
-	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
-	if self.DamageVulnerability then
-		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageVulnerability)
-	end
-end
-
 function meta:KnockDown(time)
 	if self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT then
 		self:GiveStatus("knockdown", time or 3)

@@ -114,6 +114,7 @@ GM:AddPointShopItem(0,"z9000", "'Z9000' 펄스 권총", nil, ITEMCAT_GUNS, 15, "
 GM:AddPointShopItem(0,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 25, "weapon_zs_deagle")
 GM:AddPointShopItem(0,"nailgun", "리벳건", nil, ITEMCAT_GUNS, 17, "weapon_zs_nailgun").NoClassicMode = true
 
+GM:AddPointShopItem(1,"whirlwind", "'비르벨빈트' 국지방어기", nil, ITEMCAT_GUNS, 50, "weapon_zs_whirlwind")
 GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴 샷건", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
@@ -128,7 +129,6 @@ GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100,
 GM:AddPointShopItem(2,"annabelle", "'애나벨' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_annabelle")
 GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 GM:AddPointShopItem(2,"uzi", "'스프레이어' Uzi 9mm", nil, ITEMCAT_GUNS, 115, "weapon_zs_uzi")
-GM:AddPointShopItem(2,"whirlwind", "'비르벨빈트' 국지방어기", nil, ITEMCAT_GUNS, 98, "weapon_zs_whirlwind")
 GM:AddPointShopItem(2,"stalker", "'스토커' M4", nil, ITEMCAT_GUNS, 120, "weapon_zs_m4")
 GM:AddPointShopItem(2,"immortal", "'불멸' 권총", nil, ITEMCAT_GUNS, 130, "weapon_zs_immortal")
 GM:AddPointShopItem(2,"ioncannon", "이온 캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
@@ -288,8 +288,8 @@ GM.MapWhitelist = {
 	--"zs_plague",
 	--"zs_port_v4",
 	--"zs_raunchyhouse_v2",
-	"zs_ravine",
-	"zs_scrapmetal_v2_fixed",
+	--"zs_ravine",
+	--"zs_scrapmetal_v2_fixed",
 	"zs_slugde_fixed",
 	"zs_trainstation",
 	"zs_urbandecay2",
@@ -311,7 +311,7 @@ end
 
 -- Utility function to setup weapon default aim stats.
 function GM:SetupAimDefaults(tab,primtab)
-	tab.AimExpandUnit = math.Round((tab.ConeMax - tab.ConeMin)/math.min(primtab.Delay*primtab.ClipSize,1.45),4)
+	tab.AimExpandUnit = math.Round((tab.ConeMax - tab.ConeMin)/math.min(primtab.Delay*primtab.ClipSize,1.3),4)
 	tab.AimCollapseUnit = (tab.ConeMax - tab.ConeMin)*4
 	tab.AimExpandStayDuration = tab.Primary.Delay*0.75
 end

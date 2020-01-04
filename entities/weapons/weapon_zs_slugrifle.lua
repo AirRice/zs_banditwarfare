@@ -38,13 +38,13 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_AWP.Single")
 SWEP.Primary.Damage = 60
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 1.5
+SWEP.Primary.Delay = 1.2
 SWEP.ReloadDelay = SWEP.Primary.Delay
 
-SWEP.Primary.ClipSize = 2
+SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
-SWEP.Primary.DefaultClip = 10
+SWEP.Primary.DefaultClip = 12
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN

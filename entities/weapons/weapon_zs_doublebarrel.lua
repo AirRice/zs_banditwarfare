@@ -43,7 +43,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
 SWEP.Primary.Damage = 7
-SWEP.Primary.NumShots = 8
+SWEP.Primary.NumShots = 7
 SWEP.Primary.Delay = 0.4
 SWEP.Recoil = 5.71
 SWEP.ReloadDelay = 0.8
@@ -80,10 +80,15 @@ function SWEP:Reload()
 end
 
 function SWEP:SecondaryAttack()
+	local owner = self.Owner
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitSound("weapons/shotgun/shotgun_dbl_fire.wav")
 	local clip = self:Clip1()
-	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * 1.75, self:GetCone())
+	self:ShootBullets(self.Primary.Damage, math.floor(self.Primary.NumShots * 1.75), self:GetCone())
+	if owner and owner:IsValid() and owner:IsPlayer() and SERVER then
+		owner.ShotsFired = owner.ShotsFired + math.floor(self.Primary.NumShots * 1.75)
+		owner.LastShotWeapon = self:GetClass()
+	end	
 	self:TakePrimaryAmmo(clip)
 end
 

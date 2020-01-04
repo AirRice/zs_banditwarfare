@@ -2,6 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "오함마"
+	SWEP.Description = "적 바리케이드에는 3배의 피해를 가한다."
 	SWEP.ViewModelFOV = 75
 end
 
@@ -38,4 +39,16 @@ end
 
 function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 75, math.Rand(86, 90))
+end
+
+function SWEP:OnMeleeHit(hitent, hitflesh, tr)
+	if IsValid(hitent) then
+		if not hitent:IsPlayer() and self.Owner:IsPlayer() then
+			if hitent:GetClass() == "prop_drone" or hitent:GetClass() == "prop_manhack" and not hitent:IsSameTeam(self.Owner) and SERVER then
+				hitent:Destroy()
+			elseif (hitent:IsNailed() and not hitent:IsSameTeam(self.Owner)) or (hitent.IsBarricadeObject and not hitent:IsSameTeam(self.Owner) and SERVER) then
+				hitent:TakeSpecialDamage(self.MeleeDamage * 2, DMG_DIRECT, self.Owner, self, tr.HitPos)
+			end
+		end
+	end
 end

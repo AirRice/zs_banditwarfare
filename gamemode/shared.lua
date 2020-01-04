@@ -278,34 +278,19 @@ end
 
 function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	
+	local attacker = dmginfo:GetAttacker()
+	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
+	local headshot = hitgroup == HITGROUP_HEAD
+	if attackweapon.IgnoreDamageScaling then return end
 	if hitgroup == HITGROUP_HEAD and dmginfo:IsBulletDamage() then
 		pl.m_LastHeadShot = CurTime()
 	end
-	local attacker = dmginfo:GetAttacker()
-	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
-	
-	if attacker:IsPlayer() then
-		if attacker:LessPlayersOnTeam() and not attackweapon.NoScaleToLessPlayers then
-			dmginfo:ScaleDamage(1.25)
-		end
-		if pl:GetBodyArmor() and pl:GetBodyArmor() > 0 then
-			if hitgroup ~= HITGROUP_HEAD and !dmginfo:IsDamageType(DMG_NERVEGAS) and !dmginfo:IsDamageType(DMG_DISSOLVE) then
-				dmginfo:ScaleDamage(0.5)
-			elseif attackweapon.IsMelee or dmginfo:IsDamageType(DMG_BLAST) then
-				dmginfo:ScaleDamage(0.4)
-			end
-		end
-	end
-	if hitgroup == HITGROUP_HEAD then
+	if headshot then
 		dmginfo:ScaleDamage(1.5)
 	elseif hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_GEAR then
 		dmginfo:ScaleDamage(0.5)
 	elseif hitgroup == HITGROUP_STOMACH or hitgroup == HITGROUP_LEFTARM or hitgroup == HITGROUP_RIGHTARM then
 		dmginfo:ScaleDamage(1)
-	end
-	if pl:GetBodyArmor() and pl:GetBodyArmor() > 0 then
-		local ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
-		pl:AddBodyArmor(dmginfo:GetDamage()*-ratio)
 	end
 	if SERVER and (hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG) and self:PlayerShouldTakeDamage(pl, dmginfo:GetAttacker()) then
 		pl:AddLegDamage(dmginfo:GetDamage())
