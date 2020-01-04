@@ -126,13 +126,14 @@ end
 
 function meta:ResetBones(onlyscale)
 	local v = Vector(1, 1, 1)
+	local bcount = self.BuildingBones or self:GetBoneCount() - 1
 	if onlyscale then
-		for i=0, self:GetBoneCount() - 1 do
+		for i=0, bcount do
 			self:ManipulateBoneScale(i, v)
 		end
 	else
 		local a = Angle(0, 0, 0)
-		for i=0, self:GetBoneCount() - 1 do
+		for i=0, bcount do
 			self:ManipulateBoneScale(i, v)
 			self:ManipulateBoneAngles(i, a)
 			self:ManipulateBonePosition(i, vector_origin)

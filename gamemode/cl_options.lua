@@ -37,11 +37,6 @@ CreateClientConVar("zs_alwaysvolunteer", "0", true, true)
 CreateClientConVar("zs_nobosspick", "0", true, true)
 CreateClientConVar("zsb_spectator", "0", true, true)
 
-GM.SuicideOnChangeClass = CreateClientConVar("zs_suicideonchange", "1", true, false):GetBool()
-cvars.AddChangeCallback("zs_suicideonchange", function(cvar, oldvalue, newvalue)
-	GAMEMODE.SuicideOnChangeClass = tonumber(newvalue) == 1
-end)
-
 GM.BeatsVolume = math.Clamp(CreateClientConVar("zs_beatsvolume", 80, true, false):GetInt(), 0, 100) / 100
 cvars.AddChangeCallback("zs_beatsvolume", function(cvar, oldvalue, newvalue)
 	GAMEMODE.BeatsVolume = math.Clamp(tonumber(newvalue) or 0, 0, 100) / 100
@@ -94,29 +89,3 @@ end)
 
 CreateConVar( "cl_playercolor", "0.24 0.34 0.41", { FCVAR_ARCHIVE, FCVAR_USERINFO }, "The value is a Vector - so between 0-1 - not between 0-255" )
 CreateConVar( "cl_weaponcolor", "0.30 1.80 2.10", { FCVAR_ARCHIVE, FCVAR_USERINFO }, "The value is a Vector - so between 0-1 - not between 0-255" )
-
-GM.BeatSetHuman = CreateClientConVar("zs_beatset_human", "default", true, false):GetString()
-cvars.AddChangeCallback("zs_beatset_human", function(cvar, oldvalue, newvalue)
-	newvalue = tostring(newvalue)
-	if newvalue == "default" then
-		GAMEMODE.BeatSetHuman = GAMEMODE.BeatSetHumanDefault
-	else
-		GAMEMODE.BeatSetHuman = newvalue
-	end
-end)
-if GM.BeatSetHuman == "default" then
-	GM.BeatSetHuman = GM.BeatSetHumanDefault
-end
-
-GM.BeatSetZombie = CreateClientConVar("zs_beatset_zombie", "default", true, false):GetString()
-cvars.AddChangeCallback("zs_beatset_zombie", function(cvar, oldvalue, newvalue)
-	newvalue = tostring(newvalue)
-	if newvalue == "default" then
-		GAMEMODE.BeatSetZombie = GAMEMODE.BeatSetZombieDefault
-	else
-		GAMEMODE.BeatSetZombie = newvalue
-	end
-end)
-if GM.BeatSetZombie == "default" then
-	GM.BeatSetZombie = GM.BeatSetZombieDefault
-end

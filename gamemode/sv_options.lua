@@ -87,6 +87,23 @@ GM.HonorableMentions[HM_MOSTDAMAGETOENEMY].GetPlayer = function(self)
 	end
 end
 
+GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
+	for _, pl in pairs(player.GetAll()) do
+		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
+	end
+end
+
+GM.HonorableMentions[HM_MOSTHELPFUL].GetPlayer = function(self)
+	return GetMostKey("EnemyKilledAssists")
+end
+
+GM.HonorableMentions[HM_USEFULTOOPPOSITE].GetPlayer = function(self)
+	local pl, mag = GetMostFunc("Deaths")
+	if mag and mag >= 10 then
+		return pl, mag
+	end
+end
+
 GM.HonorableMentions[HM_BLACKCOW].GetPlayer = function(self)
 	local pl, amount = GetMostKey("PointsSpent")
 	if pl and amount then
@@ -102,15 +119,17 @@ GM.HonorableMentions[HM_HACKER].GetPlayer = function(self)
 end
 
 GM.HonorableMentions[HM_COMMSUNIT].GetPlayer = function(self)
-	local pl, amount = GetMostKey("TimeCapping")
-	if pl and amount then
-		return pl, math.ceil(amount)
-	end
-end
-
-GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
+	local top = 0
+	local toppl
 	for _, pl in pairs(player.GetAll()) do
-		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
+		if pl.TimeCapping and pl.TimeCapping > top then
+			top = pl.TimeCapping
+			toppl = pl
+		end
+	end
+
+	if toppl and top >= 1 then
+		return toppl, math.ceil(top)
 	end
 end
 
@@ -128,26 +147,35 @@ GM.HonorableMentions[HM_HANDYMAN].GetPlayer = function(self)
 	end
 end
 
-GM.HonorableMentions[HM_MOSTHELPFUL].GetPlayer = function(self)
-	return GetMostKey("EnemyKilledAssists")
-end
-
 GM.HonorableMentions[HM_BARRICADEDESTROYER].GetPlayer = function(self)
 	return GetMostKey("BarricadeDamage")
 end
 
-GM.HonorableMentions[HM_USEFULTOOPPOSITE].GetPlayer = function(self)
-	local pl, mag = GetMostFunc("Deaths")
+
+GM.HonorableMentions[HM_KILLSTREAK].GetPlayer = function(self)
+	local pl, amount = GetMostKey("HighestLifeEnemyKills")
+	if pl and amount and amount >= 4 then
+		return pl, amount
+	end
+end
+
+GM.HonorableMentions[HM_WARRIOR].GetPlayer = function(self)
+	local pl, amount = GetMostKey("MeleeKilled")
+	if pl and amount and amount >= 3 then
+		return pl, amount
+	end
+end
+
+GM.HonorableMentions[HM_HEADSHOTS].GetPlayer = function(self)
+	local pl, amount = GetMostKey("HeadshotKilled")
+	if pl and amount and amount >= 3 then
+		return pl, amount
+	end
+end
+
+GM.HonorableMentions[HM_BESTAIM].GetPlayer = function(self)
+	local pl, mag = GetMostFunc("GetAimAccuracy")
 	if mag and mag >= 10 then
 		return pl, mag
 	end
 end
-
-
---[[GM.HonorableMentions[HM_SALESMAN].GetPlayer = function(self)
-	return GetMostKey("PointsCommission")
-end
-
-GM.HonorableMentions[HM_WAREHOUSE].GetPlayer = function(self)
-	return GetMostKey("ResupplyBoxUsedByOthers")
-end]]

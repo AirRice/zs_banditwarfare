@@ -88,9 +88,6 @@ function meta:NearestDismemberableBone(pos)
 
 	return Dismembers[nearest]
 end
-function meta:HasWon()
-	return false
-end
 
 local TEAM_SPECTATOR = TEAM_SPECTATOR
 function meta:IsSpectator()
@@ -148,25 +145,29 @@ function meta:AddLegDamage(damage)
 end
 
 function meta:SetLegDamage(damage)
-	self.LegDamage = CurTime() + math.min(GAMEMODE.MaxLegDamage, damage * 0.125)
+	self.LegDamage = math.Clamp(damage,0,GAMEMODE.MaxLegDamage)
 	if SERVER then
 		self:UpdateLegDamage()
 	end
 end
 
-function meta:RawSetLegDamage(time)
-	self.LegDamage = math.min(CurTime() + GAMEMODE.MaxLegDamage, time)
+function meta:SetBodyArmor(armor)
+	self.BodyArmor = armor
 	if SERVER then
-		self:UpdateLegDamage()
+		self:UpdateBodyArmor()
 	end
 end
 
-function meta:RawCapLegDamage(time)
-	self:RawSetLegDamage(math.max(self.LegDamage or 0, time))
+function meta:AddBodyArmor(armor)
+	self:SetBodyArmor(math.Clamp(self:GetBodyArmor()+armor,0,GAMEMODE.MaxBodyArmor))
+end
+
+function meta:GetBodyArmor()
+	return self.BodyArmor
 end
 
 function meta:GetLegDamage()
-	return math.max(0, (self.LegDamage or 0) - CurTime())
+	return math.max(0, (self.LegDamage or 0))
 end
 
 function meta:WouldDieFrom(damage, hitpos)
@@ -175,18 +176,8 @@ end
 
 function meta:ProcessDamage(dmginfo)
 	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
-
 	if self.DamageVulnerability then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageVulnerability)
-	end
-
-	if attacker:IsValid() and attacker:IsPlayer() and (attacker:Team() == TEAM_BANDIT or attacker:Team() == TEAM_HUMAN) and inflictor:IsValid() and inflictor == attacker:GetActiveWeapon() then
-		local damage = dmginfo:GetDamage()
-
-		local scale = inflictor.SlowDownScale or 1
-		if damage >= 40 or scale > 1 then
-			self:RawCapLegDamage(self:GetLegDamage() + CurTime() + damage * 0.04)
-		end
 	end
 end
 
@@ -332,7 +323,7 @@ end
 function meta:ShouldNotCollide(ent)
 	if ent:IsValid() then
 		if ent:IsPlayer() then
-			return self:Team() == ent:Team() or self.NoCollideAll or ent.NoCollideAll
+			return self:Team() == ent:Team()
 		end
 		return self:GetBarricadeGhosting() and ent:IsBarricadeProp() and ent:IsSameTeam(self) or (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and ent:GetPhysicsObject():IsValid() and ent:GetPhysicsObject():HasGameFlag(FVPHYSICS_PLAYER_HELD)
 	end
@@ -482,7 +473,7 @@ end
 if not meta.OldAlive then
 	meta.OldAlive = meta.Alive
 	function meta:Alive()
-		return self:GetObserverMode() == OBS_MODE_NONE and not self.NeverAlive and self:OldAlive()
+		return self:GetObserverMode() == OBS_MODE_NONE and self:OldAlive()
 	end
 end
 
@@ -511,7 +502,8 @@ function meta:PlayPainSound()
 	if CurTime() < self.NextPainSound then return end
 
 	local snds
-
+	
+	if (self:Team() == TEAM_BANDIT or self:Team() == TEAM_HUMAN) then
 		local set = GAMEMODE.VoiceSets[self.VoiceSet]
 		if set then
 			local health = self:Health()
@@ -523,7 +515,7 @@ function meta:PlayPainSound()
 				snds = set.PainSoundsHeavy
 			end
 		end
-
+	end
 	if snds then
 		local snd = snds[math.random(#snds)]
 		if snd then

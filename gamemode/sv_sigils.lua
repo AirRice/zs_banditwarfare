@@ -144,11 +144,11 @@ function GM:CreateSigils()
 		local id = 1
 		if #nodes >=8 then
 			if math.random(1,4) == 1 then
-				id = math.random(math.floor(#nodes/2),#nodes)
+				id = math.random(math.floor(#nodes/3),math.floor(#nodes/3)*2)
 			elseif math.random(1,4) == 4 then
-				id = math.random(1,3)
+				id = math.random(4,math.floor(#nodes/3))
 			else
-				id = math.random(4,math.floor(#nodes/2))
+				id = math.random(1,3)
 			end
 		else
 			id = math.random(1,#nodes)

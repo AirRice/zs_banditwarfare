@@ -67,27 +67,24 @@ function meta:GetMaxHealth()
 end
 
 function meta:DoHulls()
+	self:SetIK(true)
 
-		self:SetIK(true)
+	self:SetModelScale(DEFAULT_MODELSCALE, 0)
+	self:ResetHull()
+	self:SetViewOffset(DEFAULT_VIEW_OFFSET)
+	self:SetViewOffsetDucked(DEFAULT_VIEW_OFFSET_DUCKED)
+	self:SetStepSize(DEFAULT_STEP_SIZE)
+	self:SetJumpPower(DEFAULT_JUMP_POWER)
 
-		self:SetModelScale(DEFAULT_MODELSCALE, 0)
-		self:ResetHull()
-		self:SetViewOffset(DEFAULT_VIEW_OFFSET)
-		self:SetViewOffsetDucked(DEFAULT_VIEW_OFFSET_DUCKED)
-		self:SetStepSize(DEFAULT_STEP_SIZE)
-		self:SetJumpPower(DEFAULT_JUMP_POWER)
+	if self.ClientsideModelScale then
+		self.ClientsideModelScale = nil
+		self:DisableMatrix("RenderMultiply")
+	end
 
-		if self.ClientsideModelScale then
-			self.ClientsideModelScale = nil
-			self:DisableMatrix("RenderMultiply")
-		end
-		self.NoCollideAll = nil
-		self.AllowTeamDamage = nil
-		self.NeverAlive = nil
-		local phys = self:GetPhysicsObject()
-		if phys:IsValid() then
-			phys:SetMass(DEFAULT_MASS)
-		end
+	local phys = self:GetPhysicsObject()
+	if phys:IsValid() then
+		phys:SetMass(DEFAULT_MASS)
+	end
 end
 
 net.Receive("zs_dohulls", function(length)

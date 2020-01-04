@@ -730,7 +730,6 @@ function GM:RestartRound()
 
 	self:InitPostEntity()
 
-	--self:RevertZombieClasses()
 end
 
 function GM:_HUDShouldDraw(name)
@@ -912,7 +911,7 @@ function GM:LastHumanMessage()
 end
 
 function GM:PlayerShouldTakeDamage(pl, attacker)
-	return pl == attacker or not attacker:IsPlayer() or pl:Team() ~= attacker:Team() or pl.AllowTeamDamage or attacker.AllowTeamDamage
+	return pl == attacker or not attacker:IsPlayer() or pl:Team() ~= attacker:Team()
 end
 
 function GM:SetWave(wave)
@@ -922,7 +921,6 @@ end
 --[[local texGradientUp = surface.GetTextureID("vgui/gradient_up")
 local texGradientDown = surface.GetTextureID("vgui/gradient_down")
 local texGradientRight = surface.GetTextureID("vgui/gradient-r")]]
-local matFilmGrain = Material("zombiesurvival/filmgrain/filmgrain")
 --local color_black = color_black
 function GM:_HUDPaintBackground()
 	--[[local w, h = ScrW(), ScrH()
@@ -1082,7 +1080,7 @@ function GM:_CreateMove(cmd)
 	end
 
 	-- Disables bunny hopping to an extent.
-	if MySelf:GetLegDamage() >= 0.5 then
+	if MySelf:GetLegDamage() >= 30 then
 		if PressingJump(cmd) then
 			DontPressJump(cmd)
 		end
@@ -1102,8 +1100,6 @@ function GM:_CreateMove(cmd)
 	else
 		BHopTime = CurTime() + 0.065
 	end
-
-	local myteam = MySelf:Team()
 end
 
 function GM:CreateMoveTaunt(cmd)
@@ -1145,10 +1141,10 @@ local undomodelblend = false
 local undozombievision = false
 local matWhite = Material("models/debug/debugwhite")
 function GM:_PrePlayerDraw(pl)
-
 	local shadowman = false
 
-	if pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then -- We need to do this otherwise the player's real model shows up for some reason.
+	if pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then 
+	-- We need to do this otherwise the player's real model shows up for some reason.
 		undomodelblend = true
 		render.SetBlend(0)
 	else
@@ -1178,12 +1174,13 @@ end
 local colFriend = Color(10, 255, 10, 60)
 local matFriendRing = Material("SGM/playercircle")
 function GM:_PostPlayerDraw(pl)
-		render.SetBlend(1)
-		render.ModelMaterialOverride()
-		render.SetColorModulation(1, 1, 1)
-		render.SuppressEngineLighting(false)
-		cam.IgnoreZ(false)
-		undomodelblend = false
+
+	render.SetBlend(1)
+	render.ModelMaterialOverride()
+	render.SetColorModulation(1, 1, 1)
+	render.SuppressEngineLighting(false)
+	cam.IgnoreZ(false)
+	undomodelblend = false
 
 	if pl ~= MySelf and MySelf:Team() == pl:Team() and pl:IsFriend() then
 		local pos = pl:GetPos() + Vector(0, 0, 2)
@@ -1328,6 +1325,7 @@ end
 
 function GM:PlayerStepSoundTime(pl, iType, bWalking)
 
+
 	if iType == STEPSOUNDTIME_NORMAL or iType == STEPSOUNDTIME_WATER_FOOT then
 		return 520 - pl:GetVelocity():Length()
 		
@@ -1392,6 +1390,10 @@ end)
 
 net.Receive("zs_legdamage", function(length)
 	LocalPlayer().LegDamage = net.ReadFloat()
+end)
+
+net.Receive("zs_bodyarmor", function(length)
+	LocalPlayer().BodyArmor = net.ReadFloat()
 end)
 
 net.Receive("zs_playerrespawntime", function(length)
@@ -1538,10 +1540,6 @@ net.Receive("zs_gamestate", function(length)
 	gamemode.Call("SetWaveStart", wavestart)
 	gamemode.Call("SetWaveEnd", waveend)
 end)
-
-local matSkull = Material("zombiesurvival/horderally")
-local bossspawnedend
-
 
 net.Receive("zs_centernotify", function(length)
 	local tab = net.ReadTable()

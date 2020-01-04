@@ -176,9 +176,6 @@ function GM:AddResources()
 	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonspit.vmt")
 	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonflesh.vmt")
 	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonflesh.vmt")
-	
-	resource.AddFile("materials/zombiesurvival/filmgrain/filmgrain.vmt")
-	resource.AddFile("materials/zombiesurvival/filmgrain/filmgrain.vtf")
 
 	for _, filename in pairs(file.Find("sound/zombiesurvival/*.ogg", "GAME")) do
 		resource.AddFile("sound/zombiesurvival/"..filename)
@@ -227,7 +224,7 @@ function GM:AddResources()
 	resource.AddFile("models/weapons/v_aegiskit.mdl")
 
 	resource.AddFile("materials/models/weapons/v_hand/armtexture.vmt")
-
+	
 	resource.AddFile("models/weapons/v_supershorty/v_supershorty.mdl")
 	resource.AddFile("models/weapons/w_supershorty.mdl")
 	for _, filename in pairs(file.Find("materials/weapons/v_supershorty/*.vmt", "GAME")) do
@@ -310,7 +307,6 @@ function GM:Initialize()
 	self:AddCustomAmmo()
 	self:AddNetworkStrings()
 	self:LoadProfiler()
-
 	
 	game.ConsoleCommand("fire_dmgscale 1\n")
 	game.ConsoleCommand("mp_flashlight 1\n")
@@ -342,6 +338,7 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_lifestatsbe")
 	util.AddNetworkString("zs_commission")
 	util.AddNetworkString("zs_capture")
+	
 	util.AddNetworkString("zs_healother")
 	util.AddNetworkString("zs_repairobject")
 	util.AddNetworkString("zs_worldhint")
@@ -349,9 +346,11 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_floatscore")
 	util.AddNetworkString("zs_floatscore_vec")
 
+	
 	util.AddNetworkString("zs_dmg")
 	util.AddNetworkString("zs_dmg_prop")
 	util.AddNetworkString("zs_legdamage")
+	util.AddNetworkString("zs_bodyarmor")
 	util.AddNetworkString("zs_currentsigils")
 	util.AddNetworkString("zs_hitmarker")
 	
@@ -656,6 +655,10 @@ function GM:Think()
 	
 	local allplayers = player.GetAll()
 	for _, pl in pairs(allplayers) do
+		if pl:GetLegDamage() > 0 and pl.LastLegDamageThink + self.LegDamageDecayTime <= time then
+			pl:SetLegDamage(math.max(0,pl:GetLegDamage()-self.LegDamageDecay))
+			pl.LastLegDamageThink = time
+		end
 		if pl:GetBarricadeGhosting() then
 			pl:BarricadeGhostingThink()
 		end
@@ -978,7 +981,13 @@ function GM:InitPostEntityMap()
 	for _, ent in pairs(ents.FindByClass("prop_weapon")) do if GAMEMODE:IsClassicMode() then ent.PlacedInMap = true else ent:Remove() end end
 end
 
-local function EndRoundPlayerShouldTakeDamage(pl, attacker) return attacker:IsPlayer() end
+local function EndRoundPlayerShouldTakeDamage(pl, attacker) 
+	if attacker:IsPlayer() and attacker ~= pl and attacker:Team() == pl:Team() then 
+		return false 
+	end
+	return true
+end
+
 local function EndRoundPlayerCanSuicide(pl) return true end
 
 local function EndRoundSetupPlayerVisibility(pl)
@@ -1023,7 +1032,9 @@ function GM:EndRound(winner)
 	-- Get rid of some lag.
 	util.RemoveAll("prop_ammo")
 	util.RemoveAll("prop_weapon")
-
+	
+	hook.Add("PlayerShouldTakeDamage", "EndRoundShouldTakeDamage", EndRoundPlayerShouldTakeDamage)
+	
 	timer.Simple(5, function() gamemode.Call("DoHonorableMentions") end)
 
 	net.Start("zs_endround")
@@ -1068,7 +1079,7 @@ function GM:PlayerReadyRound(pl)
 	if not pl:IsValid() then return end
 
 	self:FullGameUpdate(pl)
-	
+
 	if self.RoundEnded then
 		pl:SendLua("gamemode.Call(\"EndRound\", "..tostring(ROUNDWINNER)..", \""..game.GetMapNext().."\")")
 		gamemode.Call("DoHonorableMentions", pl)
@@ -1112,6 +1123,7 @@ end
 
 function GM:PlayerInitialSpawnRound(pl)
 	pl:SprintDisable()
+	--pl:RemoveSuit()
 	if pl:KeyDown(IN_WALK) then
 		pl:ConCommand("-walk")
 	end
@@ -1125,7 +1137,11 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.EnemyKilled = 0
 	pl.BountyModifier = 0
 	pl.EnemyKilledAssists = 0
-
+	pl.MeleeKilled = 0
+	pl.ShotsFired = 0
+	pl.ShotsHit = 0
+	pl.LastShotWeapon = nil
+	pl.HeadshotKilled = 0
 	pl.ResupplyBoxUsedByOthers = 0
 
 	pl.WaveJoined = self:GetWave()
@@ -1134,23 +1150,26 @@ function GM:PlayerInitialSpawnRound(pl)
 
 	pl.NextPainSound = 0
 
-	pl.BonusDamageCheck = 0
-
 	pl.LegDamage = 0
-
+	pl:SendLua("LocalPlayer().BodyArmor = 0")
+	pl.BodyArmor = 0
+	pl.LastLegDamageThink = 0
+	
 	pl.DamageDealt = 0
 	pl.TimeCapping = 0
 	pl.LifeBarricadeDamage = 0
 	pl.LifeEnemyDamage = 0
 	pl.LifeEnemyKills = 0
+	pl.HighestLifeEnemyKills = 0
 	
 	pl.m_PointQueue = 0
 	pl.m_LastDamageDealt = 0
 	pl.m_PreRespawn = nil
 
 	pl.HealedThisRound = 0
-	local nosend = not pl.DidInitPostEntity
 	pl.CarryOverHealth = 0
+	local nosend = not pl.DidInitPostEntity
+
 	pl.RepairedThisRound = 0
 	pl.CarryOverRepair = 0
 	pl.PointsSpent = 0
@@ -1209,7 +1228,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	else
 		pl:SetWeapon2("weapon_zs_peashooter")
 	end
-	pl:SetWeaponToolslot("weapon_zs_signalbooster")
+	pl:SetWeaponToolslot("weapon_zs_ammokit")
 	pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 		timer.Simple(0.2, function() pl:Kill() end)
@@ -1987,8 +2006,6 @@ function GM:PlayerHurt(victim, attacker, healthremaining, damage)
 	end
 
 	if (victim:Team() == TEAM_HUMAN or victim:Team() == TEAM_BANDIT) then
-		victim.BonusDamageCheck = CurTime()
-
 		if healthremaining < 75 and 1 <= healthremaining then
 			victim:ResetSpeed(nil, healthremaining)
 		end
@@ -2008,7 +2025,7 @@ function GM:PlayerHurt(victim, attacker, healthremaining, damage)
 
 				attacker:AddLifeEnemyDamage(damage)
 				victim.DamagedBy[attacker] = (victim.DamagedBy[attacker] or 0) + damage
-				attacker.m_PointQueue = attacker.m_PointQueue + damage / victim:GetMaxHealth() * victim:GetBounty() + math.floor(victim:GetPoints()/150)
+				attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / victim:GetMaxHealth(),0,1) * victim:GetBounty()+ math.floor(victim:GetPoints()/150),0) 
 				attacker.m_LastDamageDealtPosition = victim:GetPos()
 				attacker.m_LastDamageDealt = CurTime()
 			end
@@ -2112,7 +2129,7 @@ end
 
 function GM:PlayerDeath(pl, inflictor, attacker)
 	pl.NextSpawnTime = nil
-	if self.PreviouslyDied[pl:UniqueID()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath  then
+	if self.PreviouslyDied[pl:UniqueID()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
 		pl.NextSpawnTime = CurTime()+16*(self:CanRespawnQuicker(pl) and 0.5 or 1)
 		net.Start("zs_playerrespawntime")
 			net.WriteFloat(pl.NextSpawnTime)
@@ -2120,6 +2137,7 @@ function GM:PlayerDeath(pl, inflictor, attacker)
 		net.Broadcast()
 	end
 end
+
 function GM:PostPlayerDeath(pl)
 	local banditcount = 0
 	local humancount = 0
@@ -2174,6 +2192,11 @@ local function SortDist(a, b)
 	return a._temp < b._temp
 end
 
+function GM:CanPlayerSuicide(pl)
+	if self.RoundEnded then return false end
+	return pl:GetObserverMode() == OBS_MODE_NONE and pl:Alive()
+end
+
 function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicide)
 	local totaldamage = 0
 	for otherpl, dmg in pairs(pl.DamagedBy) do
@@ -2191,9 +2214,28 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 			mostdamager = otherpl
 		end
 	end
+	
 	attacker:AddLifeEnemyKills(1)
+	if attacker.HighestLifeEnemyKills and attacker.HighestLifeEnemyKills < attacker.LifeEnemyKills then
+		attacker.HighestLifeEnemyKills = attacker.LifeEnemyKills
+	end
 	attacker:SetKills(attacker:GetKills()+1)
 	attacker.EnemyKilled = attacker.EnemyKilled + 1
+	if inflictor.IsMelee then
+		attacker.MeleeKilled = attacker.MeleeKilled + 1
+	end
+	if headshot then
+		attacker.HeadshotKilled = attacker.HeadshotKilled + 1
+	end
+	if pl.BountyModifier >0 then
+		pl.BountyModifier = 0
+		if pl.BountyModifier > -10 then
+			if pl.BountyModifier < -5 then
+				pl.BountyModifier = pl.BountyModifier-1
+			end
+			pl.BountyModifier = pl.BountyModifier-1
+		end
+	end
 	if attacker.BountyModifier < 0 then
 		attacker.BountyModifier = 0
 	else
@@ -2232,17 +2274,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	local plteam = pl:Team()
 	local ct = CurTime()
 	local suicide = attacker == pl or attacker:IsWorld()
-	if not suicide then
-		if pl.BountyModifier >0 then
-			pl.BountyModifier = 0
-			if pl.BountyModifier > -10 then
-				if pl.BountyModifier < -5 then
-					pl.BountyModifier = pl.BountyModifier-1
-				end
-				pl.BountyModifier = pl.BountyModifier-1
-			end
-		end
-	end
 	pl:Freeze(false)
 
 	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1
@@ -2268,7 +2299,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
 	end
-	
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
 	else
@@ -2278,7 +2308,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	pl:RemoveStatus("overridemodel", false, true)
 
 	local assistpl
-
+	
 	pl:PlayDeathSound()
 	if (pl.LifeBarricadeDamage ~= 0 or pl.LifeEnemyDamage ~= 0 or pl.LifeEnemyKills ~= 0) then
 		net.Start("zs_lifestats")
@@ -2297,7 +2327,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	if self:GetWave() == 0 then
 		pl.DiedDuringWave0 = true
 	end
-
+	
 	local frags = pl:Frags()
 	if frags < 0 then
 		pl.ChangeTeamFrags = math.ceil(frags / 5)
@@ -2394,14 +2424,13 @@ end
 
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
+	--pl:RemoveSuit()
 	pl:RemoveStatus("confusion", false, true)
 	if pl:GetMaterial() ~= "" then
 		pl:SetMaterial("")
 	end
-
 	pl:UnSpectate()
 
-	pl.StartCrowing = nil
 	pl.StartSpectating = nil
 	pl.Gibbed = nil
 
@@ -2411,14 +2440,9 @@ function GM:PlayerSpawn(pl)
 	
 	pl:ShouldDropWeapon(false)
 
+	pl:SetBodyArmor(0)
 	pl:SetLegDamage(0)
 	pl:SetLastAttacker()
-	pl.LifeBarricadeDamage = 0
-	pl.LifeEnemyDamage = 0
-	pl.LifeEnemyKills = 0
-	if not self:IsClassicMode() and not self.SuddenDeath then
-		pl:GiveStatus("spawnbuff").Owner = pl
-	end
 	if (pl:Team() == TEAM_SPECTATOR) then
 		if pl:GetInfo("zsb_spectator") == "1" then
 			pl:StripWeapons( )
@@ -2468,14 +2492,23 @@ function GM:PlayerSpawn(pl)
 			else
 				pl:SetWeapon2("weapon_zs_peashooter")
 			end
-			pl:SetWeaponToolslot("weapon_zs_signalbooster")
+			pl:SetWeaponToolslot("weapon_zs_ammokit")
 			pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 		end
 	end
+	pl:RemoveStatus("overridemodel", false, true)
 	self.PreviouslyDied[pl:UniqueID()] = nil 
+			
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
+	
+		pl.HighestLifeEnemyKills = 0
+		pl.LifeBarricadeDamage = 0
+		pl.LifeEnemyDamage = 0
+		pl.LifeEnemyKills = 0
+		pl.DamagedBy = {}
 		pl.m_PointQueue = 0
 		pl.PackedItems = {}
+		
 		local desiredname = pl:GetInfo("cl_playermodel")
 		local randommodel = self.RandomPlayerModels[math.random(#self.RandomPlayerModels)]
 		if #desiredname == 0 then
@@ -2483,7 +2516,7 @@ function GM:PlayerSpawn(pl)
 		end
 		
 		local modelname = player_manager.TranslatePlayerModel(desiredname)
-		if table.HasValue(self.RestrictedModels, lowermodelname) then
+		if table.HasValue(self.RestrictedModels, string.lower(modelname)) then
 			modelname = player_manager.TranslatePlayerModel(randommodel)
 		end
 		local lowermodelname = string.lower(modelname)
@@ -2497,15 +2530,14 @@ function GM:PlayerSpawn(pl)
 		else
 			pl.VoiceSet = "male"
 		end
-
+		
 		pl.HumanSpeedAdder = nil
-
-		pl.BonusDamageCheck = CurTime()
 
 		pl:ResetSpeed()
 		pl:SetJumpPower(DEFAULT_JUMP_POWER)
 		pl:SetCrouchedWalkSpeed(0.65)
-
+		pl:DoHulls()
+		
 		pl:SetNoTarget(false)
 		
 		pl:SetMaxHealth(100)
@@ -2544,6 +2576,9 @@ function GM:PlayerSpawn(pl)
 			end
 			local weptool = pl:Give(pl:GetWeaponToolslot())
 			local wepmelee = pl:Give(pl:GetWeaponMelee())	
+			if not self.SuddenDeath then
+				pl:GiveStatus("spawnbuff").Owner = pl
+			end
 		else
 			local pist = "weapon_zs_peashooter"
 			if (math.random(0,1)==1) then
@@ -2593,7 +2628,6 @@ function GM:WaveStateChanged(newstate)
 					net.WriteString(pl:Name())
 				net.Broadcast()	
 			end
-			pl.BonusDamageCheck = CurTime()
 		end
 		self.LastHumanPosition = nil
 			

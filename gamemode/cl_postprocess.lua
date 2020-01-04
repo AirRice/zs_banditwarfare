@@ -1,21 +1,6 @@
 function GM:RenderScreenspaceEffects()
 end
 
-GM.PostProcessingEnabled = CreateClientConVar("zs_postprocessing", 1, true, false):GetBool()
-cvars.AddChangeCallback("zs_postprocessing", function(cvar, oldvalue, newvalue)
-	GAMEMODE.PostProcessingEnabled = tonumber(newvalue) == 1
-end)
-
-GM.FilmGrainEnabled = CreateClientConVar("zs_filmgrain", 1, true, false):GetBool()
-cvars.AddChangeCallback("zs_filmgrain", function(cvar, oldvalue, newvalue)
-	GAMEMODE.FilmGrainEnabled = tonumber(newvalue) == 1
-end)
-
-GM.FilmGrainOpacity = CreateClientConVar("zs_filmgrainopacity", 50, true, false):GetInt()
-cvars.AddChangeCallback("zs_filmgrainopacity", function(cvar, oldvalue, newvalue)
-	GAMEMODE.FilmGrainOpacity = math.Clamp(tonumber(newvalue) or 0, 0, 255)
-end)
-
 GM.ColorModEnabled = CreateClientConVar("zs_colormod", "1", true, false):GetBool()
 cvars.AddChangeCallback("zs_colormod", function(cvar, oldvalue, newvalue)
 	GAMEMODE.ColorModEnabled = tonumber(newvalue) == 1
@@ -98,75 +83,33 @@ local tColorModHuman = {
 	["$pp_colour_mulb"] = 0
 }
 
-local tColorModZombie = {
-	["$pp_colour_brightness"] = 0,
-	["$pp_colour_contrast"] = 1.25,
-	["$pp_colour_colour"] = 0.5,
-	["$pp_colour_addr"] = 0,
-	["$pp_colour_addg"] = 0,
-	["$pp_colour_addb"] = 0,
-	["$pp_colour_mulr"] = 0,
-	["$pp_colour_mulg"] = 0,
-	["$pp_colour_mulb"] = 0
-}
-
-local tColorModZombieVision = {
-	["$pp_colour_colour"] = 0.75,
-	["$pp_colour_brightness"] = -0.15,
-	["$pp_colour_contrast"] = 1.5,
-	["$pp_colour_mulr"]	= 0,
-	["$pp_colour_mulg"] = 0,
-	["$pp_colour_mulb"] = 0,
-	["$pp_colour_addr"] = 0,
-	["$pp_colour_addg"] = 0,
-	["$pp_colour_addb"] = 0
-}
-
 local redview = 0
-local fear = 0
 local matTankGlass = Material("models/props_lab/Tank_Glass001")
 function GM:_RenderScreenspaceEffects()
 	if MySelf.Confusion and MySelf.Confusion:IsValid() then
 		MySelf.Confusion:RenderScreenSpaceEffects()
 	end
 
-	if not self.PostProcessingEnabled then return end
-
 	if self.DrawPainFlash and self.HurtEffect > 0 then
 		DrawSharpen(1, math_min(6, self.HurtEffect * 3))
 	end
 
-	--[[if MySelf:Team() == TEAM_UNDEAD and self.m_ZombieVision and not matTankGlass:IsError() then
-		render_UpdateScreenEffectTexture()
-		matTankGlass:SetFloat("$envmap", 0)
-		matTankGlass:SetFloat("$envmaptint", 0)
-		matTankGlass:SetFloat("$refractamount", 0.035)
-		matTankGlass:SetInt("$ignorez", 1)
-		render_SetMaterial(matTankGlass)
-		render_DrawScreenQuad()
-	end]]
-
 	if self.ColorModEnabled then
-		if not MySelf:Alive() and MySelf:GetObserverMode() ~= OBS_MODE_CHASE then
-			if not MySelf:HasWon() then
-				tColorModDead["$pp_colour_colour"] = (1 - math_min(1, CurTime() - self.LastTimeAlive)) * 0.5
-				DrawColorModify(tColorModDead)
-			end
+		if not MySelf:Alive() and MySelf:Team() ~= TEAM_SPECTATOR  then
+			tColorModDead["$pp_colour_colour"] = (1 - math_min(1, CurTime() - self.LastTimeAlive)) * 0.5
+			DrawColorModify(tColorModDead)
 		else
 			local curr = tColorModHuman["$pp_colour_addr"]
 			local health = MySelf:Health()
-			if health <= 50 then
-				--tColorModHuman["$pp_colour_addr"] = math_min(0.3 - health * 0.006, curr + FrameTime() * 0.055)
-				redview = math_Approach(redview, 1 - health / 50, FrameTime() * 0.2)
+			if health <= 30 then
+				tColorModHuman["$pp_colour_addr"] = math_min(0.3 - health * 0.006, curr + FrameTime() * 0.055)
+				redview = math_Approach(redview, 1 - health / 30, FrameTime() * 0.2)
 			elseif 0 < curr then
-				--tColorModHuman["$pp_colour_addr"] = math_max(0, curr - FrameTime() * 0.1)
+				tColorModHuman["$pp_colour_addr"] = math_max(0, curr - FrameTime() * 0.1)
 				redview = math_Approach(redview, 0, FrameTime() * 0.2)
 			end
 
 			tColorModHuman["$pp_colour_addr"] = redview * (0.035 + math_abs(math.sin(CurTime() * 2)) * 0.14)
-			tColorModHuman["$pp_colour_brightness"] = fear * -0.045
-			tColorModHuman["$pp_colour_contrast"] = 1 + fear * 0.15
-			tColorModHuman["$pp_colour_colour"] = 1 - fear * 0.725 --0.85
 
 			DrawColorModify(tColorModHuman)
 		end

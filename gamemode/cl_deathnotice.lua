@@ -190,7 +190,7 @@ net.Receive("zs_pl_kill_pl", function(length)
 				gamemode.Call("FloatingScore", victim, "floatingscore_kill", 1, 0)
 			end
 		end
-
+		
 		print(attackername.." killed "..victimname.." with "..inflictor..".")
 
 		--gamemode.Call("AddDeathNotice", attackername, attackerteam, inflictor, victimname, victimteam, headshot)
@@ -244,7 +244,6 @@ net.Receive("zs_pl_kill_self", function(length)
 		local victimname = victim:Name()
 
 		print(victimname.." 는 자살함.")
-
 		--gamemode.Call("AddDeathNotice", nil, 0, "suicide", victimname, victimteam)
 		GAMEMODE:TopNotify({killicon = "suicide"}, " ", victim)
 	end
@@ -303,7 +302,7 @@ net.Receive("zs_death", function(length)
 		end
 
 		local victimname = victim:Name()
-
+		
 		print(victimname.." was killed by "..attacker.." with "..inflictor..".")
 
 		--gamemode.Call("AddDeathNotice", attacker, -1, inflictor, victimname, victimteam)

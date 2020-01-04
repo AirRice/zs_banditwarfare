@@ -219,7 +219,7 @@ function GM:ShouldCollide(enta, entb)
 end
 
 function GM:Move(pl, move)
-	if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
+	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		if pl:GetBarricadeGhosting() then
 			move:SetMaxSpeed(36)
 			move:SetMaxClientSpeed(36)
@@ -234,7 +234,7 @@ function GM:Move(pl, move)
 
 	local legdamage = pl:GetLegDamage()
 	if legdamage > 0 then
-		local scale = 1 - math.min(1, legdamage * 0.33)
+		local scale = 1 - math.min(1, legdamage/self.MaxLegDamage)
 		move:SetMaxSpeed(move:GetMaxSpeed() * scale)
 		move:SetMaxClientSpeed(move:GetMaxClientSpeed() * scale)
 	end
@@ -253,10 +253,10 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 	if hitfloater then damage = damage / 2 end
 	if math.floor(damage) > 0 then
 		if SERVER then
+			pl:TakeSpecialDamage(damage, DMG_FALL, game.GetWorld(), game.GetWorld(), pl:GetPos())
 			if damage >= 30 and damage < pl:Health() then
 				pl:KnockDown(damage * 0.05*mul)
 			end
-			pl:TakeSpecialDamage(damage, DMG_FALL, game.GetWorld(), game.GetWorld(), pl:GetPos())
 			pl:EmitSound("player/pl_fallpain"..(math.random(2) == 1 and 3 or 1)..".wav")
 		end
 	end
@@ -277,25 +277,38 @@ function GM:PlayerTraceAttack(pl, dmginfo, dir, trace)
 end
 
 function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
+	
 	if hitgroup == HITGROUP_HEAD and dmginfo:IsBulletDamage() then
 		pl.m_LastHeadShot = CurTime()
 	end
+	local attacker = dmginfo:GetAttacker()
+	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
 	
-	if dmginfo:GetAttacker():IsPlayer() then
-		if dmginfo:GetAttacker():LessPlayersOnTeam() then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
+	if attacker:IsPlayer() then
+		if attacker:LessPlayersOnTeam() and not attackweapon.NoScaleToLessPlayers then
+			dmginfo:ScaleDamage(1.25)
+		end
+		if pl:GetBodyArmor() and pl:GetBodyArmor() > 0 then
+			if hitgroup ~= HITGROUP_HEAD and !dmginfo:IsDamageType(DMG_NERVEGAS) and !dmginfo:IsDamageType(DMG_DISSOLVE) then
+				dmginfo:ScaleDamage(0.5)
+			elseif attackweapon.IsMelee or dmginfo:IsDamageType(DMG_BLAST) then
+				dmginfo:ScaleDamage(0.4)
+			end
 		end
 	end
 	if hitgroup == HITGROUP_HEAD then
-		dmginfo:SetDamage(dmginfo:GetDamage() * 1.5)
+		dmginfo:ScaleDamage(1.5)
 	elseif hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_GEAR then
-		dmginfo:SetDamage(dmginfo:GetDamage() * 0.5)
+		dmginfo:ScaleDamage(0.5)
 	elseif hitgroup == HITGROUP_STOMACH or hitgroup == HITGROUP_LEFTARM or hitgroup == HITGROUP_RIGHTARM then
-		dmginfo:SetDamage(dmginfo:GetDamage())
+		dmginfo:ScaleDamage(1)
 	end
-	
+	if pl:GetBodyArmor() and pl:GetBodyArmor() > 0 then
+		local ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
+		pl:AddBodyArmor(dmginfo:GetDamage()*-ratio)
+	end
 	if SERVER and (hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG) and self:PlayerShouldTakeDamage(pl, dmginfo:GetAttacker()) then
-		pl:AddLegDamage(dmginfo:GetDamage()/2)
+		pl:AddLegDamage(dmginfo:GetDamage())
 	end
 end
 
@@ -450,7 +463,6 @@ function GM:GetCurrentEquipmentCount(id,countteam)
 
 	return count
 end
-
 
 function GM:GetRagdollEyes(pl)
 	local Ragdoll = pl:GetRagdollEntity()

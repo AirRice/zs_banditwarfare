@@ -155,35 +155,36 @@ function meta:Give(weptype)
 	return ret
 end
 
-function meta:StartFeignDeath(force)
-	local feigndeath = self.FeignDeath
-	if feigndeath and feigndeath:IsValid() then
-		if CurTime() >= feigndeath:GetStateEndTime() then
-			feigndeath:SetState(1)
-			feigndeath:SetStateEndTime(CurTime() + 1.5)
-		end
-	elseif force or self:IsOnGround() and not self:IsPlayingTaunt() then
-		local wep = self:GetActiveWeapon()
-		if force or wep:IsValid() and not wep:IsSwinging() and CurTime() > wep:GetNextPrimaryFire() then
-			if wep:IsValid() and wep.StopMoaning then
-				wep:StopMoaning()
-			end
-
-			local status = self:GiveStatus("feigndeath")
-			if status and status:IsValid() then
-				status:SetStateEndTime(CurTime() + 1.5)
-			end
-		end
-	end
-end
-
 function meta:UpdateLegDamage()
 	net.Start("zs_legdamage")
 		net.WriteFloat(self.LegDamage)
 	net.Send(self)
 end
 
+function meta:UpdateBodyArmor()
+	net.Start("zs_bodyarmor")
+		net.WriteFloat(self.BodyArmor)
+	net.Send(self)
+end
+
 function meta:SendHint()
+end
+
+function meta:GiveBallisticShield(health)
+	local curtime = CurTime()
+	if self:IsOnGround() and self:Alive() then
+		local ent = ents.Create("prop_ballisticshield")
+		if ent:IsValid() then
+			ent:SetPos(self:GetPos() + self:GetRight() * -48)
+			ent:SetAngles(self:GetAngles())
+			ent:SetOwner(self)
+			ent:Spawn()
+			if health then
+				ent:SetMaxObjectHealth(health)
+				ent:SetObjectHealth(ent:GetMaxObjectHealth())
+			end
+		end
+	end
 end
 
 local function RemoveSkyCade(groundent, timername)
@@ -345,6 +346,7 @@ function meta:CreateRagdoll()
 	end
 end
 
+
 function meta:DropActiveWeapon()
 	local vPos = self:GetPos()
 	local vAng = self:EyeAngles()
@@ -479,6 +481,19 @@ function meta:SetMaxHealth(num)
 	self:OldSetMaxHealth(num)
 end
 
+function meta:GetAimAccuracy()
+	if self.ShotsFired and self.ShotsHit then
+		if self.ShotsFired >= self.ShotsHit then
+			return math.Round(100*self.ShotsHit/self.ShotsFired,1)
+		else
+			print("wtf how did he hit more shots than he shot")
+			return -1
+		end
+	else
+		return -1
+	end
+end
+
 function meta:GetBounty()
 	if self.BountyModifier ~= nil then
 		return GAMEMODE.PointsPerFrag+self.BountyModifier
@@ -526,24 +541,19 @@ function meta:CreateAmbience(class)
 end
 
 function meta:DoHulls()
+	self:SetModelScale(DEFAULT_MODELSCALE, 0)
+	self:ResetHull()
+	self:SetViewOffset(DEFAULT_VIEW_OFFSET)
+	self:SetViewOffsetDucked(DEFAULT_VIEW_OFFSET_DUCKED)
+	self:SetStepSize(DEFAULT_STEP_SIZE)
+	self:SetJumpPower(DEFAULT_JUMP_POWER)
+	self:SetBloodColor(BLOOD_COLOR_RED)
+	self:DrawShadow(true)
 
-		self:SetModelScale(DEFAULT_MODELSCALE, 0)
-		self:ResetHull()
-		self:SetViewOffset(DEFAULT_VIEW_OFFSET)
-		self:SetViewOffsetDucked(DEFAULT_VIEW_OFFSET_DUCKED)
-		self:SetStepSize(DEFAULT_STEP_SIZE)
-		self:SetJumpPower(DEFAULT_JUMP_POWER)
-
-		self:DrawShadow(true)
-
-		self.NoCollideAll = nil
-		self.AllowTeamDamage = nil
-		self.NeverAlive = nil
-		local phys = self:GetPhysicsObject()
-		if phys:IsValid() then
-			phys:SetMass(DEFAULT_MASS)
-		end
-
+	local phys = self:GetPhysicsObject()
+	if phys:IsValid() then
+		phys:SetMass(DEFAULT_MASS)
+	end
 	net.Start("zs_dohulls")
 		net.WriteEntity(self)
 	net.Broadcast()
