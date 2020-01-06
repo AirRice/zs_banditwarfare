@@ -374,7 +374,7 @@ function meta:PoisonDamage(damage, attacker, inflictor, hitpos, noreduction)
 			self:GiveStatus("poisonrecovery"):AddDamage(math.floor(damage * 0.75))
 		end
 
-		dmginfo:SetDamageType(DMG_ACID)
+		dmginfo:SetDamageType(DMG_NERVEGAS)
 	else
 		if not noreduction then
 			damage = damage / 3

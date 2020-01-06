@@ -37,7 +37,13 @@ function ENT:GetAnglesToPos(pos)
 end
 
 function ENT:IsValidTarget(target)
-	return target:IsPlayer() and self:GetObjectOwner():IsPlayer() and target:Team() ~= self:GetObjectOwner():Team() and target:Alive() and self:GetForward():Dot(self:GetAnglesToTarget(target):Forward()) >= self.MinimumAimDot and TrueVisible(self:ShootPos(), self:GetTargetPos(target), self)
+	if target:IsPlayer() then
+		return self:GetObjectOwner():IsPlayer() and target:Team() ~= self:GetObjectOwner():Team() and target:Alive() and self:GetForward():Dot(self:GetAnglesToTarget(target):Forward()) >= self.MinimumAimDot and TrueVisible(self:ShootPos(), self:GetTargetPos(target), self)
+	elseif (target:GetClass() == "prop_drone" or target:GetClass() == "prop_manhack") and not target:IsSameTeam(self:GetObjectOwner()) then
+		return true
+	elseif (target:IsNailed() or target.IsBarricadeObject) and not target:IsSameTeam(self:GetObjectOwner()) and not target:GetClass() == "prop_obj_sigil" then
+		return true
+	end
 end
 
 function ENT:GetManualTrace()

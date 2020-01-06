@@ -26,12 +26,12 @@ SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel = "models/props_junk/shovel01a.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 60
+SWEP.MeleeDamage = 57
 SWEP.MeleeRange = 68
 SWEP.MeleeSize = 1.5
 SWEP.MeleeKnockBack = 40
 
-SWEP.Primary.Delay = 1.2
+SWEP.Primary.Delay = 1.3
 
 SWEP.WalkSpeed = SPEED_SLOWER
 

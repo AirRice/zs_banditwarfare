@@ -155,48 +155,6 @@ function GM:GetHandsModel(pl)
 	return player_manager.TranslatePlayerHands(pl:GetInfo("cl_playermodel"))
 end
 
-local playerheight = Vector(0, 0, 72)
-local playermins = Vector(-17, -17, 0)
-local playermaxs = Vector(17, 17, 4)
-local SkewedDistance = util.SkewedDistance
-
-GM.DynamicSpawnDistVisOld = 2048
-GM.DynamicSpawnDistOld = 640
-function GM:DynamicSpawnIsValidOld(zombie, humans, allplayers)
-	-- I didn't make this check where trigger_hurt entities are. Rather I made it check the time since the last time you were hit with a trigger_hurt.
-	-- I'm not sure if it's possible to check if a trigger_hurt is enabled or disabled through the Lua bindings.
-	if SERVER and zombie.LastHitWithTriggerHurt and CurTime() < zombie.LastHitWithTriggerHurt + 2 then
-		return false
-	end
-
-	-- Optional caching for these.
-	if not humans then humans = team.GetPlayers(TEAM_HUMAN) end
-	if not allplayers then allplayers = player.GetAll() end
-
-	local pos = zombie:GetPos() + Vector(0, 0, 1)
-	if zombie:Alive() and zombie:GetMoveType() == MOVETYPE_WALK and zombie:OnGround()
-	and not util.TraceHull({start = pos, endpos = pos + playerheight, mins = playermins, maxs = playermaxs, mask = MASK_SOLID, filter = allplayers}).Hit then
-		local vtr = util.TraceHull({start = pos, endpos = pos - playerheight, mins = playermins, maxs = playermaxs, mask = MASK_SOLID_BRUSHONLY})
-		if not vtr.HitSky and not vtr.HitNoDraw then
-			local valid = true
-
-			for _, human in pairs(humans) do
-				local hpos = human:GetPos()
-				local nearest = zombie:NearestPoint(hpos)
-				local dist = SkewedDistance(hpos, nearest, 2.75) -- We make it so that the Z distance between a human and a zombie is skewed if the zombie is below the human.
-				if dist <= self.DynamicSpawnDistOld or dist <= self.DynamicSpawnDistVisOld and WorldVisible(hpos, nearest) then -- Zombies can't be in radius of any humans. Zombies can't be clearly visible by any humans.
-					valid = false
-					break
-				end
-			end
-
-			return valid
-		end
-	end
-
-	return false
-end
-
 function GM:GetEndRound()
 	return self.RoundEnded
 end

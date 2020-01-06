@@ -25,11 +25,10 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 48
+SWEP.Primary.Damage = 45
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.27
-SWEP.Recoil = 1.76
-SWEP.DefaultRecoil = 1.76
+SWEP.Primary.Delay = 0.26
+SWEP.Recoil = 0.89
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "357"
@@ -41,7 +40,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 SWEP.ConeMax = 0.006
 SWEP.ConeMin = 0.001
 
-SWEP.MovingConeOffset = 0.14
+SWEP.MovingConeOffset = 0.2
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(5.559, -8.633, 0)
@@ -54,14 +53,6 @@ SWEP.TracerName = "AR2Tracer"
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
-end
-function SWEP:Think()
-	if (self.Owner:Crouching() and self:GetIronsights()) then
-		self.Recoil = self.DefaultRecoil*0.4
-	else
-		self.Recoil = self.DefaultRecoil
-	end
-	self.BaseClass.Think(self)
 end
 
 if CLIENT then

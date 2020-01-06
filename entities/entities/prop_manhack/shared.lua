@@ -21,7 +21,7 @@ ENT.HoverForce = 64
 ENT.TurnSpeed = 100
 ENT.IdleDrag = 1
 
-ENT.MaxHealth = 55
+ENT.MaxHealth = 40
 ENT.HitCooldown = 0.25
 ENT.HitDamage = 15
 ENT.BounceFleshVelocity = 33

@@ -95,6 +95,7 @@ end
 function GM:CreateSigils()
 	print ("creating sigils")
 	if #self.ProfilerNodes < self.MaxSigils then
+		self:SetClassicMode(false)
 		return
 	end
 
@@ -108,8 +109,8 @@ function GM:CreateSigils()
 
 	local bspawns = {}
 	local hspawns = {}
-	table.Add(bspawns,team.GetSpawnPoint(TEAM_BANDIT))
-	table.Add(hspawns,team.GetSpawnPoint(TEAM_HUMAN))
+	table.Add(bspawns,team.GetValidSpawnPoint(TEAM_BANDIT))
+	table.Add(hspawns,team.GetValidSpawnPoint(TEAM_HUMAN))
 	for _, n in pairs(nodes) do
 		n.hd = 999999
 		n.bd = 999999
@@ -142,7 +143,7 @@ function GM:CreateSigils()
 		-- Sort the nodes by their distances.
 		-- Select node with algorithm that randomly selects while selecting closer ids more
 		local id = 1
-		if #nodes >=8 then
+		if #nodes >=self.MaxSigils*3 then
 			if math.random(1,4) == 1 then
 				id = math.random(math.floor(#nodes/3),math.floor(#nodes/3)*2)
 			elseif math.random(1,4) == 4 then

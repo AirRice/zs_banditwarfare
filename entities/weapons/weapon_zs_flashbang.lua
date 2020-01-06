@@ -32,7 +32,7 @@ function SWEP:PrimaryAttack()
 			if phys:IsValid() then
 				phys:Wake()
 				phys:AddAngleVelocity(VectorRand() * 5)
-				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 800)
+				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 1000)
 			end
 		end
 	end

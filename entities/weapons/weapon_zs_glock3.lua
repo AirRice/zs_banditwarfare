@@ -2,6 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'크로스파이어' 글록-3"
+	SWEP.Description = "발사 시 총알이 3발로 분리되어 산탄된다."
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -22,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Glock.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 0.3
 SWEP.Recoil = 0.96

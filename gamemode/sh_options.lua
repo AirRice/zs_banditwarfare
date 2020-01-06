@@ -118,13 +118,13 @@ GM:AddPointShopItem(1,"whirlwind", "'비르벨빈트' 국지방어기", nil, ITE
 GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴 샷건", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
-GM:AddPointShopItem(1,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 70, "weapon_zs_eraser")
 GM:AddPointShopItem(1,"shredder", "'슈레더' SMG", nil, ITEMCAT_GUNS, 60, "weapon_zs_smg")
 GM:AddPointShopItem(1,"hunter", "'헌터' 소총", nil, ITEMCAT_GUNS, 65, "weapon_zs_hunter")
 GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 65, "weapon_zs_neutrino")
 GM:AddPointShopItem(1,"akbar", "'아크바' 돌격소총", nil, ITEMCAT_GUNS, 75, "weapon_zs_akbar")
 
-GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 85, "weapon_zs_waraxe")
+GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_waraxe")
+GM:AddPointShopItem(2,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_eraser")
 GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100, "weapon_zs_ender")
 GM:AddPointShopItem(2,"annabelle", "'애나벨' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_annabelle")
 GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
@@ -191,11 +191,11 @@ local item = GM:AddPointShopItem(nil,"infturret", "자동 터렛", nil, ITEMCAT_
 item.Countables = {"prop_gunturret"}
 item.NoClassicMode = true
 
-local item = GM:AddPointShopItem(nil,"manhack", "맨핵", nil, ITEMCAT_TOOLS, 35, "weapon_zs_manhack")
+local item = GM:AddPointShopItem(nil,"manhack", "맨핵", nil, ITEMCAT_TOOLS, 55, "weapon_zs_manhack")
 item.Countables = {"prop_manhack"}
 item.NoClassicMode = true
 
-local item = GM:AddPointShopItem(nil,"drone", "드론", nil, ITEMCAT_TOOLS, 30, "weapon_zs_drone")
+local item = GM:AddPointShopItem(nil,"drone", "드론", nil, ITEMCAT_TOOLS, 50, "weapon_zs_drone")
 item.Countables = {"prop_drone"}
 item.NoClassicMode = true
 
@@ -241,59 +241,52 @@ GM.RestrictedModels = {
 	"models/player/zombie_soldier.mdl",
 	"models/player/skeleton.mdl",
 	"models/player/charple.mdl",
-	"models/player/zombie_classic.mdl"
-	--"models/player/zombie_fast.mdl"
+	"models/player/zombie_classic.mdl",
+	"models/player/zombie_fast.mdl"
 	--"models/player/corpse1.mdl"
 }
 GM.MapWhitelist = {
-	--"cs_assault",
+	--"cs_assault", Assault is way more fun in classic mode.
 	"cs_compound",
 	"cs_galleria",
-	"cs_havana",
+	--"cs_havana", Because of how this map is laid out it can become impossible to get to transmitters
 	"cs_italy",
-	"cs_kismayo",
+	"cs_miami_css",
 	"cs_militia",
 	"cs_office",
-	"de_aztec",
-	"de_cbble",
+	--"de_aztec", This map may be too CT-sided at this current stage.
+	"de_cbble", 
 	"de_chateau",
+	"de_detroit_v2",
 	"de_dust",
 	"de_dust2",
 	"de_inferno",
+	"de_kismayo",
+	"de_nightfever",
+	"de_nightquarters_v1",
 	"de_nuke",
 	"de_piranesi",
-	"de_nightfever",
 	"de_port",
-	"de_prodigy",
+	--"de_prodigy", Map is too small to really do a non-classic mode on.
 	"de_school",
 	"de_tides",
 	"de_train",
-	--"zm_4ngry_quarantine",
+	--"zm_4ngry_quaruntine", Map is too small to really do a non-classic mode on.
 	"zm_ryan_valley02",
-	--"zm_stab_aroundtown_v3c",
 	"zm_tx_highschoolbeta7_d_vh",
-	"zs_ambush_v4",
-	"zs_ancient_castle_opt",
-	"zs_clav_oblivion",
-	--"zs_coasthouse",
-	"zs_countryside_b1",
-	"zs_deadmount_reborn_v1",
-	"zs_dryfield_v2",
-	"zs_hazard_v2",
-	--"zs_insurance",
-	"zs_laboratory",
+	"zm_stab_aroundtown_v3c",
+	"zsb_minecraft_ricetown_b2",
+	--"zsb_ravenholm_pre_b1", map is too one way to ever allow for fun gameplay. Might need a remake.
+	"zs_barren",
 	"zs_lockup_v2",
 	"zs_outpost_gold_v2",
-	--"zs_placid",
-	--"zs_plague",
-	--"zs_port_v4",
-	--"zs_raunchyhouse_v2",
-	--"zs_ravine",
-	--"zs_scrapmetal_v2_fixed",
+	"zs_ravine",
+	"zs_castle_age",
+	"zs_scrapmetal_v2_fixed",
+	"zs_airport_panic_bobpoblo2",
 	"zs_slugde_fixed",
 	"zs_trainstation",
-	"zs_urbandecay2",
-	--"zsb_ravenholm_pre_b1"
+	"zs_urbandecay_v4"
 }
 
 -- If a person has no player model then use one of these (auto-generated).
@@ -366,14 +359,10 @@ GM.EndGameTime = 25
 -- How many clips of ammo guns from the Worth menu start with. Some guns such as shotguns and sniper rifles have multipliers on this.
 GM.SurvivalClips = 4
 
--- Put your unoriginal, 5MB Rob Zombie and Metallica music here.
-GM.SuddenDeathSound = Sound("zombiesurvival/lasthuman.ogg")
-
--- Sound played when humans all die.
-GM.AllLoseSound = Sound("zombiesurvival/music_lose.ogg")
-
--- Sound played when humans survive.
-GM.HumanWinSound = Sound("zombiesurvival/music_qethics1.ogg")
-GM.BanditWinSound = Sound("zombiesurvival/music_rules.ogg")
+-- End of round music
+GM.SuddenDeathSound = Sound("music/bandit/lasthuman.ogg")
+GM.AllLoseSound = Sound("music/bandit/music_lose.ogg")
+GM.HumanWinSound = Sound("music/bandit/music_humanwin.ogg")
+GM.BanditWinSound = Sound("music/bandit/music_banditwin.ogg")
 -- Sound played to a person when they die as a human.
 GM.DeathSound = Sound("music/stingers/HL1_stinger_song28.mp3")

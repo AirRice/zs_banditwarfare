@@ -21,7 +21,7 @@ function ENT:Initialize()
 		local phys = self:GetPhysicsObject()
 		if phys:IsValid() then
 			phys:Wake()
-			phys:SetMass(4)
+			phys:SetMass(50)
 			phys:SetMaterial("metal")
 		end
 	end

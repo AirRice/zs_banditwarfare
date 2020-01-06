@@ -736,7 +736,8 @@ function GM:_HUDShouldDraw(name)
 	if self.FilmMode and name ~= "CHudWeaponSelection" then return false end
 	return name ~= "CHudHealth" and name ~= "CHudBattery"
 	and name ~= "CHudAmmo" and name ~= "CHudSecondaryAmmo"
-	and name ~= "CHudDamageIndicator"
+	and name ~= "CHudDamageIndicator" and name ~= "CHudPoisonDamageIndicator"
+	and name ~= "CHudSuitPower" and name ~= "CHudFlashlight"
 end
 
 local Current = 0

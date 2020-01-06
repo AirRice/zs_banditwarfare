@@ -9,15 +9,19 @@ function ENT:Initialize()
 	self:SetModel("models/combine_scanner.mdl")
 	self:SetUseType(SIMPLE_USE)
 
+
 	self:PhysicsInit(SOLID_VPHYSICS)
+	
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
+		phys:SetMaterial("metal")
 		phys:SetMass(75)
 		phys:EnableDrag(false)
 		phys:EnableMotion(true)
 		phys:Wake()
 		phys:SetBuoyancyRatio(0.8)
-
+		phys:AddGameFlag(FVPHYSICS_NO_IMPACT_DMG)
+		
 		local Constraint = ents.Create("phys_keepupright")
 		Constraint:SetAngles(Angle(0, 0, 0))
 		Constraint:SetKeyValue("angularlimit", 2)
@@ -29,7 +33,7 @@ function ENT:Initialize()
 
 	self:StartMotionController()
 
-	self:SetMaxObjectHealth(100)
+	self:SetMaxObjectHealth(75)
 	self:SetObjectHealth(self:GetMaxObjectHealth())
 
 	self.LastThink = CurTime()
@@ -38,20 +42,11 @@ function ENT:Initialize()
 	self:SetPlaybackRate(1)
 	self:UseClientSideAnimation(true)
 
-	--[[local ent = ents.Create("fhb")
-	if ent:IsValid() then
-		ent:SetPos(self:GetPos())
-		ent:SetAngles(self:GetAngles())
-		ent:SetParent(self)
-		ent:SetOwner(self)
-		ent.Size = 9
-		ent:Spawn()
-	end]]
-
 	self:CollisionRulesChanged()
 
 	hook.Add("SetupPlayerVisibility", self, self.SetupPlayerVisibility)
 end
+
 
 function ENT:SetObjectHealth(health)
 	self:SetDTFloat(0, health)
@@ -62,24 +57,24 @@ function ENT:SetObjectHealth(health)
 end
 
 function ENT:OnTakeDamage(dmginfo)
-	--if dmginfo:GetDamageType() ~= DMG_CRUSH and not self._AllowDamage then return end
+	if dmginfo:GetDamage() <= 0 then return end
 
 	local attacker = dmginfo:GetAttacker()
-	if not (attacker:IsValid() and attacker:IsPlayer() and self:GetOwner():IsPlayer() and attacker:Team() == self:GetOwner():Team()) then
-		self:TakePhysicsDamage(dmginfo)
+	if (attacker:IsValid() and attacker:IsPlayer() and self:GetOwner():IsPlayer() and attacker:Team() == self:GetOwner():Team()) then return end
 
-		self:SetObjectHealth(self:GetObjectHealth() - dmginfo:GetDamage())
+	self:TakePhysicsDamage(dmginfo)
 
-		self:EmitSound("npc/scanner/scanner_pain"..math.random(2)..".wav", 0.65, math.Rand(120, 130))
-		self:EmitSound("npc/manhack/gib.wav")
+	self:SetObjectHealth(self:GetObjectHealth() - dmginfo:GetDamage())
 
-		local effectdata = EffectData()
-			effectdata:SetOrigin(self:NearestPoint(dmginfo:GetDamagePosition()))
-			effectdata:SetNormal(VectorRand():GetNormalized())
-			effectdata:SetMagnitude(4)
-			effectdata:SetScale(1.33)
-		util.Effect("sparks", effectdata)
-	end
+	self:EmitSound("npc/scanner/scanner_pain"..math.random(2)..".wav", 65, math.Rand(120, 130))
+	self:EmitSound("npc/manhack/gib.wav")
+
+	local effectdata = EffectData()
+		effectdata:SetOrigin(self:NearestPoint(dmginfo:GetDamagePosition()))
+		effectdata:SetNormal(VectorRand():GetNormalized())
+		effectdata:SetMagnitude(4)
+		effectdata:SetScale(1.33)
+	util.Effect("sparks", effectdata)
 end
 
 function ENT:Use(pl)
@@ -87,6 +82,7 @@ function ENT:Use(pl)
 		self:OnPackedUp(pl)
 	end
 end
+
 
 function ENT:PhysicsCollide(data, phys)
 	self.HitData = data
@@ -102,6 +98,7 @@ function ENT:OnPackedUp(pl)
 	self:Remove()
 end
 
+
 function ENT:PhysicsSimulate(phys, frametime)
 	phys:Wake()
 
@@ -109,7 +106,7 @@ function ENT:PhysicsSimulate(phys, frametime)
 	if not owner:IsValid() then return SIM_NOTHING end
 
 	local vel = phys:GetVelocity()
-	local movedir = Vector()
+	local movedir = Vector(0, 0, 0)
 	local eyeangles = owner:SyncAngles()
 	local aimangles = owner:EyeAngles()
 
@@ -131,6 +128,10 @@ function ENT:PhysicsSimulate(phys, frametime)
 		end
 		if owner:KeyDown(IN_GRENADE1) then
 			movedir = movedir - Vector(0, 0, 0.5)
+		end
+		local angdiff = math.AngleDifference(eyeangles.yaw, phys:GetAngles().yaw)
+		if math.abs(angdiff) > 4 then
+			phys:AddAngleVelocity(Vector(0, 0, math.Clamp(angdiff, -64, 64) * frametime * 100 - phys:GetAngleVelocity().z * 0.95))
 		end
 	end
 
@@ -159,26 +160,39 @@ function ENT:PhysicsSimulate(phys, frametime)
 	end
 
 	phys:EnableGravity(false)
-	phys:SetAngleDragCoefficient(5000)
+	phys:SetAngleDragCoefficient(20000)
 	phys:SetVelocityInstantaneous(vel)
-	phys:AddAngleVelocity(Vector(0, 0, math.Clamp(math.AngleDifference(eyeangles.yaw, phys:GetAngles().yaw), -32, 32) * frametime * 3))
 
 	return SIM_NOTHING
 end
+
 
 function ENT:Destroy()
 	if self.Destroyed then return end
 	self.Destroyed = true
 
-	self:EmitSound("npc/manhack/gib.wav")
+	local pos = self:LocalToWorld(self:OBBCenter())
+
+	self:EmitSound("npc/scanner/scanner_explode_crash2.wav")
 
 	local effectdata = EffectData()
-		effectdata:SetOrigin(self:LocalToWorld(self:OBBCenter()))
-	util.Effect("HelicopterMegaBomb", effectdata, true, true)
+		effectdata:SetOrigin(pos)
 		effectdata:SetNormal(Vector(0, 0, 1))
 		effectdata:SetMagnitude(5)
 		effectdata:SetScale(1.5)
 	util.Effect("sparks", effectdata)
+
+	local owner = self:GetOwner()
+	if owner:IsPlayer() then
+		effectdata = EffectData()
+			effectdata:SetOrigin(pos)
+			effectdata:SetNormal(Vector(0, 0, -1))
+		util.Effect("decal_scorch", effectdata)
+
+		self:EmitSound("npc/env_headcrabcanister/explosion.wav", 100, 100)
+		util.BlastDamage2(self, owner, pos, 128, 32)
+		util.Effect("HelicopterMegaBomb", effectdata, true, true)
+	end
 end
 
 ENT.PhysDamageImmunity = 0
@@ -230,25 +244,18 @@ function ENT:Think()
 	if not data then return end
 	self.HitData = nil
 
-	local ent = data.HitEntity
-	if ent and ent:IsValid() then
-		local physattacker = ent:GetPhysicsAttacker()
-		if physattacker:IsValid() and physattacker:Team() == TEAM_HUMAN then
-			self.PhysDamageImmunity = CurTime() + 0.5
-		end
-	end
-
-	local dir = (self:GetPos() - data.HitPos):GetNormalized()
-
 	if data.Speed > self.HoverSpeed then
 		local phys = self:GetPhysicsObject()
 		if phys:IsValid() then
-			phys:AddVelocity(dir * 50)
+			local dir = self:GetPos() - data.HitPos
+			dir:Normalize()
+			phys:AddVelocity(dir * 20)
 		end
 	end
 
 	if data.Speed >= self.MaxSpeed * 0.75 and ent and ent:IsWorld() and CurTime() >= self.PhysDamageImmunity then
-		self:TakeDamage(math.Clamp(data.Speed * 0.11, 0, 40))
+		self:TakeDamage(math.Clamp(data.Speed * 0.1, 0, 40))
+		self.PhysDamageImmunity = CurTime() + 0.5
 	end
 end
 

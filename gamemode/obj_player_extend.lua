@@ -163,7 +163,7 @@ function meta:AddBodyArmor(armor)
 end
 
 function meta:GetBodyArmor()
-	return self.BodyArmor
+	return math.max(0, (self.BodyArmor or 0))
 end
 
 function meta:GetLegDamage()
@@ -233,24 +233,14 @@ function meta:ResetSpeed(noset, health)
 	if not speed then
 		speed = wep.WalkSpeed or SPEED_NORMAL
 	end
-
+	
+	if self:GetBodyArmor() > 0 then
+		speed = speed - 25
+	end
+	
 	if self.HumanSpeedAdder and (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and 32 < speed then
 		speed = speed + self.HumanSpeedAdder
 	end
-
-	--[[if self:IsHolding() then
-		local status = self.status_human_holding
-		if status and status:IsValid() and status:GetObject():IsValid() and status:GetObject():GetPhysicsObject():IsValid() then
-			speed = math.min(speed, math.max(CARRY_SPEEDLOSS_MINSPEED, speed - status:GetObject():GetPhysicsObject():GetMass() * CARRY_SPEEDLOSS_PERKG))
-		end
-	end]]
-
-	--[[if 32 < speed then
-		if not health then health = self:Health() end
-		if health < 60 then
-			speed = math.max(88, speed - speed * 0.4 * (1 - health / 60))
-		end
-	end]]
 
 	if not noset then
 		self:SetSpeed(speed)

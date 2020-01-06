@@ -32,9 +32,9 @@ SWEP.MeleeSize = 1.15
 
 SWEP.HitGesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE
 SWEP.MissGesture = SWEP.HitGesture
-
+SWEP.Primary.Delay = 1.3
 SWEP.SwingRotation = Angle(30, -30, -30)
-SWEP.SwingTime = 0.65
+SWEP.SwingTime = 0.85
 SWEP.SwingHoldType = "grenade"
 
 function SWEP:PlaySwingSound()

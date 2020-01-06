@@ -83,8 +83,9 @@ function PANEL:SetWeaponSlot(wepslot)
 	self:SetTooltip(sweptable.Description)
 	self.m_Weapon = wep
 	local wepmodel = "error.mdl"
-	if not sweptable.WorldModel and (sweptable.Base ~= "weapon_zs_base" and sweptable.Base ~= "weapon_zs_basemelee") then
-		wepmodel = sweptable.BaseClass.WorldModel
+	if not sweptable.WorldModel and sweptable.Base and (sweptable.Base ~= "weapon_zs_base" and sweptable.Base ~= "weapon_zs_basemelee") then
+		local basesweptable = weapons.GetStored(sweptable.Base)
+		if basesweptable.WorldModel then wepmodel = basesweptable.WorldModel end
 	else
 		wepmodel = sweptable.WorldModel
 	end

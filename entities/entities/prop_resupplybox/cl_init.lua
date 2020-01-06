@@ -26,7 +26,7 @@ function ENT:Think()
 		elseif CurTime() >= NextUse then
 			self.Dinged = true
 
-			self:EmitSound("zombiesurvival/ding.ogg")
+			--self:EmitSound("zombiesurvival/ding.ogg")
 		end
 	end
 

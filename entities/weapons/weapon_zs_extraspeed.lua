@@ -50,7 +50,9 @@ function SWEP:PrimaryAttack()
 				owner:ResetSpeed() 
 				if SERVER then 
 					owner:SetMaxHealth(owner:GetMaxHealth()-10)
-					owner:SetHealth(owner:GetMaxHealth())
+					if owner:Health() > owner:GetMaxHealth() then
+						owner:SetHealth(owner:GetMaxHealth())
+					end
 				end
 				self:TakePrimaryAmmo(1)
 				self:EmitSound("player/suit_sprint.wav")	

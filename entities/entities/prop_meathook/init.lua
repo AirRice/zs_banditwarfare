@@ -19,7 +19,7 @@ function ENT:Think()
 	if parent:IsValid() and parent:IsPlayer() then
 		if parent:Alive() and parent:Team() ~= ownerteam and self.TicksLeft >= 1 then
 			if CurTime() >= self.NextDamage then
-				self.NextDamage = CurTime() + 0.4
+				self.NextDamage = CurTime() + 0.5
 				self.TicksLeft = self.TicksLeft - 1
 
 				util.Blood((parent:NearestPoint(self:GetPos()) + parent:WorldSpaceCenter()) / 2, math.random(4, 9), Vector(0, 0, 1), 100)

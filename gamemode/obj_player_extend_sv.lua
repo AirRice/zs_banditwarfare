@@ -1,6 +1,46 @@
 local meta = FindMetaTable("Player")
 if not meta then return end
 
+function meta:UpdateWeaponLoadouts()
+	self:StripNonLoadoutWeapons()
+	
+	local wep1 = self:GetWeapon1()
+	local storedwep1 = weapons.GetStored(wep1)
+	if storedwep1 then
+		self:Give(wep1)
+	end
+	local wep2 = self:GetWeapon2()
+	local storedwep2 = weapons.GetStored(wep2)
+	if storedwep2 then
+		self:Give(wep2)
+	end
+	local weptool = self:GetWeaponToolslot()
+	local storedweptool = weapons.GetStored(weptool)
+	if storedweptool then
+		self:Give(weptool)
+	end
+	local wepmelee = self:GetWeaponMelee()	
+	local storedwepmelee = weapons.GetStored(wepmelee)
+	if storedwepmelee then
+		self:Give(wepmelee)
+	end
+end
+
+function meta:StripNonLoadoutWeapons()
+	for _, wep in pairs(self:GetWeapons()) do
+		local wep1 = self:GetWeapon1()
+		local wep2 = self:GetWeapon2()
+		local weptool = self:GetWeaponToolslot()
+		local wepmelee = self:GetWeaponMelee()
+		local wepclass = wep:GetClass()
+		local shoptab = FindItembyClass(wepclass)
+		if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) and 
+		not (wepclass==wep1 || wepclass==wep2 || wepclass==weptool || wepclass==wepmelee) then
+			self:StripWeapon(wepclass)
+		end
+	end
+end
+
 function meta:FakeDeath(sequenceid, modelscale, length)
 	for _, ent in pairs(ents.FindByClass("fakedeath")) do
 		if ent:GetOwner() == self then
@@ -47,13 +87,15 @@ function meta:ProcessDamage(dmginfo)
 			dmginfo:ScaleDamage(1.25)
 		end
 		if self:GetBodyArmor() and self:GetBodyArmor() > 0 then
+			local ratio = 0
 			if attackweapon and attackweapon.IsMelee or dmginfo:IsDamageType(DMG_BLAST) then
+				ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
 				dmginfo:ScaleDamage(0.4)
 			elseif !dmginfo:IsDamageType(DMG_NERVEGAS) and !dmginfo:IsDamageType(DMG_DISSOLVE) and !dmginfo:IsDamageType(DMG_DIRECT) 
 			and not attackweapon.IgnoreDamageScaling and not (lasthitgroup == HITGROUP_HEAD) and attackweapon then
+				ratio = 0.5
 				dmginfo:ScaleDamage(0.5)
 			end
-			local ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
 			self:AddBodyArmor(dmginfo:GetDamage()*-ratio)
 		end
 	end

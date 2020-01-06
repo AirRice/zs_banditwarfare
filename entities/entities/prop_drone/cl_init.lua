@@ -13,39 +13,8 @@ function ENT:Initialize()
 	hook.Add("CalcView", self, self.CalcView)
 end
 
-ENT.NextEmit = 0
-local smokegravity = Vector(0, 0, 64)
 function ENT:Think()
-	self.AmbientSound:PlayEx(0.5, math.Clamp(90 + self:GetVelocity():Length() * 0.4, 90, 160))
-
-	if CurTime() >= self.NextEmit then
-		local perc = math.Clamp(self:GetObjectHealth() / self:GetMaxObjectHealth(), 0, 255)
-		if perc < 0.5 then
-			self.NextEmit = CurTime() + 0.05 + perc * math.Rand(0.05, 0.25)
-
-			local sat = perc * 90
-
-			local emitter = ParticleEmitter(self:GetPos())
-			emitter:SetNearClip(16, 24)
-
-			local particle = emitter:Add("particles/smokey", self:GetPos())
-			particle:SetStartAlpha(180)
-			particle:SetEndAlpha(0)
-			particle:SetStartSize(0)
-			particle:SetEndSize(math.Rand(10, 24))
-			particle:SetVelocity(self:GetVelocity() * 0.7 + VectorRand():GetNormalized() * math.Rand(4, 24))
-			particle:SetGravity(smokegravity)
-			particle:SetDieTime(math.Rand(0.8, 1.6))
-			particle:SetAirResistance(150)
-			particle:SetRoll(math.Rand(0, 360))
-			particle:SetRollDelta(math.Rand(-2, 2))
-			particle:SetCollide(true)
-			particle:SetBounce(0.2)
-			particle:SetColor(sat, sat, sat)
-
-			emitter:Finish()
-		end
-	end
+	self.AmbientSound:PlayEx(0.5, math.Clamp(75 + self:GetVelocity():Length() * 0.5, 75, 150))
 end
 
 function ENT:OnRemove()
@@ -91,16 +60,11 @@ function ENT:DrawTranslucent()
 
 	if ViewDot > 0 then
 		if owner:IsValid() and owner:IsPlayer() then
-			local vcol = owner:GetPlayerColor()
+			local vcol = team.GetColor(owner:Team())
 			if vcol then
-				if vcol == vector_origin then
-					vcol.x = 1 vcol.y = 1 vcol.z = 1
-				end
-				vcol:Normalize()
-				vcol = vcol * 2.55
-				colLight.r = math.Clamp(vcol.r * 100, 0, 255)
-				colLight.g = math.Clamp(vcol.g * 100, 0, 255)
-				colLight.b = math.Clamp(vcol.b * 100, 0, 255)
+				colLight.r = math.Clamp(vcol.r, 0, 255)
+				colLight.g = math.Clamp(vcol.g, 0, 255)
+				colLight.b = math.Clamp(vcol.b, 0, 255)
 			end
 		end
 

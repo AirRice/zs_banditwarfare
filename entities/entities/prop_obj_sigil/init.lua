@@ -40,9 +40,9 @@ function ENT:CalcClosePlayers()
 		elseif pl:GetClass() == "prop_drone" then
 			if pl:GetOwner():IsPlayer() then 
 				if pl:GetOwner():Team() == TEAM_HUMAN and pl:GetObjectHealth() > 0 then
-					hnum = hnum + 0.5
+					hnum = hnum + 1
 				elseif pl:GetOwner():Team() == TEAM_BANDIT and pl:GetObjectHealth() > 0 then
-					bnum = bnum + 0.5
+					bnum = bnum + 1
 				end
 			end
 		end

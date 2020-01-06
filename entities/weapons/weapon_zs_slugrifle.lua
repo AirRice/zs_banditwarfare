@@ -52,7 +52,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 SWEP.ConeMax = 0.003
 SWEP.ConeMin = 0.00
 SWEP.Recoil = 3.25
-SWEP.MovingConeOffset = 0.19
+SWEP.MovingConeOffset = 0.28
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
 SWEP.IronSightsAng = Vector(0, -1, 0)

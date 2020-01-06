@@ -64,8 +64,8 @@ CARRY_SPEEDLOSS_PERKG = 1.3
 CARRY_SPEEDLOSS_MINSPEED = 88
 
 GM.MaxLegDamage = 100
-GM.LegDamageDecayTime = 0.35
-GM.LegDamageDecay = 5
+GM.LegDamageDecayTime = 0.5
+GM.LegDamageDecay = 4
 GM.MaxBodyArmor = 100
 
 GM.UtilityKey = IN_SPEED

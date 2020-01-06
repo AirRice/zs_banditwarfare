@@ -36,7 +36,7 @@ SWEP.ViewModel = "models/weapons/v_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 
 SWEP.Primary.Sound = Sound("weapons/grenade_launcher1.wav", 70, 90)
-SWEP.Primary.Damage = 192
+SWEP.Primary.Damage = 64
 SWEP.Primary.NumShots = 0
 SWEP.Primary.Delay = 1
 
@@ -67,6 +67,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	if SERVER then
 		local ent = ents.Create("projectile_launchedgrenade")
 		if ent:IsValid() then
+			ent.Damage = self.Primary.Damage
 			ent:SetPos(owner:GetShootPos())
 			ent:SetAngles(owner:GetAimVector():Angle())
 			ent:SetOwner(owner)

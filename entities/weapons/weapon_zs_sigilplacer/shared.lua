@@ -51,8 +51,6 @@ function SWEP:PrimaryAttack()
 		table.insert(GAMEMODE.ProfilerNodes, tr.HitPos)
 
 		self:RefreshSigils()
-		GAMEMODE.ProfilerIsPreMade = true
-
 		GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
 	end
 end
@@ -76,8 +74,6 @@ function SWEP:SecondaryAttack()
 	GAMEMODE.ProfilerNodes = newpoints
 
 	self:RefreshSigils()
-	GAMEMODE.ProfilerIsPreMade = true
-
 	GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
 end
 
@@ -89,7 +85,7 @@ function SWEP:Reload()
 
 	if CLIENT then return end
 
-	if not self.StartReload and not self.StartReload2 then
+	if not self.StartReload then
 		self.StartReload = CurTime()
 		owner:ChatPrint("Keep holding reload to clear all pre-made sigil points.")
 	end
@@ -97,25 +93,7 @@ end
 
 if SERVER then
 function SWEP:Think()
-	if self.StartReload2 then
-		if not self.Owner:KeyDown(IN_RELOAD) then
-			self.StartReload2 = nil
-			return
-		end
-
-		if CurTime() >= self.StartReload2 + 3 then
-			self.StartReload2 = nil
-
-			self.Owner:ChatPrint("Deleted everything including generated nodes. Turned off generated mode.")
-
-			GAMEMODE.ProfilerIsPreMade = true
-			GAMEMODE:DeleteProfilerPreMade()
-			GAMEMODE.ProfilerNodes = {}
-			GAMEMODE:SaveProfiler()
-
-			self:RefreshSigils()
-		end
-	elseif self.StartReload then
+	if self.StartReload then
 		if not self.Owner:KeyDown(IN_RELOAD) then
 			self.StartReload = nil
 			return
@@ -124,15 +102,9 @@ function SWEP:Think()
 		if CurTime() >= self.StartReload + 3 then
 			self.StartReload = nil
 
-			self.Owner:ChatPrint("Deleted all pre-made sigil points and reverted to generated mode. Keep holding reload to delete ALL nodes.")
-
-			GAMEMODE.ProfilerIsPreMade = false
+			self.Owner:ChatPrint("Deleted all pre-made sigil points.")
 			GAMEMODE:DeleteProfilerPreMade()
-			GAMEMODE:LoadProfiler()
-
 			self:RefreshSigils()
-
-			self.StartReload2 = CurTime()
 		end
 	end
 end
@@ -142,7 +114,6 @@ function SWEP:RefreshSigils()
 	for _, ent in pairs(ents.FindByClass("point_fakesigil")) do
 		ent:Remove()
 	end
-
 	for _, point in pairs(GAMEMODE.ProfilerNodes) do
 		local ent = ents.Create("point_fakesigil")
 		if ent:IsValid() then

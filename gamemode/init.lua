@@ -169,35 +169,12 @@ function GM:AddResources()
 		resource.AddFile("materials/zombiesurvival/"..filename)
 	end
 
-	for _, filename in pairs(file.Find("materials/zombiesurvival/killicons/projectile*.vmt", "GAME")) do
+	for _, filename in pairs(file.Find("materials/zombiesurvival/killicons/*.vmt", "GAME")) do
 		resource.AddFile("materials/zombiesurvival/killicons/"..filename)
-	end
-	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonflesh.vmt")
-	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonspit.vmt")
-	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonflesh.vmt")
-	resource.AddFile("materials/zombiesurvival/killicons/projectile_poisonflesh.vmt")
-
-	for _, filename in pairs(file.Find("sound/zombiesurvival/*.ogg", "GAME")) do
-		resource.AddFile("sound/zombiesurvival/"..filename)
-	end
-	for _, filename in pairs(file.Find("sound/zombiesurvival/*.wav", "GAME")) do
-		resource.AddFile("sound/zombiesurvival/"..filename)
-	end
-	for _, filename in pairs(file.Find("sound/zombiesurvival/*.mp3", "GAME")) do
-		resource.AddFile("sound/zombiesurvival/"..filename)
 	end
 
 	resource.AddFile("materials/refract_ring.vmt")
-	resource.AddFile("materials/killicon/redeem_v2.vtf")
 	resource.AddFile("materials/killicon/redeem_v2.vmt")
-	resource.AddFile("materials/killicon/zs_axe.vtf")
-	resource.AddFile("materials/killicon/zs_keyboard.vtf")
-	resource.AddFile("materials/killicon/zs_sledgehammer.vtf")
-	resource.AddFile("materials/killicon/zs_fryingpan.vtf")
-	resource.AddFile("materials/killicon/zs_pot.vtf")
-	resource.AddFile("materials/killicon/zs_plank.vtf")
-	resource.AddFile("materials/killicon/zs_hammer.vtf")
-	resource.AddFile("materials/killicon/zs_shovel.vtf")
 	resource.AddFile("materials/killicon/zs_axe.vmt")
 	resource.AddFile("materials/killicon/zs_keyboard.vmt")
 	resource.AddFile("materials/killicon/zs_sledgehammer.vmt")
@@ -206,27 +183,13 @@ function GM:AddResources()
 	resource.AddFile("materials/killicon/zs_plank.vmt")
 	resource.AddFile("materials/killicon/zs_hammer.vmt")
 	resource.AddFile("materials/killicon/zs_shovel.vmt")
-	resource.AddFile("models/weapons/v_annabelle.mdl")
 	resource.AddFile("materials/models/weapons/w_annabelle/gun.vtf")
-	resource.AddFile("materials/models/weapons/sledge.vtf")
 	resource.AddFile("materials/models/weapons/sledge.vmt")
-	resource.AddFile("materials/models/weapons/temptexture/handsmesh1.vtf")
 	resource.AddFile("materials/models/weapons/temptexture/handsmesh1.vmt")
-	resource.AddFile("materials/models/weapons/hammer2.vtf")
 	resource.AddFile("materials/models/weapons/hammer2.vmt")
-	resource.AddFile("materials/models/weapons/hammer.vtf")
 	resource.AddFile("materials/models/weapons/hammer.vmt")
-	resource.AddFile("models/weapons/w_sledgehammer.mdl")
-	resource.AddFile("models/weapons/v_sledgehammer/v_sledgehammer.mdl")
-	resource.AddFile("models/weapons/w_hammer.mdl")
-	resource.AddFile("models/weapons/v_hammer/v_hammer.mdl")
-
-	resource.AddFile("models/weapons/v_aegiskit.mdl")
-
 	resource.AddFile("materials/models/weapons/v_hand/armtexture.vmt")
-	
-	resource.AddFile("models/weapons/v_supershorty/v_supershorty.mdl")
-	resource.AddFile("models/weapons/w_supershorty.mdl")
+
 	for _, filename in pairs(file.Find("materials/weapons/v_supershorty/*.vmt", "GAME")) do
 		resource.AddFile("materials/weapons/v_supershorty/"..filename)
 	end
@@ -244,12 +207,21 @@ function GM:AddResources()
 	end
 	for _, filename in pairs(file.Find("materials/weapons/survivor01_hands/*.vtf", "GAME")) do
 		resource.AddFile("materials/weapons/survivor01_hands/"..filename)
-	end
+	end	
+	
+	resource.AddFile("models/weapons/v_annabelle.mdl")	
+	resource.AddFile("models/weapons/w_sledgehammer.mdl")
+	resource.AddFile("models/weapons/v_sledgehammer/v_sledgehammer.mdl")
+	resource.AddFile("models/weapons/w_hammer.mdl")
+	resource.AddFile("models/weapons/v_hammer/v_hammer.mdl")
+	resource.AddFile("models/weapons/v_aegiskit.mdl")
+	resource.AddFile("models/weapons/v_supershorty/v_supershorty.mdl")
+	resource.AddFile("models/weapons/w_supershorty.mdl")
 
-	resource.AddFile("sound/weapons/melee/golf club/golf_hit-01.ogg")
-	resource.AddFile("sound/weapons/melee/golf club/golf_hit-02.ogg")
-	resource.AddFile("sound/weapons/melee/golf club/golf_hit-03.ogg")
-	resource.AddFile("sound/weapons/melee/golf club/golf_hit-04.ogg")
+	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-01.ogg")
+	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-02.ogg")
+	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-03.ogg")
+	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-04.ogg")
 	resource.AddFile("sound/weapons/melee/crowbar/crowbar_hit-1.ogg")
 	resource.AddFile("sound/weapons/melee/crowbar/crowbar_hit-2.ogg")
 	resource.AddFile("sound/weapons/melee/crowbar/crowbar_hit-3.ogg")
@@ -264,11 +236,11 @@ function GM:AddResources()
 	resource.AddFile("sound/weapons/melee/frying_pan/pan_hit-04.ogg")
 	resource.AddFile("sound/weapons/melee/keyboard/keyboard_hit-01.ogg")
 	resource.AddFile("sound/weapons/melee/keyboard/keyboard_hit-02.ogg")
-	
-	
 	resource.AddFile("sound/weapons/melee/keyboard/keyboard_hit-03.ogg")
 	resource.AddFile("sound/weapons/melee/keyboard/keyboard_hit-04.ogg")
-	resource.AddFile("sound/zombiesurvival/hitsound.wav")
+	
+	resource.AddFile("sound/bandit/hitsound.wav")
+	
 	resource.AddFile("sound/music/vlvx_song18.mp3")
 	resource.AddFile("sound/music/vlvx_song21.mp3")
 	resource.AddFile("sound/music/vlvx_song22.mp3")
@@ -294,10 +266,10 @@ function GM:AddResources()
 	resource.AddFile("materials/noxctf/sprite_bloodspray7.vmt")
 	resource.AddFile("materials/noxctf/sprite_bloodspray8.vmt")
 
-	resource.AddFile("sound/"..tostring(self.SuddenDeathSound))
-	resource.AddFile("sound/"..tostring(self.AllLoseSound))
-	resource.AddFile("sound/"..tostring(self.HumanWinSound))
-	resource.AddFile("sound/"..tostring(self.DeathSound))
+	resource.AddFile("sound/music/bandit/lasthuman.ogg")
+	resource.AddFile("sound/music/bandit/music_humanwin.ogg")
+	resource.AddFile("sound/music/bandit/music_banditwin.ogg")
+	resource.AddFile("sound/music/bandit/music_lose.ogg")
 end
 
 function GM:Initialize()
@@ -306,7 +278,8 @@ function GM:Initialize()
 	self:PrecacheResources()
 	self:AddCustomAmmo()
 	self:AddNetworkStrings()
-	self:LoadProfiler()
+	local classiccvar = GetConVar("zsb_classicmode")
+	self:SetClassicMode(classiccvar:GetBool())
 	
 	game.ConsoleCommand("fire_dmgscale 1\n")
 	game.ConsoleCommand("mp_flashlight 1\n")
@@ -525,6 +498,8 @@ function GM:RemoveUnusedEntities()
 	util.RemoveAll("item_ammo_crate")
 	-- This is no longer a zombie mod.
 	util.RemoveAll("zombiegasses")
+	-- ...and uses CS maps but don't use buy zones.
+	util.RemoveAll("func_buyzone")
 	-- Shouldn't exist.
 	util.RemoveAll("item_suitcharger")
 	util.RemoveAll("item_healthcharger")
@@ -631,10 +606,20 @@ function GM:Think()
 				gamemode.Call("SigilCommsThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
+			local banditcount = 0
+			local humancount = 0
+			for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
+				if bandit:Alive() then banditcount = banditcount +1 end
+			end
+			for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
+				if human:Alive() then humancount = humancount +1 end
+			end
 			if self:GetWaveStart() <= time then
-				gamemode.Call("SetWaveActive", true)
-			elseif self:GetWaveStart() - 10 <= time then
-				local humancount = table.Count(team.GetPlayers(TEAM_HUMAN))
+				if banditcount > 0 and humancount > 0 then
+					gamemode.Call("SetWaveActive", true)
+				else
+					gamemode.Call("SetWaveStart", CurTime()+self.WaveIntermissionLength)
+				end
 			end
 			for _, pl in pairs(player.GetAll()) do
 				local numoutsidespawns = 0
@@ -972,13 +957,19 @@ function GM:InitPostEntityMap()
 	gamemode.Call("ReplaceMapBatteries")
 	gamemode.Call("SetupProps")
 	for _, ent in pairs(ents.FindByClass("prop_ammo")) do 
-	if GAMEMODE:IsClassicMode() then 
-		ent.PlacedInMap = true 
-	else 
-		ent:Remove() 
+		if self:IsClassicMode() then 
+			ent.PlacedInMap = true 
+		else 
+			ent:Remove() 
 		end 
 	end
-	for _, ent in pairs(ents.FindByClass("prop_weapon")) do if GAMEMODE:IsClassicMode() then ent.PlacedInMap = true else ent:Remove() end end
+	for _, ent in pairs(ents.FindByClass("prop_weapon")) do 
+		if self:IsClassicMode() then 
+			ent.PlacedInMap = true 
+		else 
+			ent:Remove() 
+		end 
+	end
 end
 
 local function EndRoundPlayerShouldTakeDamage(pl, attacker) 
@@ -1024,8 +1015,14 @@ function GM:EndRound(winner)
 	
 	local mapname = string.lower(game.GetMapNext())
 	local classiccvar = GetConVar("zsb_classicmode")
-	if table.HasValue(self.MapWhitelist, mapname) and (math.random(10) > 4) and player.GetCount() >= 6 then
-		classiccvar:SetBool(false)
+	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughSigils(mapname) and player.GetCount() >= 6 then
+		if self:IsClassicMode() then
+			classiccvar:SetBool(false)
+		elseif math.random(1,4) > 2 then
+			classiccvar:SetBool(false)
+		else
+			classiccvar:SetBool(true)
+		end
 	else
 		classiccvar:SetBool(true)
 	end
@@ -1980,7 +1977,7 @@ end
 function GM:SetClassicMode(mode)
 	local cm = GetConVar("zsb_classicmode")
 	SetGlobalBool("classicmode", mode)
-	cm:SetBool(true)
+	cm:SetBool(mode)
 end
 
 function GM:AllowPlayerPickup(pl, ent)
@@ -2231,8 +2228,8 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 		attacker.HeadshotKilled = attacker.HeadshotKilled + 1
 	end
 	if pl.BountyModifier >0 then
-		if pl.BountyModifier > 6 then 
-			pl.BountyModifier = pl.BountyModifier -2
+		if pl.BountyModifier > 30 then 
+			pl.BountyModifier = pl.BountyModifier -10
 		elseif pl.BountyModifier > 0 then
 			pl.BountyModifier = 0
 		elseif pl.BountyModifier > -10 then
@@ -2245,8 +2242,9 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 	if attacker.BountyModifier < 0 then
 		if attacker.BountyModifier < -6 then
 			attacker.BountyModifier = attacker.BountyModifier+2
+		else
+			attacker.BountyModifier = 0
 		end
-		attacker.BountyModifier = 0
 	else
 		attacker.BountyModifier = attacker.BountyModifier+5
 	end
@@ -2572,19 +2570,7 @@ function GM:PlayerSpawn(pl)
 			hands:Spawn()
 		end
 		if not self:IsClassicMode() then
-			local wep1 = pl:GetWeapon1()
-			local storedwep1 = weapons.GetStored(pl:GetWeapon1())
-			if storedwep1 then
-				pl:Give(wep1)
-			end
-			
-			local wep2 = pl:GetWeapon2()
-			local storedwep2 = weapons.GetStored(pl:GetWeapon2())
-			if storedwep2 then
-				pl:Give(wep2)
-			end
-			local weptool = pl:Give(pl:GetWeaponToolslot())
-			local wepmelee = pl:Give(pl:GetWeaponMelee())	
+			pl:UpdateWeaponLoadouts()
 			if not self.SuddenDeath then
 				pl:GiveStatus("spawnbuff").Owner = pl
 			end
@@ -2740,6 +2726,9 @@ function GM:WaveStateChanged(newstate)
 				pl:StripWeapons( )
 				pl:Spectate( OBS_MODE_ROAMING )	
 			elseif pl:Alive() then
+				if not self:IsClassicMode() then
+					pl:UpdateWeaponLoadouts()
+				end
 				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
 			else
 				pl:UnSpectateAndSpawn()	
@@ -2777,6 +2766,12 @@ function GM:WaveStateChanged(newstate)
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
 		util.RemoveAll("prop_obj_sigil")
+		for _, ent in pairs(ents.FindByClass("prop_drone")) do
+			ent:Destroy()
+		end
+		for _, ent in pairs(ents.FindByClass("prop_manhack")) do
+			ent:Destroy()
+		end
 		--[[local curwave = self:GetWave()
 		for _, ent in pairs(ents.FindByClass("logic_waves")) do
 			if ent.Wave == curwave or ent.Wave == -1 then

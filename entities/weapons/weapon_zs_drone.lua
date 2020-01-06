@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "드론"
-	SWEP.Description = "원격으로 조종 가능한 드론이다.\n 정찰용으로 유용하고 송신기를 인간의 0.5배 속도로 점령할 수 있다."
+	SWEP.Description = "원격으로 조종 가능한 드론이다.\n 정찰용으로 유용하고 송신기를 점령할 수 있다. \n충분한 피해를 받으면 폭발해 주변 적에게 피해 또한 입힌다."
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 50

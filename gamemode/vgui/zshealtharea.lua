@@ -44,7 +44,7 @@ function PANEL:Init()
 	spawnbuffstatus.MemberMaxValue = 3
 	spawnbuffstatus:Dock(TOP)
 	
-	local armorstatus = vgui.Create("ZSHealthStatus", contents)
+	local armorstatus = vgui.Create("ZSAbsoluteHealthStatus", contents)
 	armorstatus:SetTall(20)
 	armorstatus:SetAlpha(200)
 	armorstatus:SetColor(Color(10, 10, 255))
@@ -63,7 +63,7 @@ function PANEL:Init()
 	poisonstatus:SetTall(20)
 	poisonstatus:SetAlpha(200)
 	poisonstatus:SetColor(Color(180, 180, 0))
-	poisonstatus:SetMemberName("독!")
+	poisonstatus:SetMemberName("독 회복중")
 	poisonstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -85,12 +85,12 @@ function PANEL:Init()
 		if lp:IsValid() then
 			local status = lp:GetStatus("tox")
 			if status and status:IsValid() then
-				return math.Clamp(status:GetTime(), 0,10)
+				return math.floor(status:GetTime()*10)
 			end
 		end
 		return 0
 	end
-	toxstatus.MemberMaxValue = 10
+	toxstatus.MemberMaxValue = 20
 	toxstatus:Dock(TOP)
 	
 	local bleedstatus = vgui.Create("ZSHealthStatus", contents)
@@ -383,3 +383,54 @@ function PANEL:Paint()
 end
 
 vgui.Register("ZSHealthStatus", PANEL, "Panel")
+
+
+
+local PANEL = {}
+
+PANEL.MemberValue = 0
+PANEL.LerpMemberValue = 0
+PANEL.MemberMaxValue = 100
+PANEL.MemberName = "Unnamed"
+
+function PANEL:SetColor(col) self.m_Color = col end
+function PANEL:GetColor() return self.m_Color end
+function PANEL:SetMemberName(n) self.MemberName = n end
+function PANEL:GetMemberName() return self.MemberName end
+
+function PANEL:Init()
+	self:SetColor(Color(255, 255, 255))
+end
+
+function PANEL:Think()
+	if self.GetMemberValue then
+		self.MemberValue = self:GetMemberValue() or self.MemberValue
+	end
+	if self.GetMemberMaxValue then
+		self.MemberMaxValue = self:GetMemberMaxValue() or self.MemberMaxValue
+	end
+end
+
+function PANEL:Paint()
+	local value = self.MemberValue
+	if value <= 0 then return end
+
+	local col = self:GetColor()
+	local max = self.MemberMaxValue
+	local w, h = self:GetSize()
+
+	surface.SetDrawColor(0, 0, 0, 255)
+	surface.DrawRect(0, 0, w, h)
+
+	surface.SetDrawColor(col)
+	surface.DrawOutlinedRect(0, 0, w, h)
+	surface.DrawRect(3, 3, (w - 6) * math.Clamp(value / max, 0, 1), h - 6)
+
+	local t1 = math.ceil(value)
+	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+end
+
+vgui.Register("ZSAbsoluteHealthStatus", PANEL, "Panel")

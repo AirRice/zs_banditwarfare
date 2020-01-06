@@ -1,5 +1,5 @@
 ENT.Type = "anim"
-
+ENT.Damage = 64
 ENT.NoPropDamageDuringWave0 = true
 
 function ENT:ShouldNotCollide(ent)

@@ -23,7 +23,7 @@ SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Galil.Single")
 SWEP.Primary.Damage = 5
-SWEP.Primary.NumShots = 6
+SWEP.Primary.NumShots = 7
 SWEP.Primary.Delay = 0.25
 SWEP.Recoil = 1.72
 SWEP.Primary.ClipSize = 8
