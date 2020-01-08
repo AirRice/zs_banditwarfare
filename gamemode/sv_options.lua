@@ -1,4 +1,12 @@
 CreateConVar("zsb_classicmode", "0", FCVAR_ARCHIVE, "Gamemode is in kill everyone to win mode or not. Gameplay differs quite a bit between this mode and normal mode.")
+cvars.AddChangeCallback("zsb_classicmode", function(cvar, oldvalue, newvalue)
+	SetGlobalBool("classicmode",tonumber(newvalue) == 1)
+end)
+
+CreateConVar("zsb_samplesmode", "0", FCVAR_ARCHIVE, "Gamemode is in sample collection mode or not. Is a offshoot of the transmission mode.")
+cvars.AddChangeCallback("zsb_samplesmode", function(cvar, oldvalue, newvalue)
+	SetGlobalBool("samplesmode",tonumber(newvalue) == 1)
+end)
 
 GM.GibLifeTime = CreateConVar("zs_giblifetime", "25", FCVAR_ARCHIVE, "Specifies how many seconds player gibs will stay in the world if not eaten or destroyed."):GetFloat()
 cvars.AddChangeCallback("zs_giblifetime", function(cvar, oldvalue, newvalue)

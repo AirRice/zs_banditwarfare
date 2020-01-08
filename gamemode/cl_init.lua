@@ -404,6 +404,10 @@ function GM:TrackLastDeath()
 	end
 end
 
+function GM:IsSampleCollectMode()
+	return GetGlobalBool("samplesmode", false)
+end
+
 function GM:IsClassicMode()
 	return GetGlobalBool("classicmode", false)
 end
@@ -609,23 +613,40 @@ local triangle = {
 
 function GM:_HUDPaint()
 	if self.FilmMode then return end
-
-	if self:IsClassicMode() then
+	local myteam = MySelf:Team()
+	if self:IsClassicMode() then		
 		draw_SimpleTextBlurry(translate.Get("deathmatch_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	else
-		draw_SimpleTextBlurry(translate.Get("transmission_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
+		if self:IsSampleCollectMode() then
+			draw_SimpleTextBlurry(translate.Get("sample_collect_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+			if not MySelf:IsSpectator() then
+				draw_SimpleTextBlurry(translate.Format("samples_collected",MySelf:GetSamples()), "ZSHUDFont", w * 0.5, h - 64, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+				for _, ent in pairs(ents.FindByClass("prop_sampledepositterminal")) do
+					if MySelf:Team() == ent:GetOwnerTeam() then
+						local teamcolor = team.GetColor(MySelf:Team())
+						local scrpos = ent:GetPos():ToScreen()
+						scrpos.x = math.Clamp(scrpos.x, 32, ScrW() - 32)
+						scrpos.y = math.Clamp(scrpos.y, 32, ScrH() - 32)
+						draw.RoundedBox( 10,scrpos.x - 32, scrpos.y - 32, 32 * 2, 32 * 2, teamcolor or COLOR_DARKGREEN )
+					end
+				end
+			end
+		else
+			draw_SimpleTextBlurry(translate.Get("transmission_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
+		end
 	end
 	
 	local screenscale = BetterScreenScale()
 
-	local myteam = MySelf:Team()
-	
 	self:HUDDrawTargetID(myteam, screenscale)
 
 	if (myteam == TEAM_BANDIT or myteam == TEAM_HUMAN) then
 		self:HumanHUD(screenscale)
 	elseif myteam == TEAM_SPECTATOR then
-		self:ObserverHUD(screenscale)
+		local obsmode = MySelf:GetObserverMode()
+		if obsmode ~= OBS_MODE_NONE then
+			self:ObserverHUD(obsmode)
+		end
 	end
 	hitmarkeralpha = math.Approach( hitmarkeralpha, 0, 5 )
 	
@@ -639,34 +660,33 @@ function GM:_HUDPaint()
 
 end
 
-
-
 function GM:ObserverHUD(obsmode)
 	local w, h = ScrW(), ScrH()
 	local texh = draw_GetFontHeight("ZSHUDFontSmall")
-
-
-	if obsmode == OBS_MODE_CHASE then
+	if obsmode == OBS_MODE_CHASE or obsmode == OBS_MODE_IN_EYE then
 		local target = MySelf:GetObserverTarget()
-		if target and target:IsValid() then
-			if (target:IsPlayer() and target:Team() == MySelf:Team()) or MySelf:Team() == TEAM_SPECTATOR then
-				draw_SimpleTextBlur(translate.Format("observing_x", target:Name(), math.max(0, target:Health())), "ZSHUDFontSmall", w * 0.5, h * 0.75 - texh - 32, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+		if target and target:IsValid() and target:IsPlayer() then
+			if target:Team() == MySelf:Team() or MySelf:IsSpectator() then
+				local teamcolor = COLOR_DARKGREEN
+				if MySelf:IsSpectator() and target:Team() == TEAM_BANDIT or target:Team() == TEAM_HUMAN then
+					teamcolor = team.GetColor(target:Team())
+				end
+				draw_SimpleTextBlur(translate.Format("observing_x", target:Name(), math.max(0, target:Health())), "ZSHUDFontSmall", w * 0.5, h * 0.75 - texh - 32, teamcolor or COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 			end
-
-			--dyn = self:GetDynamicSpawning() and self:DynamicSpawnIsValid(target)
 		end
 	end
 	if not self:IsClassicMode() and not self.IsInSuddenDeath and MySelf:Team() ~= TEAM_SPECTATOR then
 		if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
 			draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
-			draw_SimpleTextBlur(translate.Format("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+			draw_SimpleTextBlur(translate.Get("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		end
 	end
 	local space = texh + 8
-		draw_SimpleTextBlur(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*3, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if MySelf:Team() == TEAM_SPECTATOR then
-		draw_SimpleTextBlur(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 3, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 5, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	end
 end
 

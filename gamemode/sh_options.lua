@@ -57,7 +57,7 @@ end)
 -- How much ammo is considered one 'clip' of ammo? For use with setting up weapon defaults. Works directly with zs_survivalclips
 GM.AmmoCache = {}
 GM.AmmoCache["ar2"] = 30 -- Assault rifles.
-GM.AmmoCache["alyxgun"] = 24 -- Not used.
+GM.AmmoCache["alyxgun"] = 15 -- Biotic waste.
 GM.AmmoCache["pistol"] = 12 -- Pistols.
 GM.AmmoCache["smg1"] = 30 -- SMG's and some rifles.
 GM.AmmoCache["357"] = 6 -- Rifles, especially of the sniper variety.
@@ -116,6 +116,7 @@ GM:AddPointShopItem(0,"nailgun", "리벳건", nil, ITEMCAT_GUNS, 17, "weapon_zs_
 
 GM:AddPointShopItem(1,"whirlwind", "'비르벨빈트' 국지방어기", nil, ITEMCAT_GUNS, 50, "weapon_zs_whirlwind")
 GM:AddPointShopItem(1,"doublebarrel", "'카우' 더블배럴 샷건", nil, ITEMCAT_GUNS, 55, "weapon_zs_doublebarrel")
+GM:AddPointShopItem(1,"biorifle", "'블랙 크랩' 생체소총", nil, ITEMCAT_GUNS, 45, "weapon_zs_bioticrifle")
 GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 GM:AddPointShopItem(1,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 65, "weapon_zs_magnum")
 GM:AddPointShopItem(1,"shredder", "'슈레더' SMG", nil, ITEMCAT_GUNS, 60, "weapon_zs_smg")
@@ -123,6 +124,7 @@ GM:AddPointShopItem(1,"hunter", "'헌터' 소총", nil, ITEMCAT_GUNS, 65, "weapo
 GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 65, "weapon_zs_neutrino")
 GM:AddPointShopItem(1,"akbar", "'아크바' 돌격소총", nil, ITEMCAT_GUNS, 75, "weapon_zs_akbar")
 
+GM:AddPointShopItem(2,"bioshotgun", "'퓨크 블래스트' 생체 산탄총", nil, ITEMCAT_GUNS, 87, "weapon_zs_bioticshotgun")
 GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_waraxe")
 GM:AddPointShopItem(2,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_eraser")
 GM:AddPointShopItem(2,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 100, "weapon_zs_ender")
@@ -143,12 +145,12 @@ GM:AddPointShopItem(3,"sweeper", "'스위퍼' 산탄총", nil, ITEMCAT_GUNS, 165
 GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 165, "weapon_zs_zeus")
 GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 돌격소총", nil, ITEMCAT_GUNS, 185, "weapon_zs_pulserifle")
 
-GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 225, "weapon_zs_crossbow")
-GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 235, "weapon_zs_reaper")
-GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 235, "weapon_zs_blitz")
-GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 235, "weapon_zs_sg550")
-GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 240, "weapon_zs_positron")
+GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 245, "weapon_zs_sg550")
 GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 245, "weapon_zs_boomstick")
+GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 250, "weapon_zs_crossbow")
+GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 250, "weapon_zs_reaper")
+GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 255, "weapon_zs_blitz")
+GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 265, "weapon_zs_positron")
 GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 270, "weapon_zs_tommy")
 GM:AddPointShopItem(4,"slugrifle", "'타이니' 슬러그 소총", nil, ITEMCAT_GUNS, 320, "weapon_zs_slugrifle")
 
@@ -158,11 +160,13 @@ GM:AddPointShopItem(nil,"smgammo", "SMG 탄약", nil, ITEMCAT_AMMO, 5, nil, func
 GM:AddPointShopItem(nil,"assaultrifleammo", "돌격소총 탄약", nil, ITEMCAT_AMMO, 6, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["ar2"] or 30, "ar2", true) end, "models/Items/357ammobox.mdl")
 GM:AddPointShopItem(nil,"rifleammo", "소총 탄약", nil, ITEMCAT_AMMO, 8, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["357"] or 10, "357", true) end, "models/Items/BoxSniperRounds.mdl")
 GM:AddPointShopItem(nil,"crossbowammo", "크로스보우 화살 묶음", nil, ITEMCAT_AMMO, 4, nil, function(pl) pl:GiveAmmo(5, "XBowBolt", true) end, "models/Items/CrossbowRounds.mdl")
+GM:AddPointShopItem(nil,"biomaterial", "생체 폐기물", "이 탄약을 사용하는 무기는 떨어진 고기 조각을 수집해 보충할 수도 있다.", ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(15, "alyxgun", true) end, "models/gibs/hgibs.mdl")
 GM:AddPointShopItem(nil,"pulseammo", "펄스건 탄약", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(GAMEMODE.AmmoCache["pulse"] or 40, "pulse", true) end, "models/Items/combine_rifle_ammo01.mdl")
 GM:AddPointShopItem(nil,"medicammo", "메디컬 에너지", nil, ITEMCAT_AMMO, 4, nil, function(pl) pl:GiveAmmo(50, "Battery", true) end, "models/healthvial.mdl")
 GM:AddPointShopItem(nil,"glgrenade", "유탄", nil, ITEMCAT_AMMO, 9, nil, function(pl) pl:GiveAmmo(1, "grenlauncher", true) end, "models/items/ar2_grenade.mdl")
 GM:AddPointShopItem(nil,"empround", "EMP 배터리", "EMP건의 추가 탄환이다.", ITEMCAT_AMMO, 10, nil, function(pl) pl:GiveAmmo(3, "gravity", true) end, "models/items/Battery.mdl").NoClassicMode = true
 GM:AddPointShopItem(nil,"nails", "못 2개", nil, ITEMCAT_AMMO, 5, nil, function(pl) pl:GiveAmmo(2, "GaussEnergy", true) end, "models/crossbow_bolt.mdl").NoClassicMode = true
+GM:AddPointShopItem(nil,"woodboards", "나무 판자 5개", nil, ITEMCAT_AMMO, 10, nil, function(pl) pl:GiveAmmo(5, "SniperRound", true) end, "models/props_debris/wood_board06a.mdl").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"crphmr", "목수의 망치", nil, ITEMCAT_MELEE, 20, "weapon_zs_hammer").NoClassicMode = true
 GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_MELEE, 25, "weapon_zs_wrench").NoClassicMode = true
@@ -181,8 +185,15 @@ GM:AddPointShopItem(nil,"hook", "갈고리", nil, ITEMCAT_MELEE, 23, "weapon_zs_
 GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 140, "weapon_zs_energysword")
 
 GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun").NoClassicMode = true
-GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_TOOLS, 45, "weapon_zs_backdoor").NoClassicMode = true
-GM:AddPointShopItem(nil,"sgnlboost", "신호 증폭기", nil, ITEMCAT_TOOLS, 30, "weapon_zs_signalbooster").NoClassicMode = true
+
+local item = GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_TOOLS, 45, "weapon_zs_backdoor")
+item.NoClassicMode = true
+item.NoSampleCollectMode = true
+
+local item = GM:AddPointShopItem(nil,"sgnlboost", "신호 증폭기", nil, ITEMCAT_TOOLS, 30, "weapon_zs_signalbooster")
+item.NoClassicMode = true
+item.NoSampleCollectMode = true
+
 GM:AddPointShopItem(nil,"medgun", "'세이비어'메디컬 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_medicgun")
 GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 60, "weapon_zs_medicalkit")
 GM:AddPointShopItem(nil,"ammokit", "탄약킷", nil, ITEMCAT_TOOLS, 12, "weapon_zs_ammokit")
@@ -198,6 +209,7 @@ item.NoClassicMode = true
 local item = GM:AddPointShopItem(nil,"drone", "드론", nil, ITEMCAT_TOOLS, 50, "weapon_zs_drone")
 item.Countables = {"prop_drone"}
 item.NoClassicMode = true
+item.NoSampleCollectMode = true
 
 GM:AddPointShopItem(nil,"ffemitter", "방어막 생성기", nil, ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
 
@@ -332,22 +344,13 @@ GM.WaveOneLength = 420
 -- For Classic Mode
 GM.WaveOneLengthClassic = 120
 
--- Add this many seconds for each additional wave.
+-- Every wave is this much shorter 
 GM.TimeLostPerWave = 15
-
--- For Classic Mode
-GM.TimeAddedPerWaveClassic = 10
-
--- New players are put on the zombie team if the current wave is this or higher. Do not put it lower than 1 or you'll break the game.
-GM.NoNewHumansWave = 2
-
--- Humans can not commit suicide if the current wave is this or lower.
-GM.NoSuicideWave = 0
 
 -- How long 'wave 0' should last in seconds. This is the time you should give for new players to join and get ready.
 GM.WaveZeroLength = 60
 
--- Time humans have between waves to do stuff without NEW zombies spawning. Any dead zombies will be in spectator (crow) view and any living ones will still be living.
+-- Time players have between waves to do stuff.
 GM.WaveIntermissionLength = 35
 
 -- For Classic Mode
@@ -356,7 +359,7 @@ GM.WaveIntermissionLengthClassic = 25
 -- Time in seconds between end round and next map.
 GM.EndGameTime = 25
 
--- How many clips of ammo guns from the Worth menu start with. Some guns such as shotguns and sniper rifles have multipliers on this.
+-- How many clips of ammo guns from the menu start with. The default clip is given as larger of the weapon's clip multiplied by this or 40.
 GM.SurvivalClips = 4
 
 -- End of round music

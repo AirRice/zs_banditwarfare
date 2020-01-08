@@ -49,6 +49,13 @@ function meta:GetKills()
 	return self:GetDTInt(2)
 end
 
+function meta:SetSamples(samples)
+	self:SetDTInt(3, samples)
+end
+
+function meta:GetSamples()
+	return self:GetDTInt(3)
+end
 
 function meta:GetMaxHealthEx()
 	return self:GetMaxHealth()

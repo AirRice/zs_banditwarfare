@@ -5,6 +5,7 @@ translate.AddLanguage("ko", "Korean")
 LANGUAGE.teamname_bandit							= "밴딧"
 LANGUAGE.teamname_human								= "생존자"
 LANGUAGE.deathmatch_mode							= "섬멸전"
+LANGUAGE.sample_collect_mode						= "샘플 수집전"
 LANGUAGE.transmission_mode							= "점령전"
 LANGUAGE.win										= "%s 승리"
 LANGUAGE.draw										= "무승부"
@@ -22,12 +23,14 @@ LANGUAGE.purchased_x_for_y_points					= "%s을(를) %d포인트에 구매했다!
 LANGUAGE.will_appear_after_respawn					= "리스폰 후 지급됩니다."
 LANGUAGE.cant_suicide_when_boss						= "보스일 때에는 자살이 불가능하다."
 
+LANGUAGE.samples_collected							= "수집한 샘플: %s"
 LANGUAGE.that_life									= "일생동안..."
 LANGUAGE.x_damage_to_barricades						= "%d 대미지를 바리케이드에 가함"
 LANGUAGE.x_damage_to_enemies						= "%d 대미지를 적에게 가함"
 LANGUAGE.x_kills									= "%d명 사살"
 LANGUAGE.press_jump_to_free_roam					= "점프를 눌러 자유 시점 변환"
 LANGUAGE.press_rmb_to_cycle_targets					= "오른쪽 클릭으로 타겟 변경"
+LANGUAGE.press_duck_to_toggle_eyecam				= "웅크리기를 눌러 1인칭/3인칭 시점 변환"
 LANGUAGE.press_lmb_to_spawn							= "왼쪽 클릭으로 부활"
 LANGUAGE.you_respawned								= "부활하였다."
 
@@ -40,6 +43,10 @@ LANGUAGE.trying_to_put_nails_in_glass				= "맙소사! 내가 유리에 못을 �
 LANGUAGE.one_sigil_taken_by_x						= "송신기 하나가 %s들에게 점령당했다!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s들이 송신을 마쳤다."
 LANGUAGE.sigil_comms_tied							= "두 팀이 모두 송신을 마쳤다."
+LANGUAGE.samples_finished_by_x						= "%s들이 샘플을 충분히 모았다."
+LANGUAGE.samples_tied								= "두 팀이 모두 샘플을 충분히 모았다."
+LANGUAGE.nest_destroyed_by_x				 		= "%s 플레이어가 둥지를 파괴하였다!"
+
 
 LANGUAGE.sigil_comms_disrupted_x					= "%s들의 송신기가 해킹당해 데이터 5%%손상 후 상대에게 넘어갔다."
 LANGUAGE.x_killed_all_enemies					    = "%s들이 모든 적을 사살했다."
@@ -98,7 +105,7 @@ LANGUAGE.help_cat_upgrades							= "포인트"
 
 LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들과 그에 맞선 밴딧의 끝없는 전쟁.</p><br>
 <h1>과연 누가 승리할 것인가?</h1> <br>
-<p><h3>밴딧 워페어에는 크게 2개의 게임 형식이 있습니다.</h3></p>
+<p><h3>밴딧 워페어에는 크게 3개의 게임 형식이 있습니다.</h3></p>
 <h2>점령전</h2> <br>
 <p>점령전에서는 두 팀 중 하나의 일원이 되어 적들을 싸워내며 송신기를 찾아내어 구조신호를 먼저 보내는 것이 목표입니다.</p>
 <p>송신기는 총 3개가 생성되며, 이 송신기들은 각각 총 데이터의 0.5%씩 매 초마다 송신 가능합니다. </p>
@@ -107,6 +114,13 @@ LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들
 <p>게리모드 메뉴 키 (기본 'Q')를 누르고 있으면 현재 설정된 무기 로드아웃을 볼 수 있으며 이 메뉴에서 무기 아이콘을 클릭하면 상점에서 다른 무기를 살 수 있습니다. 이 로드아웃의 무기들은 부활할 때마다 다시 지급됩니다.</p>
 <p>점령전 모드에서는 모드 내 존재하는 모든 도구들과 장비를 사용할 수 있습니다. 예를 들어 EMP 툴은 특정 송신기가 잠시동안 작동하지 못하도록 (진척도에 영향을 미치지 못하게) 막을 수 있으며, 해킹 툴은 적 송신기에 사용할 시 적의 통신 진척도를 깎은 뒤 송신기를 즉시 우리 쪽으로 들고 옵니다. 이 특수 장비들은 f2를 눌러 구매할 수 있으며, 무기들과 다르게 구입 시 바로 지급됩니다. 단, 죽을 시 이 장비들을 떨구며 적이 주워갈 수 있으니 조심해야 합니다.</p>
 <p>포인트는 적을 사살하거나, 사살을 돕거나, 아군의 체력을 회복해주거나, 바리케이드를 수리하거나 송신기를 점령하며 얻을 수 있고, 또한 각 웨이브 이후 각 팀에게 현재 게임의 상황에 맞춰 부여됩니다.</p>
+
+<h2>샘플 수집전</h2> <br>
+<p>샘플 수집전에서는 두 팀이 좀비 바이러스에 대한 백신을 찾기 위해 적을 사살한 후 생체 샘플을 모읍니다. </p>
+<p>샘플은 적이 죽으면서 떨구며, 머리에 맞아 죽을 경우 2개의 샘플을 떨굽니다. 또한 맵 곳곳에 있는 좀비 둥지를 파괴해도 샘플 30개를 얻을 수 있습니다.</p>
+<p>샘플을 획득했어도 팀의 스폰 지점에 있는 기계에 투입하지 않으면 승리에 영향을 끼치지 못합니다! 꼭 샘플을 획득한 후에는 스폰 지점으로 돌아가세요. 기계에 도착한 후 E로 샘플을 투입 가능합니다.</p>
+<p>점령전과 마찬가지로 무기 로드아웃을 Q로 열고 구입할 수 있으나 일부 도구는 사용이 불가능하게 됩니다.</p>
+<p>이 모드에서는 장거리 교전보다는 근거리 돌격이 유용합니다. 장거리에서 적을 저격해도 샘플을 획득할 수 없기 때문이죠.</p>
 
 <h2>섬멸전</h2> <br>
 <p>섬멸전 모드에서는 송신기가 없으며, 유일한 목표는 모든 적을 사살하는 것입니다. 이 모드에서는 로드아웃을 사용할 수 없으며, 기본으로 지급되는 권총과 칼을 제외하면 모든 무기를 상점 (F2) 에서 구매하여 사용해야 합니다.</p>
@@ -139,12 +153,12 @@ LANGUAGE.help_cont_keys					=
   <tr>
     <td>컨텍스 메뉴 키</td>
     <td>C</td>
-    <td>무기 버리기(점령전에서는 소모품만 가능)</td>
+    <td>무기 버리기(점령전/수집전에서는 소모품만 가능)</td>
   </tr>
   <tr>
     <td>메뉴 키</td>
     <td>Q</td>
-    <td>무기 로드아웃 열기(점령전)/상점 열기(섬멸전)</td>
+    <td>무기 로드아웃 열기(점령전/수집전)/상점 열기(섬멸전)</td>
   </tr>
   <tr>
     <td>상점 키</td>
@@ -184,7 +198,7 @@ LANGUAGE.help_cont_tips								= [[<p>팁:
 <li>같은 팀끼리는 충돌하지도, 데미지를 주지도 않습니다.</li>
 <li>동료를 치료하고 탄약을 보급해줘도 포인트를 벌 수 있습니다!</li>
 <li>숨지 말고 방어선을 구축하세요. 송신기를 차지하고 지켜야만 이길 수 있습니다.</li>
-<li>머리를 정확하게 쏘면 추가적인 대미지가 들어갑니다!</li>
+<li>머리를 정확하게 쏘면 추가적인 대미지가 들어갑니다! 샘플 수집전에서는 샘플도 2개를 얻을 수 있습니다.</li>
 <li>다리에 공격을 받으면 느려지는 효과가 있습니다. 상대방의 진격을 효과적으로 막으려면, 다리를 집중 사격하세요.</li>
 </ul></p>
 ]]

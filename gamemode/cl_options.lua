@@ -1,6 +1,3 @@
-GM.BeatSetHumanDefault = "defaulthuman"
-GM.BeatSetZombieDefault = "defaultzombiev2"
-
 GM.ItemCategoryIcons = {
 	[ITEMCAT_GUNS] = "icon16/gun.png",
 	[ITEMCAT_AMMO] = "icon16/box.png",
@@ -12,9 +9,6 @@ GM.ItemCategoryIcons = {
 }
 
 GM.LifeStatsLifeTime = 5
-
-GM.RewardIcons = {}
-GM.RewardIcons["weapon_zs_barricadekit"] = "models/props_debris/wood_board05a.mdl"
 
 GM.CrosshairColor = Color(CreateClientConVar("zs_crosshair_colr", "255", true, false):GetInt(), CreateClientConVar("zs_crosshair_colg", "255", true, false):GetInt(), CreateClientConVar("zs_crosshair_colb", "255", true, false):GetInt(), 220)
 GM.CrosshairColor2 = Color(CreateClientConVar("zs_crosshair_colr2", "220", true, false):GetInt(), CreateClientConVar("zs_crosshair_colg2", "0", true, false):GetInt(), CreateClientConVar("zs_crosshair_colb2", "0", true, false):GetInt(), 220)
@@ -32,11 +26,10 @@ cvars.AddChangeCallback("zs_filmmode", function(cvar, oldvalue, newvalue)
 	GAMEMODE:EvaluateFilmMode()
 end)
 
-CreateClientConVar("zs_noredeem", "0", true, true)
-CreateClientConVar("zs_alwaysvolunteer", "0", true, true)
-CreateClientConVar("zs_nobosspick", "0", true, true)
 CreateClientConVar("zsb_spectator", "0", true, true)
-
+cvars.AddChangeCallback("zsb_spectator", function(cvar, oldvalue, newvalue)
+	GAMEMODE.SpectatorMode = tonumber(newvalue) == 1
+end)
 GM.BeatsVolume = math.Clamp(CreateClientConVar("zs_beatsvolume", 80, true, false):GetInt(), 0, 100) / 100
 cvars.AddChangeCallback("zs_beatsvolume", function(cvar, oldvalue, newvalue)
 	GAMEMODE.BeatsVolume = math.Clamp(tonumber(newvalue) or 0, 0, 100) / 100

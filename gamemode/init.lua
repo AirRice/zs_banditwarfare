@@ -81,8 +81,6 @@ include("sv_playerspawnentities.lua")
 include("sv_profiling.lua")
 include("sv_sigils.lua")
 
-GM.ClassicMode = false
-
 if file.Exists(GM.FolderName.."/gamemode/maps/"..game.GetMap()..".lua", "LUA") then
 	include("maps/"..game.GetMap()..".lua")
 end
@@ -333,12 +331,6 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_death")
 end
 
-function GM:IsClassicMode()
-	local cm = GetConVar("zsb_classicmode"):GetBool()
-	SetGlobalBool("classicmode",cm)
-	return cm
-end
-
 function GM:CenterNotifyAll(...)
 	net.Start("zs_centernotify")
 		net.WriteTable({...})
@@ -562,6 +554,40 @@ function GM:ReplaceMapBatteries()
 	util.RemoveAll("item_battery")
 end
 
+function GM:IsClassicMode()
+	local cmcvar = GetConVar("zsb_classicmode"):GetBool()
+	local cm = GetGlobalBool("classicmode",false)
+	if cm == cmcvar and cmcvar then
+		return true
+	else 
+		self:SetClassicMode(cmcvar)
+		return cmcvar
+	end
+end
+
+function GM:SetClassicMode(mode)
+	local cm = GetConVar("zsb_classicmode")
+	SetGlobalBool("classicmode", mode)
+	cm:SetBool(mode)
+end
+
+function GM:IsSampleCollectMode()
+	local smcvar = GetConVar("zsb_samplesmode"):GetBool()
+	local sm = GetGlobalBool("samplesmode",false)
+	if sm == smcvar and smcvar then
+		return true
+	else 
+		self:SetSampleCollectMode(smcvar)
+		return smcvar
+	end
+end
+
+function GM:SetSampleCollectMode(mode)
+	local sm = GetConVar("zsb_samplesmode")
+	SetGlobalBool("samplesmode", mode)
+	sm:SetBool(mode)
+end
+
 local playermins = Vector(-17, -17, 0)
 local playermaxs = Vector(17, 17, 4)
 local LastSpawnPoints = {}
@@ -602,7 +628,7 @@ function GM:Think()
 			if self:GetWaveEnd() <= time and self:GetWaveEnd() ~= -1 then
 				gamemode.Call("SetWaveActive", false)
 			end
-			if not self:IsClassicMode() and not self.SuddenDeath then
+			if not self:IsClassicMode() and not self.SuddenDeath and not self:IsSampleCollectMode() then
 				gamemode.Call("SigilCommsThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
@@ -817,6 +843,7 @@ GM.PreviousTeam = {}
 GM.PreviousPoints = {}
 GM.CurrentSigilTable = {}
 GM.CommsEnd = false
+GM.SamplesEnd = false
 GM.SuddenDeath = false
 GM.StoredUndeadFrags = {}
 GM.CurrentWaveWinner = nil
@@ -825,7 +852,9 @@ function GM:RestartLua()
 	self.TheLastHuman = nil
 	self.UseSigils = nil
 	self:SetComms(0,0)
+	self:SetSamples(0,0)
 	self.CommsEnd = false
+	self.SamplesEnd = false
 	self.SuddenDeath = false
 	self.CurrentSigilTable = {}
 	self:SetCurrentWaveWinner(nil)
@@ -927,6 +956,7 @@ function GM:RestartGame()
 		pl:SetDeaths(0)
 		pl:SetKills(0)
 		pl:SetPoints(0)
+		pl:SetSamples(0)
 		pl:AddPoints(20)
 		pl:DoHulls()
 		pl.DeathClass = nil
@@ -1014,17 +1044,19 @@ function GM:EndRound(winner)
 	end
 	
 	local mapname = string.lower(game.GetMapNext())
-	local classiccvar = GetConVar("zsb_classicmode")
 	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughSigils(mapname) and player.GetCount() >= 6 then
 		if self:IsClassicMode() then
-			classiccvar:SetBool(false)
-		elseif math.random(1,4) > 2 then
-			classiccvar:SetBool(false)
+			self:SetClassicMode(false)
+			if math.random(1,4) > 2 then
+				self:SetSampleCollectMode(true)
+			else
+				self:SetSampleCollectMode(false)
+			end
 		else
-			classiccvar:SetBool(true)
+			self:SetClassicMode(true)
 		end
 	else
-		classiccvar:SetBool(true)
+		self:SetClassicMode(true)
 	end
 	-- Get rid of some lag.
 	util.RemoveAll("prop_ammo")
@@ -1084,6 +1116,9 @@ function GM:PlayerReadyRound(pl)
 	pl:SendLua("MakepHelp()")
 	if self:IsClassicMode() then
 		pl:SendLua("SetGlobalBool(\"classicmode\", true)")
+	end
+	if self:IsSampleCollectMode() then
+		pl:SendLua("SetGlobalBool(\"samplesmode\", true)")
 	end
 end
 
@@ -1273,6 +1308,12 @@ function GM:PlayerDisconnected(pl)
 	end
 end
 
+function GM:OnNestDestroyed(attacker)
+	for _, pl in pairs(player.GetAll()) do
+		pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "nest_destroyed_by_x",attacker:Name()), {killicon = "default"})
+	end
+end
+
 -- Reevaluates a prop and its constraint system (or all props if no arguments) to determine if they should be frozen or not from nails.
 function GM:EvaluatePropFreeze(ent, neighbors)
 	if not ent then
@@ -1425,7 +1466,13 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 	end
 	
 	if not GAMEMODE:IsClassicMode() then
-		
+		if (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then 
+			if sender:Alive() then
+				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+				return
+			end
+		end
 		if slot == WEAPONLOADOUT_NULL or not slot then
 			if not sender:Alive() or (itemtab.SWEP and sender:HasWeapon(itemtab.SWEP)) then
 				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
@@ -1482,9 +1529,9 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 				end
 			elseif slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE and itemtab.SWEP then
 				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponMelee() == itemtab.SWEP then
-						sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
-						sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-						return	
+					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+					return	
 				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
 					local wep = sender:Give(itemtab.SWEP)
 					local oldwep = sender:GetWeaponMelee()
@@ -1540,7 +1587,7 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 end)
 
 function GM:SpectatorThink(pl)
-	if pl:GetObserverMode() == OBS_MODE_CHASE then
+	if pl:GetObserverMode() == OBS_MODE_CHASE or pl:GetObserverMode() == OBS_MODE_IN_EYE then
 		local target = pl:GetObserverTarget()
 		if not target or not target:IsValid() or not target:IsPlayer() then
 			pl:StripWeapons()
@@ -1557,38 +1604,13 @@ function GM:SpectatorThink(pl)
 				pl:SpectateEntity(NULL)
 			end			
 		end
-	else -- In spectator.
-		if pl:KeyPressed(IN_ATTACK2) then
-			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
-
-			local living = {}
-			for _, v in pairs(player.GetAll()) do
-				if v:Alive() then table.insert(living, v) end
-			end
-
-			pl:StripWeapons()
-
-			if pl.SpectatedPlayerKey > #living then
-				pl.SpectatedPlayerKey = 1
-			end
-
-			local specplayer = living[pl.SpectatedPlayerKey]
-			if specplayer then
-				pl:Spectate(OBS_MODE_CHASE)
-				pl:SpectateEntity(specplayer)
-			end
-		elseif pl:KeyPressed(IN_JUMP) then
-			pl:Spectate(OBS_MODE_ROAMING)
-			pl:SpectateEntity(NULL)
-			pl.SpectatedPlayerKey = nil
-		end
 	end
 end
 
 function GM:PlayerDeathThink(pl)
 	if self.RoundEnded or pl.Revive then return end
 
-	if pl:GetObserverMode() == OBS_MODE_CHASE then
+	if pl:GetObserverMode() == OBS_MODE_CHASE or pl:GetObserverMode() == OBS_MODE_IN_EYE then
 		local target = pl:GetObserverTarget()
 		if not target or not target:IsValid() or not target:IsPlayer() then
 			pl:StripWeapons()
@@ -1596,7 +1618,6 @@ function GM:PlayerDeathThink(pl)
 			pl:SpectateEntity(NULL)
 		end
 	end
-
 	if pl.NextSpawnTime and pl.NextSpawnTime <= CurTime() and pl:KeyPressed(IN_ATTACK) then -- Force spawn.
 		net.Start("zs_playerrespawntime")
 			net.WriteFloat(-1)
@@ -1624,32 +1645,6 @@ function GM:PlayerDeathThink(pl)
 				pl:Spectate(OBS_MODE_DEATHCAM)
 				pl:SpectateEntity(NULL)
 			end
-			
-		end
-	else -- In spectator.
-		if pl:KeyPressed(IN_ATTACK2) then
-			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
-
-			local living = {}
-			for _, v in pairs(team.GetPlayers(pl:Team())) do
-				if v:Alive() then table.insert(living, v) end
-			end
-
-			pl:StripWeapons()
-
-			if pl.SpectatedPlayerKey > #living then
-				pl.SpectatedPlayerKey = 1
-			end
-
-			local specplayer = living[pl.SpectatedPlayerKey]
-			if specplayer then
-				pl:Spectate(OBS_MODE_CHASE)
-				pl:SpectateEntity(specplayer)
-			end
-		--[[elseif pl:KeyPressed(IN_JUMP) then
-			pl:Spectate(OBS_MODE_ROAMING)
-			pl:SpectateEntity(NULL)
-			pl.SpectatedPlayerKey = nil]]
 		end
 	end
 end
@@ -1679,9 +1674,6 @@ function GM:PropBreak(attacker, ent)
 end
 
 function GM:PropBroken(ent, attacker)
-end
-
-function GM:NestDestroyed(ent, attacker)
 end
 
 function GM:EntityTakeDamage(ent, dmginfo)
@@ -1973,13 +1965,6 @@ function GM:OnPlayerChangedTeam(pl, oldteam, newteam)
 	pl.m_PointQueue = 0
 end
 
-
-function GM:SetClassicMode(mode)
-	local cm = GetConVar("zsb_classicmode")
-	SetGlobalBool("classicmode", mode)
-	cm:SetBool(mode)
-end
-
 function GM:AllowPlayerPickup(pl, ent)
 	return false
 end
@@ -2046,6 +2031,48 @@ function GM:WeaponDeployed(pl, wep)
 end
 
 function GM:KeyPress(pl, key)
+	if not pl:Alive() and pl:GetObserverMode() ~= OBS_MODE_NONE then
+		if key == IN_ATTACK2 then
+			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
+			local living = {}
+			if pl:IsSpectator() then
+				for _, v in pairs(player.GetAll()) do
+					if v:Alive() then table.insert(living, v) end
+				end
+			elseif pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
+				for _, v in pairs(team.GetPlayers(pl:Team())) do
+					if v:Alive() then table.insert(living, v) end
+				end
+			end	
+			pl:StripWeapons()
+
+			if pl.SpectatedPlayerKey > #living then
+				pl.SpectatedPlayerKey = 1
+			end
+			local specplayer = living[pl.SpectatedPlayerKey]
+			if specplayer and specplayer:IsPlayer() and specplayer:Alive() then
+				pl:Spectate(OBS_MODE_CHASE)
+				pl:SpectateEntity(specplayer)
+			end
+		elseif key == IN_DUCK then 
+			local specplayer = pl:GetObserverTarget()
+			if specplayer and specplayer:IsPlayer() and specplayer:Alive() then
+				if pl:GetObserverMode() == OBS_MODE_CHASE then
+					pl:Spectate(OBS_MODE_IN_EYE)
+					pl:SpectateEntity(specplayer)
+				elseif pl:GetObserverMode() == OBS_MODE_IN_EYE then
+					pl:Spectate(OBS_MODE_CHASE)
+					pl:SpectateEntity(specplayer)
+				end
+			end
+		elseif key == IN_JUMP then
+			if pl:IsSpectator() then
+				pl:Spectate(OBS_MODE_ROAMING)
+				pl:SpectateEntity(NULL)
+				pl.SpectatedPlayerKey = nil
+			end
+		end
+	end
 	if key == IN_USE then
 		if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() then
 			if pl:IsCarrying() then
@@ -2061,7 +2088,6 @@ function GM:KeyPress(pl, key)
 			end
 		end
 	--elseif key == IN_WALK then
-
 	elseif key == IN_ZOOM then
 		if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and pl:Alive() and pl:IsOnGround() then
 			pl:SetBarricadeGhosting(true)
@@ -2284,7 +2310,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	pl:Freeze(false)
 
 	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1 and not inflictor.IgnoreDamageScaling
-	
+	local samplestodrop = 0
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()
 	
@@ -2305,6 +2331,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetNormal(force:GetNormalized())
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
+		samplestodrop = samplestodrop + 1
 	end
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
@@ -2324,10 +2351,17 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			net.WriteUInt(pl.LifeEnemyKills or 0, 16)
 		net.Send(pl)
 	end
+	
 	if attacker:IsValid() and attacker:IsPlayer() and attacker ~= pl then
 		assistpl = gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
+		samplestodrop = samplestodrop + 1
 	end
-
+	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
+		samplestodrop = samplestodrop + pl:GetSamples()	
+	end
+	if samplestodrop >0 and self:IsSampleCollectMode()then
+		pl:DropSample(samplestodrop)
+	end
 	pl:DropAll()
 	pl:AddDeaths(1)
 	self.PreviouslyDied[pl:UniqueID()] = CurTime()
@@ -2604,7 +2638,6 @@ function GM:SetWave(wave)
 	SetGlobalInt("wave", wave)
 end
 
-GM.NextEscapeDamage = 0
 function GM:WaveStateChanged(newstate)
 	if newstate then
 		local players = player.GetAll()
@@ -2630,7 +2663,11 @@ function GM:WaveStateChanged(newstate)
 
 		if prevwave >= self:GetNumberOfWaves() and not self.SuddenDeath then return end
 		if not self:IsClassicMode() and not self.SuddenDeath then
-			gamemode.Call("CreateSigils")
+			if not self:IsSampleCollectMode() then
+				gamemode.Call("CreateSigils")
+			else
+				gamemode.Call("CreateZombieNests")
+			end
 		end
 		gamemode.Call("SetWave", prevwave + 1)
 		gamemode.Call("SetWaveStart", CurTime())
@@ -2704,7 +2741,9 @@ function GM:WaveStateChanged(newstate)
 		end
 		self.m_AllDead = false
 		self:SetComms(0,0)
+		self:SetSamples(0,0)
 		self.CommsEnd = false
+		self.SamplesEnd = false
 		--self.SuddenDeath = false
 		local shouldshuffle = false
 		gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
@@ -2766,6 +2805,9 @@ function GM:WaveStateChanged(newstate)
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
 		util.RemoveAll("prop_obj_sigil")
+		util.RemoveAll("prop_obj_nest")
+		util.RemoveAll("prop_obj_sample")
+		util.RemoveAll("prop_sampledepositterminal")
 		for _, ent in pairs(ents.FindByClass("prop_drone")) do
 			ent:Destroy()
 		end

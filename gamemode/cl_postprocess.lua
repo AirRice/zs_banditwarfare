@@ -122,7 +122,7 @@ local colHealth = Color(255, 255, 255, 255)
 local matPullBeam = Material("cable/rope")
 local colPullBeam = Color(255, 255, 255, 255)
 function GM:_PostDrawOpaqueRenderables()
-		if self.ShowIndicators and MySelf:Team() ~= TEAM_SPECTATOR then
+		if MySelf:Team() ~= TEAM_SPECTATOR then
 			local eyepos = EyePos()
 			for _, pl in pairs(team_GetPlayers(MySelf:Team())) do
 				if pl:Alive() and pl:GetPos():Distance(eyepos) <= pl:GetAuraRange() and pl ~= MySelf then
@@ -131,8 +131,6 @@ function GM:_PostDrawOpaqueRenderables()
 					colHealth.g = math_Approach(colHealthEmpty.g, colHealthFull.g, math_abs(colHealthEmpty.g - colHealthFull.g) * healthfrac)
 					colHealth.b = math_Approach(colHealthEmpty.b, colHealthFull.b, math_abs(colHealthEmpty.b - colHealthFull.b) * healthfrac)
 
-					--local attach = pl:GetAttachment(pl:LookupAttachment("chest")) -- This probably lagged so much.
-					--local pos = attach and attach.Pos or pl:WorldSpaceCenter()
 					local pos = pl:WorldSpaceCenter()
 
 					render_SetMaterial(matGlow)

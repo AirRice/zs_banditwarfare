@@ -96,6 +96,26 @@ function GM:AddCustomAmmo()
 	game.AddAmmoType({name = "grenlauncher"})
 end
 
+function GM:SetSamples(bamount,hamount)
+	SetGlobalInt("banditsamples", bamount)
+	SetGlobalInt("humansamples", hamount)
+end
+
+function GM:AddSamples(bamount,hamount)
+	horiginal = self:GetHumanSamples()
+	boriginal = self:GetBanditSamples()
+	SetGlobalInt("banditsamples", boriginal+bamount)
+	SetGlobalInt("humansamples", horiginal+hamount)
+end
+
+function GM:GetHumanSamples()
+	return GetGlobalInt("humansamples", 0)
+end
+
+function GM:GetBanditSamples()
+	return GetGlobalInt("banditsamples", 0)
+end
+
 function GM:SetComms(bamount,hamount)
 	SetGlobalInt("banditcomms", bamount)
 	SetGlobalInt("humancomms", hamount)

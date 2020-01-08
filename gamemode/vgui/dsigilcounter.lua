@@ -22,7 +22,7 @@ function PANEL:Paint()
 		sigilicon:SetSize(48, 48)
 		sigilicon:SetPos((i - 1) * spacing + (spacing-48)*0.5, 0)
 		sigilicon:CenterVertical()
-		if GAMEMODE:GetWaveActive() and not GAMEMODE:IsClassicMode() and not GAMEMODE.FilmMode and not GAMEMODE.IsInSuddenDeath then
+		if GAMEMODE:GetWaveActive() and not GAMEMODE:IsClassicMode() and not GAMEMODE.FilmMode and not GAMEMODE.IsInSuddenDeath and not GAMEMODE:IsSampleCollectMode() then
 			sigilicon:SetVisible(true)
 		else 
 			sigilicon:SetVisible(false)
@@ -30,10 +30,6 @@ function PANEL:Paint()
 	end
 	return true
 end
-
-vgui.Register("DSigilCounter", PANEL, "DPanel")
-
-
 
 --[[function PANEL:PerformLayout()
 
@@ -51,3 +47,5 @@ function PANEL:UpdateSigilTeams(sigiltable)
 	end
 end
 
+
+vgui.Register("DSigilCounter", PANEL, "DPanel")

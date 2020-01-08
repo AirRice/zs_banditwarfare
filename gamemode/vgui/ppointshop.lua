@@ -42,7 +42,9 @@ local function ItemButtonThink(self)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponToolslot() == itemtab.SWEP)
-		and not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()))
+		and not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
+		not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+		not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()))
 		if newstate ~= self.m_LastAbleToBuy then
 			self.m_LastAbleToBuy = newstate
 			if newstate then
@@ -205,6 +207,8 @@ local ammonames = {
 	["pulse"] = "pulseammo",
 	["Battery"] = "medicammo",
 	["grenlauncher"] = "glgrenade",
+	["alyxgun"] = "biomaterial",
+	["SniperRound"] = "woodboards",
 	["gravity"] = "empround",
 	["GaussEnergy"] = "nails"
 }
@@ -330,7 +334,9 @@ function GM:OpenPointsShop(weaponslot)
 			list:SetPadding(2)
 			local currenttier = -1
 			for i, tab in ipairs(GAMEMODE.Items) do
-				if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) then 
+				if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 
+				not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())then 
 				local weptab = weapons.GetStored(tab.SWEP) or tab
 				if tab.Category == catid then
 					if tab.Category == ITEMCAT_GUNS and weptab and tab.Tier ~= nil and (currenttier == nil  or currenttier < tab.Tier) then

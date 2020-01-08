@@ -3,9 +3,7 @@ ENT.Base = "status__base"
 
 function ENT:Initialize()
 	self:DrawShadow(false)
-	if self:GetDTFloat(1) == 0 then
-		self:SetDTFloat(1, CurTime())
-	end
+	self:SetDTFloat(0, 1)
 end
 
 function ENT:AddDamage(damage)
@@ -13,7 +11,7 @@ function ENT:AddDamage(damage)
 end
 
 function ENT:SetDamage(damage)
-	self:SetDTFloat(0, math.min(50, damage))
+	self:SetDTFloat(0, math.min(75, damage))
 end
 
 function ENT:GetDamage()

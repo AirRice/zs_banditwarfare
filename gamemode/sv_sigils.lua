@@ -35,6 +35,7 @@ function GM:OnSigilTaken(ent, justtakenby)
 		timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", justtakenby) end)
 	end]]
 end
+
 GM.LastCommLink = 0
 function GM:SigilCommsThink()
 	--PrintTable(self.CurrentSigilTable)
@@ -80,6 +81,43 @@ function GM:SigilCommsThink()
 	end
 end
 
+function GM:PlayerAddedSamples(player, team, togive, ent)
+	if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
+		if team == TEAM_BANDIT then
+			self:AddSamples(togive,0)
+		elseif team == TEAM_HUMAN then
+			self:AddSamples(0,togive)
+		end
+	elseif not self.SamplesEnd then 
+		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
+		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
+			self.SamplesEnd = true
+			for _, pl in pairs(player.GetAll()) do
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "samples_tied"), {killicon = "default"})
+			end
+			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", nil) end)
+		elseif self:GetBanditSamples() >= 100 then
+			for _, pl in pairs(player.GetAll()) do
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
+			end
+			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_BANDIT) end)
+			self.SamplesEnd = true
+		elseif self:GetHumanSamples() >= 100 then
+			for _, pl in pairs(player.GetAll()) do
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
+			end
+			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_HUMAN) end)
+			self.SamplesEnd = true
+		end
+	end
+	player:AddPoints(togive)
+	net.Start("zs_commission")
+		net.WriteEntity(ent)
+		net.WriteEntity(player)
+		net.WriteUInt(togive, 16)
+	net.Send(player)
+end
+
 local function SortDistFromLast(a, b)
 	if a.diff then
 		if b.diff then
@@ -92,8 +130,109 @@ local function SortDistFromLast(a, b)
 	end
 end
 
+function GM:CreateZombieNests()
+	--print ("creating sigils")
+	if #self.ProfilerNodes < self.MaxSigils then
+		self:SetClassicMode(true)
+		return
+	end
+
+	-- Copy
+	local nodes = {}
+	for _, node in pairs(self.ProfilerNodes) do
+		local vec = Vector()
+		vec:Set(node)
+		nodes[#nodes + 1] = {v = vec}
+	end
+
+	local bspawns = {}
+	local hspawns = {}
+	table.Add(bspawns,team.GetValidSpawnPoint(TEAM_BANDIT))
+	table.Add(hspawns,team.GetValidSpawnPoint(TEAM_HUMAN))
+	for _, n in pairs(nodes) do
+		n.hd = 999999
+		n.bd = 999999
+		n.diff = 999999
+		for __, spawn in pairs(hspawns) do
+			n.hd = math.min(n.hd, n.v:Distance(spawn:GetPos()))
+		end
+		for __, spawn in pairs(bspawns) do
+			n.bd = math.min(n.bd, n.v:Distance(spawn:GetPos()))
+		end
+		n.diff = math.abs(n.bd-n.hd)
+			
+		if n.diff > 3000 then 
+			table.remove(nodes, _)
+		end
+	end
+	local bspawns = {}
+	bspawns = team.GetValidSpawnPoint(TEAM_BANDIT)
+	local hspawns = {}
+	hspawns = team.GetValidSpawnPoint(TEAM_HUMAN)
+	if not (#bspawns > 0 and #hspawns > 0) then return end
+	local bspawn = bspawns[ math.random(#bspawns) ]
+	local hspawn = hspawns[ math.random(#bspawns) ]
+	if bspawn and bspawn:IsValid() then
+		local ent = ents.Create("prop_sampledepositterminal")
+		if ent:IsValid() then
+			ent:SetPos(bspawn:GetPos() + Vector(0, 0, 16))
+			ent:Spawn()
+			ent:DropToFloor()
+			ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+			ent:SetOwnerTeam(TEAM_BANDIT)
+		end
+		local ent2 = ents.Create("prop_sampledepositterminal")
+		if ent2:IsValid() then
+			ent2:SetPos(hspawn:GetPos() + Vector(0, 0, 16))
+			ent2:Spawn()
+			ent2:DropToFloor()
+			ent2:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+			ent2:SetOwnerTeam(TEAM_HUMAN)
+		end
+	end
+	table.sort(nodes, SortDistFromLast)
+	for i=1, self.MaxSigils do
+		local id
+		local sigs = ents.FindByClass("prop_obj_nest")
+		local flag = false
+		for __, sig in pairs(sigs) do
+			for _, n in pairs(nodes) do
+				if n.v:Distance(sig.NodePos) <= 800 then
+					table.remove(nodes, _)
+				end
+			end
+		end
+		
+		-- Sort the nodes by their distances.
+		-- Select node with algorithm that randomly selects while selecting closer ids more
+		local id = 1
+		if #nodes >=self.MaxSigils*3 then
+			if math.random(1,4) == 1 then
+				id = math.random(math.floor(#nodes/3),math.floor(#nodes/3)*2)
+			elseif math.random(1,4) == 4 then
+				id = math.random(4,math.floor(#nodes/3))
+			else
+				id = math.random(1,3)
+			end
+		else
+			id = math.random(1,#nodes)
+		end
+
+		-- Remove the chosen point from the temp table and make the sigil.
+		local point = nodes[id].v
+		table.remove(nodes, id)
+		local ent = ents.Create("prop_obj_nest")
+
+		if ent:IsValid() then
+			ent:SetPos(point)
+			ent:Spawn()
+			ent.NodePos = point
+		end
+	end
+end
+
 function GM:CreateSigils()
-	print ("creating sigils")
+	--print ("creating sigils")
 	if #self.ProfilerNodes < self.MaxSigils then
 		self:SetClassicMode(false)
 		return
@@ -134,7 +273,7 @@ function GM:CreateSigils()
 		local flag = false
 		for __, sig in pairs(sigs) do
 			for _, n in pairs(nodes) do
-				if n.v:Distance(sig.NodePos) <= 512 then
+				if n.v:Distance(sig.NodePos) <= 800 then
 					table.remove(nodes, _)
 				end
 			end
@@ -166,5 +305,4 @@ function GM:CreateSigils()
 			ent.NodePos = point
 		end
 	end
-	GAMEMODE.Objectives = {}
 end

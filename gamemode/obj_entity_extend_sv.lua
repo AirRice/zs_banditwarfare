@@ -14,6 +14,16 @@ function meta:GetDefaultBarricadeHealth()
 
 	return math.Clamp(mass * GAMEMODE.BarricadeHealthMassFactor + self:GetVolume() * GAMEMODE.BarricadeHealthVolumeFactor, GAMEMODE.BarricadeHealthMin, GAMEMODE.BarricadeHealthMax)
 end
+function meta:DropSample(todrop)
+	if not todrop or todrop <=0 then return end
+	local ent = ents.Create("prop_obj_sample")
+	if ent:IsValid() then
+		ent:SetPos(self:WorldSpaceCenter())
+		ent:SetAngles(self:GetAngles())
+		ent.SampleAmount = todrop
+		ent:Spawn()
+	end
+end
 
 function meta:HitFence(data, phys)
 	local pos = phys:GetPos()

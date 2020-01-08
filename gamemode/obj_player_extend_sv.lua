@@ -363,6 +363,24 @@ function meta:GiveStatus(sType, fDie)
 	end
 end
 
+local oldSpectate = meta.Spectate
+function meta:Spectate(type)
+	oldSpectate(self, type)
+	if type == OBS_MODE_ROAMING then
+		self:SetMoveType(MOVETYPE_NOCLIP)
+	elseif type ~= OBS_MODE_NONE then
+		self:SetMoveType(MOVETYPE_OBSERVER)
+	end
+end
+
+meta.OldUnSpectate = meta.OldUnSpectate or meta.UnSpectate
+function meta:UnSpectate()
+	if self:GetObserverMode() ~= OBS_MODE_NONE then
+		self:OldUnSpectate(obsm)
+	end
+end
+
+
 function meta:UnSpectateAndSpawn()
 	self:UnSpectate()
 	self:Spawn()
@@ -561,6 +579,14 @@ function meta:PointCashOut(ent, fmtype)
 	end
 end
 
+function meta:AddSamples(samples)
+	self:SetSamples(self:GetSamples() + samples)
+end
+
+function meta:TakeSamples(samples)
+	self:SetSamples(self:GetSamples() - samples)
+end
+
 function meta:AddPoints(points)
 	self:AddFrags(points)
 	self:SetPoints(self:GetPoints() + points)
@@ -734,12 +760,5 @@ function meta:SetLastAttacker(ent)
 	else
 		self.LastAttacker = nil
 		self.LastAttacked = nil
-	end
-end
-
-meta.OldUnSpectate = meta.OldUnSpectate or meta.UnSpectate
-function meta:UnSpectate()
-	if self:GetObserverMode() ~= OBS_MODE_NONE then
-		self:OldUnSpectate(obsm)
 	end
 end

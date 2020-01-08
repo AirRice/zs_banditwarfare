@@ -1,6 +1,6 @@
 ENT.Type = "anim"
 ENT.Base = "status__base"
-
+ENT.Time = 1
 function ENT:SetEndTime(time)
 	self:SetDTFloat(0, time)
 end

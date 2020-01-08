@@ -13,7 +13,7 @@ function ENT:Initialize()
 	end
 
 	if self:GetEndTime() == 0 then
-		self:SetEndTime(CurTime() + 10)
+		self:SetEndTime(CurTime() + self.Time or 1)
 	end
 end
 

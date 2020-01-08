@@ -125,10 +125,10 @@ GM.AmmoModels = {}
 GM.AmmoModels["pistol"] = "models/Items/BoxSRounds.mdl" -- Pistols
 GM.AmmoModels["smg1"] = "models/Items/BoxMRounds.mdl" -- SMGs
 GM.AmmoModels["ar2"] = "models/Items/357ammobox.mdl" -- Assault rifles
+GM.AmmoModels["alyxgun"] = "models/gibs/hgibs.mdl"
 GM.AmmoModels["battery"] = "models/healthvial.mdl" -- Medical Kit charge
 GM.AmmoModels["buckshot"] = "models/Items/BoxBuckshot.mdl" -- Buckshot
 GM.AmmoModels["357"] = "models/Items/357ammobox.mdl" -- Slugs
-GM.AmmoModels["xbowbolt"] = "models/Items/CrossbowRounds.mdl" -- Bolts
 GM.AmmoModels["xbowbolt"] = "models/Items/CrossbowRounds.mdl" -- Bolts
 GM.AmmoModels["gaussenergy"] = "models/Items/CrossbowRounds.mdl" -- Nails
 GM.AmmoModels["grenade"] = "models/weapons/w_grenade.mdl" -- Grenades
@@ -142,6 +142,7 @@ GM.AmmoModels["stone"] = "models/props_junk/rock001a.mdl"
 GM.AmmoModels["pulse"] = "models/Items/combine_rifle_ammo01.mdl"
 GM.AmmoModels["gravity"] = "models/items/battery.mdl" -- EMP
 GM.AmmoModels["grenlauncher"] = "models/items/ar2_grenade.mdl"
+GM.AmmoModels["sniperround"] = "models/props_debris/wood_board06a.mdl"
 -- Handled in languages file.
 GM.ValidBeaconMessages = {
 	"message_beacon_1",

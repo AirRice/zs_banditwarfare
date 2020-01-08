@@ -368,12 +368,22 @@ function meta:PoisonDamage(damage, attacker, inflictor, hitpos, noreduction)
 
 	if self:IsPlayer() then
 		if not (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) then return end
-		self:EmitSound("player/pl_pain"..math.random(5, 7)..".wav")
-
-		if SERVER then
-			self:GiveStatus("poisonrecovery"):AddDamage(math.floor(damage * 0.75))
+		local set = GAMEMODE.VoiceSets[self.VoiceSet]
+		if set then
+			snds = set.PainSoundsMed
+			if snds then
+				local snd = snds[math.random(#snds)]
+				if snd then
+					self:EmitSound(snd)
+				end
+			end
 		end
-
+		if SERVER then
+			self:GiveStatus("poisonrecovery"):AddDamage(math.floor(damage*0.8))
+		end
+		if self:Health() <= damage then 
+			self:Gib()
+		end
 		dmginfo:SetDamageType(DMG_NERVEGAS)
 	else
 		if not noreduction then
