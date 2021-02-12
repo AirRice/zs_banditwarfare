@@ -10,7 +10,7 @@ SWEP.ConeMin = 0.01
 SWEP.MovingConeOffset = 0
 
 -- 에임이 늘어나는 단위
-SWEP.AimExpandUnit = 0.15
+SWEP.AimExpandUnit = 0.03
 -- 에임이 늘어난 상태가 유지되는 기간
 SWEP.AimExpandStayDuration = 0.2
 -- 에임이 줄어드는 단위
@@ -99,7 +99,7 @@ function SWEP:GetCone()
 	local basecone = self.ConeMin
 	local conediff = self.ConeMax - self.ConeMin + self.MovingConeOffset
 	
-	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1)*0.5
+	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1)*0.3
 	if !self.Owner:OnGround() then
 		basecone = basecone * 1.2
 		multiplier = 0.55

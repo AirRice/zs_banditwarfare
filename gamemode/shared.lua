@@ -67,20 +67,18 @@ GM.SoundDuration = {
 	["zombiesurvival/music_lose.ogg"] = 45.714,
 	["zombiesurvival/lasthuman.ogg"] = 122,
 	["music/HL2_song29.mp3"] = 136,
+	["music/HL2_song3.mp3"] = 90,
+	["music/HL2_song31.mp3"] = 98,
 	["music/HL2_song20_submix0.mp3"] = 104,
-	--["music/HL2_song15.mp3"] = 70,
+	["music/HL2_song20_submix4.mp3"] = 140,
+	["music/HL2_song16.mp3"] = 170,
+	["music/HL2_song15.mp3"] = 70,
 	["music/HL2_song14.mp3"] = 160,
-	--["music/HL2_song4.mp3"] = 66,
-	--["music/HL2_song3.mp3"] = 91,
+	["music/HL2_song4.mp3"] = 66,
+	["music/HL2_song3.mp3"] = 91,
 	["music/HL1_song15.mp3"] = 121,
-	["music/HL1_song10.mp3"] = 105,
-	["music/vlvx_song18.mp3"] = 185,
-	["music/vlvx_song21.mp3"] = 170,
-	["music/VLVX_song22.mp3"] = 194,
-	["music/VLVX_song23.mp3"] = 167,
-	["music/VLVX_song24.mp3"] = 128,
-	["music/VLVX_song27.mp3"] = 210,
-	["music/VLVX_song28.mp3"] = 193
+	["music/HL1_song17.mp3"] = 124,
+	["music/HL1_song10.mp3"] = 105
 }
 
 function GM:AddCustomAmmo()
@@ -219,23 +217,31 @@ function GM:Move(pl, move)
 end
 
 function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
-	if inwater or pl:GetActiveWeapon().NoFallDamage then return true end
+	if inwater then return true end
 	if SERVER then
 		pl:PreventSkyCade()
 	end
 	local mul = 1
 
-	pl:SetVelocity(- pl:GetVelocity() / 2)
+	pl:SetVelocity(- pl:GetVelocity() / 4)
 	local damage = (0.1 * (speed - 525)) ^ 1.45
 	damage = damage * mul
 	if hitfloater then damage = damage / 2 end
 	if math.floor(damage) > 0 then
 		if SERVER then
-			pl:TakeSpecialDamage(damage, DMG_FALL, game.GetWorld(), game.GetWorld(), pl:GetPos())
-			if damage >= 30 and damage < pl:Health() then
-				pl:KnockDown(damage * 0.05*mul)
+			local groundent = pl:GetGroundEntity()
+			local tohurt = pl
+			local isgoomba = false
+			if groundent:IsValid() && groundent:IsPlayer() && groundent:Team() && groundent:Team() != pl:Team() then
+				tohurt = groundent
+				isgoomba = true
 			end
-			pl:EmitSound("player/pl_fallpain"..(math.random(2) == 1 and 3 or 1)..".wav")
+			if pl:GetActiveWeapon().NoFallDamage && !isgoomba then return true end
+			tohurt:TakeSpecialDamage(damage, DMG_FALL, isgoomba and pl or game.GetWorld(), game.GetWorld(), pl:GetPos())
+			if damage >= 30 and damage < pl:Health() then
+				tohurt:KnockDown(damage * 0.05*mul)
+			end
+			tohurt:EmitSound("player/pl_fallpain"..(math.random(2) == 1 and 3 or 1)..".wav")
 		end
 	end
 

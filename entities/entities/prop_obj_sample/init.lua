@@ -10,20 +10,28 @@ function ENT:Initialize()
 		self.DieTime = CurTime() + 30
 	end
 	self:SetModel("models/props_combine/breenbust.mdl")
-	self:SetModelScale(0.5, 0)
-	self:SetMaterial("models/flesh")
+	self:SetModelScale(1, 0)
+	self:SetMaterial("models/shiny")
+	self:SetColor( Color( 0, 255, 0, 255 ) ) 
+	self:SetRenderMode(RENDERMODE_GLOW)
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	self:SetTrigger(true)
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
-		phys:EnableMotion(false)
+		phys:SetDamping(1000,1000)
+		phys:EnableMotion(true)
+		phys:Wake()
 	end
 end
 
 function ENT:Think()
 	if self.DieTime >= 0 and self.DieTime <= CurTime() then
+		local effectdata = EffectData()
+			effectdata:SetOrigin(self:GetPos())
+			effectdata:SetNormal(self:GetAngles():Up())
+		util.Effect("fatexplosion", effectdata)
 		self:Remove()
 	end
 end

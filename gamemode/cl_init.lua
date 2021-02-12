@@ -147,20 +147,18 @@ GM.NextSpawnTime = nil
 GM.IsInSuddenDeath = false
 GM.Beats = {
 "music/HL2_song29.mp3",
+"music/HL2_song3.mp3",
+"music/HL2_song31.mp3",
 "music/HL2_song20_submix0.mp3",
---"music/HL2_song15.mp3",
+"music/HL2_song20_submix4.mp3",
+"music/HL2_song16.mp3",
+"music/HL2_song15.mp3",
 "music/HL2_song14.mp3",
---"music/HL2_song4.mp3",
---"music/HL2_song3.mp3",
+"music/HL2_song4.mp3",
+"music/HL2_song3.mp3",
 "music/HL1_song15.mp3",
-"music/HL1_song10.mp3",
-"music/vlvx_song18.mp3",
-"music/vlvx_song21.mp3",
-"music/VLVX_song22.mp3",
-"music/VLVX_song23.mp3",
-"music/VLVX_song24.mp3",
-"music/VLVX_song27.mp3",
-"music/VLVX_song28.mp3"
+"music/HL1_song17.mp3",
+"music/HL1_song10.mp3"
 }
 
 GM.DeathFog = 0
@@ -624,7 +622,7 @@ function GM:_HUDPaint()
 				for _, ent in pairs(ents.FindByClass("prop_sampledepositterminal")) do
 					if MySelf:Team() == ent:GetOwnerTeam() then
 						local teamcolor = team.GetColor(MySelf:Team())
-						local scrpos = ent:GetPos():ToScreen()
+						local scrpos = (ent:GetPos()+ent:GetAngles():Up()*100):ToScreen()
 						scrpos.x = math.Clamp(scrpos.x, 32, ScrW() - 32)
 						scrpos.y = math.Clamp(scrpos.y, 32, ScrH() - 32)
 						draw.RoundedBox( 10,scrpos.x - 32, scrpos.y - 32, 32 * 2, 32 * 2, teamcolor or COLOR_DARKGREEN )
@@ -687,27 +685,6 @@ function GM:ObserverHUD(obsmode)
 		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*3, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if MySelf:Team() == TEAM_SPECTATOR then
 		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 5, COLOR_WHITE, TEXT_ALIGN_CENTER)
-	end
-end
-
-local matHumanHeadID = Material("zombiesurvival/humanhead")
-local matBanditHeadID = Material("zombiesurvival/horderally")
-
-function GM:RequestedDefaultCart()
-	local defaultcart = GetConVarString("zsb_defaultcart")
-	if #defaultcart > 0 then
-		defaultcart = string.lower(defaultcart)
-
-		for i, carttab in ipairs(self.SavedCarts) do
-			if carttab[1] and string.lower(carttab[1]) == defaultcart then
-				gamemode.Call("SuppressArsenalUpgrades", 1)
-				RunConsoleCommand("worthcheckout", unpack(carttab[2]))
-
-				return
-			end
-		end
-
-		RunConsoleCommand("worthrandom")
 	end
 end
 

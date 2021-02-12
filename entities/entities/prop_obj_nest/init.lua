@@ -3,28 +3,27 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.NextDecay = 0
-ENT.BuildsThisTick = 0
-
 function ENT:Initialize()
 	self:SetModel("models/props_wasteland/antlionhill.mdl")
-	self:PhysicsInitBox(Vector(-20, -20, 0), Vector(20, 20, 40))
-	self:SetCollisionBounds(Vector(-20, -20, 0), Vector(20, 20, 40))
+	self:PhysicsInitBox(Vector(-20, -20, 0), Vector(20, 20, 80))
+	self:SetCollisionBounds(Vector(-20, -20, 0), Vector(20, 20, 80))
 	self:SetUseType(SIMPLE_USE)
 
 	--self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 	self:SetCustomCollisionCheck(true)
 	self:CollisionRulesChanged()
 
-	self:ManipulateBoneScale(0, self.ModelScale)
-
+	--[[local mat = Matrix()
+	mat:Scale(self.ModelScale)
+	self:EnableMatrix("RenderMultiply", mat)]]
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:SetMaterial("flesh")
 		phys:EnableMotion(false)
 		phys:Wake()
 	end
-	self:SetNestHealth(self:GetNestMaxHealth() * player.GetCount()/2)
+	self:SetNestMaxHealth(math.Clamp(self.MaxHealthBase * player.GetCount()/7,self.MaxHealthBase,200))
+	self:SetNestHealth(self:GetNestMaxHealth())
 end
 
 function ENT:Use()
@@ -37,7 +36,6 @@ function ENT:OnTakeDamage(dmginfo)
 	if attacker:IsValid() and attacker:IsPlayer() and not (attacker:Team() == TEAM_HUMAN or attacker:Team() == TEAM_BANDIT) then return end
 
 	self:SetNestHealth(self:GetNestHealth() - dmginfo:GetDamage())
-
 	if self:GetNestHealth() <= 0 then
 		if attacker:IsValid() and attacker:IsPlayer() and (attacker:Team() == TEAM_HUMAN or attacker:Team() == TEAM_BANDIT) then
 			attacker:AddPoints(20)

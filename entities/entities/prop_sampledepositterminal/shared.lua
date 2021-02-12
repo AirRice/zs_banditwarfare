@@ -10,3 +10,5 @@ end
 function ENT:GetOwnerTeam()
 	return self:GetDTInt(0)
 end
+
+AccessorFuncDT(ENT, "LastCalcedNearby", "Float", 1)

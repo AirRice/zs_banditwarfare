@@ -359,6 +359,20 @@ function meta:GetLivingNails()
 	return tab
 end
 
+function meta:NumLivingNails()
+	local amount = 0
+
+	if self.Nails then
+		for _, nail in pairs(self.Nails) do
+			if nail and nail:IsValid() and nail:GetNailHealth() > 0 then
+				amount = amount + 1
+			end
+		end
+	end
+
+	return amount
+end
+
 local function GetNailOwner(nail, filter)
 	for _, ent in pairs(ents.GetAll()) do
 		if ent and ent ~= filter and ent.Nails and ent:IsValid() then
@@ -422,6 +436,26 @@ function meta:RemoveNail(nail, dontremoveentity, removedby)
 		nail:Remove()
 		nail.m_IsRemoving = true
 	end
-
+	
+	self:RecalcNailHealth()
+	
 	return true
+end
+
+function meta:RecalcNailHealth()
+	local max_health = self:GetMaxBarricadeHealth()
+	if max_health == 0 then return end
+	local max_repairs = self:GetMaxBarricadeRepairs()
+	local num_extra_nails = math.Clamp(self:NumLivingNails() - 1, 0, 3)
+	local repairs_frac = self:GetBarricadeRepairs() / self:GetMaxBarricadeRepairs()
+	
+	self.OriginalMaxHealth = self.OriginalMaxHealth or max_health
+	self.OriginalMaxBarricadeRepairs = self.OriginalMaxBarricadeRepairs or max_repairs
+	local multiplier = 1+0.5*num_extra_nails
+	local health = self:GetBarricadeHealth()
+	local new_max_health = self.OriginalMaxHealth * multiplier
+	self:SetMaxBarricadeHealth(new_max_health)
+	self:SetBarricadeHealth(health / max_health * new_max_health)
+
+	self:SetBarricadeRepairs(repairs_frac * self:GetMaxBarricadeRepairs())
 end

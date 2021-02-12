@@ -66,8 +66,8 @@ function PANEL:Init()
 	self.m_HumanHeading = vgui.Create("DTeamHeading", self)
 	self.m_HumanHeading:SetTeam(TEAM_HUMAN)
 
-	self.m_ZombieHeading = vgui.Create("DTeamHeading", self)
-	self.m_ZombieHeading:SetTeam(TEAM_BANDIT)
+	self.m_BanditHeading = vgui.Create("DTeamHeading", self)
+	self.m_BanditHeading:SetTeam(TEAM_BANDIT)
 
 	self.BanditList = vgui.Create("DScrollPanel", self)
 	self.BanditList.Team = TEAM_BANDIT
@@ -93,8 +93,8 @@ function PANEL:PerformLayout()
 	self.m_HumanHeading:SetSize(self:GetWide() / 2 - 32, 28)
 	self.m_HumanHeading:SetPos(self:GetWide() * 0.25 - self.m_HumanHeading:GetWide() * 0.5, 110 - self.m_HumanHeading:GetTall())
 
-	self.m_ZombieHeading:SetSize(self:GetWide() / 2 - 32, 28)
-	self.m_ZombieHeading:SetPos(self:GetWide() * 0.75 - self.m_ZombieHeading:GetWide() * 0.5, 110 - self.m_ZombieHeading:GetTall())
+	self.m_BanditHeading:SetSize(self:GetWide() / 2 - 32, 28)
+	self.m_BanditHeading:SetPos(self:GetWide() * 0.75 - self.m_BanditHeading:GetWide() * 0.5, 110 - self.m_BanditHeading:GetTall())
 
 	self.HumanList:SetSize(self:GetWide() / 2 - 24, self:GetTall() - 150)
 	self.HumanList:AlignBottom(16)
@@ -115,9 +115,6 @@ function PANEL:Think()
 	end
 end
 
-local texRightEdge = surface.GetTextureID("gui/gradient")
-local texCorner = surface.GetTextureID("zombiesurvival/circlegradient")
-local texDownEdge = surface.GetTextureID("gui/gradient_down")
 function PANEL:Paint()
 	local wid, hei = self:GetSize()
 	local barw = 64
@@ -130,16 +127,8 @@ function PANEL:Paint()
 	surface.SetDrawColor(5, 5, 5, 220)
 	PaintGenericFrame(self, 0, 0, wid, 64, 32)
 
-	surface.SetDrawColor(5, 5, 5, 160)
-	surface.DrawRect(wid * 0.5 - 16, 64, 32, hei - 128)
-	surface.SetTexture(texRightEdge)
-	surface.DrawTexturedRect(wid * 0.5 + 16, 64, barw, hei - 128)
-	surface.DrawTexturedRectRotated(wid * 0.5 - 16 - barw / 2, 64 + (hei - 128) / 2, barw, hei - 128, 180)
-	surface.SetTexture(texCorner)
-	surface.DrawTexturedRectRotated(wid * 0.5 - 16 - barw / 2, hei - 32, barw, 64, 90)
-	surface.DrawTexturedRectRotated(wid * 0.5 + 16 + barw / 2, hei - 32, barw, 64, 180)
-	surface.SetTexture(texDownEdge)
-	surface.DrawTexturedRect(wid * 0.5 - 16, hei - 64, 32, 64)
+	--[[surface.SetDrawColor(5, 5, 5, 160)
+	surface.DrawRect(wid * 0.5 - 16, 64, 32, hei - 128)]]
 end
 
 function PANEL:GetPlayerPanel(pl)
@@ -262,9 +251,7 @@ function PANEL:Paint()
 	if pl:IsValid() then
 		col = team.GetColor(pl:Team())
 
-		if self.m_Flash then
-			mul = 0.6 + math.abs(math.sin(RealTime() * 6)) * 0.4
-		elseif (GAMEMODE:IsClassicMode() or GAMEMODE.IsInSuddenDeath) and not pl:Alive() then 
+		if (GAMEMODE:IsClassicMode() or GAMEMODE.IsInSuddenDeath) and not pl:Alive() then 
 			mul = 0.1
 		elseif pl == MySelf then
 			mul = 0.8
@@ -373,8 +360,6 @@ function PANEL:SetPlayer(pl)
 			self.m_SpecialImage:SetTooltip()
 			self.m_SpecialImage:SetVisible(false)
 		end
-
-		self.m_Flash = pl:SteamID() == "STEAM_0:1:3307510"
 	else
 		self.m_Avatar:SetVisible(false)
 		self.m_SpecialImage:SetVisible(false)

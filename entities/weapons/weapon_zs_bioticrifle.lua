@@ -10,9 +10,9 @@ if CLIENT then
 	SWEP.ViewModelFOV = 50
 
 	SWEP.HUD3DBone = "v_weapon.scout_Parent"
-	SWEP.HUD3DPos = Vector(-1, -2.75, -6)
+	SWEP.HUD3DPos = Vector(-2, -3.75, -6)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
-	SWEP.HUD3DScale = 0.015
+	SWEP.HUD3DScale = 0.025
 
 	SWEP.VElements = {
 		["base++++"] = { type = "Model", model = "models/gibs/hgibs.mdl", bone = "v_weapon.scout_Bolt", rel = "base", pos = Vector(1.794, -0.417, -3.037), angle = Angle(0, 0, -180), size = Vector(0.286, 0.286, 0.286), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },

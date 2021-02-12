@@ -215,8 +215,115 @@ function meta:DoubleTrace(distance, mask, size, mask2, filter)
 	return tr1
 end
 
+function meta:AttemptNail(tr,showmessages)
+	showmessages = showmessages or false
+	local trent = tr.Entity
+	if not trent:IsValid()
+	or not util.IsValidPhysicsObject(trent, tr.PhysicsBone)
+	or tr.Fraction == 0
+	or trent:GetMoveType() ~= MOVETYPE_VPHYSICS and not trent:GetNailFrozen()
+	or trent.NoNails
+	or trent:IsNailed() and (#trent.Nails >= 8 or trent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)
+	or trent:GetMaxHealth() == 1 and trent:Health() == 0 and not trent.TotalHealth
+	or not trent:IsNailed() and not trent:GetPhysicsObject():IsMoveable() 
+	or (trent:IsNailed() and trent:GetNailedPropOwner():IsPlayer() and trent:GetNailedPropOwner():Team() ~= self:Team())
+	then return false end
+
+	if not gamemode.Call("CanPlaceNail", self, tr) then return false end
+
+	local count = 0
+	for _, nail in pairs(trent:GetNails()) do
+		if nail:GetDeployer() == self then
+			count = count + 1
+			if count >= 3 then
+				return false
+			end
+		end
+	end
+	
+	if tr.MatType == MAT_GRATE or tr.MatType == MAT_CLIP then
+		if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "impossible") end
+		return false
+	end
+	if tr.MatType == MAT_GLASS then
+		if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "trying_to_put_nails_in_glass") end
+		return false
+	end
+
+	if trent:IsValid() then
+		for _, nail in pairs(ents.FindByClass("prop_nail")) do
+			if nail:GetParent() == trent and nail:GetActualPos():Distance(tr.HitPos) <= 16 then
+				if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "too_close_to_another_nail") end
+				return false
+			end
+		end
+
+		if trent:GetBarricadeHealth() <= 0 and trent:GetMaxBarricadeHealth() > 0 then
+			if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "object_too_damaged_to_be_used") end
+			return false
+		end
+	end
+
+	local aimvec = (tr.HitPos-tr.StartPos):GetNormalized()
+	local trtwo = util.TraceLine({start = tr.HitPos, endpos = tr.HitPos + aimvec * 24, filter = {self, trent}, mask = MASK_SOLID})
+
+	if trtwo.HitSky then return false end
+
+	local ent = trtwo.Entity
+	if trtwo.HitWorld
+	or ent:IsValid() and util.IsValidPhysicsObject(ent, trtwo.PhysicsBone) and (ent:GetMoveType() == MOVETYPE_VPHYSICS or ent:GetNailFrozen()) and not ent.NoNails and not (not ent:IsNailed() and not ent:GetPhysicsObject():IsMoveable()) and not (ent:GetMaxHealth() == 1 and ent:Health() == 0 and not ent.TotalHealth) then
+		if trtwo.MatType == MAT_GRATE or trtwo.MatType == MAT_CLIP then
+			if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "impossible") end
+			return false
+		end
+		if trtwo.MatType == MAT_GLASS then
+			if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "trying_to_put_nails_in_glass") end
+			return false
+		end
+
+		if ent and ent:IsValid() and (ent.NoNails or ent:IsNailed() and (#ent.Nails >= 8 or ent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)) then return end
+
+		if ent:GetBarricadeHealth() <= 0 and ent:GetMaxBarricadeHealth() > 0 then
+			if showmessages then self:PrintTranslatedMessage(HUD_PRINTCENTER, "object_too_damaged_to_be_used") end
+			return false
+		end
+
+		if GAMEMODE:EntityWouldBlockSpawn(ent) then return false end
+
+		local cons = constraint.Weld(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone, 0, true)
+		if cons ~= nil then
+			for _, oldcons in pairs(constraint.FindConstraints(trent, "Weld")) do
+				if oldcons.Ent1 == ent or oldcons.Ent2 == ent then
+					cons = oldcons.Constraint
+					break
+				end
+			end
+		end
+
+		if not cons then return false end
+
+		trent:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
+		trent:SetNWEntity("LastNailOwner", self)
+		local nail = ents.Create("prop_nail")
+		if nail:IsValid() then
+			nail:SetActualOffset(tr.HitPos, trent)
+			nail:SetPos(tr.HitPos - aimvec * 8)
+			nail:SetAngles(aimvec:Angle())
+			nail:AttachTo(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone)
+			nail:Spawn()
+			nail:SetDeployer(self)
+			
+			cons:DeleteOnRemove(nail)
+
+			gamemode.Call("OnNailCreated", trent, ent, nail)
+			return true
+		end
+	end
+end
+
+
 function meta:SetSpeed(speed)
-	if not speed then speed = 200 end
+	if not speed then speed = 220 end
 
 	self:SetWalkSpeed(speed)
 	self:SetRunSpeed(speed)

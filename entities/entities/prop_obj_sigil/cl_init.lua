@@ -36,6 +36,7 @@ function ENT:DrawTranslucent()
 	local eyepos = EyePos()
 	local eyeangles = EyeAngles()
 	local healthperc = math.Clamp(self:GetSigilHealth() / self:GetSigilMaxHealth(),0,1)
+	local waitingperc = math.Clamp((self:GetSigilNextRestart()-CurTime())/15,0,1)
 	local teamcolor = nil
 	if self:GetSigilTeam() ~= nil then 
 		teamcolor = team.GetColor(self:GetSigilTeam())
@@ -65,13 +66,14 @@ function ENT:DrawTranslucent()
 	--cam.IgnoreZ(true)
 	cam.Start3D2D(vPos, Angle(0,ang.yaw,90), 0.05)
 	self:DrawHealthBar(healthperc)
-	draw.SimpleText(math.Round(self:GetSigilHealth()), "ZS3D2DFontBig", 0, 0, COLOR_WHITE, TEXT_ALIGN_CENTER)
+	draw.SimpleText(math.Round(self:GetSigilHealth()), "ZS3D2DFontBig", 0,280, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if (self:GetSigilTeam() == TEAM_BANDIT or self:GetSigilTeam() == TEAM_HUMAN) then
-		draw.SimpleText(team.GetName(self:GetSigilTeam()), "ZS3D2DFontBig", 0, -200, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
-		draw.RoundedBox( 40, -325, -1000, 750, 750, teamcolor ~= nil and teamcolor or COLOR_WHITE )
+		draw.SimpleText(team.GetName(self:GetSigilTeam()), "ZS3D2DFontBig", 0, -100, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw.RoundedBox( 40, -500, -900, 1000, 750, teamcolor ~= nil and teamcolor or COLOR_WHITE )
 	end
 	if self:GetCanCommunicate() ~= 1 then
-		draw.SimpleText("정지됨!", "ZS3D2DFontBig", 0, -400, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		self:DrawWaitingBar(waitingperc)
+		draw.SimpleText("정지됨!", "ZS3D2DFontBig", 0, 80, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	end
 	cam.End3D2D()
 	--cam.IgnoreZ(false)
@@ -84,12 +86,12 @@ function ENT:DrawTranslucent()
 	if MySelf:IsValid() then
 		local colRing = Color(0, 0, 0, 255)
 		local frametime = FrameTime() * 500
-		local ringtime = (math.sin(curtime*2)+4)/5
+		local ringtime = (math.sin(curtime*2)+29)/30
 		local ringsize = ringtime *150
-		local beamsize = 2
+		local beamsize = 1
 		local up = self:GetUp()
 		local ang = self:GetForward():Angle()
-		ang.yaw = curtime * 360 % 360
+		ang.yaw = curtime * 60 % 360
 		local ringpos = self:GetPos() + up * -30
 
 		render.SetMaterial(matBeam)
@@ -103,10 +105,24 @@ function ENT:DrawTranslucent()
 
 end
 
-function ENT:DrawHealthBar(percentage)
-	local y = -50
+function ENT:DrawWaitingBar(percentage)
+	local y = 50
 	local maxbarwidth = 1028
-	local barheight = 240
+	local barheight = 180
+	local barwidth = maxbarwidth * percentage
+	local startx = maxbarwidth * -0.5
+
+	surface.SetDrawColor(0, 0, 0, 220)
+	surface.DrawRect(startx, y, maxbarwidth, barheight)
+	surface.SetDrawColor(255,255,255,220)
+	surface.DrawRect(startx+4, y + 4, barwidth - 8, barheight - 8)
+	surface.DrawOutlinedRect(startx, y, maxbarwidth, barheight)
+end
+
+function ENT:DrawHealthBar(percentage)
+	local y = 250
+	local maxbarwidth = 1028
+	local barheight = 200
 	local barwidth = maxbarwidth * percentage
 	local startx = maxbarwidth * -0.5
 

@@ -113,7 +113,6 @@ function PANEL:SetPlayer(pl, col, misc, misccol, overridename)
 		avatar:SetPos(4, 4)
 		avatar:SetSize(32, 32)
 		avatar:SetPlayer(pl)
-		avatar:SetTooltip("스팀 프로필 보기")
 		self.m_pAvatar = avatar
 
 		local namelab = EasyLabel(self, name, "ZSHUDFontTiny", col)

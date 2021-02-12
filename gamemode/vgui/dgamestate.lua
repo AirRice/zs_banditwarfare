@@ -3,11 +3,9 @@ local PANEL = {}
 function PANEL:Init()
 	self.m_HumanCount = vgui.Create("DTeamCounter", self)
 	self.m_HumanCount:SetTeam(TEAM_HUMAN)
-	self.m_HumanCount:SetImage("zombiesurvival/humanhead")
 
-	self.m_ZombieCount = vgui.Create("DTeamCounter", self)
-	self.m_ZombieCount:SetTeam(TEAM_BANDIT)
-	self.m_ZombieCount:SetImage("zombiesurvival/horderally")
+	self.m_BanditCount = vgui.Create("DTeamCounter", self)
+	self.m_BanditCount:SetTeam(TEAM_BANDIT)
 	
 	self.m_TeamScore = vgui.Create("DTeamScores", self)
 	
@@ -37,8 +35,8 @@ end
 function PANEL:PerformLayout()
 	local hs = self:GetTall() * 0.5
 	self.m_HumanCount:SetSize(hs, hs)
-	self.m_ZombieCount:SetSize(hs, hs)
-	self.m_ZombieCount:AlignTop(hs)
+	self.m_BanditCount:SetSize(hs, hs)
+	self.m_BanditCount:AlignTop(hs)
 	self.m_Text1:SetWide(self:GetWide())
 	self.m_Text1:SizeToContentsY()
 	self.m_Text1:MoveRightOf(self.m_HumanCount, 12)

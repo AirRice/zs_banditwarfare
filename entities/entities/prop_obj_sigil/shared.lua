@@ -15,6 +15,7 @@ AccessorFuncDT(ENT, "SigilHealthRegen", "Float", 1)
 AccessorFuncDT(ENT, "SigilLastDamaged", "Float", 2)
 AccessorFuncDT(ENT, "SigilMaxHealth", "Float", 3)
 AccessorFuncDT(ENT, "SigilTeam", "Int", 3)
+AccessorFuncDT(ENT, "SigilNextRestart", "Float", 4)
 
 function ENT:SetSigilHealth(health)
 	self:SetSigilCaptureProgress(health)

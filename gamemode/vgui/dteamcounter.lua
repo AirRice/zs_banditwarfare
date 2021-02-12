@@ -11,7 +11,7 @@ end
 
 function PANEL:Init()
 	self.m_Image = vgui.Create("DEXRotatedImage", self)
-	self.m_Image:SetImage("icon16/check_off.png")
+	self.m_Image:SetImage("vgui/ico_friend_indicator_alone")
 	self.m_Image.Seed = math.Rand(0, 1000)
 	self.m_Image.OldPaint = self.m_Image.Paint
 	self.m_Image.Paint = ImageThink
@@ -36,6 +36,7 @@ end
 function PANEL:SetTeam(teamid)
 	self.m_Team = teamid
 	self.m_Counter:SetTextColor(team.GetColor(teamid))
+	self.m_Image:SetImageColor(team.GetColor(teamid))
 end
 
 function PANEL:SetImage(mat)

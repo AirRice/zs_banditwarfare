@@ -1,8 +1,4 @@
 
--- Change this if you plan to alter the cost of items or you severely change how Worth works.
--- Having separate cart files allows people to have separate loadouts for different servers.
-GM.CartFile = "zsbanditcarts.txt"
-
 ITEMCAT_GUNS = 1
 ITEMCAT_AMMO = 2
 ITEMCAT_MELEE = 3
@@ -22,14 +18,6 @@ GM.ItemCategories = {
 	[ITEMCAT_RETURNS] = "환불",	
 }
 
---[[
-Humans select what weapons (or other things) they want to start with and can even save favorites. Each object has a number of 'Worth' points.
-Signature is a unique signature to give in case the item is renamed or reordered. Don't use a number or a string number!
-A human can only use 100 points (default) when they join. Redeeming or joining late starts you out with a random loadout from above.
-SWEP is a swep given when the player spawns with that perk chosen.
-Callback is a function called. Model is a display model. If model isn't defined then the SWEP model will try to be used.
-swep, callback, and model can all be nil or empty
-]]
 GM.Items = {}
 function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, model )
 	local tab = { Tier = tier, Signature = signature, Name = name, Description = desc, Category = category, Worth = worth or 0, SWEP = swep, Callback = callback, Model = model}
@@ -169,7 +157,7 @@ GM:AddPointShopItem(nil,"nails", "못 2개", nil, ITEMCAT_AMMO, 5, nil, function
 GM:AddPointShopItem(nil,"woodboards", "나무 판자 5개", nil, ITEMCAT_AMMO, 10, nil, function(pl) pl:GiveAmmo(5, "SniperRound", true) end, "models/props_debris/wood_board06a.mdl").NoClassicMode = true
 
 GM:AddPointShopItem(nil,"crphmr", "목수의 망치", nil, ITEMCAT_MELEE, 20, "weapon_zs_hammer").NoClassicMode = true
-GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_MELEE, 25, "weapon_zs_wrench").NoClassicMode = true
+--GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_MELEE, 25, "weapon_zs_wrench").NoClassicMode = true
 GM:AddPointShopItem(nil,"axe", "도끼", nil, ITEMCAT_MELEE, 35, "weapon_zs_axe")
 GM:AddPointShopItem(nil,"crowbar", "빠루", nil, ITEMCAT_MELEE, 27, "weapon_zs_crowbar")
 GM:AddPointShopItem(nil,"stunbaton", "전기충격기", nil, ITEMCAT_MELEE, 23, "weapon_zs_stunbaton")
@@ -184,7 +172,9 @@ GM:AddPointShopItem(nil,"pipe", "납 파이프", nil, ITEMCAT_MELEE, 42, "weapon
 GM:AddPointShopItem(nil,"hook", "갈고리", nil, ITEMCAT_MELEE, 23, "weapon_zs_hook")
 GM:AddPointShopItem(nil,"energysword", "에너지 소드", nil, ITEMCAT_MELEE, 140, "weapon_zs_energysword")
 
-GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun").NoClassicMode = true
+local item = GM:AddPointShopItem(nil,"empgun", "EMP 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
+item.NoClassicMode = true
+item.NoSampleCollectMode = true
 
 local item = GM:AddPointShopItem(nil,"backdoor", "통신 백도어 장치", nil, ITEMCAT_TOOLS, 45, "weapon_zs_backdoor")
 item.NoClassicMode = true
@@ -196,7 +186,7 @@ item.NoSampleCollectMode = true
 
 GM:AddPointShopItem(nil,"medgun", "'세이비어'메디컬 건", nil, ITEMCAT_TOOLS, 55, "weapon_zs_medicgun")
 GM:AddPointShopItem(nil,"medkit", "메디킷", nil, ITEMCAT_TOOLS, 60, "weapon_zs_medicalkit")
-GM:AddPointShopItem(nil,"ammokit", "탄약킷", nil, ITEMCAT_TOOLS, 12, "weapon_zs_ammokit")
+--GM:AddPointShopItem(nil,"ammokit", "탄약킷", nil, ITEMCAT_TOOLS, 12, "weapon_zs_ammokit")
 
 local item = GM:AddPointShopItem(nil,"infturret", "자동 터렛", nil, ITEMCAT_TOOLS, 60, "weapon_zs_gunturret")
 item.Countables = {"prop_gunturret"}

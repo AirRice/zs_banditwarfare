@@ -45,7 +45,9 @@ function SWEP:PrimaryAttack()
 				self:TakePrimaryAmmo(1)
 				self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
 			else
-				self.Owner:PrintMessage(HUD_PRINTTALK, "방탄복을 이미 입고 있다.")
+				if CLIENT then
+					self.Owner:PrintMessage(HUD_PRINTTALK, "방탄복을 이미 입고 있다.")
+				end
 				return
 			end
 		else

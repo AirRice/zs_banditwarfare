@@ -8,10 +8,9 @@ if CLIENT then
 	
 	SWEP.ViewModelFlip = false
 
-	SWEP.HUD3DPos = Vector(4, -3.5, -1.2)
-	SWEP.HUD3DAng = Angle(90, 0, -30)
-	SWEP.HUD3DScale = 0.02
-	SWEP.HUD3DBone = "SS.Grip.Dummy"
+	SWEP.HUD3DScale = 0.03
+	SWEP.HUD3DBone = "ValveBiped.Gun"
+	SWEP.HUD3DPos = Vector(3, 0, -8)
 	SWEP.WElements = {
 		["skull"] = { type = "Model", model = "models/gibs/hgibs.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base", pos = Vector(0, 0, 14.611), angle = Angle(0, 0, 0), size = Vector(0.754, 0.754, 0.754), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["meatgib"] = { type = "Model", model = "models/gibs/antlion_gib_large_3.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base", pos = Vector(-1.234, 0.059, 15.987), angle = Angle(-13.551, 0, -5.203), size = Vector(0.244, 0.244, 0.707), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/flesh", skin = 0, bodygroup = {} },
@@ -40,11 +39,11 @@ SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 SWEP.ReloadDelay = 0.4
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 5
-SWEP.Primary.NumShots = 8
+SWEP.Primary.Damage = 4
+SWEP.Primary.NumShots = 10
 SWEP.Primary.Delay = 0.55
 SWEP.Recoil = 3.72
-SWEP.Primary.ClipSize = 3
+SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "alyxgun"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
@@ -74,7 +73,7 @@ function SWEP:PrimaryAttack()
 	local owner = self.Owner
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-	self.PukeLeft = self.Primary.NumShots
+	self.PukeLeft = self.PukeLeft + self.Primary.NumShots
 	self.Owner:EmitSound("npc/barnacle/barnacle_die2.wav")
 	self.Owner:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
@@ -123,7 +122,7 @@ function SWEP:Think()
 	local cone = self:GetCone()
 	if self.PukeLeft > 0 and CurTime() >= self.NextPuke and SERVER then
 		self.PukeLeft = self.PukeLeft - 1
-		self.NextEmit = CurTime() + 0.1
+		self.NextPuke = CurTime() + 0.02
 
 		local ent = ents.Create("projectile_poisonflesh")
 		if ent:IsValid() then

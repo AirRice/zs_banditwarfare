@@ -59,12 +59,14 @@ function PANEL:SetTeam(teamid)
 
 	if teamid == TEAM_HUMAN then
 		self.m_Icon:SetVisible(true)
-		self.m_Icon:SetImage("zombiesurvival/humanhead")
+		self.m_Icon:SetImage("vgui/ico_friend_indicator_alone")
+		self.m_Icon:SetImageColor(team.GetColor(teamid))
 		self.m_Icon:SizeToContents()
 		self:InvalidateLayout()
 	elseif teamid == TEAM_BANDIT then
 		self.m_Icon:SetVisible(true)
-		self.m_Icon:SetImage("zombiesurvival/humanhead")
+		self.m_Icon:SetImage("vgui/ico_friend_indicator_alone")
+		self.m_Icon:SetImageColor(team.GetColor(teamid))
 		self.m_Icon:SizeToContents()
 		self:InvalidateLayout()
 	else

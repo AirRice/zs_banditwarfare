@@ -43,14 +43,14 @@ SWEP.WorldModel = "models/weapons/w_pistol.mdl"
 SWEP.UseHands = true
 
 SWEP.CSMuzzleFlashes = false
-SWEP.Primary.ClipSize = 1
+SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "GaussEnergy"
 SWEP.Primary.Sound = Sound("Weapon_Nailgun.Single")
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
-SWEP.Primary.Damage = 30
-SWEP.Primary.Delay = 1     
-SWEP.Primary.DefaultClip = 10
+SWEP.Primary.Damage = 20
+SWEP.Primary.Delay = 0.5     
+SWEP.Primary.DefaultClip = 12
 SWEP.Recoil = 1.8
 SWEP.Primary.KnockbackScale = 3
 SWEP.ConeMax = 0.02
@@ -61,103 +61,70 @@ SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 
 function SWEP:CanPrimaryAttack()
 	if self.Owner:GetBarricadeGhosting() then return false end
-	if self.Owner:IsCarrying() then
-		self.Owner.status_human_holding:RemoveNextFrame()
-	end
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + math.max(0.25, self.Primary.Delay))
 		return false
 	end
-
 	return self:GetNextPrimaryFire() <= CurTime()
+end
+
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end 
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	self:EmitFireSound()
+	self:TakeAmmo()
+	local tr = self.Owner:TraceLine(128, MASK_SOLID, self.Owner:GetMeleeFilter())
+	if self.Owner:IsHolding() and self.Owner:AttemptNail(tr) then
+		self:ShootNormalBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+	else 
+		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+	end
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
+	self:SetNextReload(self.IdleAnimation+0.2)
+end
+
+function SWEP:ShootNormalBullets(dmg, numbul, cone)	
+	self:SetConeAndFire()
+	self:DoRecoil()
+
+	local owner = self.Owner
+	--owner:MuzzleFlash()
+	self:SendWeaponAnimation()
+	owner:DoAttackEvent()
+	
+	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
+		owner.ShotsFired = owner.ShotsFired + numbul
+		owner.LastShotWeapon = self:GetClass()
+	end
+	
+	self:StartBulletKnockback()
+	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = LeaveNailBulletCallback})
+	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+	self:EndBulletKnockback()
 end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local trent = tr.Entity
-	local effectdata = EffectData()
-	effectdata:SetOrigin(tr.HitPos)
-	effectdata:SetNormal(tr.HitNormal)
+		local effectdata = EffectData()
+		effectdata:SetOrigin(tr.HitPos)
+		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("MetalSpark", effectdata)
-
-	local trent = tr.Entity
-
-	if not trent:IsValid()
-	or not util.IsValidPhysicsObject(trent, tr.PhysicsBone)
-	or tr.Fraction == 0
-	or trent:GetMoveType() ~= MOVETYPE_VPHYSICS and not trent:GetNailFrozen()
-	or trent.NoNails
-	or trent:IsNailed() and (#trent.Nails >= 8 or trent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)
-	or trent:GetMaxHealth() == 1 and trent:Health() == 0 and not trent.TotalHealth
-	or not trent:IsNailed() and not trent:GetPhysicsObject():IsMoveable() 
-	or (trent:IsNailed() and trent:GetNailedPropOwner():IsPlayer() and trent:GetNailedPropOwner():Team() ~= attacker:Team())
-	then GenericBulletCallback(attacker, tr, dmginfo) return end
-
-	if not gamemode.Call("CanPlaceNail", attacker, tr) then return end
-
-	local count = 0
-	for _, nail in pairs(trent:GetNails()) do
-		if nail:GetDeployer() == attacker then
-			count = count + 1
-			if count >= 3 then
-				return
-			end
-		end
-	end
-
-	if tr.MatType == MAT_GRATE or tr.MatType == MAT_CLIP or tr.MatType == MAT_GLASS then return end
-
-	if trent:IsValid() then
-		for _, nail in pairs(ents.FindByClass("prop_nail")) do
-			if trent:GetBarricadeHealth() <= 0 and trent:GetMaxBarricadeHealth() > 0 then
-			return end
-		end
-	end
-
-	local aimvec = attacker:GetAimVector()
-
-	local trtwo = util.TraceLine({start = tr.HitPos, endpos = tr.HitPos + aimvec * 24, filter = {attacker, trent}, mask = MASK_SOLID})
-
-	if trtwo.HitSky then return end
-
-	local ent = trtwo.Entity
-	if trtwo.HitWorld
-	or ent:IsValid() and util.IsValidPhysicsObject(ent, trtwo.PhysicsBone) and (ent:GetMoveType() == MOVETYPE_VPHYSICS or ent:GetNailFrozen()) and not ent.NoNails and not (not ent:IsNailed() and not ent:GetPhysicsObject():IsMoveable()) and not (ent:GetMaxHealth() == 1 and ent:Health() == 0 and not ent.TotalHealth) then
-		if trtwo.MatType == MAT_GRATE or trtwo.MatType == MAT_CLIP or trtwo.MatType == MAT_GLASS then return end
-
-		if ent and ent:IsValid() and (ent.NoNails or ent:IsNailed() and (#ent.Nails >= 8 or ent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)) then return end
-
-		if ent:GetBarricadeHealth() <= 0 and ent:GetMaxBarricadeHealth() > 0 then return end
-
-		if GAMEMODE:EntityWouldBlockSpawn(ent) then return end
-
-		local cons = constraint.Weld(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone, 0, true)
-		if cons ~= nil then
-			for _, oldcons in pairs(constraint.FindConstraints(trent, "Weld")) do
-				if oldcons.Ent1 == ent or oldcons.Ent2 == ent then
-					cons = oldcons.Constraint
-					break
-				end
-			end
-		end
-
-		if not cons then return end
-
-		trent:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
-		trent:SetNWEntity("LastNailOwner", attacker)
-		local nail = ents.Create("prop_nail")
-		if nail:IsValid() then
-			nail:SetActualOffset(tr.HitPos, trent)
-			nail:SetPos(tr.HitPos - aimvec * 8)
-			nail:SetAngles(aimvec:Angle())
-			nail:AttachTo(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone)
-			nail:Spawn()
-			nail:SetDeployer(attacker)
-			
-			cons:DeleteOnRemove(nail)
-
-			gamemode.Call("OnNailCreated", trent, ent, nail)
-		end
-	end	
 	
+	if attacker:IsPlayer() then
+		attacker:AttemptNail(tr) 		
+	end
+	LeaveNailBulletCallback(attacker, tr, dmginfo)
+end
+
+function LeaveNailBulletCallback(attacker, tr, dmginfo)
+	if tr.HitWorld and SERVER then
+		local nail = ents.Create("prop_nail_pickuppable")
+		if nail:IsValid() then
+			nail:SetPos(tr.HitPos + tr.HitNormal * 14)
+			nail:SetAngles((tr.HitNormal*-1):Angle())
+			nail:Spawn()
+		end
+	end
+	GenericBulletCallback(attacker, tr, dmginfo)
 end

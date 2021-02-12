@@ -209,9 +209,9 @@ function GM:AddResources()
 	
 	resource.AddFile("models/weapons/v_annabelle.mdl")	
 	resource.AddFile("models/weapons/w_sledgehammer.mdl")
-	resource.AddFile("models/weapons/v_sledgehammer/v_sledgehammer.mdl")
+	resource.AddFile("models/weapons/v_sledgehammer/c_sledgehammer.mdl")
 	resource.AddFile("models/weapons/w_hammer.mdl")
-	resource.AddFile("models/weapons/v_hammer/v_hammer.mdl")
+	resource.AddFile("models/weapons/v_hammer/c_hammer.mdl")
 	resource.AddFile("models/weapons/v_aegiskit.mdl")
 	resource.AddFile("models/weapons/v_supershorty/v_supershorty.mdl")
 	resource.AddFile("models/weapons/w_supershorty.mdl")
@@ -238,14 +238,6 @@ function GM:AddResources()
 	resource.AddFile("sound/weapons/melee/keyboard/keyboard_hit-04.ogg")
 	
 	resource.AddFile("sound/bandit/hitsound.wav")
-	
-	resource.AddFile("sound/music/vlvx_song18.mp3")
-	resource.AddFile("sound/music/vlvx_song21.mp3")
-	resource.AddFile("sound/music/vlvx_song22.mp3")
-	resource.AddFile("sound/music/vlvx_song23.mp3")
-	resource.AddFile("sound/music/vlvx_song24.mp3")
-	resource.AddFile("sound/music/vlvx_song27.mp3")
-	resource.AddFile("sound/music/vlvx_song28.mp3")
 
 	resource.AddFile("sound/killstreak/2kills.wav")
 	resource.AddFile("sound/killstreak/3kills.wav")
@@ -630,6 +622,8 @@ function GM:Think()
 			end
 			if not self:IsClassicMode() and not self.SuddenDeath and not self:IsSampleCollectMode() then
 				gamemode.Call("SigilCommsThink")
+			elseif not self:IsClassicMode() and not self.SuddenDeath and self:IsSampleCollectMode() then
+				gamemode.Call("SamplesThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
 			local banditcount = 0
@@ -721,7 +715,7 @@ function GM:PlayerHealedTeamMember(pl, other, health, wep)
 
 	pl.HealedThisRound = pl.HealedThisRound + health
 	pl.CarryOverHealth = (pl.CarryOverHealth or 0) + health
-
+	
 	local hpperpoint = self.MedkitPointsPerHealth
 	if hpperpoint <= 0 then return end
 
@@ -2331,7 +2325,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetNormal(force:GetNormalized())
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
-		samplestodrop = samplestodrop + 1
+		samplestodrop = samplestodrop + 5
 	end
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
@@ -2354,7 +2348,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	
 	if attacker:IsValid() and attacker:IsPlayer() and attacker ~= pl then
 		assistpl = gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
-		samplestodrop = samplestodrop + 1
+		samplestodrop = samplestodrop + 5
 	end
 	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
 		samplestodrop = samplestodrop + pl:GetSamples()	
@@ -2583,7 +2577,7 @@ function GM:PlayerSpawn(pl)
 		
 		pl:SetMaxHealth(100)
 
-		pl:Give("weapon_zs_fists")
+		--pl:Give("weapon_zs_fists")
 		local nosend = not pl.DidInitPostEntity
 		pl.HumanRepairMultiplier = nil
 		pl.HumanHealMultiplier = nil
@@ -2772,7 +2766,9 @@ function GM:WaveStateChanged(newstate)
 			else
 				pl:UnSpectateAndSpawn()	
 			end
-			
+			if self:IsSampleCollectMode() then
+				pl:SetSamples(0)
+			end
 			pl:SetHealth(pl:GetMaxHealth())
 			local toadd = 10*(1+self:GetWave())
 			if (self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_BANDIT) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_HUMAN) then

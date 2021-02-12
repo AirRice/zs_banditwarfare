@@ -27,12 +27,12 @@ SWEP.Primary.ClipSize = 40
 SWEP.Primary.DefaultClip = 160
 SWEP.Primary.Ammo = "Battery"
 
-SWEP.Secondary.Delay = 6
+--[[SWEP.Secondary.Delay = 9
 SWEP.Secondary.Heal = 15
 
 SWEP.Secondary.ClipSize = 1
 SWEP.Secondary.DefaultClip = 1
-SWEP.Secondary.Ammo = "dummy"
+SWEP.Secondary.Ammo = "dummy"]]
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
@@ -67,6 +67,11 @@ function SWEP:PrimaryAttack()
 		local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Primary.Heal * multiplier, maxhealth - health)))
 		local totake = math.ceil(toheal / multiplier)
 		if toheal > 0 then
+			for _, hook in pairs(ents.FindInSphere(ent:GetPos(), 60 )) do
+				if hook:GetClass() == "prop_meathook" and hook:GetParent() == ent then
+					hook.TicksLeft = 0
+				end
+			end
 			self:SetNextCharge(CurTime() + self.Primary.Delay * math.min(1, toheal / self.Primary.Heal))
 			owner.NextMedKitUse = self:GetNextCharge()
 
@@ -74,7 +79,6 @@ function SWEP:PrimaryAttack()
 
 			ent:SetHealth(health + toheal)
 			self:EmitSound("items/medshot4.wav")
-
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 
 			owner:DoAttackEvent()
@@ -86,7 +90,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	--[[local owner = self.Owner
 	if not self:CanPrimaryAttack() or not gamemode.Call("PlayerCanBeHealed", owner) then return end
 
 	local health, maxhealth = owner:Health(), owner:GetMaxHealth()
@@ -106,7 +110,7 @@ function SWEP:SecondaryAttack()
 
 		owner:DoAttackEvent()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
-	end
+	end]]
 end
 
 function SWEP:Deploy()
@@ -184,7 +188,7 @@ function SWEP:DrawHUD()
 
 		surface.SetDrawColor(255, 0, 0, 180)
 		surface.SetTexture(texGradDown)
-		surface.DrawTexturedRect(x, y, math.min(1, timeleft / math.max(self.Primary.Delay, self.Secondary.Delay)) * wid, hei)
+		surface.DrawTexturedRect(x, y, math.min(1, timeleft / self.Primary.Delay) * wid, hei)
 
 		surface.SetDrawColor(255, 0, 0, 180)
 		surface.DrawOutlinedRect(x, y, wid, hei)

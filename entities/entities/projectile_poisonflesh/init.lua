@@ -52,6 +52,7 @@ function ENT:Explode(vHitPos, vHitNormal, eHitEntity)
 		effectdata:SetOrigin(vHitPos)
 		effectdata:SetNormal(vHitNormal)
 	util.Effect("fleshhit", effectdata)
+	util.Decal("YellowBlood", vHitPos + vHitNormal, vHitPos - vHitNormal)
 end
 
 function ENT:PhysicsCollide(data, phys)

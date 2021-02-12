@@ -57,6 +57,8 @@ function ENT:AttachTo(baseent, attachent, physbone, physbone2)
 		baseent:SetBarricadeHealth(health)
 		baseent:SetBarricadeRepairs(baseent:GetMaxBarricadeRepairs())
 	end
+	
+	baseent:RecalcNailHealth()
 end
 
 function ENT:SetNailConstraint(const)

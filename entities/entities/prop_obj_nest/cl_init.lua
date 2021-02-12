@@ -24,7 +24,7 @@ local EmitSounds = {
 }
 
 function ENT:Think()
-	self.Tall = math.Approach(self.Tall, math.Clamp(self:GetNestHealth() / self:GetNestMaxHealth()*0.5+0.5, 0.5, 1), FrameTime())
+	self.Tall = math.Approach(self.Tall, math.Clamp(self:GetNestHealth() / self:GetNestMaxHealth()*0.7+0.3, 0.3, 1), FrameTime())
 	if math.random(10) == 1 and self.NextSound <= CurTime() then
 		self:EmitSound(EmitSounds[math.random(#EmitSounds)], 65, math.random(95, 105))
 		self.NextSound = CurTime() + 1
@@ -74,11 +74,11 @@ function ENT:Draw()
 		local frametime = FrameTime() * 500
 		local ringtime = (math.sin(curtime*2)+4)/5
 		local ringsize = ringtime *150
-		local beamsize = 2
+		local beamsize = 10
 		local up = self:GetUp()
 		local ang = self:GetForward():Angle()
 		ang.yaw = curtime * 360 % 360
-		local ringpos = self:GetPos() + up * -30
+		local ringpos = self:GetPos() + up * 4
 
 		render.SetMaterial(matBeam)
 		render.StartBeam(19)

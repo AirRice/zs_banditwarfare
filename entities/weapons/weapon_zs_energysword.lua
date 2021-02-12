@@ -34,7 +34,7 @@ SWEP.MeleeDamage = 24
 SWEP.MeleeRange = 90
 SWEP.MeleeSize = 2
 
-SWEP.WalkSpeed = SPEED_FASTEST+10
+SWEP.WalkSpeed = SPEED_FASTEST+15
 
 SWEP.Primary.Delay = 0.7
 SWEP.Secondary.Delay = 8
@@ -119,6 +119,8 @@ function SWEP:Think()
 
 			if hit then
 				self.SwiftStriking = false
+				self.Owner:SetGravity(1)
+				self.Owner:SetFriction(1)
 			end
 	end
 	self.BaseClass.Think(self)
@@ -148,24 +150,28 @@ function SWEP:SecondaryAttack()
 	if SERVER then
 		local fwd = 1200
 		self.Owner:SetAnimation( PLAYER_ATTACK1 )
-		local pushvel = self.Owner:GetEyeTrace().Normal * fwd
+		
+		local pushvel = self.Owner:GetEyeTrace().Normal * fwd + (self.Owner:GetAngles():Up()*100)
         self.Owner:SetGroundEntity(nil)
         self.Owner:SetLocalVelocity( self.Owner:GetVelocity() + pushvel)
 		self.SwiftStriking = true
 		self.Owner:SetGravity(0.01)
+		self.Owner:SetFriction(0.01)
 		local ownerplayer = self.Owner
 		hook.Add( "DoPlayerDeath", "remove_energy_sword_float", function(ply, a, dmg)
 			if ply == ownerplayer  then 
 			ownerplayer:SetGravity(1)
+			ownerplayer:SetFriction(1)
 			hook.Remove( "DoPlayerDeath", "remove_energy_sword_float" )
 			end
 		end )
 		timer.Simple( 0.5, function() 
 			if self and self:IsValid() and self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
 				self.Owner:SetGravity(1)
+				self.Owner:SetFriction(1)
 				self.SwiftStriking = false
 				--self.Owner:SetMoveType(MOVETYPE_NONE)
-				self.Owner:SetLocalVelocity(Vector(0,0,0))
+				--self.Owner:SetLocalVelocity(Vector(0,0,0))
 			end 
 		end)
 		

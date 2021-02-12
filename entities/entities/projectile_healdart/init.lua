@@ -71,7 +71,15 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 
 		if eHitEntity:IsPlayer() and eHitEntity:Team() == team then
 			eHitEntity:GiveStatus("healdartboost").DieTime = CurTime() + 10
-
+			local tox = eHitEntity:GetStatus("tox")
+			if (tox and tox:IsValid()) then
+				tox:SetTime(1)
+			end
+			for _, hook in pairs(ents.FindInSphere(self:GetPos(), 60 )) do
+				if hook:GetClass() == "prop_meathook" and hook:GetParent() == eHitEntity then
+					hook.TicksLeft = 0
+				end
+			end
 			local oldhealth = eHitEntity:Health()
 			local newhealth = math.min(oldhealth + self.Heal, eHitEntity:GetMaxHealth())
 			if oldhealth ~= newhealth then

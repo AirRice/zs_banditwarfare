@@ -110,6 +110,11 @@ function PANEL:DoClick()
 		Derma_Query("이 무기를 구매하시겠습니까?", tab.Name or "",
 			"네", function() 
 				RunConsoleCommand("zs_pointsshopbuy", self.ID, self.m_LoadoutSlot)
+				if not GAMEMODE:IsClassicMode() and (self.m_LoadoutSlot == WEAPONLOADOUT_SLOT1 or self.m_LoadoutSlot == WEAPONLOADOUT_SLOT2 or self.m_LoadoutSlot == WEAPONLOADOUT_MELEE or self.m_LoadoutSlot == WEAPONLOADOUT_TOOLS) then
+					if GAMEMODE.m_PointsShop and GAMEMODE.m_PointsShop:Valid() then
+						GAMEMODE.m_PointsShop:Close()
+					end
+				end
 			end,
 			"아니오", function() end)
 		else
@@ -235,9 +240,7 @@ end
 
 function GM:OpenPointsShop(weaponslot)
 	if self.m_PointsShop and self.m_PointsShop:Valid() then
-		self.m_PointsShop:SetVisible(true)
-		self.m_PointsShop:CenterMouse()
-		return
+		self.m_PointsShop:Close()
 	end
 
 	local wid, hei = math.min(ScrW(), 560), ScrH() * 0.7

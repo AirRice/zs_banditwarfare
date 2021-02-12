@@ -81,7 +81,7 @@ SWEP.ConeMax = 0.075
 SWEP.ConeMin = 0.02
 
 -- 에임이 늘어나는 단위
-SWEP.AimExpandUnit = 0.007
+SWEP.AimExpandUnit = 0.005
 
 -- 에임이 늘어난 상태가 유지되는 기간
 SWEP.AimExpandStayDuration = 0.01

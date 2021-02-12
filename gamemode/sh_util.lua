@@ -22,26 +22,6 @@ function player.GetAllSpectators()
 	return t
 end
 
-function FindStartingItem(id)
-	if not id then return end
-
-	local t
-
-	local num = tonumber(id)
-	if num then
-		t = GAMEMODE.Items[num]
-	else
-		for i, tab in pairs(GAMEMODE.Items) do
-			if tab.Signature == id then
-				t = tab
-				break
-			end
-		end
-	end
-
-	if t and t.WorthShop then return t end
-end
-
 function FindItembyClass(class)
 	if not class then return end
 

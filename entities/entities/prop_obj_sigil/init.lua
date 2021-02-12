@@ -2,7 +2,6 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
 include("shared.lua")
-ENT.LastStopped = 0
 
 --models/props_wasteland/antlionhill.mdl models/props_wasteland/medbridge_post01.mdl
 function ENT:Initialize()
@@ -21,6 +20,7 @@ function ENT:Initialize()
 	self:SetSigilCaptureProgress(self:GetSigilMaxHealth())
 	self:SetSigilHealthRegen(self.HealthRegen)
 	self:SetSigilLastDamaged(0)
+	self:SetSigilNextRestart(0)
 	self:SetSigilTeam(0)
 	self:SetCanCommunicate(1)
 end
@@ -28,7 +28,7 @@ end
 function ENT:CalcClosePlayers()
 	local bnum = 0
 	local hnum = 0
-	for _, pl in pairs(ents.FindInSphere(self:GetPos(), 128 )) do
+	for _, pl in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
 		if util.SkewedDistance(pl:GetPos(),self:GetPos(), 2.75) <= 128 then
 		if pl:IsPlayer() then
 			local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
@@ -60,7 +60,7 @@ end
 
 function ENT:Think()
 	local cappingteam, cappers = self:CalcClosePlayers()
-	if self.LastStopped <= CurTime() then
+	if self:GetSigilNextRestart() <= CurTime() then
 		self:SetCanCommunicate(1)
 	end
 	
@@ -71,7 +71,7 @@ function ENT:Think()
 		end
 	end]]
 	if self:GetSigilTeam() ~= cappingteam and (cappingteam == TEAM_HUMAN or cappingteam == TEAM_BANDIT) and self:GetSigilLastDamaged() <= CurTime() - 1 then 
-		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
+		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
 			if pl:IsPlayer() and pl:Team() == cappingteam and pl:Alive() then
 				pl:AddPoints(2)
 				gamemode.Call("AddPlayerCaptime",pl)
@@ -99,7 +99,7 @@ function ENT:DoStopComms()
 		effectdata:SetOrigin(self:LocalToWorld(self:OBBCenter()))
 	util.Effect("Explosion", effectdata, true, true)
 	self:SetCanCommunicate(0)
-	self.LastStopped = CurTime() + 10
+	self:SetSigilNextRestart(CurTime() + 15)
 	--gamemode.Call("OnSigilStopped", self)
 end
 

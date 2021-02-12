@@ -4,8 +4,9 @@ SWEP.Base = "weapon_zs_basemelee"
 
 SWEP.DamageType = DMG_CLUB
 
-SWEP.ViewModel = "models/weapons/v_hammer/v_hammer.mdl"
+SWEP.ViewModel = "models/weapons/v_hammer/c_hammer.mdl"
 SWEP.WorldModel = "models/weapons/w_hammer.mdl"
+SWEP.UseHands = true
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = true

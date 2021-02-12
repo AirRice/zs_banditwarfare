@@ -60,7 +60,10 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		if hitent.HitByHammer and hitent:HitByHammer(self, self.Owner, tr) then
 			return
 		end
-
+		if hitent.HitByWrench and hitent:HitByWrench(self, self.Owner, tr) then
+			return
+		end
+		local didrepair = false
 		if hitent:IsNailed() and hitent:IsSameTeam(self.Owner) then
 			local healstrength = GAMEMODE.NailHealthPerRepair * (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength
 			local oldhealth = hitent:GetBarricadeHealth()
@@ -71,13 +74,32 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			hitent:SetBarricadeRepairs(math.max(hitent:GetBarricadeRepairs() - healed, 0))
 			self:PlayRepairSound(hitent)
 			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed, self)
+			didrepair = true
+		elseif hitent.GetObjectHealth and 
+		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() or 
+		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self.Owner:Team()) then
+			local oldhealth = hitent:GetObjectHealth()
+			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 4 then return end
 
+			local healstrength = (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength * (hitent.WrenchRepairMultiplier or 1)
+
+			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength))
+			local healed = hitent:GetObjectHealth() - oldhealth
+			self:PlayRepairSound(hitent)
+			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed / 2, self)
+
+			didrepair = true
+		elseif hitent:GetClass() == "prop_obj_sigil" and hitent:GetSigilTeam() == self.Owner:Team() and not hitent:GetCanCommunicate() then
+			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, 20, self)
+			hitent:SetSigilNextRestart(hitent:GetSigilNextRestart() - 3)
+			didrepair = true
+		end
+		if didrepair then
 			local effectdata = EffectData()
 				effectdata:SetOrigin(tr.HitPos)
 				effectdata:SetNormal(tr.HitNormal)
 				effectdata:SetMagnitude(1)
 			util.Effect("nailrepaired", effectdata, true, true)
-
 			return true
 		end
 	end
@@ -90,117 +112,12 @@ function SWEP:SecondaryAttack()
 		return
 	end
 	local owner = self.Owner
-
 	local tr = owner:TraceLine(64, MASK_SOLID, owner:GetMeleeFilter())
-	local trent = tr.Entity
-
-	if not trent:IsValid()
-	or not util.IsValidPhysicsObject(trent, tr.PhysicsBone)
-	or tr.Fraction == 0
-	or trent:GetMoveType() ~= MOVETYPE_VPHYSICS and not trent:GetNailFrozen()
-	or trent.NoNails
-	or trent:IsNailed() and (#trent.Nails >= 8 or trent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)
-	or trent:GetMaxHealth() == 1 and trent:Health() == 0 and not trent.TotalHealth
-	or not trent:IsNailed() and not trent:GetPhysicsObject():IsMoveable() 
-	or (trent:IsNailed() and trent:GetNailedPropOwner():IsPlayer() and trent:GetNailedPropOwner():Team() ~= owner:Team())
-	then return end
-
-	if not gamemode.Call("CanPlaceNail", owner, tr) then return end
-
-	local count = 0
-	for _, nail in pairs(trent:GetNails()) do
-		if nail:GetDeployer() == owner then
-			count = count + 1
-			if count >= 3 then
-				return
-			end
-		end
-	end
-
-	if tr.MatType == MAT_GRATE or tr.MatType == MAT_CLIP then
-		owner:PrintTranslatedMessage(HUD_PRINTCENTER, "impossible")
-		return
-	end
-	if tr.MatType == MAT_GLASS then
-		owner:PrintTranslatedMessage(HUD_PRINTCENTER, "trying_to_put_nails_in_glass")
-		return
-	end
-
-	if trent:IsValid() then
-		for _, nail in pairs(ents.FindByClass("prop_nail")) do
-			if nail:GetParent() == trent and nail:GetActualPos():Distance(tr.HitPos) <= 16 then
-				owner:PrintTranslatedMessage(HUD_PRINTCENTER, "too_close_to_another_nail")
-				return
-			end
-		end
-
-		if trent:GetBarricadeHealth() <= 0 and trent:GetMaxBarricadeHealth() > 0 then
-			owner:PrintTranslatedMessage(HUD_PRINTCENTER, "object_too_damaged_to_be_used")
-			return
-		end
-	end
-
-	local aimvec = owner:GetAimVector()
-
-	local trtwo = util.TraceLine({start = tr.HitPos, endpos = tr.HitPos + aimvec * 24, filter = {owner, trent}, mask = MASK_SOLID})
-
-	if trtwo.HitSky then return end
-
-	local ent = trtwo.Entity
-	if trtwo.HitWorld
-	or ent:IsValid() and util.IsValidPhysicsObject(ent, trtwo.PhysicsBone) and (ent:GetMoveType() == MOVETYPE_VPHYSICS or ent:GetNailFrozen()) and not ent.NoNails and not (not ent:IsNailed() and not ent:GetPhysicsObject():IsMoveable()) and not (ent:GetMaxHealth() == 1 and ent:Health() == 0 and not ent.TotalHealth) then
-		if trtwo.MatType == MAT_GRATE or trtwo.MatType == MAT_CLIP then
-			owner:PrintTranslatedMessage(HUD_PRINTCENTER, "impossible")
-			return
-		end
-		if trtwo.MatType == MAT_GLASS then
-			owner:PrintTranslatedMessage(HUD_PRINTCENTER, "trying_to_put_nails_in_glass")
-			return
-		end
-
-		if ent and ent:IsValid() and (ent.NoNails or ent:IsNailed() and (#ent.Nails >= 8 or ent:GetPropsInContraption() >= GAMEMODE.MaxPropsInBarricade)) then return end
-
-		if ent:GetBarricadeHealth() <= 0 and ent:GetMaxBarricadeHealth() > 0 then
-			owner:PrintTranslatedMessage(HUD_PRINTCENTER, "object_too_damaged_to_be_used")
-			return
-		end
-
-		if GAMEMODE:EntityWouldBlockSpawn(ent) then return end
-
-		local cons = constraint.Weld(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone, 0, true)
-		if cons ~= nil then
-			for _, oldcons in pairs(constraint.FindConstraints(trent, "Weld")) do
-				if oldcons.Ent1 == ent or oldcons.Ent2 == ent then
-					cons = oldcons.Constraint
-					break
-				end
-			end
-		end
-
-		if not cons then return end
-
+	if owner:AttemptNail(tr,true) then
 		self:SendWeaponAnim(self.Alternate and ACT_VM_HITCENTER or ACT_VM_MISSCENTER)
 		self.Alternate = not self.Alternate
-
 		owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE)
-
 		self:SetNextPrimaryFire(CurTime() + 1)
 		self:TakePrimaryAmmo(1)
-
-		trent:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
-		trent:SetNWEntity("LastNailOwner", owner)
-		local nail = ents.Create("prop_nail")
-		if nail:IsValid() then
-			nail:SetActualOffset(tr.HitPos, trent)
-			nail:SetPos(tr.HitPos - aimvec * 8)
-			nail:SetAngles(aimvec:Angle())
-			nail:AttachTo(trent, ent, tr.PhysicsBone, trtwo.PhysicsBone)
-			nail:Spawn()
-			nail:SetDeployer(owner)
-			
-			cons:DeleteOnRemove(nail)
-
-			gamemode.Call("OnNailCreated", trent, ent, nail)
-		end
 	end
 end

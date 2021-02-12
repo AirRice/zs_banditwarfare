@@ -16,14 +16,20 @@ function ENT:Initialize()
 	end
 end
 
-function ENT:Use(activator, caller)
-	if activator:IsPlayer() and activator:Team() ~= self:GetOwnerTeam() then return end
-	local plysamples = activator:GetSamples()
-	local togive = math.min(2, plysamples)
-	if togive > 0 then
-		activator:TakeSamples(togive)
-		activator:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
-		self:EmitSound("weapons/physcannon/physcannon_drop.wav")
-		gamemode.Call("PlayerAddedSamples", activator, self:GetOwnerTeam(), togive, self)
+function ENT:Think()
+	if self:GetLastCalcedNearby() <= CurTime() - 1 then 
+		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
+			if pl:IsPlayer() and pl:Team() == self:GetOwnerTeam() and pl:Alive() then
+				local plysamples = pl:GetSamples()
+				local togive = math.min(5, plysamples)
+				if togive > 0 then
+					pl:TakeSamples(togive)
+					pl:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
+					pl:EmitSound("weapons/physcannon/physcannon_drop.wav")
+					gamemode.Call("PlayerAddedSamples", pl, self:GetOwnerTeam(), togive, self)
+				end
+			end
+		end
+		self:SetLastCalcedNearby(CurTime())
 	end
 end

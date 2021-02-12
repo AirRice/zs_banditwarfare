@@ -70,28 +70,12 @@ end
 --[[SKIN.color_textentry_background = Color(40, 40, 40, 255)
 SKIN.color_textentry_border = Color(70, 90, 70, 255)]]
 
-local texCorner = surface.GetTextureID("zombiesurvival/circlegradient")
-local texUpEdge = surface.GetTextureID("gui/gradient_up")
-local texDownEdge = surface.GetTextureID("gui/gradient_down")
-local texRightEdge = surface.GetTextureID("gui/gradient")
 function PaintGenericFrame(panel, x, y, wid, hei, edgesize)
 	edgesize = edgesize or math.ceil(math.min(hei * 0.1, math.min(16, wid * 0.1)))
 	local dedgesize = edgesize * 2
 	local hedgesize = edgesize * 0.5
 	DisableClipping(true)
 	surface.DrawRect(x, y, wid, hei)
-	surface.SetTexture(texUpEdge)
-	surface.DrawTexturedRect(x, y - edgesize, wid, edgesize)
-	surface.SetTexture(texDownEdge)
-	surface.DrawTexturedRect(x, y + hei, wid, edgesize)
-	surface.SetTexture(texRightEdge)
-	surface.DrawTexturedRect(wid, y, edgesize, hei)
-	surface.DrawTexturedRectRotated(x + hedgesize * -1, y + hei * 0.5, edgesize, hei, 180)
-	surface.SetTexture(texCorner)
-	surface.DrawTexturedRect(x - edgesize, y - edgesize, edgesize, edgesize)
-	surface.DrawTexturedRectRotated(x + wid + hedgesize, y - hedgesize, edgesize, edgesize, 270)
-	surface.DrawTexturedRectRotated(x + wid + hedgesize, y + hei + hedgesize, edgesize, edgesize, 180)
-	surface.DrawTexturedRectRotated(x - hedgesize, y + hei + hedgesize, edgesize, edgesize, 90)
 	DisableClipping(false)
 end
 
@@ -99,6 +83,23 @@ function SKIN:PaintFrame(panel, w, h)
 	surface.SetDrawColor(panel.ColorOverride or color_frame_background)
 	PaintGenericFrame(panel, 0, 0, w, h)
 end
+
+function SKIN:PaintNumSlider( panel, w, h )
+	draw.RoundedBox(8, 0, 0, w, h, color_white_alpha90)
+	surface.SetDrawColor( Color( 0, 0, 0, 255 ) )
+	surface.DrawRect( 8, h / 2 - 1, w - 15, 1 )
+	if ( !panel.m_iNotches ) then return end
+
+	local space = (w - 16) / panel.m_iNotches
+
+	for i=0, panel.m_iNotches do
+
+		surface.DrawRect( 8 + i * space, h / 2 + 3, 1, 10 )
+
+	end
+end
+
+
 
 --[[function SKIN:DrawBorder(x, y, w, h, border)
 	surface.SetDrawColor(border)
@@ -109,33 +110,7 @@ end
 	surface.DrawOutlinedRect(x + 2, y + 2, w - 4, h - 4)
 end
 
-function SKIN:PaintTooltip(panel)
-	local w, h = panel:GetSize()
-
-	DisableClipping(true)
-
-	self:DrawGenericBackground(0, 0, w, h, self.tooltip)
-	panel:DrawArrow(0, 0)
-
-	DisableClipping(false)
-end
-
-function SKIN:PaintButton(panel)
-	local w, h = panel:GetSize()
-
-	if panel.m_bBackground then
-		local col = self.control_color
-		if panel:GetDisabled() then
-			col = self.control_color_dark
-		elseif panel.Depressed then
-			col = self.control_color_active
-		elseif panel.Hovered then
-			col = self.control_color_highlight
-		end
-
-		draw.RoundedBox(8, 0, 0, w, h, col)
-	end
-end]]
+]]
 
 SKIN.Colours = {}
 
@@ -223,11 +198,7 @@ function SKIN:PaintButton(panel, w, h)
 	end
 
 	local edgesize = math.min(math.ceil(w * 0.2), 24)
-	surface.SetDrawColor(col)
-	surface.DrawRect(edgesize, 0, w - edgesize * 2, h)
-	surface.SetTexture(texRightEdge)
-	surface.DrawTexturedRect(w - edgesize, 0, edgesize, h)
-	surface.DrawTexturedRectRotated(math.ceil(edgesize * 0.5), math.ceil(h * 0.5), edgesize, h, 180)
+	draw.RoundedBox(edgesize/2, 0, 0, w , h, col)
 end
 
 derma.DefineSkin("zombiesurvival", "The default Derma skin for Zombie Survival", SKIN, "Default")

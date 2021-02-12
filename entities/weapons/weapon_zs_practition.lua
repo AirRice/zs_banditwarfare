@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	SWEP.PrintName = "'프렉티션' 의료소총"
-	SWEP.Description = "메디컬 에너지를 사용해 지속적인 피해를 입히는 탄환을 발사한다.\n 보조 공격 시 15발을 소비해 피격 지점 주변의 아군을 치료하는 탄환을 발사한다."
+	SWEP.Description = "메디컬 에너지를 사용해 적에게는 지속적인 피해를 입히고, 아군은 치료하는 탄환을 발사한다."
 
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
@@ -55,7 +55,7 @@ SWEP.Primary.DefaultClip = 150
 SWEP.TracerName = "HelicopterTracer"
 
 SWEP.ConeMax = 0.07
-SWEP.ConeMin = 0.015
+SWEP.ConeMin = 0.007
 SWEP.MovingConeOffset = 0.07
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.NoAmmo = false
@@ -63,10 +63,8 @@ SWEP.Recoil = 0.26
 SWEP.ToxicDamage = 2
 SWEP.ToxicTick = 0.2
 SWEP.ToxDuration = 1.2
+SWEP.Heal = 1
 SWEP.WalkSpeed = SPEED_SLOW
-
-SWEP.ChargeRequiredClip = 20
-SWEP.ChargeShotSound = "beams/beamstart5.wav"
 
 SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)
 
@@ -83,92 +81,65 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	if ent:IsPlayer() and ent:Team() ~= attacker:Team() and SERVER then
-		local wep = attacker:GetWeapon("weapon_zs_practition")
-		if IsValid(wep) and attacker:IsValid() and attacker:IsPlayer() then
-			local tox = ent:GetStatus("tox")
-			if (tox and tox:IsValid()) then
-				tox:AddTime(wep.ToxDuration)
-				tox.Owner = ent
-				tox.Damage = wep.ToxicDamage
-				tox.Damager = attacker
-				tox.TimeInterval = wep.ToxicTick
+	local shooter = attacker.Owner
+	local wep = attacker
+	dmginfo:SetAttacker(shooter)
+	if ent:IsPlayer() and SERVER then
+		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
+			if ent:Team() ~= shooter:Team() then
+				local tox = ent:GetStatus("tox")
+				if (tox and tox:IsValid()) then
+					tox:AddTime(wep.ToxDuration)
+					tox.Owner = ent
+					tox.Damage = wep.ToxicDamage
+					tox.Damager = shooter
+					tox.TimeInterval = wep.ToxicTick
+				else
+					stat = ent:GiveStatus("tox")
+					stat:SetTime(wep.ToxDuration)
+					stat.Owner = ent
+					stat.Damage = wep.ToxicDamage
+					stat.Damager = shooter
+					stat.TimeInterval = wep.ToxicTick
+				end
 			else
-				stat = ent:GiveStatus("tox")
-				stat:SetTime(wep.ToxDuration)
-				stat.Owner = ent
-				stat.Damage = wep.ToxicDamage
-				stat.Damager = attacker
-				stat.TimeInterval = wep.ToxicTick
+				dmginfo:SetDamage(0)
+				ent:GiveStatus("healdartboost").DieTime = CurTime() + 5
+				ent:EmitSound("items/medshot4.wav")
+				local toheal = attacker.Heal
+				if tr.HitGroup == HITGROUP_HEAD then
+					toheal = toheal * 3
+				end
+				local oldhealth = ent:Health()
+				local newhealth = math.min(oldhealth + toheal, ent:GetMaxHealth())
+				if oldhealth ~= newhealth then
+					ent:SetHealth(newhealth)
+					if shooter:IsPlayer() then
+						gamemode.Call("PlayerHealedTeamMember", shooter, ent, newhealth - oldhealth, self)
+					end
+				end
 			end
 		end
 	end	
-	GenericBulletCallback(attacker, tr, dmginfo)
+	GenericBulletCallback(shooter, tr, dmginfo)
 end
 
-
-function SWEP:SecondaryAttack()
-	if not self:CanPrimaryAttack() then return end
-	if self:Clip1() >= self.ChargeRequiredClip then
-		self:EmitSound(self.ChargeShotSound)
-		self:TakePrimaryAmmo(self.ChargeRequiredClip)		
-		self:ShootChargedBullet()
-		self.IdleAnimation = CurTime() + self:SequenceDuration()
-		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*5)
-	else
-		self:EmitSound("Weapon_Pistol.Empty")
-		self:SetNextPrimaryFire(CurTime() + 0.25)
-		return false
-	end
-end
-
-function SWEP:ShootChargedBullet()
-	if SERVER then
-		self:SetConeAndFire()
-	end
+function SWEP:ShootBullets(dmg, numbul, cone)	
+	self:SetConeAndFire()
 	self:DoRecoil()
-	
+
 	local owner = self.Owner
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
-
+	
+	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
+		owner.ShotsFired = owner.ShotsFired + numbul
+		owner.LastShotWeapon = self:GetClass()
+	end
+	
 	self:StartBulletKnockback()
-	owner:FireBullets({Num = 1, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(0.0001, 0.0001, 0), Tracer = 1, TracerName = self.TracerName, Force = self.Primary.Damage * 0.1, Damage = self.Primary.Damage  * 2, Callback = self.SpecialBulletCallback})
+	self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
 	self:EndBulletKnockback()
-end
-
-
-function SWEP.SpecialBulletCallback(attacker, tr, dmginfo)
-	local ent = tr.Entity
-	if tr.HitSky then return end
-	local effectdata = EffectData()
-		effectdata:SetOrigin(tr.HitPos)
-	util.Effect("bonemeshexplode", effectdata)
-	effectdata:SetNormal(tr.HitNormal)
-	effectdata:SetMagnitude(5)
-	if tr.Entity:IsValid() then
-		effectdata:SetEntity(tr.Entity)
-	else
-		effectdata:SetEntity(NULL)
-	end
-	util.Effect("hit_healdart", effectdata)
-	if not (attacker and attacker:IsValid() and attacker:IsPlayer()) then return end
-	local epicenter = tr.HitPos
-	local radius =  100
-	for _, ent in pairs(ents.FindInSphere(epicenter, radius)) do
-		if ent and ent:IsValid()and ent:IsPlayer() and ent:Team() == attacker:Team() then
-				local oldhealth = ent:Health()
-				local newhealth = math.min(oldhealth + 15, ent:GetMaxHealth())
-				if oldhealth ~= newhealth then
-					ent:SetHealth(newhealth)
-					ent:EmitSound("items/medshot4.wav")
-					if  attacker:IsPlayer() and newhealth - oldhealth > 5 and attacker ~= ent then
-						gamemode.Call("PlayerHealedTeamMember",  attacker, ent, newhealth - oldhealth, attacker:GetWeapon("weapon_zs_practition"))
-					end
-				end
-		end
-	end
-	GenericBulletCallback(attacker, tr, dmginfo)
 end

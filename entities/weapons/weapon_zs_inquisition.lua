@@ -41,8 +41,8 @@ SWEP.WorldModel = "models/weapons/w_pist_p228.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
-SWEP.Primary.Damage = 25
-SWEP.Primary.NumShots = 1
+SWEP.Primary.Damage = 60
+SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 1
 
 SWEP.Primary.ClipSize = 2
@@ -60,11 +60,14 @@ SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:TakeAmmo()
-	for i = 0, 2 do
-		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, 0.1 * i, 1, function()
+	
+	for i = 0, self.Primary.NumShots-1 do
+		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, math.min((self.Primary.Delay-0.6)/self.Primary.NumShots,0.12) * i, 1, function()
 			if (self:IsValid() and self.Owner:Alive()) then
 				self:EmitFireSound()
-				self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+				self:SendWeaponAnimation()
+				self.Owner:DoAttackEvent()
+				self:ShootBullets(self.Primary.Damage, self:GetCone())
 			end
 		end)
 	end
@@ -72,31 +75,31 @@ function SWEP:PrimaryAttack()
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end
 
-function SWEP:ShootBullets(dmg, numbul, cone)
+function SWEP:ShootBullets(dmg, cone)
 	local owner = self.Owner
 	--owner:MuzzleFlash()
 	if SERVER then
 		self:SetConeAndFire()
 	end
 	self:DoRecoil()
-	self:SendWeaponAnimation()
-	owner:DoAttackEvent()
-
 	if CLIENT then return end
 
 	local aimvec = owner:GetAimVector()
-
-	local ent = ents.Create("projectile_tinyarrow")
-	if ent:IsValid() then
-		ent:SetPos(owner:GetShootPos())
-		ent:SetAngles(aimvec:Angle())
-		ent:SetOwner(owner)
-		ent:Spawn()
-		ent.Damage = self.Primary.Damage
-		local phys = ent:GetPhysicsObject()
-		if phys:IsValid() then
-			phys:Wake()
-			phys:SetVelocityInstantaneous(aimvec * 2200)
+	if SERVER then
+		local ent = ents.Create("projectile_tinyarrow")
+		if ent:IsValid() then
+			ent:SetPos(owner:GetShootPos())
+			ent:SetAngles(aimvec:Angle())
+			ent:SetOwner(owner)
+			ent:Spawn()
+			ent.Damage = self.Primary.Damage/self.Primary.NumShots
+			local phys = ent:GetPhysicsObject()
+			if phys:IsValid() then
+				phys:Wake()
+				phys:SetVelocity(aimvec *2200)
+			end
+			--ent:SetVelocity(aimvec *2200)
 		end
-	end
+    end
 end
+   

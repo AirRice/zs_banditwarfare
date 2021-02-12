@@ -80,15 +80,8 @@ function GM:SigilCommsThink()
 		end
 	end
 end
-
-function GM:PlayerAddedSamples(player, team, togive, ent)
-	if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
-		if team == TEAM_BANDIT then
-			self:AddSamples(togive,0)
-		elseif team == TEAM_HUMAN then
-			self:AddSamples(0,togive)
-		end
-	elseif not self.SamplesEnd then 
+function GM:SamplesThink()
+	if not self.SamplesEnd then 
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
 		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
 			self.SamplesEnd = true
@@ -108,6 +101,16 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 			end
 			timer.Simple(timetoWin, function() gamemode.Call("WaveEndWithWinner", TEAM_HUMAN) end)
 			self.SamplesEnd = true
+		end
+	end
+end
+	
+function GM:PlayerAddedSamples(player, team, togive, ent)
+	if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
+		if team == TEAM_BANDIT then
+			self:AddSamples(togive,0)
+		elseif team == TEAM_HUMAN then
+			self:AddSamples(0,togive)
 		end
 	end
 	player:AddPoints(togive)
