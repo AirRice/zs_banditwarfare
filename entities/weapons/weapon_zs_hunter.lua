@@ -21,8 +21,7 @@ sound.Add(
 	channel = CHAN_WEAPON,
 	volume = 1.0,
 	soundlevel = 100,
-	pitchstart = 134,
-	pitchend = 10,
+	pitch = 134,
 	sound = "weapons/awp/awp1.wav"
 })
 
@@ -36,7 +35,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 25
+SWEP.Primary.Damage = 65
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -98,9 +97,6 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("hit_hunter", effectdata)
-	if tr.HitGroup == HITGROUP_HEAD then
-		dmginfo:SetDamage(65)
-	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
 

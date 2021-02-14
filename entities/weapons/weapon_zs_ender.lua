@@ -23,8 +23,8 @@ SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Galil.Single")
 SWEP.Primary.Damage = 5
-SWEP.Primary.NumShots = 7
-SWEP.Primary.Delay = 0.25
+SWEP.Primary.NumShots = 9
+SWEP.Primary.Delay = 0.22
 SWEP.Recoil = 1.72
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = true
@@ -32,7 +32,7 @@ SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.07
-SWEP.ConeMin = 0.06
+SWEP.ConeMin = 0.05
 SWEP.MovingConeOffset = 0.1
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 

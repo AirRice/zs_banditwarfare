@@ -77,7 +77,8 @@ local function GetMostFunc(func, top)
 end
 
 GM.HonorableMentions[HM_MOSTENEMYKILLED].GetPlayer = function(self)
-	return GetMostKey("EnemyKilled")
+	local pl, mag = GetMostFunc("Frags")
+	return pl, mag
 end
 
 GM.HonorableMentions[HM_MOSTDAMAGETOENEMY].GetPlayer = function(self)
@@ -97,7 +98,7 @@ end
 
 GM.HonorableMentions[HM_PACIFIST].GetPlayer = function(self)
 	for _, pl in pairs(player.GetAll()) do
-		if pl.EnemyKilled == 0 and not pl:IsSpectator() then return pl end
+		if pl:Frags() == 0 and not pl:IsSpectator() then return pl end
 	end
 end
 

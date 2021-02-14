@@ -8,6 +8,9 @@ if CLIENT then
 	SWEP.ViewModelFOV = 50
 	SWEP.ShowViewModel = true
 	SWEP.ShowWorldModel = false
+	
+	SWEP.Slot = 4
+	SWEP.SlotPos = 0
 
 	SWEP.ViewModelBoneMods = {
 		["ValveBiped.cube1"] = { scale = Vector(0.009, 0.009, 0.009), pos = Vector(0, 0, 0), angle = Angle(0, 0, 0) },

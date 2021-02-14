@@ -1,9 +1,88 @@
 local PANEL = {}
 
+PANEL.Spacing = 8
+
+function PANEL:Init()
+	self:SetPos(ScrW() - 1, 0)
+	self.WeaponButtons = {}
+	local wep1button = vgui.Create("DWeaponLoadoutPanel", self)
+	wep1button:SetWeaponSlot(WEAPONLOADOUT_SLOT1)
+	wep1button:SetParent(self)
+	table.insert(self.WeaponButtons, wep1button)
+	local wep2button = vgui.Create("DWeaponLoadoutPanel", self)
+	wep2button:SetWeaponSlot(WEAPONLOADOUT_SLOT2)
+	wep2button:SetParent(self)
+	table.insert(self.WeaponButtons, wep2button)
+	local wepmeleebutton = vgui.Create("DWeaponLoadoutPanel", self)
+	wepmeleebutton:SetWeaponSlot(WEAPONLOADOUT_MELEE)
+	wepmeleebutton:SetParent(self)
+	table.insert(self.WeaponButtons, wepmeleebutton)
+	local weptoolbutton = vgui.Create("DWeaponLoadoutPanel", self)
+	weptoolbutton:SetWeaponSlot(WEAPONLOADOUT_TOOLS)
+	weptoolbutton:SetParent(self)
+	table.insert(self.WeaponButtons, weptoolbutton)
+	self:RefreshSize()
+end
+
+
+function PANEL:RefreshSize()
+	local screenscale = BetterScreenScale()
+	self:SetSize(screenscale * 256, ScrH())
+	for k, item in pairs(self.WeaponButtons) do
+		if item and item:Valid() then
+			item:SetWide(self:GetWide() - 16)
+			item:SetTall(screenscale * 180)
+		end
+	end
+end
+
+function PANEL:OpenMenu()
+	self:RefreshSize()
+	self:SetPos(ScrW() - self:GetWide(), 0, 0, 0, 0)
+	self:SetVisible(true)
+	self:MakePopup()
+	self.StartChecking = RealTime() + 0.1
+
+	timer.Simple(0, function() gui.SetMousePos(ScrW() - self:GetWide() * 0.5, ScrH() * 0.5) end)
+end
+
+function PANEL:CloseMenu()
+	self:SetVisible(false)
+end
+
+local texRightEdge = surface.GetTextureID("gui/gradient")
+function PANEL:Paint()
+	surface.SetDrawColor(5, 5, 5, 180)
+	surface.DrawRect(self:GetWide() * 0.4, 0, self:GetWide() * 0.6, self:GetTall())
+	surface.SetTexture(texRightEdge)
+	surface.DrawTexturedRectRotated(self:GetWide() * 0.2, self:GetTall() * 0.5, self:GetWide() * 0.4, self:GetTall(), 180)
+end
+
+function PANEL:PerformLayout()
+	local y = ScrH() * 0.5
+	for k, item in pairs(self.WeaponButtons) do
+		if item and item:Valid() then
+			y = y - (item:GetTall() + self.Spacing) * 0.5
+		end
+	end
+
+	for k, item in ipairs(self.WeaponButtons) do
+		if item and item:Valid() then
+			item:SetPos(0, y)
+			item:CenterHorizontal()
+			y = y + item:GetTall() + self.Spacing
+		end
+	end
+end
+
+vgui.Register("DSideMenu", PANEL, "DPanel")
+
+
+local PANEL = {}
+
 PANEL.NextRefresh = 0
 PANEL.RefreshTime = 1
 
-local col2 = Color(5, 5, 5, 180)
 
 local function WeaponButtonDoClick(self)
 	if self:GetParent().m_WeaponSlot == WEAPONLOADOUT_NULL then return end
@@ -31,36 +110,33 @@ end
 
 function PANEL:Init()
 	self.m_WeaponModelButton = vgui.Create("DModelPanel", self)
+	self.m_WeaponModelButton:DockPadding(0, 8, 0, 0)
 	self.m_WeaponModelButton:Dock(FILL)
 	self.m_WeaponModelButton:SetModel("error.mdl")
 	self.m_WeaponModelButton:SetZPos(1000)
 	self.m_WeaponModelButton.DoClick = WeaponButtonDoClick
 	function self.m_WeaponModelButton:LayoutEntity( Entity ) return end 
 	
-	self.m_WeaponNameLabel = EasyLabel(self.m_WeaponModelButton, "", "ZSHUDFontSmall", COLOR_GRAY)
+	self.m_WeaponNameLabel = EasyLabel(self, "", "ZSHUDFontSmallBold", COLOR_WHITE)
 	self.m_WeaponNameLabel:SetContentAlignment(8)
 	self.m_WeaponNameLabel:Dock(TOP)
 	self.m_WeaponModelButton:SetZPos(1100)
 	
 	self.m_WeaponSlot = WEAPONLOADOUT_NULL
 end
-
-function PANEL:OnCursorEntered()
-	self.m_WeaponNameLabel:SetAlpha(255)
-end
-
-function PANEL:OnCursorExited()
-	self.m_WeaponNameLabel:SetAlpha(180)
-end
-
+local col2 = Color(5, 5, 5, 180)
+local colhovered = Color(15, 200, 15, 180)
 function PANEL:Paint()
 	local colBG = team.GetColor(MySelf:Team())
-	self:SetBackgroundColor(colBG)
+	--self:SetBackgroundColor(colBG)
 	local tall = self:GetTall()
 	local wide = self:GetWide()
-	draw.RoundedBox(8, 0, 0, wide, tall, col2)
-	draw.RoundedBox(8, 8,8, wide-16, tall-16, colBG)
-
+	if self.m_WeaponModelButton:IsHovered() then
+		draw.RoundedBox(8, 0, 0, wide, tall, colhovered)
+	else
+		draw.RoundedBox(8, 0, 0, wide, tall, col2)
+	end
+	draw.RoundedBox(8, 8,32, wide-16, tall-40, colBG)
 	return true
 end
  

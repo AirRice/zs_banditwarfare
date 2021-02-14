@@ -36,7 +36,7 @@ SWEP.HoldType = "pistol"
 SWEP.IronSightsHoldType = "ar2"
 
 SWEP.IronSightsPos = Vector(0, 0, 0)
-
+SWEP.LastAttemptedShot = 0
 SWEP.AngleAdded = {
 	Pitch = 0,
 	Yaw = 0,
@@ -48,6 +48,7 @@ SWEP.AngleAdded = {
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 31, "ConeAdder")
+	self:NetworkVar("Float", 30, "NextAutoReload")
 end
 
 function SWEP:Initialize()
@@ -151,6 +152,8 @@ end
 
 function SWEP:Deploy()
 	self:SetNextReload(0)
+	self:SetNextAutoReload(0)
+	self.LastAttemptedShot = CurTime()
 	gamemode.Call("WeaponDeployed", self.Owner, self)
 	self:SetIronsights(false)
 
@@ -222,7 +225,7 @@ end
 
 function SWEP:CanPrimaryAttack()
 	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
-
+	self.LastAttemptedShot = CurTime()
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + math.max(0.25, self.Primary.Delay))

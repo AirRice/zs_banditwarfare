@@ -52,7 +52,6 @@ AddCSLuaFile("vgui/dweaponloadoutbutton.lua")
 AddCSLuaFile("vgui/dpingmeter.lua")
 AddCSLuaFile("vgui/dteamheading.lua")
 AddCSLuaFile("vgui/dteamscores.lua")
-AddCSLuaFile("vgui/dsidemenu.lua")
 AddCSLuaFile("vgui/dmodelkillicon.lua")
 
 AddCSLuaFile("vgui/dexroundedpanel.lua")
@@ -170,42 +169,18 @@ function GM:AddResources()
 	for _, filename in pairs(file.Find("materials/zombiesurvival/killicons/*.vmt", "GAME")) do
 		resource.AddFile("materials/zombiesurvival/killicons/"..filename)
 	end
-
+	for _, filename in pairs(file.Find("materials/killicon/*.vmt", "GAME")) do
+		resource.AddFile("materials/killicon/"..filename)
+	end
 	resource.AddFile("materials/refract_ring.vmt")
-	resource.AddFile("materials/killicon/redeem_v2.vmt")
-	resource.AddFile("materials/killicon/zs_axe.vmt")
-	resource.AddFile("materials/killicon/zs_keyboard.vmt")
-	resource.AddFile("materials/killicon/zs_sledgehammer.vmt")
-	resource.AddFile("materials/killicon/zs_fryingpan.vmt")
-	resource.AddFile("materials/killicon/zs_pot.vmt")
-	resource.AddFile("materials/killicon/zs_plank.vmt")
-	resource.AddFile("materials/killicon/zs_hammer.vmt")
-	resource.AddFile("materials/killicon/zs_shovel.vmt")
+	resource.AddFile("materials/killicon/weapon_zs_tv.png")
+	resource.AddFile("materials/killicon/weapon_zs_drone3.png")
 	resource.AddFile("materials/models/weapons/w_annabelle/gun.vtf")
 	resource.AddFile("materials/models/weapons/sledge.vmt")
 	resource.AddFile("materials/models/weapons/temptexture/handsmesh1.vmt")
 	resource.AddFile("materials/models/weapons/hammer2.vmt")
 	resource.AddFile("materials/models/weapons/hammer.vmt")
 	resource.AddFile("materials/models/weapons/v_hand/armtexture.vmt")
-
-	for _, filename in pairs(file.Find("materials/weapons/v_supershorty/*.vmt", "GAME")) do
-		resource.AddFile("materials/weapons/v_supershorty/"..filename)
-	end
-	for _, filename in pairs(file.Find("materials/weapons/v_supershorty/*.vtf", "GAME")) do
-		resource.AddFile("materials/weapons/v_supershorty/"..filename)
-	end
-	for _, filename in pairs(file.Find("materials/weapons/w_supershorty/*.vmt", "GAME")) do
-		resource.AddFile("materials/weapons/w_supershorty/"..filename)
-	end
-	for _, filename in pairs(file.Find("materials/weapons/w_supershorty/*.vtf", "GAME")) do
-		resource.AddFile("materials/weapons/w_supershorty/"..filename)
-	end
-	for _, filename in pairs(file.Find("materials/weapons/survivor01_hands/*.vmt", "GAME")) do
-		resource.AddFile("materials/weapons/survivor01_hands/"..filename)
-	end
-	for _, filename in pairs(file.Find("materials/weapons/survivor01_hands/*.vtf", "GAME")) do
-		resource.AddFile("materials/weapons/survivor01_hands/"..filename)
-	end	
 	
 	resource.AddFile("models/weapons/v_annabelle.mdl")	
 	resource.AddFile("models/weapons/w_sledgehammer.mdl")
@@ -213,8 +188,6 @@ function GM:AddResources()
 	resource.AddFile("models/weapons/w_hammer.mdl")
 	resource.AddFile("models/weapons/v_hammer/c_hammer.mdl")
 	resource.AddFile("models/weapons/v_aegiskit.mdl")
-	resource.AddFile("models/weapons/v_supershorty/v_supershorty.mdl")
-	resource.AddFile("models/weapons/w_supershorty.mdl")
 
 	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-01.ogg")
 	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-02.ogg")
@@ -270,6 +243,8 @@ function GM:Initialize()
 	self:AddNetworkStrings()
 	local classiccvar = GetConVar("zsb_classicmode")
 	self:SetClassicMode(classiccvar:GetBool())
+	local samplescvar = GetConVar("zsb_samplesmode")
+	self:SetSampleCollectMode(samplescvar:GetBool())
 	
 	game.ConsoleCommand("fire_dmgscale 1\n")
 	game.ConsoleCommand("mp_flashlight 1\n")
@@ -436,6 +411,9 @@ function GM:SetupProps()
 			if table.HasValue(self.BannedProps, mdl) then
 				ent:Remove()
 			elseif weaponmodelstoweapon[mdl] then
+				ent:Remove()
+				--[[
+				Removing these for now for balancing purposes.
 				local wep = ents.Create("prop_weapon")
 				if wep:IsValid() then
 					wep:SetPos(ent:GetPos())
@@ -445,7 +423,8 @@ function GM:SetupProps()
 					wep:Spawn()
 
 					ent:Remove()
-				end
+				end]]
+				
 			elseif ent:GetMaxHealth() == 1 and ent:Health() == 0 and ent:GetKeyValues().damagefilter ~= "invul" and ent:GetName() == "" then
 				local health = math.min(800, math.ceil((ent:OBBMins():Length() + ent:OBBMaxs():Length()) * 10))
 				local hmul = self.PropHealthMultipliers[mdl]
@@ -526,6 +505,8 @@ local ammoreplacements = {
 function GM:ReplaceMapAmmo()
 	for classname, ammotype in pairs(ammoreplacements) do
 		for _, ent in pairs(ents.FindByClass(classname)) do
+			--[[
+			Removing these for now for balancing purposes.
 			local newent = ents.Create("prop_ammo")
 			if newent:IsValid() then
 				newent:SetAmmoType(ammotype)
@@ -533,8 +514,8 @@ function GM:ReplaceMapAmmo()
 				newent:SetPos(ent:GetPos())
 				newent:SetAngles(ent:GetAngles())
 				newent:Spawn()
-				newent:SetAmmo(self.AmmoCache[ammotype] or 1)
-			end
+				newent:SetAmmo(self.AmmoResupply[ammotype] or 1)
+			end]]
 			ent:Remove()
 		end
 	end
@@ -839,7 +820,6 @@ GM.CurrentSigilTable = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
 GM.SuddenDeath = false
-GM.StoredUndeadFrags = {}
 GM.CurrentWaveWinner = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
@@ -886,7 +866,6 @@ function GM:RestartLua()
 	self.PreviouslyDied = {}
 	self.PreviousTeam = {}
 	self.PreviousPoints = {}
-	self.StoredUndeadFrags = {}
 
 	ROUNDWINNER = nil
 
@@ -948,7 +927,6 @@ function GM:RestartGame()
 		pl:StripAmmo()
 		pl:SetFrags(0)
 		pl:SetDeaths(0)
-		pl:SetKills(0)
 		pl:SetPoints(0)
 		pl:SetSamples(0)
 		pl:AddPoints(20)
@@ -1159,8 +1137,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl:SetNoCollideWithTeammates(true)
 	pl:SetCustomCollisionCheck(true)
 	pl:DoHulls()
-	
-	pl.EnemyKilled = 0
+
 	pl.BountyModifier = 0
 	pl.EnemyKilledAssists = 0
 	pl.MeleeKilled = 0
@@ -1205,7 +1182,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.SpawnedTime = CurTime()
 	if pl:GetInfo("zsb_spectator") == "1" then
 		pl:ChangeTeam(TEAM_SPECTATOR)
-		pl:StripWeapons( )
+		pl:StripWeapons()
 		pl:Spectate( OBS_MODE_ROAMING )
 		return false;
 	end
@@ -1218,9 +1195,9 @@ function GM:PlayerInitialSpawnRound(pl)
 		elseif self:GetHumanScore() < self:GetBanditScore() then
 			pl:ChangeTeam(TEAM_HUMAN)
 		else
-			if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
+			if self:GetTeamPoints(TEAM_HUMAN) < self:GetTeamPoints(TEAM_BANDIT) then 
 				pl:ChangeTeam(TEAM_HUMAN)
-			elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
+			elseif self:GetTeamPoints(TEAM_HUMAN) > self:GetTeamPoints(TEAM_BANDIT) then 
 				pl:ChangeTeam(TEAM_BANDIT)
 			else
 				pl:ChangeTeam(math.random(3,4))
@@ -1237,7 +1214,7 @@ function GM:PlayerInitialSpawnRound(pl)
 		pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
 	elseif self:GetWave() > 0 then
 		pl:SetPoints(0)
-		pl:AddPoints(team.TotalFrags(pl:Team())/team.NumPlayers(pl:Team()))
+		pl:AddPoints(self:GetTeamPoints(pl:Team())/team.NumPlayers(pl:Team()))
 	else
 		pl:SetPoints(0)
 		pl:AddPoints(20)
@@ -1289,7 +1266,7 @@ function GM:PlayerDisconnected(pl)
 
 	self.PreviouslyDied[uid] = CurTime()
 	self.PreviousTeam[uid] = pl:Team()
-	self.PreviousPoints[uid] = pl:Frags()
+	self.PreviousPoints[uid] = pl:GetPoints()
 	pl:DropAll()
 
 	if pl:Health() > 0 and not pl:IsSpectator() then
@@ -1430,7 +1407,7 @@ concommand.Add("zsb_dropactiveweapon", function(sender, command)
 	sender:DropActiveWeapon()
 end)
 
-concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
+concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 	if not (sender:IsValid() and sender:IsConnected()) or #arguments == 0 then return end
 
 	local itemtab
@@ -1458,7 +1435,6 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 		sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 		return
 	end
-	
 	if not GAMEMODE:IsClassicMode() then
 		if (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then 
 			if sender:Alive() then
@@ -1496,7 +1472,9 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 						sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 						return	
 					elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
-						local wep = sender:Give(itemtab.SWEP)
+						local newwep = weapons.GetStored(itemtab.SWEP)
+						local newAmmoAmount = newwep.Primary.DefaultClip - newwep.Primary.ClipSize
+						local newAmmoType = newwep.Primary.Ammo
 						local oldwep
 						if slot == WEAPONLOADOUT_SLOT1 then 
 							oldwep = sender:GetWeapon1()
@@ -1505,10 +1483,22 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 							oldwep = sender:GetWeapon2() 
 							sender:SetWeapon2(itemtab.SWEP)
 						end
-						
-						if not oldwep and weapons.GetStored(oldwep) then return end
+						if not (oldwep and weapons.GetStored(oldwep)) then return end
 						if sender:HasWeapon(oldwep) then
-							local oldammotype = weapons.GetStored(oldwep).Primary.Ammo
+							local oldAmmoType = weapons.GetStored(oldwep).Primary.Ammo
+							local oldAmmoAmount = weapons.GetStored(oldwep).Primary.DefaultClip - weapons.GetStored(oldwep).Primary.ClipSize
+							if oldAmmoType and newAmmoType and newAmmoAmount and oldAmmoAmount then
+								if oldAmmoType == newAmmoType then
+									if sender:GetAmmoCount(newAmmoType) <= newAmmoAmount then
+										sender:SetAmmo( newAmmoAmount, newAmmoType, true )
+									end
+								else
+									sender:RemoveAmmo(math.min(oldAmmoAmount,sender:GetAmmoCount(oldAmmoType)), oldAmmoType)
+									sender:SetAmmo( newAmmoAmount, newAmmoType, true )
+								end
+							end
+							local wep = sender:Give(itemtab.SWEP)
+							wep:EmptyAllButClip()
 							--sender:StripAmmoByType(oldammotype)
 							sender:StripWeapon(oldwep)
 						end
@@ -1542,9 +1532,25 @@ concommand.Add("zs_pointsshopbuy", function(sender, command, arguments)
 					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 					return	
 				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
-					local wep = sender:Give(itemtab.SWEP)
+					local newwep = weapons.GetStored(itemtab.SWEP)
+					local newAmmoAmount = newwep.Primary.DefaultClip - newwep.Primary.ClipSize
+					local newAmmoType = newwep.Primary.Ammo
 					local oldwep = sender:GetWeaponToolslot()
 					if sender:HasWeapon(oldwep) then
+						local oldAmmoType = weapons.GetStored(oldwep).Primary.Ammo
+						local oldAmmoAmount = weapons.GetStored(oldwep).Primary.DefaultClip - weapons.GetStored(oldwep).Primary.ClipSize
+						if oldAmmoType and newAmmoType and newAmmoAmount and oldAmmoAmount then
+							if oldAmmoType == newAmmoType then
+								if sender:GetAmmoCount(newAmmoType) <= newAmmoAmount then
+									sender:SetAmmo( newAmmoAmount, newAmmoType, true )
+								end
+							else
+								sender:RemoveAmmo(math.min(oldAmmoAmount,sender:GetAmmoCount(oldAmmoType)), oldAmmoType)
+								sender:SetAmmo( newAmmoAmount, newAmmoType, true )
+							end
+						end
+						local wep = sender:Give(itemtab.SWEP)
+						wep:EmptyAllButClip()
 						sender:StripWeapon(oldwep)
 					end
 					sender:SetWeaponToolslot(itemtab.SWEP)
@@ -1947,7 +1953,7 @@ function GM:OnPlayerChangedTeam(pl, oldteam, newteam)
 		pl:SetBarricadeGhosting(false)
 	elseif newteam == TEAM_SPECTATOR then
 		self.PreviousTeam[uid] = oldteam
-		self.PreviousPoints[uid] = pl:Frags()
+		self.PreviousPoints[uid] = pl:GetPoints()
 	end
 	pl:SetLastAttacker(nil)
 	for _, p in pairs(player.GetAll()) do
@@ -2239,8 +2245,7 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 	if attacker.HighestLifeEnemyKills and attacker.HighestLifeEnemyKills < attacker.LifeEnemyKills then
 		attacker.HighestLifeEnemyKills = attacker.LifeEnemyKills
 	end
-	attacker:SetKills(attacker:GetKills()+1)
-	attacker.EnemyKilled = attacker.EnemyKilled + 1
+	attacker:AddFrags(1)
 	if inflictor.IsMelee then
 		attacker.MeleeKilled = attacker.MeleeKilled + 1
 	end
@@ -2362,13 +2367,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	if self:GetWave() == 0 then
 		pl.DiedDuringWave0 = true
 	end
-	
-	local frags = pl:Frags()
-	if frags < 0 then
-		pl.ChangeTeamFrags = math.ceil(frags / 5)
-	else
-		pl.ChangeTeamFrags = 0
-	end
 
 	if pl.SpawnedTime then
 		pl.SurvivalTime = math.max(ct - pl.SpawnedTime, pl.SurvivalTime or 0)
@@ -2457,6 +2455,14 @@ function GM:PlayerStepSoundTime(pl, iType, bWalking)
 	return fStepTime
 end
 
+function GM:GetTeamPoints(teamid)
+	local total = 0
+	for _, v in pairs(team.GetPlayers(teamid)) do
+		total = total + v:GetPoints()
+	end
+	return total
+end
+
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
 	--pl:RemoveSuit()
@@ -2493,9 +2499,9 @@ function GM:PlayerSpawn(pl)
 				elseif self:GetHumanScore() < self:GetBanditScore() then
 					pl:ChangeTeam(TEAM_HUMAN)
 				else
-					if team.TotalFrags(TEAM_HUMAN) < team.TotalFrags(TEAM_BANDIT) then 
+					if self:GetTeamPoints(TEAM_HUMAN) < self:GetTeamPoints(TEAM_BANDIT) then 
 						pl:ChangeTeam(TEAM_HUMAN)
-					elseif team.TotalFrags(TEAM_HUMAN) > team.TotalFrags(TEAM_BANDIT) then 
+					elseif self:GetTeamPoints(TEAM_HUMAN) > self:GetTeamPoints(TEAM_BANDIT) then 
 						pl:ChangeTeam(TEAM_BANDIT)
 					else
 						pl:ChangeTeam(math.random(3,4))
@@ -2511,7 +2517,7 @@ function GM:PlayerSpawn(pl)
 				pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
 			elseif self:GetWave() > 0 then
 				pl:SetPoints(0)
-				pl:AddPoints(team.TotalFrags(pl:Team())/team.NumPlayers(pl:Team()))
+				pl:AddPoints(self:GetTeamPoints(pl:Team())/team.NumPlayers(pl:Team()))
 			else
 				pl:SetPoints(0)
 				pl:AddPoints(20)
@@ -2565,8 +2571,6 @@ function GM:PlayerSpawn(pl)
 		else
 			pl.VoiceSet = "male"
 		end
-		
-		pl.HumanSpeedAdder = nil
 
 		pl:ResetSpeed()
 		pl:SetJumpPower(DEFAULT_JUMP_POWER)
@@ -2581,7 +2585,7 @@ function GM:PlayerSpawn(pl)
 		local nosend = not pl.DidInitPostEntity
 		pl.HumanRepairMultiplier = nil
 		pl.HumanHealMultiplier = nil
-		pl.HumanSpeedAdder = nil
+		pl.HumanSpeedAdder = 0
 		
 		pl.NoObjectPickup = nil
 		pl.DamageVulnerability = nil

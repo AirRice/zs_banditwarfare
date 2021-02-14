@@ -31,7 +31,7 @@ sound.Add(
 	channel = CHAN_WEAPON,
 	volume = 1.0,
 	soundlevel = 100,
-	pitch = {90,110},
+	pitch = {100,120},
 	sound = "ambient/machines/catapult_throw.wav"
 })
 SWEP.Base = "weapon_zs_base"
@@ -50,7 +50,7 @@ SWEP.Primary.Sound = Sound("Weapon_Nailgun.Single")
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
 SWEP.Primary.Damage = 20
 SWEP.Primary.Delay = 0.5     
-SWEP.Primary.DefaultClip = 12
+SWEP.Primary.DefaultClip = 10
 SWEP.Recoil = 1.8
 SWEP.Primary.KnockbackScale = 3
 SWEP.ConeMax = 0.02
@@ -99,7 +99,7 @@ function SWEP:ShootNormalBullets(dmg, numbul, cone)
 	end
 	
 	self:StartBulletKnockback()
-	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = LeaveNailBulletCallback})
+	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = GenericBulletCallback})
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
 	self:EndBulletKnockback()
 end

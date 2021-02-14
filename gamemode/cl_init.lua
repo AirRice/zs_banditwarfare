@@ -39,7 +39,6 @@ include("vgui/pendboard.lua")
 include("vgui/psigils.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
-include("vgui/dsidemenu.lua")
 include("vgui/dtooltip.lua")
 include("vgui/zshealtharea.lua")
 
@@ -748,6 +747,7 @@ function GM:CreateFonts()
 	local fontfamily = "Typenoksidi"
 	local fontfamily3d = "hidden"
 	local fontweight = 0
+	local fontweightbold = 200
 	local fontweight3D = 0
 	local fontaa = true
 	local fontshadow = false
@@ -775,11 +775,15 @@ function GM:CreateFonts()
 
 	surface.CreateLegacyFont("csd", screenscale * 36, 100, true, false, "zsdeathnoticecs", false, true)
 	surface.CreateLegacyFont("HL2MP", screenscale * 36, 100, true, false, "zsdeathnotice", false, true)
-
+	
+	surface.CreateLegacyFont("csd", screenscale * 96, 100, true, false, "zsdeathnoticecsws", false, false)
+	surface.CreateLegacyFont("HL2MP", screenscale * 96, 100, true, false, "zsdeathnoticews", false, false)
+	
 	surface.CreateLegacyFont(fontfamily, screenscale * 16, fontweight, fontaa, false, "ZSHUDFontTiny", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 20, fontweight, fontaa, false, "ZSHUDFontSmallest", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 22, fontweight, fontaa, false, "ZSHUDFontSmaller", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 28, fontweight, fontaa, false, "ZSHUDFontSmall", fontshadow, fontoutline)
+	surface.CreateLegacyFont(fontfamily, screenscale * 30, fontweightbold, fontaa, false, "ZSHUDFontSmallBold", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 42, fontweight, fontaa, false, "ZSHUDFont", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 72, fontweight, fontaa, false, "ZSHUDFontBig", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 16, fontweight, fontaa, false, "ZSHUDFontTinyBlur", false, false, 8)
@@ -950,14 +954,6 @@ function GM:HumanMenu()
 
 	local panel = vgui.Create("DSideMenu")
 	self.HumanMenuPanel = panel
-
-	local screenscale = BetterScreenScale()
-	for i=1, 4 do
-		local wepbutton = vgui.Create("DWeaponLoadoutPanel", panel)
-		wepbutton:SetWeaponSlot(i)
-		wepbutton:SetTall(screenscale * 156)
-		panel:AddItem(wepbutton)
-	end
 	
 	local but = vgui.Create("DButton", panel)
 	but:SetFont("ZSHUDFontSmall")

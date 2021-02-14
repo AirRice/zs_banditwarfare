@@ -17,7 +17,7 @@ function ENT:Draw()
 end
 
 function ENT:Initialize()
-	self.Trailing = CurTime() + 0.25
+	self.Trailing = CurTime() + 0.4
 	self.TrailPositions = {}
 end
 

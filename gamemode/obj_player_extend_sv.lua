@@ -205,7 +205,7 @@ end
 
 local OldGive = meta.Give
 function meta:Give(weptype)
-	if self:Team() ~= TEAM_HUMAN then
+	if not (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) then
 		return OldGive(self, weptype)
 	end
 
@@ -526,7 +526,7 @@ function meta:DropAllAmmo()
 	local vPos = self:GetPos()
 	local vVel = self:GetVelocity()
 	local zmax = self:OBBMaxs().z * 0.75
-	for ammotype in pairs(GAMEMODE.AmmoCache) do
+	for ammotype in pairs(GAMEMODE.AmmoResupply) do
 		local ent = self:DropAmmoByType(ammotype)
 		if ent and ent:IsValid() then
 			ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
@@ -563,9 +563,9 @@ end
 
 function meta:GetBounty()
 	if self.BountyModifier ~= nil then
-		return GAMEMODE.PointsPerFrag+self.BountyModifier
+		return GAMEMODE.PointsPerKill+self.BountyModifier
 	else
-		return GAMEMODE.PointsPerFrag
+		return GAMEMODE.PointsPerKill
 	end
 end
 
@@ -588,7 +588,7 @@ function meta:TakeSamples(samples)
 end
 
 function meta:AddPoints(points)
-	self:AddFrags(points)
+	--self:AddFrags(points)
 	self:SetPoints(self:GetPoints() + points)
 
 	gamemode.Call("PlayerPointsAdded", self, points)
@@ -647,7 +647,7 @@ function meta:RedeemNextFrame()
 		end
 	end)
 end
-
+--[[
 function meta:TakeBrains(amount)
 	self:AddFrags(-amount)
 	self.BrainsEaten = self.BrainsEaten - 1
@@ -660,7 +660,7 @@ function meta:AddBrains(amount)
 end
 
 meta.GetBrains = meta.Frags
-
+]]
 --[[function meta:CheckRedeem(instant)
 	if not self:IsValid() or self:Team() ~= TEAM_BANDIT
 	or GAMEMODE:GetRedeemBrains() <= 0 or self:GetBrains() < GAMEMODE:GetRedeemBrains()
@@ -675,7 +675,7 @@ meta.GetBrains = meta.Frags
 	end
 end]]
 
-function meta:GiveWeaponByType(weapon, plyr, ammo)
+--[[function meta:GiveWeaponByType(weapon, plyr, ammo)
 	if ammo then
 		local wep = self:GetActiveWeapon()
 		if not wep or not wep:IsValid() or not wep.Primary then return end
@@ -683,7 +683,7 @@ function meta:GiveWeaponByType(weapon, plyr, ammo)
 		local ammotype = wep:ValidPrimaryAmmo()
 		local ammocount = wep:GetPrimaryAmmoCount()
 		if ammotype and ammocount then
-			local desiredgive = math.min(ammocount, math.ceil((GAMEMODE.AmmoCache[ammotype] or wep.Primary.ClipSize) * 5))
+			local desiredgive = math.min(ammocount, math.ceil((GAMEMODE.AmmoResupply[ammotype] or wep.Primary.ClipSize) * 5))
 			if desiredgive >= 1 then
 				wep:TakeCombinedPrimaryAmmo(desiredgive)
 				plyr:GiveAmmo(desiredgive, ammotype)
@@ -727,7 +727,7 @@ function meta:GiveWeaponByType(weapon, plyr, ammo)
 			end
 		end
 	end
-end
+end]]
 
 function meta:Gib()
 	local pos = self:WorldSpaceCenter()

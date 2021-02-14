@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'사일런서' SMG"
-	SWEP.Slot = 2
+	SWEP.PrintName = "'사일런서' 기관권총"
+	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
 	SWEP.ViewModelFlip = false
@@ -29,7 +29,7 @@ SWEP.Primary.Delay = 0.03
 SWEP.Recoil = 0.24
 SWEP.Primary.ClipSize = 25
 SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = "smg1"
+SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.DefaultClip = 50
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1

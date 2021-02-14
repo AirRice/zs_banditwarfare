@@ -12,7 +12,7 @@ function PANEL:Init()
 	self.m_Text1 = vgui.Create("DLabel", self)
 	self.m_Text2 = vgui.Create("DLabel", self)
 	self.m_Text3 = vgui.Create("DLabel", self)
-	self:SetTextFont("ZSHUDFontTiny")
+	self:SetTextFont("ZSHUDFontSmaller")
 
 	self.m_Text1.Paint = self.Text1Paint
 	self.m_Text2.Paint = self.Text2Paint
@@ -116,7 +116,7 @@ end
 
 function PANEL:Text3Paint()
 	if MySelf:IsValid() then
-		draw.SimpleText(translate.Format("points_x", MySelf:GetPoints().." / "..MySelf:Frags()), self.Font, 0, 0, COLOR_DARKRED)
+		draw.SimpleText(translate.Format("points_x", MySelf:GetPoints().."포인트"), self.Font, 0, 0, COLOR_DARKRED)
 	end
 
 	return true

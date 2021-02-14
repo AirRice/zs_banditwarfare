@@ -41,14 +41,6 @@ function meta:GetPoints()
 	return self:GetDTInt(1)
 end
 
-function meta:SetKills(kills)
-	self:SetDTInt(2, kills)
-end
-
-function meta:GetKills()
-	return self:GetDTInt(2)
-end
-
 function meta:SetSamples(samples)
 	self:SetDTInt(3, samples)
 end

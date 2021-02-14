@@ -3,7 +3,7 @@ AddCSLuaFile()
 if CLIENT then
 	SWEP.PrintName = "'세이비어' 메디컬 건"
 	SWEP.Description = "장거리에서 팀원을 치료할 수 있는 탄환을 발사한다. 메디컬 킷보다는 강하지만 빗맞출 시 아군에게 아무 도움을 주지 못한다."
-	SWEP.Slot = 4
+	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 	
 	SWEP.ViewModelFlip = false
@@ -39,10 +39,10 @@ SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
 SWEP.Primary.Delay = 0.15
 
-SWEP.Primary.ClipSize = 105
-SWEP.Primary.DefaultClip = 210
+SWEP.Primary.ClipSize = 120
+SWEP.Primary.DefaultClip = 240
 SWEP.Primary.Ammo = "Battery"
-SWEP.RequiredClip = 35
+SWEP.RequiredClip = 30
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
@@ -75,7 +75,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		local phys = ent:GetPhysicsObject()
 		if phys:IsValid() then
 			phys:Wake()
-			phys:SetVelocityInstantaneous(aimvec * 2000)
+			phys:SetVelocityInstantaneous(aimvec * 2300)
 		end
 	end
 end

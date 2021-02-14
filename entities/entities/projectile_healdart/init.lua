@@ -4,6 +4,9 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 ENT.Heal = 35
+ENT.ToxicDamage = 3
+ENT.ToxicTick = 0.1
+ENT.ToxDuration = 0.8
 
 function ENT:Initialize()
 	self:SetModel("models/Items/CrossbowRounds.mdl")
@@ -69,24 +72,42 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		end
 		self:SetOwner(eHitEntity)
 
-		if eHitEntity:IsPlayer() and eHitEntity:Team() == team then
-			eHitEntity:GiveStatus("healdartboost").DieTime = CurTime() + 10
-			local tox = eHitEntity:GetStatus("tox")
-			if (tox and tox:IsValid()) then
-				tox:SetTime(1)
-			end
-			for _, hook in pairs(ents.FindInSphere(self:GetPos(), 60 )) do
-				if hook:GetClass() == "prop_meathook" and hook:GetParent() == eHitEntity then
-					hook.TicksLeft = 0
+		if eHitEntity:IsPlayer() and (eHitEntity:Team() == TEAM_HUMANS or eHitEntity:Team() == TEAM_BANDIT) then
+			if eHitEntity:Team() == team then
+				eHitEntity:GiveStatus("healdartboost").DieTime = CurTime() + 10
+				local tox = eHitEntity:GetStatus("tox")
+				if (tox and tox:IsValid()) then
+					tox:SetTime(1)
 				end
-			end
-			local oldhealth = eHitEntity:Health()
-			local newhealth = math.min(oldhealth + self.Heal, eHitEntity:GetMaxHealth())
-			if oldhealth ~= newhealth then
-				eHitEntity:SetHealth(newhealth)
+				for _, hook in pairs(ents.FindInSphere(self:GetPos(), 60 )) do
+					if hook:GetClass() == "prop_meathook" and hook:GetParent() == eHitEntity then
+						hook.TicksLeft = 0
+					end
+				end
+				local oldhealth = eHitEntity:Health()
+				local newhealth = math.min(oldhealth + self.Heal, eHitEntity:GetMaxHealth())
+				if oldhealth ~= newhealth then
+					eHitEntity:SetHealth(newhealth)
 
-				if owner:IsPlayer() then
-					gamemode.Call("PlayerHealedTeamMember", owner, eHitEntity, newhealth - oldhealth, self)
+					if owner:IsPlayer() then
+						gamemode.Call("PlayerHealedTeamMember", owner, eHitEntity, newhealth - oldhealth, self)
+					end
+				end
+			else	
+				local tox = eHitEntity:GetStatus("tox")
+				if (tox and tox:IsValid()) then
+					tox:AddTime(self.ToxDuration)
+					tox.Owner = eHitEntity
+					tox.Damage = self.ToxicDamage
+					tox.Damager = owner
+					tox.TimeInterval = self.ToxicTick
+				else
+					stat = eHitEntity:GiveStatus("tox")
+					stat:SetTime(self.ToxDuration)
+					stat.Owner = eHitEntity
+					stat.Damage = self.ToxicDamage
+					stat.Damager = owner
+					stat.TimeInterval = self.ToxicTick
 				end
 			end
 		end

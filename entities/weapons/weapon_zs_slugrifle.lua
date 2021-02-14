@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'타이니' 슬러그 소총"
-	SWEP.Description = "이 소총은 머리에 적중 시 거의 모든 적을 죽인다."
+	SWEP.PrintName = "'타이니' 슬러그 건"
+	SWEP.Description = "이 산탄총은 슬러그 탄을 발사하도록 개조되어 장거리에서도 매우 정확하다."
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -35,30 +35,34 @@ SWEP.ViewModel = "models/weapons/cstrike/c_shot_xm1014.mdl"
 SWEP.WorldModel = "models/weapons/w_shot_xm1014.mdl"
 SWEP.UseHands = true
 
-SWEP.Primary.Sound = Sound("Weapon_AWP.Single")
-SWEP.Primary.Damage = 60
+SWEP.Primary.Sound = Sound("Weapon_XM1014.Single")
+SWEP.Primary.Damage = 50
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.2
-SWEP.ReloadDelay = SWEP.Primary.Delay
+SWEP.ReloadDelay = 0.6
 
 SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
-SWEP.Primary.Ammo = "357"
+SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 12
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
-SWEP.ConeMax = 0.003
+SWEP.ConeMax = 0.005
 SWEP.ConeMin = 0.00
 SWEP.Recoil = 3.25
 SWEP.MovingConeOffset = 0.28
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
 SWEP.IronSightsAng = Vector(0, -1, 0)
-
+SWEP.reloadtimer = 0
+SWEP.nextreloadfinish = 0
 SWEP.WalkSpeed = SPEED_SLOWER
-
+function SWEP:EmitFireSound()
+	self:EmitSound(self.Primary.Sound)
+	self:EmitSound("weapons/awp/awp1.wav", 45, 100,1,CHAN_VOICE)
+end
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
@@ -96,28 +100,50 @@ if CLIENT then
 		end
 	end
 end
-
-SWEP.NextReload = 0
 function SWEP:Reload()
-	if CurTime() < self.NextReload then return end
+	if self.reloading then return end
 
-	self.NextReload = CurTime() + self.ReloadDelay
-
-	local owner = self.Owner
-
-	if self:Clip1() < self.Primary.ClipSize and 0 < owner:GetAmmoCount(self.Primary.Ammo) then
-		self:DefaultReload(ACT_VM_RELOAD)
-		owner:DoReloadEvent()
+	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
+		self.reloading = true
+		self.reloadtimer = CurTime() + self.ReloadDelay
+		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
+		self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_SHOTGUN)
+	end
 
-		timer.Simple(0.25, function()
-			if self:IsValid() and IsValid(owner) then
-				self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
-			end
-		end)
+	self:SetIronsights(false)
+end
+
+function SWEP:Think()
+	if self.reloading and self.reloadtimer < CurTime() then
+		self.reloadtimer = CurTime() + self.ReloadDelay
+		self:SendWeaponAnim(ACT_VM_RELOAD)
+
+		self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
+		self:SetClip1(self:Clip1() + 1)
+
+		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
+			self.nextreloadfinish = CurTime() + self.ReloadDelay
+			self.reloading = false
+			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+		end
+	end
+
+	local nextreloadfinish = self.nextreloadfinish
+	if nextreloadfinish ~= 0 and nextreloadfinish < CurTime() then
+		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+		self.nextreloadfinish = 0
+	end
+
+	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+		self:SetIronsights(false)
+	end
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
 	end
 end
 
+--[[
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	if tr.HitGroup == HITGROUP_HEAD then
 		local ent = tr.Entity
@@ -133,3 +159,4 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
+]]

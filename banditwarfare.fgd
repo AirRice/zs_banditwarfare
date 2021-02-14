@@ -1,0 +1,383 @@
+//////////////////////////////////////////////////////////////////////////////////
+// NoXiousNet Zombie Survival FGD                                               //
+// If there are any bugs with this file, or any additions that need to be made  //
+// make a post at: http://www.noxiousnet.com/forums/index.php?topic=14910       //
+//////////////////////////////////////////////////////////////////////////////////
+
+@include "base.fgd"
+@include "halflife2.fgd"
+@include "hl2mp.fgd"
+
+//////////////////////////////////////////////////////////////////////////////////
+// Gamemode - Brush Entities /////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+@SolidClass base(Targetname) = func_noair : "ZS: Anyone inside this brush requires air"
+[
+	// Keys
+	enabled(choices)    : "Enabled" : 0 : "Enable the brush entity." =
+	[
+		1 : "Yes"
+		0 : "No"
+	]
+	
+	// Inputs
+	input enable(void)  : "Enable the entity."
+	input disable(void) : "Disable the entity."
+	input seton(integer)  : "Enable or Disable the entity."
+]
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Gamemode - Point Entities //////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+@BaseClass base(Targetname) = ZSSpawn
+[
+	// Keys
+	disabled(choices)   : "Disabled" : 0 : "If disabled, players cannot spawn here." =
+	[
+		1 : "Yes"
+		0 : "No"
+	]
+	
+	// Inputs
+	input enable(void)  : "Enable the spawn point."
+	input disable(void) : "Disable the spawn point."
+	input toggle(void)  : "Toggle the spawn point."
+]
+
+@PointClass base(PlayerClass, Angles, ZSSpawn) studio("models/editor/playerstart.mdl") = info_player_human       : "Humans spawn here."
+[
+]
+@PointClass base(PlayerClass, Angles, ZSSpawn) studio("models/editor/playerstart.mdl") = info_player_bandit	     : "Bandits spawn here."
+[
+]
+@PointClass base(Targetname, Angles) studio("models/props_wasteland/medbridge_post01.mdl") = info_sigilnode  : "Manual Placement of Sigils"
+[
+]
+
+@PointClass base(Targetname) = logic_pickupdrop : "ZS: Controls events when players pickup or drop things."
+[
+	// Keys
+	EntityToWatch(target_destination) : "Entity to Watch" : " " : "Name of the entity to watch (for outputs)."
+	
+	// Inputs
+	input ForceDrop(string)           : "Forces the dropping of something that's picked up by a human."
+	input DisablePickup(string)       : "Disables human pickups for the specified entity. Does not force dropping if currently carried, use the above input."
+	input EnablePickup(string)        : "Enables human pickups for the specified entity."
+
+	// Outputs
+	output OnPickedUp(void)           : "Activator is the player, caller is the entity that was picked up."
+	output OnDropped(void)            : "Activator is the player, caller is the entity that was picked up."
+
+]
+
+@PointClass base(Targetname) = logic_points : "ZS: Allows you to control and call outputs based on points."
+[
+	// Inputs
+	input addtoactivator(integer)         : "Adds <number> to the activator."
+	input addtocaller(integer)            : "Adds <number> to the caller."
+	input takefromactivator(integer)      : "Takes <number> from the activator."
+	input takefromcaller(integer)         : "Takes <number> from the caller."
+	input setactivatoramount(integer)     : "Sets the amount that activator has to <number>."
+	input setcalleramount(integer)        : "Sets the amount that caller has to <number>."
+	input callifactivatorhave(integer)    : "If the activator has this amount then OnConditionPassed is thrown, otherwise OnConditionFailed."
+	input callifactivatornothave(integer) : "If the activator does bot have this amount then OnConditionPassed is thrown, otherwise OnConditionFailed."
+	input callifcallerhave(integer)       : "If the caller has this amount then OnConditionPassed is thrown, otherwise OnConditionFailed."
+	input callifcallernothave(integer)    : "If the call does not have this amount then OnConditionPassed is thrown, otherwise OnConditionFailed."
+
+	// Outputs
+	output OnConditionPassed(void)        : "Thrown by ourselves when a condition is passed. The activator is always the player in question. The arguments are the amount that was checked against."
+	output OnConditionFailed(void)        : "Thrown by ourselves when a condition is failed. The activator is always the player in question. The arguments are the amount that was checked against."
+]
+
+@PointClass base(Targetname) = logic_barricade : "ZS: Allows or disallows specific entities from being nailed."
+[
+	// Inputs
+	input disablethese(string) : "Takes the arguments in the form of a comma-separated array and disables any entities with that name. For example, disablethese objective1,somethingimportant,somethingelse. This would disable nailing of those entities."
+	input enablethese(string)  : "Takes the arguments in the form of a comma-separated array and enables any entities with that name. For example, enablethese objective1,somethingimportant,somethingelse. This would enable nailing of those entities."
+]
+
+@PointClass base(Targetname) = logic_pickups : "ZS: Allows you to control how much stuff people can pickup in the map. Only things placed by the mapper work with this system. Stuff from dead humans doesn't count."
+[
+	// Keys
+	maxweaponpickups(integer)               : "Max Weapon Pickups"      : 5 : "How many weapons a player can pickup from the map."
+	maxammopickups(integer)                 : "Max Ammo Pickups"        : 5 : "How many ammo boxes a player can pickup from the map."
+	maxflashlightpickups(integer)           : "Max Flashlight Pickups"  : 5 : "How many flashlight batteries a player can pickup from the map."
+	weaponrequiredforammo(choices)          : "Correct Weapon Required" : 0 : "If 1 then players must have a weapon that takes the ammo before being able to pick up an ammo box." =
+	[
+		1 : "Yes"
+		0 : "No"
+	]
+	
+	// Inputs
+	input setmaxweaponpickups(integer)      : "Set the number of weapons a player can pickup from the map."
+	input setmaxammopickups(integer)        : "Set the number of ammo boxes a player can pickup from the map."
+	input setmaxflashlightpickups(integer)  : "Set the number of flashlight batteries a player can pickup from the map."
+	input setweaponrequiredforammo(integer) : "If 1 then players must have a weapon that takes the ammo before being able to pick up an ammo box."
+]
+
+@PointClass studio("models/crossbow_bolt.mdl") base(Targetname,Angles) = prop_nail  : "ZS: Allows you to manually place nails."
+[
+	// Keys
+	healthoverride(integer)            : "Health Override" : -1 : "Sets the nail's maximum health to a specific number. Set to -1 or 0 to disable override"
+	healthmultiplier(float)            : "Health Multiply" : 1  : "Multiply the nail's default maximum health by this number."
+	unremovable(choices)               : "Unremovable"     : 0  : "Set to yes to make this nail unremovable by players." =
+	[
+		1 : "Yes"
+		0 : "No"
+	]
+	
+	// Inputs
+	input sethealth(integer)           : "Sets the nail's remaining health."
+	input attachto(target_destination) : "Parent to this entity."
+	input nailto(target_destination)   : "Nail to this entity. Use attachto first and then this to weld the two. Use 'worldspawn' here to weld to the world."
+	input setname(string)              : "Display this text as the owner name."
+	input setunremovable(integer)      : "Set if this nail is unremovable."
+	input toggleunremovable(integer)   : "Toggle unremovable state."
+]
+
+@PointClass studio("models/Items/BoxMRounds.mdl") base(Targetname, Parentname, Angles) = prop_ammo  : "ZS: Game Specific Ammo."
+[
+	// Keys
+	ammotype(choices) : "Ammo Type"  : "pistol"   : "Ammo type this entity becomes" =
+	[
+		"pistol"                : "Pistol"
+		"smg1"                  : "Sub-Machine Gun"
+		"ar2"                   : "Assault Rifle"
+		"pulse"                 : "Pulse"
+		"buckshot"              : "Shotgun"
+		"357"                   : "Rifle"
+		"XBowBolt"              : "Crossbow Bolts"
+		"grenade"               : "Grenades"
+		"SniperRound"           : "Barricade Boards"
+		"sniperpenetratedround" : "Det-Packs"
+		"Battery"               : "Medical Ammo"
+		"striderminigun"        : "Message Beacons"
+		"GaussEnergy"           : "Nails"
+		"stone"                 : "Stones"
+		"thumper"               : "Turrets"
+	]
+	amount(integer)  : "Amount" : 0 : "Amount of ammo that collecting this item gives"
+	neverremove(choices)  		        : "Never Remove" : 0 : "Never remove when used or damage, for repeated uses." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+	ignorepickupcount(choices)          : "Ignore Pickup Counter" : 0 : "Set to ignore a maxpickupcounter, if any." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+	ignoreuse(choices)          		: "Ignore Use" : 0 : "Set to disable being able to pickup via use key" =
+		[
+			0 : "No"
+			1 : "Yes"
+		]	
+	
+	// Inputs
+	input givetoactivator(void)         : "Forces the ammo onto the activator."
+	input setneverremove(integer)       : "Set to make infinite uses."
+	input setignorepickupcount(integer) : "Set to ignore any max pickup counter."
+	input setignoreuse(integer)         : "Set to disable being able to pickup via use key"
+	input setammotype(string)         	: "Set to change the ammo type of this entity."
+	
+	// Outputs
+	output OnPickupPassed(void)			: "Called when the ammo is given to the player."
+	output OnPickupFailed(void)			: "Called when the ammo is not given to the player"
+]
+
+@PointClass studio("models/weapons/w_irifle.mdl") base(Targetname, Parentname, Angles) = prop_weapon  : "ZS: Game Specific Weapon."
+[
+	// Keys
+	weapontype(string)                  : "Weapon Type" : "weapon_zs_m4" : "Weapon type this entity becomes"
+	empty(choices)          		    : "Empty" : 0 : "Set to empty the weapon of any default ammo" =
+		[
+			0 : "No"
+			1 : "Yes"
+		]	
+	neverremove(choices)  		        : "Never Remove" : 0 : "Never remove when used or damage, for repeated uses." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+	ignorepickupcount(choices)          : "Ignore Pickup Counter" : 0 : "Set to ignore a maxpickupcounter, if any." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+	ignoreuse(choices)          		: "Ignore Use" : 0 : "Set to disable being able to pickup via use key" =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+		
+	// Inputs
+	input givetoactivator(void)         : "Forces the weapon onto the activator."
+	input setneverremove(integer)       : "Set to make infinite uses."
+	input setignorepickupcount(integer) : "Set to ignore any max pickup counter."
+	input setignoreuse(integer)         : "Set to disable being able to pickup via use key"
+	input setweapontype(string)         : "Set to change the weapon type of this entity."
+	input setempty(string)        		: "Set to empty the weapon of any default ammo."
+	
+	// Outputs
+	output OnPickupPassed(void)			: "Called when the weapon is given to the player."
+	output OnPickupFailed(void)			: "Called when the weapon is not given to the player"
+]
+
+@PointClass base(Targetname, Parentname) sphere( range ) = point_worldhint : "ZS: Allows you to create 3D hints and information tags."
+[
+	// Keys
+	hint(string)             : "Hint"    : " " : "The hint to display."
+	viewer(choices)          : "Seen By" : 0   : "The team that can view us." =
+	[
+		"-1" : "Disabled"
+		"0"  : "Everyone"
+		"3"  : "Zombies"
+		"4"  : "Humans"
+	]
+	range(integer)           : "Range" : 0 : "The range from the player's camera we must be in to see this hint. It can also be 0 for infinite."
+	
+	// Inputs
+	input sethint(string)    : "Sets the hint to display."
+	input setviewer(integer) : "Sets the team that can view us. Use 0 for everyone, -1 for no one (inactive), 3 for zombie, and 4 for human."
+	input setrange(float)    : "Sets the range from the player's camera we must be in to see this hint. It can also be 0 for infinite which is the default."
+]
+
+@PointClass base(Targetname, Parentname) = prop_playergib  : "ZS: Allows you to manually place gibs."
+[
+	// Keys
+	gibtype(choices) : "Gib Type"  : 1 : "Overrides the gib's type." =
+	[
+		1 : "Skull"        // "models/gibs/HGIBS.mdl"
+		2 : "Spine"        // "models/gibs/HGIBS_spine.mdl"
+		3 : "Rib"          // "models/gibs/HGIBS_rib.mdl"
+		4 : "Scapula"      // "models/gibs/HGIBS_scapula.mdl"
+		7 : "Small Chunk"  // "models/gibs/antlion_gib_medium_2.mdl"
+		5 : "Medium Chunk" // "models/gibs/Antlion_gib_Large_1.mdl"
+		6 : "Large Chunk"  // "models/gibs/Strider_Gib4.mdl"
+	]
+	lifetime(integer) : "Lifetime" : 0 : "Overrides how long for this gib should live. 0 for never automatically remove."
+]
+	
+@PointClass base(Targetname) = logic_winlose : "ZS: When activated, this will end the round immediately, with the specified outcome."
+[
+	// Keys
+	endslowmo(choices)            : "Enable Slow Motion Effect?" : 1 : "Enables or disables the slow motion effect at the end of the round." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]
+	endcamera(choices)            : "Enable Custom Camera?" : 0 : "Enables or disables an end round camera." =
+		[
+			0 : "No"
+			1 : "Yes"
+		]	
+	endcamerapos(vector)          : "Custom Camera Vector" : "" : "Sets the position of the end round camera."
+	winmusic(sound)               : "Win Music" : "default" : "The music that plays when the human team have won the round. 'default' for normal function"
+	losemusic(sound)              : "Lose Music" : "default" : "The music that plays when the human team have lost the round. 'default' for normal function"
+	
+	// Inputs
+	input win(void)               : "Humans win the game, map over."
+	input lose(void)              : "Humans lose the game, map over."
+	input setendslomo(integer)    : "Enables or disables the slow motion effect at the end of the round."
+	input setendcamera(integer)   : "Enables or disables an end round camera."
+	input setendcamerapos(vector) : "Sets the vector for where the end round camera should go to."
+	input setwinmusic(string)     : "The music that plays when the human team have won the round. 'default' for normal function."
+	input setlosemusic(string)    : "The music that plays when the human team have lost the round. 'default' for normal function."
+	// Outputs 
+	output onwin(void)         : "Called when humans win even if not by this entity."
+	output onlose(void)        : "Called when humans lose even if not by this entity."
+]
+
+@PointClass base(Targetname) = logic_waves : "ZS: Watches for the start of the specified wave."
+[
+	// Keys
+	wave(integer)               : "Wave" : 1 : "Any On* outputs will watch for this wave. Use -1 for all waves."
+	
+	// Inputs
+	input AdvanceWave(void)     : "Advances to the next wave and sets the wave to active."
+	input EndWave(void)         : "Sets the time that the wave ends to this very moment."
+	input StartWave(void)       : "Sets the time that the wave begins to this very moment."
+	input SetWave(integer)      : "Sets the wave to the number specified. This does not change the wave state between active and inactive."
+	input SetWaves(integer)     : "Sets the total amount of waves to the number specified. Don't worry about class unlocks, the gamemode does not use the max waves value directly."
+	input SetWaveStart(integer) : "Sets the time that the wave will start to TimeNow + <time>. You should use this instead of delayed entity inputs." 
+	input SetWaveEnd(integer)   : "Sets the time that the wave will end to TimeNow + <time>. You should use this instead of delayed entity inputs."
+	
+	// Outputs
+	output OnWaveStart(void)    : "Called when the specified wave has started."
+	output OnWaveEnd(void)      : "Called when the specified wave has ended."
+]
+
+@PointClass base(Targetname) = point_zsmessage : "ZS: Custom message that is displayed with the specified message."
+[
+	// Keys
+	team(choices)                       : "Team" : "all" : "Filter which team gets the message." =
+	[
+		"zombie"  : "Zombies"
+		"human"   : "Humans"
+		"private" : "Activator Only"
+		"all"     : "All"
+	]
+	displaytime(integer)                : "Display Time" : 8 : "How long the input message displays for, does not have an effect on HUD messages."
+	position(choices)					: "Message Position" : "center" : "Where the message is seen." =
+	[
+		"center" : "Center"
+		"top"    : "Top Right"
+	]
+	textcolor(color255)                 : "Text Colour" : "255 255 255" : "Sets the color of an input message."
+	
+	// Inputs
+	input message(string)               : "What to display. Supports the markup library."
+	input sethumanhudmessage(string)    : "Set a message to display in the human wave hud."
+	input setzombiehudmessage(string)   : "Set a message to display in the zombie wave hud."
+	input clearhumanhudmessage(void)    : "Clear the message to display in the human wave hud."
+	input clearzombiehudmessage(void)   : "Clear the message to display in the zombie wave hud."
+	input setdisplaytime(integer)       : "Change how long the input message displays for."
+	input settextcolor(string)          : "Takes an 'R G B' string to change the color of the next message."
+]
+
+@PointClass base(Targetname) = info_custommessage : "ZS: Allows several substrings to be concatenated together to form one message, attaches to messaging entities like game_text, point_worldhint and point_zsmessage"
+[
+	// Keys
+	displayentity(target_destination) : "Target Messaging Entity" : "" : "The entity used to display the message, can be a targetname of a class game_text, point_worldhint or point_zsmessage"
+	zsmessagemode(choices)            : "Point_zsmessage Method" :  0  : "If using a point_zsmessage, select the method of display with this key" =
+	[
+		0  : "Centred HUD Message"
+		1  : "Corner Human HUD Message"
+		2  : "Corner Zombie HUD Message"
+	]
+	string01(string)                  : "String 01" : "" : "Part 01 of the full string, there can be up to 99 of these."
+	string02(string)                  : "String 02" : "" : "Part 02 of the full string, there can be up to 99 of these."
+	string03(string)                  : "String 03" : "" : "Part 03 of the full string, there can be up to 99 of these."
+	string04(string)                  : "String 04" : "" : "Part 04 of the full string, there can be up to 99 of these."
+	string05(string)                  : "String 05" : "" : "Part 05 of the full string, there can be up to 99 of these."
+	string06(string)                  : "String 06" : "" : "Part 06 of the full string, there can be up to 99 of these."
+	
+	// Inputs
+	input displaystrings(string)      : "Concatenates and displays the full string using the attached entity"
+	input setstring01(string)         : "Sets part 01 of the full string, there can be up to 99 of these."
+	input setstring02(string)         : "Sets part 02 of the full string, there can be up to 99 of these."
+	input setstring03(string)         : "Sets part 03 of the full string, there can be up to 99 of these."
+	input setstring04(string)         : "Sets part 04 of the full string, there can be up to 99 of these."
+	input setstring05(string)         : "Sets part 05 of the full string, there can be up to 99 of these."
+	input setstring06(string)         : "Sets part 06 of the full string, there can be up to 99 of these."
+	
+	// Outputs
+	output OnDisplayed(void)          : "Called when the message has successfully displayed."
+]
+
+@PointClass base(Targetname) = logic_stripweapons : "ZS: Allows the map to strip all or specific weapons by classname"
+[
+	// Keys
+	keepfists(choices)            : "Keep Fists" : 1 : "If yes, the stripallweapons input strips all weapons but fists" =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	
+	// Inputs
+	input stripweapon(string)     : "Strips a single weapon as mentioned in arguments"
+	input stripallweapons(string) : "Strips all the weapons the activator has, keeps fists if flag is true"
+	input setkeepfists(integer)   : "If 1 the next stripallweapons inputs strip all weapons but fists"
+]

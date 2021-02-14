@@ -24,120 +24,80 @@ SWEP.WorldModel = "models/weapons/w_crossbow.mdl"
 SWEP.UseHands = true
 
 SWEP.CSMuzzleFlashes = false
-
+SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
 SWEP.Primary.Damage = 100
+SWEP.Primary.NumShots = 1
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "XBowBolt"
 SWEP.Primary.Delay = 2.0
-SWEP.Primary.DefaultClip = 7
+SWEP.Primary.DefaultClip = 4
 
-SWEP.SecondaryDelay = 0.25
-SWEP.Recoil = 0.42
+SWEP.ConeMax = 0.009
+SWEP.ConeMin = 0.0085
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.Recoil = 1.25
 SWEP.WalkSpeed = SPEED_SLOW
 
-SWEP.NextZoom = 0
+function SWEP:IsScoped()
+	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
+end
 
-if SERVER then
-	function SWEP:PrimaryAttack()
-		if self:CanPrimaryAttack() then
-			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+function SWEP:Think()
+	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+		self:SetIronsights(false)
+	end
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
+	end
+end
 
-			local owner = self.Owner
+SWEP.BulletCallback = GenericBulletCallback
+function SWEP:ShootBullets(dmg, numbul, cone)	
+	self:SetConeAndFire()
+	self:DoRecoil()
 
-			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-			owner:RestartGesture(ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW)
-
-			self:TakePrimaryAmmo(1)
-
-			self.IdleAnimation = CurTime() + self:SequenceDuration()
-
-			self:EmitSound("Weapon_Crossbow.Single")
-
-			local ent = ents.Create("projectile_arrow")
-			if ent:IsValid() then
-				ent:SetOwner(owner)
-				ent:SetPos(owner:GetShootPos())
-				ent:SetAngles(owner:GetAimVector():Angle())
-				ent.Team = owner:Team()
-				ent:SetGravity(0.5)
-				ent.Damage = self.Primary.Damage
-				ent:Spawn()
-				local phys = ent:GetPhysicsObject()
-				if phys:IsValid() then
-					phys:Wake()
-					phys:SetVelocityInstantaneous(owner:GetAimVector() * 1800)
-				end
+	local owner = self.Owner
+	--owner:MuzzleFlash()
+	self:SendWeaponAnimation()
+	owner:DoAttackEvent()
+	if SERVER then
+		local ent = ents.Create("projectile_arrow")
+		if ent:IsValid() then
+			ent:SetOwner(owner)
+			ent:SetPos(owner:GetShootPos())
+			ent:SetAngles(owner:GetAimVector():Angle())
+			ent.Team = owner:Team()
+			ent.Damage = self.Primary.Damage
+			ent:Spawn()
+			local phys = ent:GetPhysicsObject()
+			if phys:IsValid() then
+				phys:Wake()
+				phys:SetVelocityInstantaneous(owner:GetAimVector() * 2200)
 			end
-			self:DoRecoil()
-		end
-	end
-
-	function SWEP:Reload()
-		if self:GetNextReload() <= CurTime() and self:Clip1() == 0 and 0 < self.Owner:GetAmmoCount("XBowBolt") then
-			self:EmitSound("weapons/crossbow/bolt_load"..math.random(2)..".wav", 50, 100)
-			self:EmitSound("weapons/crossbow/reload1.wav")
-			self:DefaultReload(ACT_VM_RELOAD)
-			self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
-			self:SetNextReload(CurTime() + self:SequenceDuration())
-		end
-	end
-
-	function SWEP:SecondaryAttack()
-		if CurTime() < self.NextZoom then return end
-
-		self.NextZoom = CurTime() + self.SecondaryDelay
-
-		local zoomed = self:GetDTBool(1)
-		self:SetDTBool(1, not zoomed)
-
-		if zoomed then
-			self.Owner:SetFOV(self.Owner:GetInfo("fov_desired"), 0.15)
-			self:EmitSound("weapons/sniper/sniper_zoomout.wav", 50, 100)
-		else
-			self.Owner:SetFOV(self.Owner:GetInfo("fov_desired") * 0.25, 0.15)
-			self:EmitSound("weapons/sniper/sniper_zoomin.wav", 50, 100)
 		end
 	end
 end
 
+function SWEP:Reload()
+	if self:GetNextReload() <= CurTime() and self:Clip1() == 0 and 0 < self.Owner:GetAmmoCount("XBowBolt") then
+		self:EmitSound("Weapon_Crossbow.Reload")
+		self:DefaultReload(ACT_VM_RELOAD)
+		self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
+		self:SetNextReload(CurTime() + self:SequenceDuration())
+		timer.Simple(0.8, function() 
+			if (self:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive()) then
+				self:EmitSound("Weapon_Crossbow.BoltElectrify")
+			end
+		end)
+	end
+end
+
 if CLIENT then
-	function SWEP:PrimaryAttack()
-		if self:CanPrimaryAttack() then
-			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-			self:TakePrimaryAmmo(1)
-			self:EmitSound("Weapon_Crossbow.Single")
-			self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW)
-			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-			self.IdleAnimation = CurTime() + self:SequenceDuration()
-		end
-	end
-
-	function SWEP:SecondaryAttack()
-		if CurTime() < self.NextZoom then return end
-		self.NextZoom = CurTime() + self.SecondaryDelay
-
-		local zoomed = self:GetDTBool(1)
-		self:SetDTBool(1, not zoomed)
-		if zoomed then
-			surface.PlaySound("weapons/sniper/sniper_zoomout.wav")
-		else
-			surface.PlaySound("weapons/sniper/sniper_zoomin.wav")
-		end
-	end
-
-	function SWEP:Reload()
-		if self:GetNextReload() <= CurTime() and self:Clip1() == 0 and 0 < self.Owner:GetAmmoCount("XBowBolt") then
-			surface.PlaySound("weapons/crossbow/bolt_load"..math.random(1,2)..".wav")
-			self:DefaultReload(ACT_VM_RELOAD)
-			self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
-			self:SetNextReload(CurTime() + self:SequenceDuration())
-		end
-	end
-
+	SWEP.IronsightsMultiplier = 0.25
 	local texScope = surface.GetTextureID("zombiesurvival/scope")
 	function SWEP:DrawHUDBackground()
-		if self:GetDTBool(1) then
+		if self:IsScoped() then
 			local scrw, scrh = ScrW(), ScrH()
 			local size = math.min(scrw, scrh)
 
@@ -169,23 +129,5 @@ if CLIENT then
 	end
 end
 
-function SWEP:Holster()
-	if self:GetDTBool(1) then
-		self.Owner:SetFOV(self.Owner:GetInfo("fov_desired"), 0.5)
-		self:EmitSound("weapons/sniper/sniper_zoomout.wav", 50, 100)
-		self:SetDTBool(1, false)
-	end
-
-	return true
-end
-
-function SWEP:OnRemove()
-	if self.Owner:IsValid() and self:GetDTBool(1) then
-		self.Owner:SetFOV(self.Owner:GetInfo("fov_desired"), 0.5)
-	end
-end
-
-util.PrecacheSound("weapons/crossbow/bolt_load1.wav")
-util.PrecacheSound("weapons/crossbow/bolt_load2.wav")
-util.PrecacheSound("weapons/sniper/sniper_zoomin.wav")
-util.PrecacheSound("weapons/sniper/sniper_zoomout.wav")
+util.PrecacheSound("Weapon_Crossbow.Reload")
+util.PrecacheSound("Weapon_Crossbow.BoltElectrify")

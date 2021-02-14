@@ -6,6 +6,27 @@ meta.GetNextSecondaryAttack = meta.GetNextSecondaryFire
 meta.SetNextPrimaryAttack = meta.SetNextPrimaryFire
 meta.SetNextSecondaryAttack = meta.SetNextSecondaryFire
 
+function meta:EmptyAllButClip()
+	if self.Primary and string.lower(self.Primary.Ammo or "") ~= "none" then
+		local owner = self:GetOwner()
+		if owner:IsValid() then
+			if self:Clip1() >= 1 then
+				owner:GiveAmmo(self:Clip1(), self.Primary.Ammo, true)
+			end
+			owner:RemoveAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
+		end
+	end
+	if self.Secondary and string.lower(self.Secondary.Ammo or "") ~= "none" then
+		local owner = self:GetOwner()
+		if owner:IsValid() then
+			if self:Clip2() >= 1 then
+				owner:GiveAmmo(self:Clip2(), self.Secondary.Ammo, true)
+			end
+			owner:RemoveAmmo(self.Secondary.DefaultClip, self.Secondary.Ammo)
+		end
+	end
+end
+
 function meta:EmptyAll()
 	if self.Primary and string.lower(self.Primary.Ammo or "") ~= "none" then
 		local owner = self:GetOwner()
@@ -266,15 +287,38 @@ function meta:DrawCrosshairDot()
 	surface.DrawOutlinedRect(x - 2, y - 2, 4, 4)
 end
 
-function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
+--[[function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
 	--if killicon.Get(self:GetClass()) then
 		killicon.Draw(x + wide * 0.5, y + tall * 0.5, self:GetClass(), 255)
 		draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmall", x + wide * 0.5, y + tall * 0.25, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	--[[else
+	else
 		draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmaller", x + wide * 0.5, y + tall * 0.5, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	end]]
-end
+	end
+end]]
 
+function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
+	local ammotype1 = self:ValidPrimaryAmmo()
+	local ammotype2 = self:ValidSecondaryAmmo()
+
+	--killicon.Draw(x + wide * 0.5, y + tall * 0.5, self:GetClass(), 255)
+	-- Doesn't work with pngs...
+	local ki = killicon.Get(self:GetClass())
+	local cols = ki and ki[#ki] or ""
+
+	if ki and #ki == 3 then
+		draw.SimpleText(ki[2], ki[1] .. "ws", x + wide * 0.5, y + tall * 0.5 + 18 * BetterScreenScale(), Color(cols.r, cols.g, cols.b, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	elseif ki then
+		local material = Material(ki[1])
+		local wid, hei = material:Width(), material:Height()
+
+		surface.SetMaterial(material)
+		surface.SetDrawColor(cols.r, cols.g, cols.b, alpha )
+		surface.DrawTexturedRect(x + wide * 0.5 - wid * 0.5, y + tall * 0.5 - hei * 0.5, wid, hei)
+	end
+
+	draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmall", x + wide * 0.5, y + tall * 0.15, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	return true
+end
 local function empty() end
 local function NULLViewModelPosition(self, pos, ang)
 	return pos + ang:Forward() * -256, ang

@@ -86,7 +86,7 @@ GM.BarricadeHealthMassFactor = 2
 GM.BarricadeHealthVolumeFactor = 2.5
 
 
-GM.PointsPerFrag = 10
+GM.PointsPerKill = 10
 GM.HumanGibs = {
 Model("models/gibs/HGIBS.mdl"),
 Model("models/gibs/HGIBS_spine.mdl"),

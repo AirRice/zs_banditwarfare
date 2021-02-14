@@ -109,7 +109,7 @@ function PANEL:DoClick()
 		if (tab.Category == ITEMCAT_GUNS or tab.Category == ITEMCAT_MELEE or tab.Category == ITEMCAT_TOOLS) then
 		Derma_Query("이 무기를 구매하시겠습니까?", tab.Name or "",
 			"네", function() 
-				RunConsoleCommand("zs_pointsshopbuy", self.ID, self.m_LoadoutSlot)
+				RunConsoleCommand("zsb_pointsshopbuy", self.ID, self.m_LoadoutSlot)
 				if not GAMEMODE:IsClassicMode() and (self.m_LoadoutSlot == WEAPONLOADOUT_SLOT1 or self.m_LoadoutSlot == WEAPONLOADOUT_SLOT2 or self.m_LoadoutSlot == WEAPONLOADOUT_MELEE or self.m_LoadoutSlot == WEAPONLOADOUT_TOOLS) then
 					if GAMEMODE.m_PointsShop and GAMEMODE.m_PointsShop:Valid() then
 						GAMEMODE.m_PointsShop:Close()
@@ -118,7 +118,7 @@ function PANEL:DoClick()
 			end,
 			"아니오", function() end)
 		else
-			RunConsoleCommand("zs_pointsshopbuy", self.ID, self.m_LoadoutSlot)
+			RunConsoleCommand("zsb_pointsshopbuy", self.ID, self.m_LoadoutSlot)
 		end
 	end
 end
@@ -234,7 +234,7 @@ local function helpDoClick()
 end
 local function currentAmmoDoClick()
 	if not ammonames[tostring(MySelf:GetActiveWeapon().Primary.Ammo)] then return end
-	RunConsoleCommand("zs_pointsshopbuy", "ps_"..ammonames[tostring(MySelf:GetActiveWeapon().Primary.Ammo)])
+	RunConsoleCommand("zsb_pointsshopbuy", "ps_"..ammonames[tostring(MySelf:GetActiveWeapon().Primary.Ammo)])
 end
 
 

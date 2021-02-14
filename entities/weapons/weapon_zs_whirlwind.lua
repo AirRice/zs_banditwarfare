@@ -49,10 +49,10 @@ SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.07
 
-SWEP.Primary.ClipSize = 20
+SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = "smg1"
-GAMEMODE:SetupDefaultClip(SWEP.Primary)
+SWEP.Primary.Ammo = "autocharging"
+SWEP.Primary.DefaultClip = 30
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SHOTGUN
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
@@ -65,6 +65,13 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.WalkSpeed = SPEED_SLOW
 SWEP.LastAttack = 0
 SWEP.SearchRadius = 160
+SWEP.AutoReloadDelay = 1
+SWEP.ShowOnlyClip = true
+SWEP.LowAmmoThreshold = 25
+
+function SWEP:Reload()
+end
+
 function SWEP:SecondaryAttack()
 end
 
@@ -93,12 +100,13 @@ function SWEP:Attack(proj)
 		if SERVER then
 			proj:Remove()
 		end
+		self.LastAttemptedShot = CurTime()
 	end
 end
 
 function SWEP:Think()
 	local curTime = CurTime()
-	if self.IdleAnimation and self.IdleAnimation <= CurTime() then
+	if self.IdleAnimation and self.IdleAnimation <= curTime then
 		self.IdleAnimation = nil
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
@@ -112,7 +120,7 @@ function SWEP:Think()
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)
 					self.LastAttack = curTime
-					self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*0.75)
+					self:SetNextPrimaryFire(curTime + self.Primary.Delay*0.75)
 				end
 			end
 		end

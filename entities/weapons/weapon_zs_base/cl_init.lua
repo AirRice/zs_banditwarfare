@@ -102,14 +102,16 @@ function SWEP:Draw3DHUD(vm, pos, ang)
 
 	cam.Start3D2D(pos, ang, self.HUD3DScale / 2)
 		draw.RoundedBoxEx(32, x, y, wid, hei, colBG, true, false, true, false)
-
-		local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
-		if displayspare then
-			draw.SimpleTextBlurry(spare, spare >= 1000 and "ZS3D2DFontSmall" or "ZS3D2DFont", x + wid * 0.5, y + hei * 0.75, spare == 0 and colRed or spare <= maxclip and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		if self.ShowOnlyClip then
+			draw.SimpleTextBlurry(spare, spare >= 1000 and "ZS3D2DFontSmall" or "ZS3D2DFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		else
+			local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
+			if displayspare then
+				draw.SimpleTextBlurry(spare, spare >= 1000 and "ZS3D2DFontSmall" or "ZS3D2DFont", x + wid * 0.5, y + hei * 0.75, spare == 0 and colRed or spare <= maxclip and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+			end
+			GetAmmoColor(clip, maxclip)
+			draw.SimpleTextBlurry(clip, clip >= 100 and "ZS3D2DFont" or "ZS3D2DFontBig", x + wid * 0.5, y + hei * (displayspare and 0.3 or 0.5), colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		end
-
-		GetAmmoColor(clip, maxclip)
-		draw.SimpleTextBlurry(clip, clip >= 100 and "ZS3D2DFont" or "ZS3D2DFontBig", x + wid * 0.5, y + hei * (displayspare and 0.3 or 0.5), colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	cam.End3D2D()
 end
 
@@ -129,15 +131,19 @@ function SWEP:Draw2DHUD()
 	end
 
 	draw.RoundedBox(16, x, y, wid, hei, colBG)
+	if self.ShowOnlyClip then
+		draw.SimpleTextBlurry(spare, spare >= 1000 and "ZSHUDFontSmall" or "ZSHUDFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	else
+		local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
+		if displayspare then
+			draw.SimpleTextBlurry(spare, spare >= 1000 and "ZSHUDFontSmall" or "ZSHUDFont", x + wid * 0.75, y + hei * 0.5, spare == 0 and colRed or spare <= maxclip and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
 
-	local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
-	if displayspare then
-		draw.SimpleTextBlurry(spare, spare >= 1000 and "ZSHUDFontSmall" or "ZSHUDFont", x + wid * 0.75, y + hei * 0.5, spare == 0 and colRed or spare <= maxclip and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		GetAmmoColor(clip, maxclip)
+		draw.SimpleTextBlurry(clip, clip >= 100 and "ZSHUDFont" or "ZSHUDFontBig", x + wid * (displayspare and 0.25 or 0.5), y + hei * 0.5, colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
-
-	GetAmmoColor(clip, maxclip)
-	draw.SimpleTextBlurry(clip, clip >= 100 and "ZSHUDFont" or "ZSHUDFontBig", x + wid * (displayspare and 0.25 or 0.5), y + hei * 0.5, colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 end
+
 
 function SWEP:Think()
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then

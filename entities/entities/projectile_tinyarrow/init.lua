@@ -46,7 +46,6 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 
 	local owner = self:GetOwner()
 	if not owner:IsValid() then owner = self end
-
 	vHitPos = vHitPos or self:GetPos()
 	vHitNormal = (vHitNormal or Vector(0, 0, -1)) * -1
 	vDirNormal = vOldVelocity:GetNormalized()

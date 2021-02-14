@@ -52,7 +52,7 @@ SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.04
 
 SWEP.Primary.ClipSize = 0
-SWEP.Primary.DefaultClip = 150
+SWEP.Primary.DefaultClip = 250
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 
@@ -67,6 +67,10 @@ SWEP.IronSightsPos = Vector(-6.6, 20, 3.1)
 SWEP.NextHurt = 0
 SWEP.StartPos = nil
 SWEP.EndPos = nil
+
+SWEP.ShowOnlyClip = true
+SWEP.LowAmmoThreshold = 150
+
 sound.Add( {
 	name = "Loop_Lepton_Fire",
 	channel = CHAN_VOICE,
@@ -224,40 +228,6 @@ function SWEP:ShootEffects()
 end
 
 if(CLIENT)then
-local colBG = Color(16, 16, 16, 90)
-local colRed = Color(220, 0, 0, 230)
-local colYellow = Color(220, 220, 0, 230)
-local colWhite = Color(220, 220, 220, 230)
-local colAmmo = Color(255, 255, 255, 230)
-function SWEP:Draw3DHUD(vm, pos, ang)
-	local wid, hei = 180, 100
-	local x, y = wid * -0.6, hei * -0.6
-	local clip = self:Clip1()
-	local spare = self.Owner:GetAmmoCount(self:GetPrimaryAmmoType())
-	local maxclip = self.Primary.ClipSize
-
-	if self.RequiredClip ~= 1 then
-		clip = math.floor(clip / self.RequiredClip)
-		spare = math.floor(spare / self.RequiredClip)
-		maxclip = math.ceil(maxclip / self.RequiredClip)
-	end
-
-	cam.Start3D2D(pos, ang, self.HUD3DScale / 2)
-		draw.RoundedBoxEx(32, x, y, wid, hei, colBG, true, false, true, false)
-		draw.SimpleTextBlurry(spare, spare >= 1000 and "ZS3D2DFontSmall" or "ZS3D2DFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= 200 and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	cam.End3D2D()
-end
-
-function SWEP:Draw2DHUD()
-	local screenscale = BetterScreenScale()
-
-	local wid, hei = 180 * screenscale, 64 * screenscale
-	local x, y = ScrW() - wid - screenscale * 128, ScrH() - hei - screenscale * 72
-	local spare = self.Owner:GetAmmoCount(self:GetPrimaryAmmoType())
-
-	draw.RoundedBox(16, x, y, wid, hei, colBG)
-	draw.SimpleTextBlurry(spare, spare >= 1000 and "ZSHUDFontBig" or "ZSHUDFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= 200 and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-end
 function SWEP:ViewModelDrawn()
 	self:Anim_ViewModelDrawn()
 	if self:GetFiringLaser() then

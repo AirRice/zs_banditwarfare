@@ -315,9 +315,9 @@ function PANEL:Refresh()
 	end
 	self.m_PlayerLabel:SetText(name)
 	if GAMEMODE.SimpleScoreBoard then
-		self.m_ScoreLabel:SetText(pl:GetKills().."K/"..pl:Deaths().."D")
+		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D")
 	else
-		self.m_ScoreLabel:SetText(pl:GetKills().."K/"..pl:Deaths().."D | "..pl:Frags())
+		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D | "..pl:GetPoints())
 	end
 	
 	if pl == LocalPlayer() then
@@ -330,7 +330,7 @@ function PANEL:Refresh()
 		end
 	end
 
-	self:SetZPos(-pl:Frags())
+	self:SetZPos(-pl:GetPoints())
 
 	if pl:Team() ~= self._LastTeam then
 		self._LastTeam = pl:Team()

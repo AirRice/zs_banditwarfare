@@ -92,6 +92,7 @@ function GM:AddCustomAmmo()
 
 	game.AddAmmoType({name = "dummy"})
 	game.AddAmmoType({name = "grenlauncher"})
+	game.AddAmmoType({name = "autocharging"})
 end
 
 function GM:SetSamples(bamount,hamount)
@@ -152,11 +153,6 @@ function GM:ShouldRestartRound()
 	return true
 end
 
-function GM:SetDynamicSpawning(onoff)
-	SetGlobalBool("DynamicSpawningDisabled", not onoff)
-	self.DynamicSpawning = onoff
-end
-
 function GM:ValidMenuLockOnTarget(pl, ent)
 	if ent and ent:IsValid() and ent:IsPlayer() and ent:Team() == pl:Team() and ent:Alive() then
 		local startpos = pl:EyePos()
@@ -199,12 +195,12 @@ function GM:Move(pl, move)
 		if pl:GetBarricadeGhosting() then
 			move:SetMaxSpeed(36)
 			move:SetMaxClientSpeed(36)
-		elseif move:GetForwardSpeed() < 0 then
+		--[[elseif move:GetForwardSpeed() < 0 then
 			move:SetMaxSpeed(move:GetMaxSpeed() * 0.5)
 			move:SetMaxClientSpeed(move:GetMaxClientSpeed() * 0.5)
 		elseif move:GetForwardSpeed() == 0 then
-			move:SetMaxSpeed(move:GetMaxSpeed() * 0.85)
-			move:SetMaxClientSpeed(move:GetMaxClientSpeed() * 0.85)
+			move:SetMaxSpeed(move:GetMaxSpeed() * 0.95)
+			move:SetMaxClientSpeed(move:GetMaxClientSpeed() * 0.95)]]
 		end
 	end
 

@@ -18,10 +18,11 @@ SKIN.Colors.Panel = {}
 SKIN.Colors.Panel.Normal = Color(50, 50, 50, 120)
 
 function SKIN:PaintPanel(panel, w, h)
-	if not panel.m_bBackground then return end
+	return
+	--[[if not panel.m_bBackground then return end
 
 	surface.SetDrawColor(self.Colors.Panel.Normal)
-	surface.DrawRect(0, 0, w, h)
+	surface.DrawRect(0, 0, w, h)]]
 end
 
 --SKIN.tooltip = Color(190, 190, 190, 230)

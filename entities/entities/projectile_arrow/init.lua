@@ -3,18 +3,28 @@ AddCSLuaFile("shared.lua")
 
 include('shared.lua')
 ENT.Damage = 100
-
 function ENT:Initialize()
 	self.Touched = {}
 	self.Damaged = {}
 
-	self:SetModel("models/Items/CrossbowRounds.mdl")
-	self:PhysicsInit(SOLID_VPHYSICS)
+	self:SetModel(Model("models/crossbow_bolt.mdl"))
+	self:SetMoveType(MOVETYPE_FLYGRAVITY);
+	self:SetMoveCollide(MOVECOLLIDE_FLY_CUSTOM);
+	self:PhysicsInitBox(Vector(-4,-0.02,-0.02), Vector(8,0.02,0.02))
 	self:SetTrigger(true)
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
-
-	self:Fire("kill", "", 15)
-	self:EmitSound("weapons/crossbow/bolt_fly4.wav")
+	if SERVER then
+      self:SetGravity(0.01)
+	end
+	local phys = self:GetPhysicsObject()
+	if phys:IsValid() then
+		phys:SetMass(3)
+		phys:SetBuoyancyRatio(0.002)
+		phys:EnableMotion(true)
+		phys:Wake()
+	end
+	self:SetSkin(1)
+	self:EmitSound("Weapon_Crossbow.BoltFly");
 end
 
 local temp_pen_ents = {}
@@ -76,16 +86,6 @@ function ENT:Think()
 	-- Do this out of the physics collide hook.
 
 	if self.Done and not self.NoColl then
-		local data = self.PhysicsData
-		local phys = self:GetPhysicsObject()
-		if phys:IsValid() then
-			phys:EnableMotion(false)
-		end
-
-		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
-		self:SetPos(data.HitPos)
-		self:SetAngles(data.HitNormal:Angle())
-
 		if self.ParentEnt then
 			self:SetParent(self.ParentEnt)
 		end
@@ -100,10 +100,8 @@ function ENT:Think()
 	for ent, tr in pairs(self.Touched) do
 		if not self.Damaged[ent] then
 			self.Damaged[ent] = true
-
-			local damage = (self.Damage or 100) / (table.Count(self.Damaged) ^ 0.13)
-
-			ent:TakeDamage(damage, owner, self)
+			local damage = (self.Damage or 100)
+			ent:TakeDamage(math.max(damage-table.Count(self.Damaged)*25,1), owner, self)
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
 
@@ -117,14 +115,33 @@ function ENT:PhysicsCollide(data, phys)
 	self.Done = true
 	self.PhysicsData = data
 
-	self:Fire("kill", "", 6)
+	local owner = self:GetOwner()
+	if not owner:IsValid() then owner = self end
+	local vHitPos = self.PhysicsData.HitPos
+	local vHitNormal = self.PhysicsData.HitNormal
+	local eHitEntity = self.PhysicsData.HitEntity
+	local vOldVelocity = self.PhysicsData.OurOldVelocity
 	self:EmitSound("physics/metal/sawblade_stick"..math.random(3)..".wav", 75, 60)
-
-	local hitent = data.HitEntity
-	if hitent and hitent:IsValid() then
-		local hitphys = hitent:GetPhysicsObject()
-		if hitphys:IsValid() and hitphys:IsMoveable() then
-			self:SetParent(hitent)
-		end
+	self:SetSkin(0)
+	vHitPos = vHitPos or self:GetPos()
+	vHitNormal = (vHitNormal or Vector(0, 0, -1)) * -1
+	vDirNormal = vOldVelocity:GetNormalized()
+	self:SetSolid(SOLID_NONE)
+	self:SetMoveType(MOVETYPE_NONE)
+	local edata = EffectData()
+		edata:SetOrigin(vHitPos)
+		edata:SetNormal(vHitNormal)
+		edata:SetScale(1)
+		edata:SetMagnitude(2)
+    util.Effect("cball_explode", edata)
+	if eHitEntity:IsWorld() then
+		util.Decal("ExplosiveGunshot", vHitPos-vDirNormal, vHitPos+vDirNormal, self )
+		self:EmitSound("Weapon_Crossbow.BoltHitWorld")
+		self:SetAngles(vOldVelocity:Angle())
+		self:SetPos(vHitPos-vDirNormal*8)
+		self:Fire("kill", "", 10)
+	elseif eHitEntity:IsValid() then
+		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
+		self:Fire("kill", "", 0)
 	end
 end

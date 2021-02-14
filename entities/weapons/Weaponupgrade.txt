@@ -1,0 +1,56 @@
+--Upgrade from peashooter
+--GM:AddPointShopItem(2,"eraser", "'이레이저' 전략 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_eraser")
+--GM:AddPointShopItem(3,"terminator", "'터미네이터' 권총", nil, ITEMCAT_GUNS, 165, "weapon_zs_terminator")
+--GM:AddPointShopItem(4,"silencer", "'사일런서' 기관권총", nil, ITEMCAT_GUNS, 230, "weapon_zs_silencer")
+
+--Upgrade from owens
+--GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
+--GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_waraxe")
+
+--Upgrade from battleaxe
+--GM:AddPointShopItem(1,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 65, "weapon_zs_deagle")
+--GM:AddPointShopItem(2,"magnum", "'리코세' 매그넘", nil, ITEMCAT_GUNS, 125, "weapon_zs_magnum")
+--GM:AddPointShopItem(3,"immortal", "'불멸' 권총", nil, ITEMCAT_GUNS, 170, "weapon_zs_immortal")
+
+--Upgrade from tosser
+--GM:AddPointShopItem(1,"shredder", "'슈레더' SMG", nil, ITEMCAT_GUNS, 60, "weapon_zs_smg")
+--GM:AddPointShopItem(2,"uzi", "'스프레이어' Uzi 9mm", nil, ITEMCAT_GUNS, 115, "weapon_zs_uzi")
+--GM:AddPointShopItem(3,"bulletstorm", "'총알비' SMG", nil, ITEMCAT_GUNS, 175, "weapon_zs_bulletstorm")
+--GM:AddPointShopItem(4,"reaper", "'리퍼' UMP", nil, ITEMCAT_GUNS, 250, "weapon_zs_reaper")
+--GM:AddPointShopItem(4,"tommy", "'토미' SMG", nil, ITEMCAT_GUNS, 270, "weapon_zs_tommy")
+
+--Upgrade from stubber
+--GM:AddPointShopItem(1,"annabelle", "'애나벨' 소총", nil, ITEMCAT_GUNS, 65, "weapon_zs_annabelle")
+--GM:AddPointShopItem(2,"hunter", "'헌터' 소총", nil, ITEMCAT_GUNS, 100, "weapon_zs_hunter")
+--GM:AddPointShopItem(3,"zeus", "'제우스' 자동소총", nil, ITEMCAT_GUNS, 165, "weapon_zs_zeus")
+--GM:AddPointShopItem(4,"sg550", "'헬베티카' DMR", nil, ITEMCAT_GUNS, 245, "weapon_zs_sg550")
+
+--Upgrade from Crackler
+--GM:AddPointShopItem(1,"kalash", "'아크바' 돌격소총", nil, ITEMCAT_GUNS, 75, "weapon_zs_kalash")
+--GM:AddPointShopItem(2,"stalker", "'스토커' M4", nil, ITEMCAT_GUNS, 120, "weapon_zs_m4")
+--GM:AddPointShopItem(3,"inferno", "'인페르노' AUG", nil, ITEMCAT_GUNS, 165, "weapon_zs_inferno")
+--GM:AddPointShopItem(4,"blitz", "'블리츠' SG552", nil, ITEMCAT_GUNS, 255, "weapon_zs_blitz")
+
+--Upgrade from Cattle
+--GM:AddPointShopItem(1,"sweeper", "'스위퍼' 산탄총", nil, ITEMCAT_GUNS, 70, "weapon_zs_sweepershotgun")
+--GM:AddPointShopItem(3,"ender", "'엔더' 자동 샷건", nil, ITEMCAT_GUNS, 165, "weapon_zs_ender")
+--GM:AddPointShopItem(4,"boomstick", "붐스틱", nil, ITEMCAT_GUNS, 245, "weapon_zs_boomstick")
+--GM:AddPointShopItem(4,"slugrifle", "'타이니' 슬러그 소총", nil, ITEMCAT_GUNS, 320, "weapon_zs_slugrifle")
+
+--Upgrade from biorifle
+--GM:AddPointShopItem(2,"bioshotgun", "'퓨크 블래스트' 생체 산탄총", nil, ITEMCAT_GUNS, 87, "weapon_zs_bioticshotgun")
+
+--Upgrade from inquisition
+--GM:AddPointShopItem(4,"crossbow", "'임펠러' 석궁", nil, ITEMCAT_GUNS, 250, "weapon_zs_crossbow")
+
+--Upgrade from medicgun
+--GM:AddPointShopItem(3,"practition", "'프랙티션' 의료소총", nil, ITEMCAT_GUNS, 145, "weapon_zs_practition")
+
+--Upgrade from Z9000
+--GM:AddPointShopItem(1,"neutrino", "'뉴트리노' 펄스 LMG", nil, ITEMCAT_GUNS, 65, "weapon_zs_neutrino")
+--GM:AddPointShopItem(2,"ioncannon", "이온 캐논", nil, ITEMCAT_GUNS, 130, "weapon_zs_ioncannon")
+--GM:AddPointShopItem(3,"pulserifle", "'아도니스' 펄스 돌격소총", nil, ITEMCAT_GUNS, 185, "weapon_zs_pulserifle")
+
+--Upgrade from Neutrino (Sidegrade)
+--GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 265, "weapon_zs_positron")
+--GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
