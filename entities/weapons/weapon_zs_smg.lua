@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'슈레더' SMG"
+	SWEP.TranslateName = "weapon_shredder_name"
+	SWEP.TranslateDesc = "weapon_shredder_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 

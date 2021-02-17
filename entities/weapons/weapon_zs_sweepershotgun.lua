@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'스위퍼' 산탄총"
+	SWEP.TranslateName = "weapon_sweeper_name"
+	SWEP.TranslateDesc = "weapon_sweeper_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -24,8 +25,8 @@ SWEP.UseHands = true
 SWEP.ReloadDelay = 0.4
 
 SWEP.Primary.Sound = Sound("Weapon_M3.Single")
-SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 7
+SWEP.Primary.Damage = 4
+SWEP.Primary.NumShots = 8
 SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
 SWEP.Primary.ClipSize = 6
@@ -37,7 +38,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.AimExpandStayDuration = 0.002
 
 SWEP.ConeMax = 0.093
-SWEP.ConeMin = 0.079
+SWEP.ConeMin = 0.059
 SWEP.MovingConeOffset = 0.07
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 2.89

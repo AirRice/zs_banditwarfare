@@ -29,7 +29,7 @@ function PANEL:Init()
 	spawnbuffstatus:SetTall(20)
 	spawnbuffstatus:SetAlpha(200)
 	spawnbuffstatus:SetColor(Color(200, 200, 200))
-	spawnbuffstatus:SetMemberName("무적 상태")
+	spawnbuffstatus:SetMemberName(translate.Get("statusname_invuln"))
 	spawnbuffstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -48,7 +48,7 @@ function PANEL:Init()
 	armorstatus:SetTall(20)
 	armorstatus:SetAlpha(200)
 	armorstatus:SetColor(Color(10, 10, 255))
-	armorstatus:SetMemberName("방탄복")
+	armorstatus:SetMemberName(translate.Get("statusname_bodyarmor"))
 	armorstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -63,7 +63,7 @@ function PANEL:Init()
 	poisonstatus:SetTall(20)
 	poisonstatus:SetAlpha(200)
 	poisonstatus:SetColor(Color(180, 180, 0))
-	poisonstatus:SetMemberName("독 회복중")
+	poisonstatus:SetMemberName(translate.Get("statusname_poisonrecover"))
 	poisonstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -79,7 +79,7 @@ function PANEL:Init()
 	toxstatus:SetTall(20)
 	toxstatus:SetAlpha(200)
 	toxstatus:SetColor(Color(50, 100, 0))
-	toxstatus:SetMemberName("중독됨!")
+	toxstatus:SetMemberName(translate.Get("statusname_toxic"))
 	toxstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -97,36 +97,16 @@ function PANEL:Init()
 	bleedstatus:SetTall(20)
 	bleedstatus:SetAlpha(200)
 	bleedstatus:SetColor(Color(220, 0, 0))
-	bleedstatus:SetMemberName("출혈!")
+	bleedstatus:SetMemberName(translate.Get("statusname_bleeding"))
 	bleedstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
 			return lp:GetBleedDamage()
 		end
-
 		return 0
 	end
-	bleedstatus.MemberMaxValue = 20
+	bleedstatus.MemberMaxValue = 50
 	bleedstatus:Dock(TOP)
-
-	local ghoultouchstatus = vgui.Create("ZSHealthStatus", contents)
-	ghoultouchstatus:SetTall(20)
-	ghoultouchstatus:SetAlpha(200)
-	ghoultouchstatus:SetColor(Color(255, 0, 0))
-	ghoultouchstatus:SetMemberName("구울의 손길!")
-	ghoultouchstatus.GetMemberValue = function(me)
-		local lp = LocalPlayer()
-		if lp:IsValid() then
-			local status = lp:GetStatus("ghoultouch")
-			if status and status:IsValid() then
-				return math.max(status.DieTime - CurTime(), 0)
-			end
-		end
-
-		return 0
-	end
-	ghoultouchstatus.MemberMaxValue = 10
-	ghoultouchstatus:Dock(TOP)
 
 	self:ParentToHUD()
 	self:InvalidateLayout()

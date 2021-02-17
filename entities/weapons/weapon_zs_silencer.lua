@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'사일런서' 기관권총"
+	SWEP.TranslateName = "weapon_silencer_name"
+	SWEP.TranslateDesc = "weapon_silencer_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -23,22 +24,22 @@ SWEP.WorldModel = "models/weapons/w_smg_tmp.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_TMP.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 9
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.03
+SWEP.Primary.Delay = 0.025
 SWEP.Recoil = 0.24
 SWEP.Primary.ClipSize = 25
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pistol"
-SWEP.Primary.DefaultClip = 50
+SWEP.Primary.DefaultClip = 75
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.16
-SWEP.ConeMin = 0.03
-
+SWEP.ConeMax = 0.14
+SWEP.ConeMin = 0.02
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.AimExpandStayDuration = 0.2
 
 SWEP.WalkSpeed = SPEED_NORMAL
 

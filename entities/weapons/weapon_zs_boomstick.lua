@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "붐스틱"
-	SWEP.Description = "이 전설적인 산탄총은 한 번에 4개의 탄환을 장전해 한꺼번에 발사한다. 재장전 키를 누르고 있으면 빠르게 장전한다.\n이 총은 너무나 강력해, 쏜 사람조차 쓰러지게 만든다."
+	SWEP.TranslateName = "weapon_boomstick_name"
+	SWEP.TranslateDesc = "weapon_boomstick_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -27,14 +27,14 @@ SWEP.ReloadDelay = 0.7
 
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
 SWEP.Primary.Recoil = 22.75
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 6
 SWEP.Primary.NumShots = 8
 SWEP.Primary.Delay = 1.5
 
 SWEP.Primary.ClipSize = 4
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
-SWEP.Primary.DefaultClip = 28
+SWEP.Primary.DefaultClip = 16
 
 SWEP.ConeMax = 0.18
 SWEP.ConeMin = 0.17
@@ -70,12 +70,13 @@ function SWEP:PrimaryAttack()
 		local clip = self:Clip1()
 
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * clip, self:GetCone())
-		timer.Simple(0.05, function() if self.Owner:Alive() then self.Owner:KnockDown(0.5*clip) end end)
+		local kotime = 0.2+math.Clamp(clip-1,0,3)*0.5
+		timer.Simple(0.05, function() if self.Owner:Alive() then self.Owner:KnockDown(kotime) end end)
 		self:TakePrimaryAmmo(clip)
 		self.Owner:ViewPunch(clip * 0.5 * self.Primary.Recoil * Angle(math.Rand(-0.1, -0.1), math.Rand(-0.1, 0.1), 0))
 
 		self.Owner:SetGroundEntity(NULL)
-		self.Owner:SetVelocity(-80 * clip * self.Owner:GetAimVector())
+		self.Owner:SetVelocity(-120 * clip * self.Owner:GetAimVector())
 
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	end

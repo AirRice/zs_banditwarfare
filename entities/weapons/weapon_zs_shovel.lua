@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "삽"
-
+	SWEP.TranslateName = "weapon_shovel_name"
+	SWEP.TranslateDesc = "weapon_shovel_desc"
 	SWEP.ViewModelFOV = 60
 
 	SWEP.ShowViewModel = false

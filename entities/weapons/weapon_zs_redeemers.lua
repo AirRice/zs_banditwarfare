@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'성불자' 듀얼 권총"
-	SWEP.Description = "좀비의 정수가 흐르는 듯하다."
+	SWEP.TranslateName = "weapon_redeemer_name"
+	SWEP.TranslateDesc = "weapon_redeemer_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -23,21 +23,36 @@ SWEP.WorldModel = "models/weapons/w_pist_elite.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
-SWEP.Primary.Damage = 22
-SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.15
+SWEP.Primary.Damage = 6
+SWEP.Primary.NumShots = 6
+SWEP.Primary.Delay = 0.3
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pistol"
-SWEP.Primary.DefaultClip = 150
+SWEP.Primary.DefaultClip = 90
 
 SWEP.ConeMax = 0.055
-SWEP.ConeMin = 0.05
+SWEP.ConeMin = 0.01
 SWEP.Recoil = 0.3
 function SWEP:SecondaryAttack()
 end
 
 function SWEP:SendWeaponAnimation()
 	self:SendWeaponAnim(self:Clip1() % 2 == 0 and ACT_VM_PRIMARYATTACK or ACT_VM_SECONDARYATTACK)
+end
+
+if not CLIENT then return end
+
+function SWEP:GetTracerOrigin()
+	local owner = self:GetOwner()
+	if owner:IsValid() then
+		local vm = owner:GetViewModel()
+		if vm and vm:IsValid() then
+			local attachment = vm:GetAttachment(self:Clip1() % 2 + 3)
+			if attachment then
+				return attachment.Pos
+			end
+		end
+	end
 end

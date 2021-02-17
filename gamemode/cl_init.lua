@@ -527,7 +527,7 @@ net.Receive( "zs_hitmarker", function( iLen )
 	
 	hitmarkeralpha = 255;
 
-	LocalPlayer():EmitSound("zombiesurvival/hitsound.wav", 500, 100, 1,CHAN_ITEM)
+	LocalPlayer():EmitSound("bandit/hitsound.wav", 500, 100, 1,CHAN_ITEM)
 end )
 
 function GM:HumanHUD(screenscale)
@@ -779,6 +779,9 @@ function GM:CreateFonts()
 	surface.CreateLegacyFont("csd", screenscale * 96, 100, true, false, "zsdeathnoticecsws", false, false)
 	surface.CreateLegacyFont("HL2MP", screenscale * 96, 100, true, false, "zsdeathnoticews", false, false)
 	
+	surface.CreateLegacyFont("csd", screenscale * 76, 100, true, false, "zsdeathnoticecsps", false, false)
+	surface.CreateLegacyFont("HL2MP", screenscale * 76, 100, true, false, "zsdeathnoticeps", false, false)
+	
 	surface.CreateLegacyFont(fontfamily, screenscale * 16, fontweight, fontaa, false, "ZSHUDFontTiny", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 20, fontweight, fontaa, false, "ZSHUDFontSmallest", fontshadow, fontoutline)
 	surface.CreateLegacyFont(fontfamily, screenscale * 22, fontweight, fontaa, false, "ZSHUDFontSmaller", fontshadow, fontoutline)
@@ -971,13 +974,21 @@ function GM:HumanMenu()
 	end
 	panel:OpenMenu()
 end
+function GM:OnContextMenuOpen()
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) then
+		gamemode.Call("MakeWeaponInfo",MySelf:GetActiveWeapon():GetClass() or nil)
+	end
+end
+function GM:OnContextMenuClose()
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and (self.m_weaponInfoFrame and self.m_weaponInfoFrame:Valid()) then
+		self.m_weaponInfoFrame:Close()
+	end
+end
 
 function GM:PlayerBindPress(pl, bind, wasin)
 	if bind == "gmod_undo" or bind == "undo" then
 		RunConsoleCommand("+zoom")
 		timer.CreateEx("ReleaseZoom", 1, 1, RunConsoleCommand, "-zoom")
-	elseif bind == "+menu_context" then
-		RunConsoleCommand("zsb_dropactiveweapon")
 	end
 end
 
@@ -1291,7 +1302,6 @@ function GM:LocalPlayerDied(attackername)
 end
 
 function GM:OnSpawnMenuOpen()
-	
 	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) then
 		if not self:IsClassicMode() then
 			gamemode.Call("HumanMenu")
@@ -1302,7 +1312,8 @@ function GM:OnSpawnMenuOpen()
 end
 
 function GM:OnSpawnMenuClose()
-	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and not self:IsClassicMode() then
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and not self:IsClassicMode() 
+	and not (self.m_PointsShop and self.m_PointsShop:Valid()) then
 		self.HumanMenuPanel:CloseMenu()
 	end
 end
@@ -1356,11 +1367,11 @@ function GM:Rewarded(class, amount)
 	local toptext = translate.Get("arsenal_upgraded")
 
 	local wep = weapons.GetStored(class)
-	if wep and wep.PrintName then
+	if wep and wep.TranslateName then
 		if killicon.Get(class) == killicon.Get("default") then
-			self:CenterNotify(COLOR_PURPLE, toptext..": ", color_white, wep.PrintName)
+			self:CenterNotify(COLOR_PURPLE, toptext..": ", color_white, translate.Get(wep.TranslateName))
 		else
-			self:CenterNotify({killicon = class}, " ", COLOR_PURPLE, toptext..": ", color_white, wep.PrintName)
+			self:CenterNotify({killicon = class}, " ", COLOR_PURPLE, toptext..": ", color_white, translate.Get(wep.TranslateName))
 		end
 	elseif amount then
 		self:CenterNotify(COLOR_PURPLE, toptext..": ", color_white, amount.." "..class)

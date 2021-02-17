@@ -1,11 +1,11 @@
 function GM:ForceDermaSkin()
-	return "zombiesurvival"
+	return "banditwarfare"
 end
 
 local SKIN = {}
 
-SKIN.PrintName = "Zombie Survival Derma Skin"
-SKIN.Author = "William \"JetBoom\" Moodhe"
+SKIN.PrintName = "Bandit Warfare Derma Skin"
+SKIN.Author = "William \"JetBoom\" Moodhe, Airrice"
 SKIN.DermaVersion = 1
 
 SKIN.bg_color = Color(50, 50, 50, 255)
@@ -27,7 +27,7 @@ end
 
 --SKIN.tooltip = Color(190, 190, 190, 230)
 
-local color_frame_background = Color(0, 0, 0, 220)
+local color_frame_background = Color(0, 0, 0, 240)
 SKIN.color_frame_background = color_frame_background
 SKIN.color_frame_border = Color(0, 80, 0, 255)
 
@@ -202,4 +202,4 @@ function SKIN:PaintButton(panel, w, h)
 	draw.RoundedBox(edgesize/2, 0, 0, w , h, col)
 end
 
-derma.DefineSkin("zombiesurvival", "The default Derma skin for Zombie Survival", SKIN, "Default")
+derma.DefineSkin("banditwarfare", "The default Derma skin for Bandit Warfare", SKIN, "Default")

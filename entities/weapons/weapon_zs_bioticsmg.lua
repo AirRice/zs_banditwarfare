@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'바이오' SMG"
-	SWEP.Description = "이 SMG는 좀비가 생산하는 독을 발사한다."
+	SWEP.TranslateName = "weapon_bioticsmg_name"
+	SWEP.TranslateDesc = "weapon_bioticsmg_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 

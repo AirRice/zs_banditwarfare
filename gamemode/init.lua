@@ -175,6 +175,7 @@ function GM:AddResources()
 	resource.AddFile("materials/refract_ring.vmt")
 	resource.AddFile("materials/killicon/weapon_zs_tv.png")
 	resource.AddFile("materials/killicon/weapon_zs_drone3.png")
+	resource.AddFile("materials/killicon/weapon_zs_energysword.png")
 	resource.AddFile("materials/models/weapons/w_annabelle/gun.vtf")
 	resource.AddFile("materials/models/weapons/sledge.vmt")
 	resource.AddFile("materials/models/weapons/temptexture/handsmesh1.vmt")
@@ -324,7 +325,7 @@ end
 
 function GM:ShowSpare1(pl)
 	if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
-		pl:SendLua("MakepWeapons()")
+		--pl:SendLua("MakepWeapons()")
 	end
 end
 
@@ -937,7 +938,7 @@ function GM:RestartGame()
 	self:SetWaveStart(CurTime() + self.WaveZeroLength)
 	self:SetWaveEnd(self:GetWaveStart() + self:GetWaveOneLength())]]
 	self:SetWaveActive(false)
-	
+	self.SuddenDeath = false
 	SetGlobalInt("numwaves", -2)
 	if GetGlobalString("hudoverride"..TEAM_BANDIT, "") ~= "" then
 		SetGlobalString("hudoverride"..TEAM_BANDIT, "")
@@ -1231,7 +1232,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	else
 		pl:SetWeapon2("weapon_zs_peashooter")
 	end
-	pl:SetWeaponToolslot("weapon_zs_ammokit")
+	pl:SetWeaponToolslot("weapon_zs_enemyradar")
 	pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 		timer.Simple(0.2, function() pl:Kill() end)
@@ -1438,7 +1439,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 	if not GAMEMODE:IsClassicMode() then
 		if (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then 
 			if sender:Alive() then
-				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_in_this_mode"))
 				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 				return
 			end
@@ -1454,7 +1455,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 				itemtab.Callback(sender)
 			elseif itemtab.SWEP then
 				if sender:HasWeapon(itemtab.SWEP) then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
 					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 					return
 				else
@@ -1468,7 +1469,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 				if slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2 then	
 				 -- can't do callback style shops anymore.
 					if sender:HasWeapon(itemtab.SWEP) or sender:GetWeapon1() == itemtab.SWEP or sender:GetWeapon2() == itemtab.SWEP then
-						sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+						sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
 						sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 						return	
 					elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
@@ -1513,7 +1514,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 				end
 			elseif slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE and itemtab.SWEP then
 				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponMelee() == itemtab.SWEP then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
 					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 					return	
 				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
@@ -1525,10 +1526,11 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 					sender:SetWeaponMelee(itemtab.SWEP)
 				else
 					sender:SetWeaponMelee(itemtab.SWEP)
+					sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
 				end
 			elseif slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS and itemtab.SWEP then
 				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponToolslot() == itemtab.SWEP then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
 					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 					return	
 				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
@@ -1552,22 +1554,25 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 						local wep = sender:Give(itemtab.SWEP)
 						wep:EmptyAllButClip()
 						sender:StripWeapon(oldwep)
+					else
+						sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
 					end
 					sender:SetWeaponToolslot(itemtab.SWEP)
 				else
+					sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
 					sender:SetWeaponToolslot(itemtab.SWEP)
 				end
 			end
 		end
 	else
 		if itemtab.NoClassicMode then
-			sender:CenterNotify(COLOR_RED, translate.ClientFormat(sender, "cant_use_x_in_classic_mode", itemtab.Name))
+			sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_use_in_classic_mode"))
 			sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 			return
 		end
 		if itemtab.SWEP then
 			if sender:HasWeapon(itemtab.SWEP) then
-				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
+				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
 				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 				return	
 			else
@@ -1582,7 +1587,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 
 	sender:TakePoints(cost)
 	sender.PointsSpent = sender.PointsSpent + cost
-	sender:PrintTranslatedMessage(HUD_PRINTTALK, "purchased_x_for_y_points", itemtab.Name, cost)
+	sender:PrintTranslatedMessage(HUD_PRINTTALK, "purchased_for_x_points", cost)
 	sender:SendLua("surface.PlaySound(\"ambient/levels/labs/coinslot1.wav\")")
 end)
 
@@ -2533,7 +2538,7 @@ function GM:PlayerSpawn(pl)
 			else
 				pl:SetWeapon2("weapon_zs_peashooter")
 			end
-			pl:SetWeaponToolslot("weapon_zs_ammokit")
+			pl:SetWeaponToolslot("weapon_zs_enemyradar")
 			pl:SetWeaponMelee("weapon_zs_swissarmyknife")
 		end
 	end

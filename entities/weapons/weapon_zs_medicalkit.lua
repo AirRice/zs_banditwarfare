@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "메디킷"
-	SWEP.Description = "응급 의약품이 에너지의 형태로 들어 있는 킷.\n팀원의 체력을 책임진다.\n주 공격: 팀원 치료.\n보조 공격: 자신 치료.\n팀원을 치료할 시 딜레이가 50% 감소하고 포인트를 습득한다."
+	SWEP.TranslateName = "weapon_medikit_name"
+	SWEP.TranslateDesc = "weapon_medikit_desc"
 	SWEP.Slot = 4
 	SWEP.SlotPos = 0
 
@@ -27,12 +27,12 @@ SWEP.Primary.ClipSize = 40
 SWEP.Primary.DefaultClip = 160
 SWEP.Primary.Ammo = "Battery"
 
---[[SWEP.Secondary.Delay = 9
-SWEP.Secondary.Heal = 15
+SWEP.Secondary.Delay = 9
+SWEP.Secondary.Heal = 10
 
 SWEP.Secondary.ClipSize = 1
 SWEP.Secondary.DefaultClip = 1
-SWEP.Secondary.Ammo = "dummy"]]
+SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
@@ -43,6 +43,11 @@ SWEP.HoldType = "slam"
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetDeploySpeed(1.1)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:Think()
@@ -67,6 +72,14 @@ function SWEP:PrimaryAttack()
 		local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Primary.Heal * multiplier, maxhealth - health)))
 		local totake = math.ceil(toheal / multiplier)
 		if toheal > 0 then
+			local tox = ent:GetStatus("tox")
+			if (tox and tox:IsValid()) then
+				tox:SetTime(1)
+			end
+			local bleed = ent:GetStatus("bleed")
+			if (bleed and bleed:IsValid()) then
+				bleed:SetDamage(1)
+			end
 			for _, hook in pairs(ents.FindInSphere(ent:GetPos(), 60 )) do
 				if hook:GetClass() == "prop_meathook" and hook:GetParent() == ent then
 					hook.TicksLeft = 0
@@ -90,7 +103,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	--[[local owner = self.Owner
+	local owner = self.Owner
 	if not self:CanPrimaryAttack() or not gamemode.Call("PlayerCanBeHealed", owner) then return end
 
 	local health, maxhealth = owner:Health(), owner:GetMaxHealth()
@@ -98,6 +111,19 @@ function SWEP:SecondaryAttack()
 	local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Secondary.Heal * multiplier, maxhealth - health)))
 	local totake = math.ceil(toheal / multiplier)
 	if toheal > 0 then
+		local tox = owner:GetStatus("tox")
+		if (tox and tox:IsValid()) then
+			tox:SetTime(1)
+		end
+		local bleed = owner:GetStatus("bleed")
+		if (bleed and bleed:IsValid()) then
+			bleed:SetDamage(1)
+		end
+		for _, hook in pairs(ents.FindInSphere(owner:GetPos(), 60 )) do
+			if hook:GetClass() == "prop_meathook" and hook:GetParent() == owner then
+				hook.TicksLeft = 0
+			end
+		end
 		self:SetNextCharge(CurTime() + self.Secondary.Delay * math.min(1, toheal / self.Secondary.Heal))
 		owner.NextMedKitUse = self:GetNextCharge()
 
@@ -110,7 +136,7 @@ function SWEP:SecondaryAttack()
 
 		owner:DoAttackEvent()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
-	end]]
+	end
 end
 
 function SWEP:Deploy()
@@ -188,7 +214,7 @@ function SWEP:DrawHUD()
 
 		surface.SetDrawColor(255, 0, 0, 180)
 		surface.SetTexture(texGradDown)
-		surface.DrawTexturedRect(x, y, math.min(1, timeleft / self.Primary.Delay) * wid, hei)
+		surface.DrawTexturedRect(x, y, math.min(1, timeleft > self.Primary.Delay and (timeleft / self.Secondary.Delay) or (timeleft / self.Primary.Delay)) * wid, hei)
 
 		surface.SetDrawColor(255, 0, 0, 180)
 		surface.DrawOutlinedRect(x, y, wid, hei)

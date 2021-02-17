@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'타이니' 슬러그 건"
-	SWEP.Description = "이 산탄총은 슬러그 탄을 발사하도록 개조되어 장거리에서도 매우 정확하다."
+	SWEP.TranslateName = "weapon_tinyslug_name"
+	SWEP.TranslateDesc = "weapon_tinyslug_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -13,7 +13,7 @@ if CLIENT then
 	SWEP.HUD3DPos = Vector(-1, 0, 0)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
 	SWEP.HUD3DScale = 0.02
-
+	--[[
 	SWEP.VElements = {
 		["base"] = { type = "Model", model = "models/props_phx/construct/metal_plate_curve360x2.mdl", bone = "v_weapon.xm1014_Parent", rel = "", pos = Vector(0, -6, -9), angle = Angle(0, 0, 0), size = Vector(0.014, 0.014, 0.094), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["base+"] = { type = "Model", model = "models/props_phx/construct/metal_angle360.mdl", bone = "v_weapon.xm1014_Parent", rel = "base", pos = Vector(0, 0, 8.5), angle = Angle(0, 0, 0), size = Vector(0.014, 0.014, 0.014), color = Color(255, 255, 255, 45), surpresslightning = false, material = "models/screenspace", skin = 0, bodygroup = {} },
@@ -24,7 +24,7 @@ if CLIENT then
 		["base"] = { type = "Model", model = "models/props_phx/construct/metal_plate_curve360x2.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(13, 1, -7), angle = Angle(80, 0, 0), size = Vector(0.014, 0.014, 0.094), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["base+"] = { type = "Model", model = "models/props_phx/construct/metal_angle360.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base", pos = Vector(0, 0, 8.5), angle = Angle(0, 0, 0), size = Vector(0.014, 0.014, 0.014), color = Color(255, 255, 255, 45), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["base++"] = { type = "Model", model = "models/props_phx/construct/metal_angle360.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base", pos = Vector(0, 0, 2), angle = Angle(0, 0, 0), size = Vector(0.014, 0.014, 0.014), color = Color(255, 255, 255, 45), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
-	}
+	}]]
 end
 
 SWEP.Base = "weapon_zs_base"
@@ -36,9 +36,9 @@ SWEP.WorldModel = "models/weapons/w_shot_xm1014.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_XM1014.Single")
-SWEP.Primary.Damage = 50
+SWEP.Primary.Damage = 40
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 1.2
+SWEP.Primary.Delay = 1
 SWEP.ReloadDelay = 0.6
 
 SWEP.Primary.ClipSize = 3
@@ -50,12 +50,12 @@ SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
 SWEP.ConeMax = 0.005
-SWEP.ConeMin = 0.00
+SWEP.ConeMin = 0
 SWEP.Recoil = 3.25
 SWEP.MovingConeOffset = 0.28
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
-SWEP.IronSightsAng = Vector(0, -1, 0)
+SWEP.IronSightsPos = Vector(-7.04, 1, 1.68)
+SWEP.IronSightsAng = Vector(-0.12, -0.8, 0)
 SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 SWEP.WalkSpeed = SPEED_SLOWER
@@ -68,8 +68,9 @@ function SWEP:IsScoped()
 end
 
 if CLIENT then
-	SWEP.IronsightsMultiplier = 0.25
-
+	SWEP.IronsightsMultiplier = 0.55
+end
+--[[
 	function SWEP:GetViewModelPosition(pos, ang)
 		if self:IsScoped() then
 			return pos + ang:Up() * 256, ang
@@ -99,7 +100,7 @@ if CLIENT then
 			end
 		end
 	end
-end
+end]]
 function SWEP:Reload()
 	if self.reloading then return end
 

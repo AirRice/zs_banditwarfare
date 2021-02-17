@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'이레이저' 전략 권총"
-	SWEP.Description = "탄창에 남은 탄환 수에 반비례해 대미지가 올라간다. 마지막 한 발은 세 배의 대미지를 입힌다."
+	SWEP.TranslateName = "weapon_eraser_name"
+	SWEP.TranslateDesc = "weapon_eraser_desc"
 
 	SWEP.ViewModelFOV = 60
 	SWEP.ViewModelFlip = false

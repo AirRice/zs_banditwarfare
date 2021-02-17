@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'스토커' M4"
-	--SWEP.Description = "이 총을 사용하고 있을 때는 발소리가 100% 감소된다."
+	SWEP.TranslateName = "weapon_stalker_name"
+	SWEP.TranslateDesc = "weapon_stalker_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 

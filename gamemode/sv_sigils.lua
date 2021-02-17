@@ -178,7 +178,7 @@ function GM:CreateZombieNests()
 	if bspawn and bspawn:IsValid() then
 		local ent = ents.Create("prop_sampledepositterminal")
 		if ent:IsValid() then
-			ent:SetPos(bspawn:GetPos() + Vector(0, 0, 16))
+			ent:SetPos(bspawn:GetPos() + Vector(0, 0, 8))
 			ent:Spawn()
 			ent:DropToFloor()
 			ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
@@ -186,7 +186,7 @@ function GM:CreateZombieNests()
 		end
 		local ent2 = ents.Create("prop_sampledepositterminal")
 		if ent2:IsValid() then
-			ent2:SetPos(hspawn:GetPos() + Vector(0, 0, 16))
+			ent2:SetPos(hspawn:GetPos() + Vector(0, 0, 8))
 			ent2:Spawn()
 			ent2:DropToFloor()
 			ent2:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)

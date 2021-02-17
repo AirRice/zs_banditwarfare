@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'헌터' 소총"
-	SWEP.Description = "대구경 탄환을 발사한다. 장전속도는 느리지만 특수한 탄환을 쏜다. 이 총알은 몸에 맞으면 그렇게 아프지 않지만 머리에 맞을 시 조금이라도 다친 사람을 즉시 처치한다."
+	SWEP.TranslateName = "weapon_hunter_name"
+	SWEP.TranslateDesc = "weapon_hunter_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -43,7 +43,7 @@ SWEP.ReloadDelay = SWEP.Primary.Delay
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
-SWEP.Primary.DefaultClip = 15
+SWEP.Primary.DefaultClip = 5
 SWEP.Recoil = 3
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
@@ -97,6 +97,23 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("hit_hunter", effectdata)
+	local hitent = tr.Entity
+	if hitent:IsValid() and hitent:IsPlayer() and CurTime() >= (hitent._NextDisorientEffect or 0) and tr.HitGroup == HITGROUP_HEAD then
+		hitent._NextDisorientEffect = CurTime() + 3
+		hitent:GiveStatus("disorientation")
+		--[[local x = math.Rand(0.75, 1)
+		x = x * (math.random(2) == 2 and 1 or -1)
+
+		local ang = Angle(1 - x, x, 0) * 38
+		hitent:ViewPunch(ang)
+
+		local eyeangles = hitent:EyeAngles()
+		eyeangles:RotateAroundAxis(eyeangles:Up(), ang.yaw)
+		eyeangles:RotateAroundAxis(eyeangles:Right(), ang.pitch)
+		eyeangles.pitch = math.Clamp(ang.pitch, -89, 89)
+		eyeangles.roll = 0
+		hitent:SetEyeAngles(eyeangles)--]]
+	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
 

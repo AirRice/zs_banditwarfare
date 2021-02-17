@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "EMP 건"
-	SWEP.Description = "다용도 도구. 다음이 가능하다:\n 각종 설치형 장비(터렛, 맨핵, 방어막 등)을 파괴\n 적 바리케이드의 프롭에 박힌 못을 즉시 제거\n 적 송신기에 발사해 적들의 송신을 잠시 방해"
+	SWEP.TranslateName = "weapon_empgun_name"
+	SWEP.TranslateDesc = "weapon_empgun_desc"
 	SWEP.Slot = 4
 	SWEP.SlotPos = 0
 	
@@ -151,7 +151,3 @@ function BulletCallback(attacker, tr, dmginfo)
 end
 
 SWEP.BulletCallback = BulletCallback
-
-local function RemoveAllNails(ent)
-
-end

@@ -96,7 +96,7 @@ function PANEL:Text2Paint()
 			col = COLOR_GRAY
 		end
 
-		draw.SimpleText(translate.Format("zombie_invasion_in_x", util.ToMinutesSeconds(timeleft)), self.Font, 0, 0, col)
+		draw.SimpleText(translate.Format("game_start_in_x", util.ToMinutesSeconds(timeleft)), self.Font, 0, 0, col)
 	elseif GAMEMODE:GetWaveActive() then
 		local waveend = GAMEMODE:GetWaveEnd()
 		if waveend ~= -1 then
@@ -116,7 +116,7 @@ end
 
 function PANEL:Text3Paint()
 	if MySelf:IsValid() then
-		draw.SimpleText(translate.Format("points_x", MySelf:GetPoints().."포인트"), self.Font, 0, 0, COLOR_DARKRED)
+		draw.SimpleText(translate.Get("points")..MySelf:GetPoints(), self.Font, 0, 0, COLOR_DARKRED)
 	end
 
 	return true

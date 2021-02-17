@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "이온 캐논"
-	SWEP.Description = "다른 무기와는 다르게 거듭해 쏠수록 정확해진다."
+	SWEP.TranslateName = "weapon_ioncannon_name"
+	SWEP.TranslateDesc = "weapon_ioncannon_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -87,6 +87,9 @@ function SWEP:Initialize()
 	if CLIENT then
 		self:CheckCustomIronSights()
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 

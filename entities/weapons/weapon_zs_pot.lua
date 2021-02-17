@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "냄비"
+	SWEP.TranslateName = "weapon_cookingpot_name"
+	SWEP.TranslateDesc = "weapon_cookingpot_desc"
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 55

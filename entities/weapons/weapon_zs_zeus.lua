@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'제우스' 자동소총"
+	SWEP.TranslateName = "weapon_zeusrifle_name"
+	SWEP.TranslateDesc = "weapon_zeusrifle_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -33,7 +34,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Zeus.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 26
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.38
 SWEP.ReloadDelay = SWEP.Primary.Delay

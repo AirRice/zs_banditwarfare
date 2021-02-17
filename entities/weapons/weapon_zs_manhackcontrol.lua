@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "맨핵 조종기"
+	SWEP.TranslateName = "weapon_manhackcontrol_name"
+	SWEP.TranslateDesc = "weapon_manhackcontrol_desc"
 
 	SWEP.ViewModelFOV = 50
 
@@ -43,6 +44,11 @@ SWEP.HoldType = "slam"
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetDeploySpeed(10)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:Think()

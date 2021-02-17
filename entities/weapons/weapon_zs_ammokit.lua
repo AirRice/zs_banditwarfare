@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "탄약킷"
-	SWEP.Description = "탄약이 들어 있는 박스. 팀원이 들고 있는 무기의 탄약을 총 3번 공급해줄 수 있다."
+	SWEP.TranslateName = "weapon_ammokit_name"
+	SWEP.TranslateDesc = "weapon_ammokit_desc"
 	SWEP.Slot = 4
 
 	SWEP.ViewModelFlip = false
@@ -31,8 +31,8 @@ SWEP.WorldModel = "models/items/boxmrounds.mdl"
 SWEP.UseHands = true
 SWEP.AmmoIfHas = true
 
-SWEP.Primary.ClipSize = 1
-SWEP.Primary.DefaultClip = 3
+SWEP.Primary.ClipSize = 2
+SWEP.Primary.DefaultClip = 2
 SWEP.Primary.Ammo = "smg1_grenade"
 SWEP.Primary.Automatic = false
 SWEP.Primary.Delay = 1.25
@@ -44,15 +44,17 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_FAST
-
+SWEP.ShowOnlyClip = true
 SWEP.HoldType = "slam"
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType("slam")
 	self:SetDeploySpeed(1.1)
-
 	if CLIENT then
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 
@@ -71,36 +73,24 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	
-	local tr = {}
-	tr.start = self.Owner:GetShootPos()
-	tr.endpos = self.Owner:GetShootPos() + 200 * self.Owner:GetAimVector()
-	tr.filter = {self.Owner}
-	local trace = util.TraceLine(tr)
-	if trace.Hit and trace.Entity:IsPlayer() and self.Owner:IsPlayer() and trace.Entity:Team() == self.Owner:Team() then
-		self:SendWeaponAnim(ACT_VM_THROW)
-		self.Owner:DoAttackEvent()
-		self:TakePrimaryAmmo(1)	
-		self.NextDeploy = CurTime() + 0.65
-		local ammotype
-		local wep = trace.Entity:GetActiveWeapon()
-		if not wep:IsValid() then
-			ammotype = "smg1"
-		end
-
-		if not ammotype then
-			ammotype = wep:GetPrimaryAmmoTypeString()
-			if not GAMEMODE.AmmoResupply[ammotype] then
-				ammotype = "smg1"
+	local owner = self.Owner
+	self:SendWeaponAnim(ACT_VM_THROW)
+	owner:DoAttackEvent()
+	self:TakePrimaryAmmo(1)
+	self.NextDeploy = CurTime() + 0.65
+	if SERVER then
+		local ent = ents.Create("prop_ammobag")
+		if ent:IsValid() then
+			ent:SetPos(owner:GetShootPos())
+			ent:SetOwner(owner)
+			ent:Spawn()
+			ent:EmitSound("WeaponFrag.Throw")
+			local phys = ent:GetPhysicsObject()
+			if phys:IsValid() then
+				phys:Wake()
+				phys:AddAngleVelocity(VectorRand() * 5)
+				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 340)
 			end
-		end
-		if SERVER then
-			trace.Entity:GiveAmmo(GAMEMODE.AmmoResupply[ammotype], ammotype)
-			self.Owner:AddPoints(1)
-			net.Start("zs_commission")
-				net.WriteEntity(self)
-				net.WriteEntity(activator)
-				net.WriteUInt(1, 16)
-			net.Send(self.Owner)
 		end
 	end
 end
@@ -146,10 +136,10 @@ function SWEP:Think()
 			self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
 
 			if SERVER then
-				self:Remove()
+				self:GetOwner():StripWeapon(self:GetClass())
 			end
 		end
 	elseif SERVER and self:GetPrimaryAmmoCount() <= 0 then
-		self:Remove()
+		self:GetOwner():StripWeapon(self:GetClass())
 	end
 end

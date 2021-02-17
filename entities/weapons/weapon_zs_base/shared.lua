@@ -62,6 +62,9 @@ function SWEP:Initialize()
 	if CLIENT then
 		self:CheckCustomIronSights()
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 
@@ -75,17 +78,16 @@ function SWEP:DoRecoil()
 	local mul = 1
 	
 	if (self.Owner:Crouching()) then
-		mul = mul - 0.3
+		mul = mul - 0.2
 	end
 	
-	if not (self:GetIronsights()) then
-		mul = mul - 0.25
+	if self:GetIronsights() then
+		mul = mul - 0.15
 	end
 
 	recoil = recoil * mul
 	
 	if SERVER then
-		
 		self.Owner:ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 	else
 		local curAng = self.Owner:EyeAngles()

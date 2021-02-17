@@ -220,11 +220,12 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 	local mul = 1
 
 	pl:SetVelocity(- pl:GetVelocity() / 4)
-	local damage = (0.1 * (speed - 525)) ^ 1.45
+	local damage = math.max(0,0.165*(speed-512))
 	damage = damage * mul
 	if hitfloater then damage = damage / 2 end
 	if math.floor(damage) > 0 then
 		if SERVER then
+			print(damage)
 			local groundent = pl:GetGroundEntity()
 			local tohurt = pl
 			local isgoomba = false
@@ -232,7 +233,8 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 				tohurt = groundent
 				isgoomba = true
 			end
-			if pl:GetActiveWeapon().NoFallDamage && !isgoomba then return true end
+			if pl:GetActiveWeapon().CapFallDamage && !isgoomba then damage = math.Clamp(damage,0,30) end
+			if isgoomba then damage = damage * 2 end
 			tohurt:TakeSpecialDamage(damage, DMG_FALL, isgoomba and pl or game.GetWorld(), game.GetWorld(), pl:GetPos())
 			if damage >= 30 and damage < pl:Health() then
 				tohurt:KnockDown(damage * 0.05*mul)

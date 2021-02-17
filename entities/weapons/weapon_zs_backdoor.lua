@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "통신 백도어"
-	SWEP.Description = "1회용 도구로, 사용하면 적이 소유한 송신기를 해킹해 적 송신의 데이터를 손상시킨다."
+	SWEP.TranslateName = "weapon_backdoor_name"
+	SWEP.TranslateDesc = "weapon_backdoor_desc"
 
 	SWEP.ViewModelFOV = 70
 

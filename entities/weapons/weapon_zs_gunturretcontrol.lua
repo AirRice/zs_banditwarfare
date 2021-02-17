@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "터렛 조종기"
-	SWEP.Description = "사용자가 소유한 터렛들을 원격조종할 수 있게 해준다."
+	SWEP.TranslateName = "weapon_turretcontrol_name"
+	SWEP.TranslateDesc = "weapon_turretcontrol_desc"
 
 	SWEP.ViewModelFOV = 50
 
@@ -42,6 +42,11 @@ SWEP.HoldType = "slam"
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetDeploySpeed(10)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:Think()

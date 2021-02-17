@@ -1,8 +1,8 @@
 ﻿AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'불멸' 권총"
-	SWEP.Description = "사용자의 체력이 낮을수록 데미지가 증가한다."
+	SWEP.TranslateName = "weapon_immortal_name"
+	SWEP.TranslateDesc = "weapon_immortal_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -48,7 +48,7 @@ SWEP.WorldModel = "models/weapons/w_357.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Immortal.Single")
-SWEP.Primary.Damage = 33
+SWEP.Primary.Damage = 27
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
@@ -71,6 +71,6 @@ function SWEP:PrimaryAttack()
 
 	self:EmitFireSound()
 	self:TakeAmmo()
-	self:ShootBullets(self.Primary.Damage+35*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
+	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end

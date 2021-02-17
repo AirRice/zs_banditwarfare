@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'피슈터' 권총"
+	SWEP.TranslateName = "weapon_peashooterpistol_name"
+	SWEP.TranslateDesc = "weapon_peashooterpistol_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -23,9 +24,9 @@ SWEP.WorldModel = "models/weapons/w_pist_p228.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_P228.Single")
-SWEP.Primary.Damage = 9
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.1
+SWEP.Primary.Delay = 0.08
 
 SWEP.Primary.ClipSize = 18
 SWEP.Primary.Automatic = false

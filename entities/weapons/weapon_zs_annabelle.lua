@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'애나벨' 소총"
-	SWEP.Description = "이 사냥용 소총은 벽에 부딪히면 폭발해 반대쪽으로 파편을 날리는 특수탄환을 사용한다."
+	SWEP.TranslateName = "weapon_annabelle_name"
+	SWEP.TranslateDesc = "weapon_annabelle_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 	
@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 45
+SWEP.Primary.Damage = 40
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1
 SWEP.ReloadDelay = 0.4
@@ -156,14 +156,18 @@ end
 
 local function DoRicochet(attacker, hitpos, hitnormal, normal, damage)
 	attacker.RicochetBullet = true
-	attacker:FireBullets({Num = 10, Src = hitpos, Dir = hitnormal, Spread = Vector(0.15, 0.15, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage, Callback = GenericBulletCallback})
+	attacker:FireBullets({Num = 10, Src = hitpos, Dir = hitnormal, Spread = Vector(0.25, 0.25, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage, Callback = GenericBulletCallback})
 	attacker.RicochetBullet = nil
 end
 function SWEP.BulletCallback(attacker, tr, dmginfo)
-	if SERVER and tr.HitWorld and not tr.HitSky then
-		local hitpos, hitnormal, normal, dmg = tr.HitPos, tr.HitNormal, tr.Normal, dmginfo:GetDamage() / 5
-		timer.Simple(0, function() DoRicochet(attacker, hitpos, hitnormal, normal, dmg) end)
+	if tr.HitWorld and not tr.HitSky then
+		local hitpos, hitnormal, normal= tr.HitPos, tr.HitNormal, tr.Normal 
+		if SERVER then
+			timer.Simple(0, function() 
+				DoRicochet(attacker, hitpos, hitnormal, normal, dmginfo:GetDamage()/20) 
+			end)
+			util.BlastDamageEx(dmginfo:GetInflictor(), attacker, hitpos, 64 ,dmginfo:GetDamage()/1.5, DMG_BULLET)
+		end
 	end
-
 	GenericBulletCallback(attacker, tr, dmginfo)
 end

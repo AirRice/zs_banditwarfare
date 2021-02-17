@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'인페르노' AUG"
+	SWEP.TranslateName = "weapon_inferno_name"
+	SWEP.TranslateDesc = "weapon_inferno_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -23,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_rif_aug.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_AUG.Single")
-SWEP.Primary.Damage = 18
+SWEP.Primary.Damage = 19
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.095
 

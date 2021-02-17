@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'아도니스' 펄스 돌격소총"
-	SWEP.Description = "반동이 적은 신식 무기로 연사속도는 느리지만 적을 느리게 한다."
+	SWEP.TranslateName = "weapon_adonispulse_name"
+	SWEP.TranslateDesc = "weapon_adonispulse_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 

@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "칼"
-	SWEP.Description = "등을 공격하면 2배의 대미지를 입힌다."
+	SWEP.TranslateName = "weapon_combatknife_name"
+	SWEP.TranslateDesc = "weapon_combatknife_desc"
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 55

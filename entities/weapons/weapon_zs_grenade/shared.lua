@@ -21,6 +21,11 @@ SWEP.GrenadeRadius = 128
 function SWEP:Initialize()
 	self:SetWeaponHoldType("grenade")
 	self:SetDeploySpeed(1.1)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:Precache()
@@ -104,10 +109,10 @@ function SWEP:Think()
 			self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
 
 			if SERVER then
-				self:Remove()
+				self.Owner:StripWeapon(self:GetClass())
 			end
 		end
 	elseif SERVER and self:GetPrimaryAmmoCount() <= 0 then
-		self:Remove()
+		self.Owner:StripWeapon(self:GetClass())
 	end
 end

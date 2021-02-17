@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'좀비 드릴' 데저트 이글"
-	SWEP.Description = "이 권총은 강력한 탄환들을 쏜다." --SWEP.Description = "This high-powered handgun has the ability to pierce through multiple zombies. The bullet's power decreases by half which each zombie it hits."
+	SWEP.TranslateName = "weapon_deagle_name"
+	SWEP.TranslateDesc = "weapon_deagle_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -26,7 +26,7 @@ SWEP.WorldModel = "models/weapons/w_pist_deagle.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Deagle.Single")
-SWEP.Primary.Damage = 27
+SWEP.Primary.Damage = 20
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.32
 SWEP.Primary.KnockbackScale = 2

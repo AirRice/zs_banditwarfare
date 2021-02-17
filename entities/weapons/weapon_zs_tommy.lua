@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'토미' SMG"
+	SWEP.TranslateName = "weapon_tommysmg_name"
+	SWEP.TranslateDesc = "weapon_tommysmg_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -38,26 +39,26 @@ SWEP.WorldModel = "models/weapons/w_rif_galil.mdl"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
 
-SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
+SWEP.Primary.Sound = Sound("Weapon_M249.Single")
 SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.055
+SWEP.Primary.Delay = 0.075
 
 SWEP.Primary.ClipSize = 75
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
-
+	
 SWEP.ConeMax = 0.09
-SWEP.ConeMin = 0.006
+SWEP.ConeMin = 0.007
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-SWEP.Recoil = 0.6
+SWEP.Recoil = 0.7
 
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)
-	self:EmitSound("weapons/ak47/ak47-1.wav", 55, 130,1,CHAN_VOICE)
+	self:EmitSound("weapons/ak47/ak47-1.wav", 55, 110,1,CHAN_VOICE)
 end
 function SWEP:Reload()
 	if self.Owner:IsHolding() then return end
@@ -67,7 +68,7 @@ function SWEP:Reload()
 	end
 	
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.8)
+		self.Owner:GetViewModel():SetPlaybackRate(0.6)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*5/4+0.3
 		self:SetNextPrimaryFire(self.IdleAnimation)
 		self:SetNextReload(self.IdleAnimation)

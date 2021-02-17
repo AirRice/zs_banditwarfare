@@ -42,8 +42,6 @@ function PANEL:OpenMenu()
 	self:SetVisible(true)
 	self:MakePopup()
 	self.StartChecking = RealTime() + 0.1
-
-	timer.Simple(0, function() gui.SetMousePos(ScrW() - self:GetWide() * 0.5, ScrH() * 0.5) end)
 end
 
 function PANEL:CloseMenu()
@@ -156,7 +154,6 @@ function PANEL:SetWeaponSlot(wepslot)
 	self.m_WeaponSlot = wepslot
 	local sweptable = weapons.GetStored(wep)
 	if not sweptable then return end
-	self:SetTooltip(sweptable.Description)
 	self.m_Weapon = wep
 	local wepmodel = "error.mdl"
 	if not sweptable.WorldModel and sweptable.Base and (sweptable.Base ~= "weapon_zs_base" and sweptable.Base ~= "weapon_zs_basemelee") then
@@ -177,7 +174,7 @@ function PANEL:SetWeaponSlot(wepslot)
 		self.m_WeaponModelButton:SetLookAng(ang)
 		self.m_WeaponModelButton.LayoutEntity = function(ent) return end
 	end
-	self.m_WeaponNameLabel:SetText(sweptable.PrintName or wep)
+	self.m_WeaponNameLabel:SetText(sweptable.TranslateName and translate.Get(sweptable.TranslateName) or wep)
 	self.m_WeaponNameLabel:SizeToContents()
 
 	self:Refresh()

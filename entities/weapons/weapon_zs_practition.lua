@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'프렉티션' 의료소총"
-	SWEP.Description = "메디컬 에너지를 사용해 적에게는 지속적인 피해를 입히고, 아군은 치료하는 탄환을 발사한다."
+	SWEP.TranslateName = "weapon_practicion_name"
+	SWEP.TranslateDesc = "weapon_practicion_desc"
 
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0

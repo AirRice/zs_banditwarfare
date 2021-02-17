@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "정육점 칼"
-
+	SWEP.TranslateName = "weapon_meatcleaver_name"
+	SWEP.TranslateDesc = "weapon_meatcleaver_desc"
 	SWEP.ViewModelFOV = 55
 	SWEP.ViewModelFlip = false
 
@@ -27,7 +27,7 @@ SWEP.NoDroppedWorldModel = true
 --[[SWEP.BoxPhysicsMax = Vector(8, 1, 4)
 SWEP.BoxPhysicsMin = Vector(-8, -1, -4)]]
 
-SWEP.MeleeDamage = 24
+SWEP.MeleeDamage = 12
 SWEP.MeleeRange = 48
 SWEP.MeleeSize = 0.875
 SWEP.Primary.Delay = 0.35
@@ -56,7 +56,21 @@ function SWEP:PlayHitFleshSound()
 end
 
 function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() and hitent:Health() <= 0 then
-		hitent:Dismember(hitent:NearestDismemberableBone(tr.HitPos))
+	if hitent:IsValid() and hitent:IsPlayer() then
+		if hitent:Health() <= 0 then
+			hitent:Dismember(hitent:NearestDismemberableBone(tr.HitPos))
+		else
+			local bleed = hitent:GetStatus("bleed")
+			if bleed and bleed:IsValid() then
+				bleed:AddDamage(self.MeleeDamage)
+				bleed.Damager = self.Owner
+			else
+				local stat = hitent:GiveStatus("bleed")
+				if stat and stat:IsValid() then
+					stat:SetDamage(self.MeleeDamage)
+					stat.Damager = self.Owner
+				end
+			end
+		end
 	end
 end

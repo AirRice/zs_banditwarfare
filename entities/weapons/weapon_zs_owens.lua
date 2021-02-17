@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'오웬스' 권총"
-	SWEP.Description = "한 탄환이 2개로 갈라져 발사된다."
+	SWEP.TranslateName = "weapon_owenspistol_name"
+	SWEP.TranslateDesc = "weapon_owenspistol_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 	

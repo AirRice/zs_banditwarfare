@@ -1,11 +1,9 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "전기충격기"
-
+	SWEP.TranslateName = "weapon_stunstick_name"
+	SWEP.TranslateDesc = "weapon_stunstick_desc"
 	SWEP.ViewModelFOV = 50
-
-	SWEP.Description = "다른 근접 무기보다는 약하지만, 상대를 잠시동안 느리게 하고 행동불능 상태로 만든다."
 end
 
 SWEP.Base = "weapon_zs_basemelee"

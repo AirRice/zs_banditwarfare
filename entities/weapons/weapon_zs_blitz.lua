@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'블리츠' SG552"
+	SWEP.TranslateName = "weapon_blitzrifle_name"
+	SWEP.TranslateDesc = "weapon_blitzrifle_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 

@@ -70,7 +70,7 @@ function ENT:PhysicsUpdate(phys)
 			for _, trace in pairs(trs) do
 				if trace.Hit and not self.Touched[trace.Entity] then
 					local ent = trace.Entity
-					if ent ~= owner and (ent:IsPlayer() and ent:Team() ~= self.Team and ent:Alive()) then
+					if ent ~= owner and (ent:IsPlayer() and ent:Team() ~= self.Owner:Team() and ent:Alive()) then
 						self.Touched[trace.Entity] = trace
 						temp_pen_ents[trace.Entity] = true
 					end

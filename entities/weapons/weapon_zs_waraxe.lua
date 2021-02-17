@@ -3,7 +3,8 @@ AddCSLuaFile()
 SWEP.Base = "weapon_zs_battleaxe"
 
 if CLIENT then
-	SWEP.PrintName = "'워액스' 권총"
+	SWEP.TranslateName = "weapon_waraxe_name"
+	SWEP.TranslateDesc = "weapon_waraxe_desc"
 
 	SWEP.VElements = {
 		["base"] = { type = "Model", model = "models/props_c17/concrete_barrier001a.mdl", bone = "v_weapon.USP_Parent", rel = "", pos = Vector(-0.69, -3.5, -1.5), angle = Angle(0, 0, 90), size = Vector(0.019, 0.019, 0.019), color = Color(203, 233, 236, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },

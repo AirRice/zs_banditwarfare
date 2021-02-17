@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'포지트론' 양전자포"
-	SWEP.Description = "거의 모든 것을 분해시키는 양전 입자를 방출한다."
+	SWEP.TranslateName = "weapon_positron_name"
+	SWEP.TranslateDesc = "weapon_positron_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 	SWEP.ViewModelFOV = 50
@@ -59,16 +59,16 @@ SWEP.Primary.Ammo = "pulse"
 SWEP.ConeMax = 0
 SWEP.ConeMin = 0
 SWEP.NoAmmo = false
-SWEP.Recoil = 0.2
+SWEP.Recoil = 0.1
 
-SWEP.WalkSpeed = SPEED_SLOW
+SWEP.WalkSpeed = SPEED_SLOWEST
 
 SWEP.IronSightsPos = Vector(-6.6, 20, 3.1)
 SWEP.NextHurt = 0
 SWEP.StartPos = nil
 SWEP.EndPos = nil
 
-SWEP.ShowOnlyClip = true
+SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 150
 
 sound.Add( {
@@ -92,6 +92,8 @@ sound.Add( {
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 5, "FiringLaser")
+	self:NetworkVar("Entity", 4, "LastHurtTarget")
+	self:NetworkVar("Int", 4, "LastHurtDmg")
 	if self.BaseClass.SetupDataTables then
 		self.BaseClass.SetupDataTables(self)
 	end
@@ -136,6 +138,8 @@ function SWEP:Think()
 		self:StopSound( "Loop_Lepton_Fire2" )
 		self:EmitSound("weapons/physcannon/physcannon_claws_close.wav")
 		self:SetFiringLaser( false )
+		self:SetLastHurtTarget(nil)
+		self:SetLastHurtDmg(0)
     end
     if self.Owner:KeyDown(IN_ATTACK) then
 		if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then 
@@ -174,14 +178,21 @@ function SWEP:Think()
 					util.Decal( "FadingScorch", tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
 				end
 				if ent:IsValid() then
+					local dmg = 1
+					if self:GetLastHurtTarget() == ent then
+						dmg = math.min(self:GetLastHurtDmg()+1,self.Primary.Damage*3)
+					else
+						self:SetLastHurtTarget(ent)
+					end
+					self:SetLastHurtDmg(dmg)
 					local owner = self:GetOwner()
 					if ent:IsPlayer() then
 						if ent:Team() == owner:Team() then return end
-						ent:TakeSpecialDamage(self.Primary.Damage, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(dmg/3, DMG_DISSOLVE, owner, self)
 					elseif (ent.IsBarricadeObject or ent:IsNailed()) and not ent:IsSameTeam(owner)  then
-						ent:TakeSpecialDamage(self.Primary.Damage*2.5, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(dmg, DMG_DISSOLVE, owner, self)
 					else
-						ent:TakeSpecialDamage(self.Primary.Damage, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(dmg/3, DMG_DISSOLVE, owner, self)
 					end
 					self.NextHurt = CurTime()+self.Primary.Delay
 				end
@@ -195,7 +206,11 @@ end
 
 function SWEP:Deploy()
     self:SetFiringLaser(false)
-    return true
+	self:SetLastHurtTarget(nil)
+	self:SetLastHurtDmg(0)
+    if self.BaseClass.Deploy then
+		self.BaseClass.Deploy(self)
+	end
 end
 
 function SWEP:SecondaryAttack()
@@ -283,15 +298,15 @@ function SWEP:DrawLaser()
     self.StartPos = self:GetMuzzlePos( self, 1 )
     if not self.StartPos then return end
     if not self.EndPos then return end
-
+	local beamwide = 0.2 + 0.8*math.Clamp(self:GetLastHurtDmg()/self.Primary.Damage,0,1)
     --self.Weapon:SetRenderBoundsWS( self.StartPos, self.EndPos )
 	local Beamspeed = (self.EndPos - self.StartPos):Length()/100
 	render.SetMaterial(Material("Effects/ar2_altfire1"))
 	render.DrawSprite( self.EndPos, 8, 8, Color(125,125,225,255))
 		--if((self.EndPos - self.StartPos):Length() >= 60) then self.EndPos = self.Weapon.Owner:EyePos() + self.Weapon.Owner:EyeAngles():Forward()*100 end
 	render.SetMaterial( Material("cable/physbeam") )  
-	render.DrawBeam( self.StartPos, self.EndPos, 20, CurTime()*Beamspeed, CurTime()*Beamspeed-1, Color( 255, 255, 255, 255 ) )
+	render.DrawBeam( self.StartPos, self.EndPos, 20*beamwide, CurTime()*Beamspeed, CurTime()*Beamspeed-1, Color( 255, 255, 255, 255 ) )
 	render.SetMaterial( Material("cable/hydra") )  
-	render.DrawBeam( self.StartPos, self.EndPos, 35, CurTime()*Beamspeed, CurTime()*Beamspeed-5, Color( 255, 255, 255, 255 ) )
+	render.DrawBeam( self.StartPos, self.EndPos, 35*beamwide, CurTime()*Beamspeed, CurTime()*Beamspeed-5, Color( 255, 255, 255, 255 ) )
 end
 end

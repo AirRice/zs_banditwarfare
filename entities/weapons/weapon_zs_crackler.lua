@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'크래클러' 돌격 소총"
+	SWEP.TranslateName = "weapon_crackler_name"
+	SWEP.TranslateDesc = "weapon_crackler_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -23,7 +24,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_FAMAS.Clipout")
 SWEP.Primary.Sound = Sound("Weapon_FAMAS.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 10
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.135
 

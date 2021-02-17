@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'인퀴지션' 소형 석궁"
+	SWEP.TranslateName = "weapon_inquisition_name"
+	SWEP.TranslateDesc = "weapon_inquisition_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -41,7 +42,7 @@ SWEP.WorldModel = "models/weapons/w_pist_p228.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
-SWEP.Primary.Damage = 60
+SWEP.Primary.Damage = 20
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 1
 
@@ -92,7 +93,7 @@ function SWEP:ShootBullets(dmg, cone)
 			ent:SetAngles(aimvec:Angle())
 			ent:SetOwner(owner)
 			ent:Spawn()
-			ent.Damage = self.Primary.Damage/self.Primary.NumShots
+			ent.Damage = self.Primary.Damage
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()

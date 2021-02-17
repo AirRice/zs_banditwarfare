@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'임펠러' 석궁"
-	SWEP.Description = "여러 명의 적을 통과해 피해를 입히는 화살을 발사한다."
+	SWEP.TranslateName = "weapon_impalercbow_name"
+	SWEP.TranslateDesc = "weapon_impalercbow_desc"
 
 	SWEP.HUD3DBone = "ValveBiped.Crossbow_base"
 	SWEP.HUD3DPos = Vector(1.5, 0.5, 11)
@@ -67,7 +67,6 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 			ent:SetOwner(owner)
 			ent:SetPos(owner:GetShootPos())
 			ent:SetAngles(owner:GetAimVector():Angle())
-			ent.Team = owner:Team()
 			ent.Damage = self.Primary.Damage
 			ent:Spawn()
 			local phys = ent:GetPhysicsObject()

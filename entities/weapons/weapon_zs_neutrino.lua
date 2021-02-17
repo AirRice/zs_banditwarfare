@@ -1,36 +1,53 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'뉴트리노' 펄스 LMG"
-	SWEP.Description = "탄창이 없는 신식 무기로 공격을 거듭할수록 발사속도가 빨라진다."
+	SWEP.TranslateName = "weapon_neutrinoLMG_name"
+	SWEP.TranslateDesc = "weapon_neutrinoLMG_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
+	SWEP.ViewModelFOV = 60
 
 	SWEP.HUD3DBone = "Base"
 	SWEP.HUD3DPos = Vector(7.791, -2.597, -7.792)
 	SWEP.HUD3DScale = 0.04
 	SWEP.VElements = {
-		["handle"] = { type = "Model", model = "models/props_lab/teleplatform.mdl", bone = "Base", rel = "", pos = Vector(2.562, 4.382, -7.264), angle = Angle(0, -106.975, -90), size = Vector(0.052, 0.018, 0.131), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["backcover+"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "Base", rel = "", pos = Vector(0, 3.743, -4.172), angle = Angle(-90, 0, -90), size = Vector(0.064, 0.054, 0.112), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["top++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "", pos = Vector(-4, 3.4, 8.822), angle = Angle(0, 110, -90), size = Vector(0.064, 0.054, 0.054), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["ring"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "", pos = Vector(0, 0, 0.83), angle = Angle(0, 0, 0), size = Vector(0.238, 0.238, 0.617), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["backcover"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "Base", rel = "", pos = Vector(0, 8.26, -10.254), angle = Angle(180, 0, -90), size = Vector(0.259, 0.303, 0.18), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["top+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "", pos = Vector(4, 3.4, 8.822), angle = Angle(0, -110, -90), size = Vector(0.064, 0.054, 0.054), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["ring+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "", pos = Vector(0, 0, 9.887), angle = Angle(0, 0, 0), size = Vector(0.238, 0.238, 0.617), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["backcover++"] = { type = "Model", model = "models/props_combine/combine_core_ring01.mdl", bone = "Base", rel = "", pos = Vector(5.085, 5.119, -4.666), angle = Angle(10.803, 90, -90), size = Vector(0.09, 0.128, 0.064), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["nozzle"] = { type = "Model", model = "models/props_junk/terracotta01.mdl", bone = "Base", rel = "", pos = Vector(0, 0, 21.715), angle = Angle(0, 0, 0), size = Vector(0.583, 0.583, 0.583), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["top"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "", pos = Vector(0, -1.769, 9.48), angle = Angle(0, 0, -90), size = Vector(0.064, 0.054, 0.054), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+		--[[["backcover+"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "Base", rel = "", pos = Vector(0.529, 9.041, -9.542), angle = Angle(180, 0, -90), size = Vector(0.275, 0.261, 0.202), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover+++"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -28.847, 7.265), angle = Angle(90, 90, 0), size = Vector(0.206, 0.206, 0.15), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -10.032, 8.378), angle = Angle(63.763, 0, -90), size = Vector(0.372, 0.372, 0.912), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(5, -24, 3.309), angle = Angle(-120, 0, 0), size = Vector(0.086, 0.065, 0.086), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -24, 12), angle = Angle(0, 0, 0), size = Vector(0.086, 0.065, 0.086), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(-5, -24, 3.299), angle = Angle(120, 0, 0), size = Vector(0.086, 0.065, 0.086), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -10.66, 5.015), angle = Angle(17.34, -90, 0), size = Vector(0.164, 0.059, 0.149), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover++"] = { type = "Model", model = "models/props_lab/labpart.mdl", bone = "Base", rel = "backcover+", pos = Vector(0.097, -3.138, 5.784), angle = Angle(180, -90, 0), size = Vector(1.133, 0.864, 1.133), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -21.872, 8.322), angle = Angle(-90, 90, 0), size = Vector(0.492, 0.492, 0.409), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -19.664, 8.378), angle = Angle(180, 0, -90), size = Vector(0.372, 0.372, 1.506), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }]]
+		["backcover+"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "Base", rel = "", pos = Vector(0.529, 9.041, -9.542), angle = Angle(180, 0, -90), size = Vector(0.275, 0.261, 0.202), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover+++"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -25.903, 7.265), angle = Angle(90, 90, 0), size = Vector(0.115, 0.115, 0.115), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "backcover+", pos = Vector(-0.461, -9.105, 7.098), angle = Angle(9.607, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(5, -13, 3.5), angle = Angle(-120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -13, 12), angle = Angle(0, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "Base", rel = "backcover+", pos = Vector(-5, -13, 3.5), angle = Angle(120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -6.968, 4.618), angle = Angle(2.783, -90, 0), size = Vector(0.104, 0.052, 0.104), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover++"] = { type = "Model", model = "models/props_lab/labpart.mdl", bone = "Base", rel = "backcover+", pos = Vector(0.097, -3.138, 5.784), angle = Angle(180, -90, 0), size = Vector(0.975, 0.975, 0.975), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -15.318, 7.374), angle = Angle(-90, 90, 0), size = Vector(0.207, 0.207, 0.172), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -15.254, 7.098), angle = Angle(180, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}
-	
 	SWEP.ViewModelFlip = false
 end
 SWEP.WElements = {
-	["top++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(18.836, 1.134, -3.421), angle = Angle(-60, -75, 12), size = Vector(0.034, 0.034, 0.034), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["top"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(18.747, -2.422, -8.268), angle = Angle(180, -79.387, 0), size = Vector(0.034, 0.034, 0.034), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["nozzle"] = { type = "Model", model = "models/props_junk/terracotta01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(27.541, -3.258, -4.519), angle = Angle(-90, 3.944, 0), size = Vector(0.194, 0.194, 0.194), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["top+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(17.674, -4.555, -2.25), angle = Angle(60, -75, -1.015), size = Vector(0.034, 0.034, 0.034), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["nozzle+"] = { type = "Model", model = "models/props_junk/metal_paintcan001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(18.461, -2.402, -6.15), angle = Angle(-89.82, 10.119, 0), size = Vector(0.762, 0.762, 0.762), color = Color(255, 255, 255, 255), surpresslightning = false, material = "metal6", skin = 0, bodygroup = {} }
+	["backcover+"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.947, 2.385, 1.735), angle = Angle(164.147, -74.767, 0), size = Vector(0.275, 0.261, 0.202), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["backcover+++"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -25.903, 7.265), angle = Angle(90, 90, 0), size = Vector(0.115, 0.115, 0.115), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["ring1+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-0.461, -9.105, 7.098), angle = Angle(9.607, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["train1+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(5, -13, 3.5), angle = Angle(-120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["train1"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -13, 12), angle = Angle(0, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["train1++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-5, -13, 3.5), angle = Angle(120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["backcover"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -6.968, 4.618), angle = Angle(2.783, -90, 0), size = Vector(0.104, 0.052, 0.104), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["backcover++"] = { type = "Model", model = "models/props_lab/labpart.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0.097, -3.138, 5.784), angle = Angle(180, -90, 0), size = Vector(0.975, 0.975, 0.975), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.318, 7.374), angle = Angle(-90, 90, 0), size = Vector(0.207, 0.207, 0.172), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+	["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.254, 7.098), angle = Angle(180, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 }
+
+
 
 SWEP.Base = "weapon_zs_base"
 
@@ -92,7 +109,7 @@ SWEP.AimCollapseUnit = 0.2
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.TracerName = "Ar2Tracer"
 SWEP.PlayCharge = nil
-SWEP.ShowOnlyClip = true
+SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 100
 function SWEP:SetIronsights()
 end
@@ -127,12 +144,12 @@ function SWEP:Think()
 			self.PlayCharge = true
 		end
 		if CLIENT then
-			self.VElements["ring"].angle.y = math.Approach(self.VElements["ring"].angle.y, self.VElements["ring"].angle.y+2, FrameTime()*80)
-			self.VElements["ring+"].angle.y = math.Approach(self.VElements["ring+"].angle.y, self.VElements["ring+"].angle.y+3, FrameTime()*80)
+			self.VElements["ring1"].angle.x = math.Approach(self.VElements["ring1"].angle.x, self.VElements["ring1"].angle.x+2, FrameTime()*120)
+			self.VElements["ring1+"].angle.x = math.Approach(self.VElements["ring1+"].angle.x, self.VElements["ring1+"].angle.x+3, FrameTime()*180)
 		end
 	elseif CLIENT then
-		self.VElements["ring"].angle.y = math.Approach(self.VElements["ring"].angle.y, math.ceil(self.VElements["ring"].angle.y/360)*360, FrameTime()*100)
-        self.VElements["ring+"].angle.y = math.Approach(self.VElements["ring+"].angle.y, math.ceil(self.VElements["ring+"].angle.y/360)*360, FrameTime()*100)
+		self.VElements["ring1"].angle.x = math.Approach(self.VElements["ring1"].angle.x, math.ceil(self.VElements["ring1"].angle.x/180)*180, FrameTime()*150)
+        self.VElements["ring1+"].angle.x = math.Approach(self.VElements["ring1+"].angle.x, math.ceil(self.VElements["ring1+"].angle.x/180)*180, FrameTime()*200)
 	elseif not owner:KeyDown(IN_ATTACK) or not owner:Alive() then
 		self:SetDTInt(4, 0)
 		if self.PlayCharge then

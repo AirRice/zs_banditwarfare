@@ -1,9 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'비르벨빈트' 휴대용 국지방어기"
-	SWEP.Description = "탄약을 사용해 주변의 투사체를 요격하는 총기이다."
-
+	SWEP.TranslateName = "weapon_whirlwind_name"
+	SWEP.TranslateDesc = "weapon_whirlwind_desc"
 	SWEP.HUD3DBone = "ValveBiped.base"
 	SWEP.HUD3DPos = Vector(3, 0.25, -2)
 	SWEP.HUD3DScale = 0.02
@@ -49,7 +48,7 @@ SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.07
 
-SWEP.Primary.ClipSize = 30
+SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "autocharging"
 SWEP.Primary.DefaultClip = 30
@@ -72,8 +71,8 @@ SWEP.LowAmmoThreshold = 25
 function SWEP:Reload()
 end
 
-function SWEP:SecondaryAttack()
-end
+--[[function SWEP:SecondaryAttack()
+end]]
 
 function SWEP:Attack(proj)
 	if (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) and proj:IsValid() then
@@ -98,7 +97,15 @@ function SWEP:Attack(proj)
 		self.Owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		if SERVER then
-			proj:Remove()
+			local phys = proj:GetPhysicsObject()
+			if phys:IsValid() then
+				phys:SetVelocity(phys:GetVelocity()*0.25)
+				local dir = (owner:GetAimVector()+firevec)/2
+				phys:AddVelocity(dir*2200)
+				proj:SetOwner(self.Owner)
+			else
+				proj:Remove()
+			end
 		end
 		self.LastAttemptedShot = CurTime()
 	end
@@ -111,7 +118,7 @@ function SWEP:Think()
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
 	self.BaseClass.Think(self)	
-	if (self.LastAttack + self.Primary.Delay*0.75 <= curTime ) and self:Clip1() > 0 then
+	if (self.LastAttack + self.Primary.Delay*3 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
 			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then				
@@ -120,7 +127,7 @@ function SWEP:Think()
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)
 					self.LastAttack = curTime
-					self:SetNextPrimaryFire(curTime + self.Primary.Delay*0.75)
+					self:SetNextPrimaryFire(curTime + self.Primary.Delay*1.5)
 				end
 			end
 		end

@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'리코셰' 매그넘"
-	SWEP.Description = "이 총알의 탄환은 벽 따위에 튕겨나와 적을 타격할 시 2배의 대미지를 가한다."
+	SWEP.TranslateName = "weapon_ricochet_name"
+	SWEP.TranslateDesc = "weapon_ricochet_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
@@ -26,7 +26,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_357.Single")
 SWEP.Primary.Delay = 0.6
-SWEP.Primary.Damage = 33
+SWEP.Primary.Damage = 24
 SWEP.Primary.NumShots = 1
 
 SWEP.Primary.ClipSize = 6
@@ -54,6 +54,5 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		local hitpos, hitnormal, normal, dmg = tr.HitPos, tr.HitNormal, tr.Normal, dmginfo:GetDamage() * 1.5
 		timer.Simple(0, function() DoRicochet(attacker, hitpos, hitnormal, normal, dmg) end)
 	end
-
 	GenericBulletCallback(attacker, tr, dmginfo)
 end

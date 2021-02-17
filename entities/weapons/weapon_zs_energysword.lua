@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "에너지 소드"
-	SWEP.Description = "최신 기술의 집약체. 오른쪽 클릭으로 빠르게 앞으로 돌진할 수 있다."
+	SWEP.TranslateName = "weapon_energysword_name"
+	SWEP.TranslateDesc = "weapon_energysword_desc"
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 70
 
@@ -31,15 +31,15 @@ SWEP.UseHands = true
 SWEP.HitDecal = "Manhackcut"
 
 SWEP.MeleeDamage = 24
-SWEP.MeleeRange = 90
+SWEP.MeleeRange = 60
 SWEP.MeleeSize = 2
 
-SWEP.WalkSpeed = SPEED_FASTEST+15
+SWEP.WalkSpeed = SPEED_NORMAL
 
 SWEP.Primary.Delay = 0.7
-SWEP.Secondary.Delay = 8
+SWEP.Secondary.Delay = 10
 SWEP.SwiftStriking = false
-SWEP.NoFallDamage = true
+SWEP.CapFallDamage = true
 SWEP.HitAnim = ACT_VM_MISSCENTER
 
 function SWEP:PlayHitSound()
@@ -76,7 +76,6 @@ function SWEP:PrimaryAttack()
 	end
 end
 function SWEP:Think()
-	
 
 	local curtime = CurTime()
 	local owner = self.Owner
@@ -89,8 +88,7 @@ function SWEP:Think()
 			owner:LagCompensation(true)
 
 			local traces = owner:PenetratingMeleeTrace(24, 12, nil, owner:LocalToWorld(owner:OBBCenter()), dir)
-			local damage = 5
-
+			local ownerspeed = owner:GetVelocity():Length()
 			local hit = false
 			for _, trace in ipairs(traces) do
 				if not trace.Hit then continue end
@@ -105,8 +103,8 @@ function SWEP:Think()
 						hit = true
 						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
 						local nearest = ent:NearestPoint(trace.StartPos)
-						ent:ThrowFromPositionSetZ(self.Owner:GetPos(), damage * 40)
-						self:ApplyMeleeDamage(ent, trace, damage)
+						ent:ThrowFromPositionSetZ(self.Owner:GetPos(), ownerspeed * 0.3)
+						self:ApplyMeleeDamage(ent, trace, math.Clamp(ownerspeed/1400,0,2)*self.MeleeDamage)
 					end
 				end
 			end
@@ -150,12 +148,12 @@ function SWEP:SecondaryAttack()
 	if SERVER then
 		local fwd = 1200
 		self.Owner:SetAnimation( PLAYER_ATTACK1 )
-		
+		self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
 		local pushvel = self.Owner:GetEyeTrace().Normal * fwd + (self.Owner:GetAngles():Up()*100)
         self.Owner:SetGroundEntity(nil)
         self.Owner:SetLocalVelocity( self.Owner:GetVelocity() + pushvel)
 		self.SwiftStriking = true
-		self.Owner:SetGravity(0.01)
+		self.Owner:SetGravity(0.2)
 		self.Owner:SetFriction(0.01)
 		local ownerplayer = self.Owner
 		hook.Add( "DoPlayerDeath", "remove_energy_sword_float", function(ply, a, dmg)
@@ -165,7 +163,7 @@ function SWEP:SecondaryAttack()
 			hook.Remove( "DoPlayerDeath", "remove_energy_sword_float" )
 			end
 		end )
-		timer.Simple( 0.5, function() 
+		timer.Simple( 0.75, function() 
 			if self and self:IsValid() and self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
 				self.Owner:SetGravity(1)
 				self.Owner:SetFriction(1)
@@ -176,5 +174,28 @@ function SWEP:SecondaryAttack()
 		end)
 		
     end
+	end
+end
+
+if not CLIENT then return end
+local texGradDown = surface.GetTextureID("VGUI/gradient_down")
+function SWEP:DrawHUD()
+	local scrW = ScrW()
+	local scrH = ScrH()
+	local width = 200
+	local height = 30
+	local x, y = ScrW() - width - 32, ScrH() - height - 72
+	local ratio = math.max(self:GetNextSecondaryFire()-CurTime(),0) / self.Secondary.Delay
+	if ratio > 0 then
+		surface.SetDrawColor(5, 5, 5, 180)
+		surface.DrawRect(x, y, width, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.SetTexture(texGradDown)
+		surface.DrawTexturedRect(x, y, width*ratio, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.DrawOutlinedRect(x - 1, y - 1, width + 2, height + 2)
+	end
+	if self.BaseClass.DrawHUD then
+		self.BaseClass.DrawHUD(self)
 	end
 end

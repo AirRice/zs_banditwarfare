@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "Stone"
-	SWEP.Description = "A simple stone found laying pretty much anywhere."
+	SWEP.TranslateName = "weapon_stone_name"
+	SWEP.TranslateDesc = "weapon_stone_desc"
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 50
@@ -55,6 +55,9 @@ function SWEP:Initialize()
 
 	if CLIENT then
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 
@@ -142,7 +145,7 @@ function SWEP:Think()
 		else
 			self:SendWeaponAnim(ACT_VM_THROW)
 			if SERVER then
-				self:Remove()
+				self.Owner:StripWeapon(self:GetClass())
 			end
 		end
 	end

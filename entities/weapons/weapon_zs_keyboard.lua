@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "키보드"
-
+	SWEP.TranslateName = "weapon_keyboard_name"
+	SWEP.TranslateDesc = "weapon_keyboard_desc"
 	SWEP.ViewModelFOV = 55
 	SWEP.ViewModelFlip = false
 

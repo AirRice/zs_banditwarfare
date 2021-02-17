@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'블랙 크랩' 생체소총"
-	SWEP.Description = "포이즌 헤드크랩의 독을 추출해 만든 소총. \n머리에 맞을 시 일시적으로 눈이 멀어 혼란스럽게 되는 독 덩어리를 발사한다."
+	SWEP.TranslateName = "weapon_bioticrifle_name"
+	SWEP.TranslateDesc = "weapon_bioticrifle_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 

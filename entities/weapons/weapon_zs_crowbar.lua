@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "빠루"
-	--SWEP.Description = "Instantly kills headcrabs."
+	SWEP.TranslateName = "weapon_crowbar_name"
+	SWEP.TranslateDesc = "weapon_crowbar_desc"
 
 	SWEP.ViewModelFOV = 65
 end
@@ -38,8 +38,19 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("Weapon_Crowbar.Melee_Hit")
 end
 
---[[function SWEP:OnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() and hitent:Team() == TEAM_UNDEAD and hitent:IsHeadcrab() and gamemode.Call("PlayerShouldTakeDamage", hitent, self.Owner) then
-		hitent:SetHealth(1)
+function SWEP:OnMeleeHit(hitent, hitflesh, tr)
+	if hitent:IsNailed() and not hitent:IsSameTeam(attacker) and math.random(10) < 4 then
+		if not hitent:IsValid() or not hitent:IsNailed() or hitent:IsSameTeam(attacker) then return end
+		if not hitent or not gamemode.Call("CanRemoveNail", attacker, hitent) then return end
+		local nailowner = hitent:GetOwner()
+		if nailowner:IsValid() and nailowner:IsPlayer() and attacker:IsPlayer() and nailowner ~= attacker and nailowner:Team() == attacker:Team() then return end
+		for _, e in pairs(ents.FindByClass("prop_nail")) do
+			if not e.m_PryingOut and e:GetParent() == hitent and SERVER then
+				hitent:RemoveNail(e, nil, attacker)
+				e.m_PryingOut = true -- Prevents infinite loops	
+				break
+			end
+		end
 	end
-end]]
+	hitent:SetLocalVelocity( hitent:GetVelocity() + tr.Normal*500)
+end

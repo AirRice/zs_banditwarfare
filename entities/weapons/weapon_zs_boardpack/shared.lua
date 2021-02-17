@@ -81,7 +81,7 @@ function SWEP:PrimaryAttack()
 			ent:SetPhysicsAttacker(self.Owner)
 			self:TakePrimaryAmmo(1)
 			if (self:GetPrimaryAmmoCount() <= 0) then
-				self:Remove()
+				self:GetOwner():StripWeapon(self:GetClass())
 			end
 		end
 	end

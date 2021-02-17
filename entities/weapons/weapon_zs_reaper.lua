@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'리퍼' UMP"
+	SWEP.TranslateName = "weapon_reaperUMP_name"
+	SWEP.TranslateDesc = "weapon_reaperUMP_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -23,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_smg_ump45.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_UMP45.Single")
-SWEP.Primary.Damage = 24
+SWEP.Primary.Damage = 20
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.0975
 
@@ -39,7 +40,7 @@ SWEP.ConeMax = 0.065
 SWEP.ConeMin = 0.0155
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 0.768
-SWEP.WalkSpeed = SPEED_SLOW
+SWEP.WalkSpeed = SPEED_FAST
 
 SWEP.IronSightsPos = Vector(-5.3, -3, 4.4)
 SWEP.IronSightsAng = Vector(-1, 0.2, 2.55)

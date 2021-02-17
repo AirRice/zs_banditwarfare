@@ -1,7 +1,7 @@
 include("shared.lua")
 
-SWEP.PrintName = "판자 묶음"
-SWEP.Description = "판자들의 묶음이다.\n주변에 물품이 없을 때 바리케이드를 설치하기에 유용하다.\n망치와 못이 있어야 고정시킬 수 있다."
+SWEP.TranslateName = "weapon_boardpack_name"
+SWEP.TranslateDesc = "weapon_boardpack_desc"
 SWEP.ViewModelFOV = 45
 SWEP.ViewModelFlip = false
 
@@ -32,6 +32,9 @@ SWEP.DrawWorldModelTranslucent = SWEP.DrawWorldModel
 
 function SWEP:Initialize()
 	self:SetDeploySpeed(1.1)
+	if self.TranslateName then
+		self.PrintName = translate.Get(self.TranslateName)
+	end
 end
 
 function SWEP:GetViewModelPosition(pos, ang)

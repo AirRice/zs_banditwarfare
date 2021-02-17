@@ -4,7 +4,7 @@ ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 
 function ENT:Initialize()
 	self.Seed = math.Rand(0, 10)
-
+	self:SetRenderMode(RENDERMODE_GLOW)
 	self:DrawShadow(false)
 
 	self.AmbientSound = CreateSound(self, "ambient/machines/combine_shield_touch_loop1.wav")
@@ -19,28 +19,11 @@ function ENT:OnRemove()
 	self.AmbientSound:Stop()
 end
 
-local matRefract = Material("models/spawn_effect")
-local matGlow = Material("Models/props_combine/combine_fenceglow")
+local matGlow = Material("models/props_combine/stasisshield_sheet")
+--Material("models/props_combine/com_shield001a")
+--Material("Models/props_combine/combine_fenceglow")
 function ENT:DrawTranslucent()
-	render.SuppressEngineLighting(true)
 	render.ModelMaterialOverride(matGlow)
-
-	render.SetBlend(0.05 + math.max(0, math.cos(CurTime())) ^ 4 * 0.01)
 	self:DrawModel()
-
-	if render.SupportsPixelShaders_2_0() then
-		render.UpdateRefractTexture()
-
-		matRefract:SetFloat("$refractamount", 0.0125 + math.sin(CurTime() * 2) ^ 2 * 0.0025)
-
-		render.SetBlend(1)
-
-		render.ModelMaterialOverride(matRefract)
-		self:DrawModel()
-	else
-		render.SetBlend(1)
-	end
-	
 	render.ModelMaterialOverride(0)
-	render.SuppressEngineLighting(false)
 end

@@ -19,8 +19,8 @@ COLOR_SCRATCHED = Color(80, 210, 0)
 COLOR_HURT = Color(150, 50, 0)
 COLOR_CRITICAL = COLOR_DARKRED
 
-color_black_alpha220 = Color(0, 0, 0, 180)
-color_black_alpha200 = Color(0, 0, 0, 180)
+color_black_alpha220 = Color(0, 0, 0, 220)
+color_black_alpha200 = Color(0, 0, 0, 200)
 color_black_alpha180 = Color(0, 0, 0, 180)
 color_black_alpha120 = Color(0, 0, 0, 120)
 color_black_alpha90 = Color(0, 0, 0, 90)

@@ -106,7 +106,7 @@ killicon.AddFont("weapon_zs_peashooter", "zsdeathnoticecs", "a", color_white)
 killicon.AddFont("weapon_zs_slugrifle", "zsdeathnoticecs", "B", color_white)
 killicon.AddFont("weapon_zs_smg", "zsdeathnoticecs", "x", color_white)
 killicon.AddFont("weapon_zs_swissarmyknife", "zsdeathnoticecs", "j", color_white)
-killicon.AddFont("weapon_zs_uzi", "zsdeathnoticecs", "l", color_white)
+killicon.AddFont("weapon_zs_sprayersmg", "zsdeathnoticecs", "l", color_white)
 killicon.AddFont("weapon_zs_inferno", "zsdeathnoticecs", "e", color_white)
 killicon.AddFont("weapon_zs_m4", "zsdeathnoticecs", "w", color_white)
 killicon.AddFont("weapon_zs_reaper", "zsdeathnoticecs", "q", color_white)
@@ -130,7 +130,6 @@ killicon.AddFont("weapon_zs_bodyarmor", "zsdeathnoticecs", "p", color_white)
 killicon.AddFont("weapon_zs_flashbang", "zsdeathnoticecs", "P", color_white)
 killicon.AddFont("weapon_zs_smokegrenade", "zsdeathnoticecs", "Q", color_white)
 
-
 killicon.Add("weapon_zs_doublebarrel","killicon/weapon_zs_doublebarrel", color_white)
 killicon.Add("weapon_zs_annabelle", "killicon/weapon_zs_annabelle2", color_white)
 killicon.Add("weapon_zs_ammokit", "killicon/weapon_zs_ammo", color_white)
@@ -141,6 +140,7 @@ killicon.Add("weapon_zs_backdoor", "killicon/weapon_zs_detpack2", color_white)
 killicon.Add("weapon_zs_ffemitter", "killicon/weapon_zs_ffemitter", color_white)
 killicon.Add("weapon_zs_enemyradar", "killicon/weapon_zs_tv.png", color_white)
 killicon.Add("weapon_zs_signalbooster", "killicon/weapon_zs_tv.png", color_white)
+killicon.Add("weapon_zs_bioticrifle", "killicon/weapon_zs_bioticrifle", color_white)
 
 killicon.Add("weapon_zs_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("prop_manhack", "killicon/weapon_zs_manhack", color_white)
@@ -164,6 +164,7 @@ killicon.Add("weapon_zs_shovel", "killicon/weapon_zs_shovel", color_white)
 killicon.Add("weapon_zs_plank", "killicon/weapon_zs_plank", color_white)
 killicon.Add("weapon_zs_keyboard", "killicon/weapon_zs_keyboard", color_white)
 killicon.Add("weapon_zs_butcherknife", "killicon/weapon_zs_butcherknife2", color_white)
+killicon.Add("weapon_zs_energysword", "killicon/weapon_zs_energysword.png", color_white)
 --killicon.Add("weapon_zs_fryingpan", "killicon/zs_fryingpan", color_white)
 --killicon.Add("weapon_zs_pot", "killicon/zs_pot", color_white)
 
@@ -290,7 +291,7 @@ net.Receive("zs_killstreak", function(length)
 	end
 	end
 	if pl:IsValid() then
-		GAMEMODE:TopNotify(pl, " ", {killicon = "killstreak"}, " ",kills, "연킬!")
+		GAMEMODE:TopNotify(pl, " ", {killicon = "killstreak"}, " ",kills, translate.Get("consecutive_kills"))
 	end
 end)
 

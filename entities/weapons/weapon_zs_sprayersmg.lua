@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'스프레이어' Uzi 9mm"
+	SWEP.TranslateName = "weapon_sprayer_name"
+	SWEP.TranslateDesc = "weapon_sprayer_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -37,8 +38,8 @@ SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
 SWEP.ConeMax = 0.125
-SWEP.ConeMin = 0.06
-SWEP.Recoil = 0.45
+SWEP.ConeMin = 0.03
+SWEP.Recoil = 0.65
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.WalkSpeed = SPEED_NORMAL
 

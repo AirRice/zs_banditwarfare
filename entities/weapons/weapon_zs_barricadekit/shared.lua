@@ -23,6 +23,11 @@ SWEP.WalkSpeed = SPEED_SLOWEST
 function SWEP:Initialize()
 	self:SetWeaponHoldType("rpg")
 	self:SetDeploySpeed(1.1)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:CanPrimaryAttack()

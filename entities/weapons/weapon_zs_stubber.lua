@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'스터버' 소총"
+	SWEP.TranslateName = "weapon_stubber_name"
+	SWEP.TranslateDesc = "weapon_stubber_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
@@ -31,7 +32,7 @@ SWEP.ReloadDelay = SWEP.Primary.Delay
 SWEP.Primary.ClipSize = 5
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
-SWEP.Primary.DefaultClip = 25
+SWEP.Primary.DefaultClip = 15
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN

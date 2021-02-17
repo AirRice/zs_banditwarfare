@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "맨핵"
-	SWEP.Description = "멀리서 조종 가능한 근접 공격형 드론이다.\n탐사용이나 원거리 공격으로 사용 가능하다."
+	SWEP.TranslateName = "weapon_manhack_name"
+	SWEP.TranslateDesc = "weapon_manhack_desc"
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 50
@@ -61,6 +61,9 @@ function SWEP:Initialize()
 
 	if CLIENT then
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 
@@ -106,7 +109,9 @@ function SWEP:PrimaryAttack()
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 200)
+				if GAMEMODE:GetWaveActive() then
+					phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 200)
+				end
 			end
 
 			if not owner:HasWeapon(self.ControlWeapon) then
@@ -161,7 +166,7 @@ function SWEP:Think()
 		else
 			self:SendWeaponAnim(ACT_VM_THROW)
 			if SERVER then
-				self:Remove()
+				self:GetOwner():StripWeapon(self:GetClass())
 			end
 		end
 	end

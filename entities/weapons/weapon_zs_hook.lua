@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "갈고리"
-	SWEP.Description = "공격이 맞을 시 피격대상에게 갈고리가 박히면서 지속적인 피해를 입힌다."
+	SWEP.TranslateName = "weapon_meathook_name"
+	SWEP.TranslateDesc = "weapon_meathook_desc"
 	
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
@@ -78,8 +78,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 
 				ent:SetAngles(ang)
 			end
-
-			self:Remove()
+			self:GetOwner():StripWeapon(self:GetClass())
 		end
 	end
 end

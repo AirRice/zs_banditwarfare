@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "유탄발사기"
-	SWEP.Description = "유탄을 정확하게 발사한다."
+	SWEP.TranslateName = "weapon_grenadelauncher_name"
+	SWEP.TranslateDesc = "weapon_grenadelauncher_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 	SWEP.ViewModelFOV = 60

@@ -1,9 +1,9 @@
 ﻿AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'헬베티카' DMR"
-	SWEP.Description = "적 몸의 어느 부분을 맞추든 똑같은 피해가 들어간다."
-	SWEP.Slot = 2
+	SWEP.TranslateName = "weapon_helvetica_name"
+	SWEP.TranslateDesc = "weapon_helvetica_desc"
+	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
 	SWEP.ViewModelFlip = false
@@ -25,14 +25,14 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 50
+SWEP.Primary.Damage = 33
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.26
 SWEP.Recoil = 0.89
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "357"
-SWEP.Primary.DefaultClip = 40
+SWEP.Primary.DefaultClip = 60
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
@@ -56,7 +56,7 @@ function SWEP:IsScoped()
 end
 
 if CLIENT then
-	SWEP.IronsightsMultiplier = 0.1
+	SWEP.IronsightsMultiplier = 0.2
 
 	function SWEP:GetViewModelPosition(pos, ang)
 		if self:IsScoped() then

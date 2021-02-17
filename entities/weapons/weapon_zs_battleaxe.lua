@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'배틀액스' 권총"
+	SWEP.TranslateName = "weapon_battleaxe_name"
+	SWEP.TranslateDesc = "weapon_battleaxe_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 

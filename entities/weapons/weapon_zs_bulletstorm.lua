@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'총알비' SMG"
-	SWEP.Description = "보조 공격을 눌러 '스톰 파이어' 모드 사용. 발사속도는 60% 줄지만 한 번에 총알 2개를 발사한다."
+	SWEP.TranslateName = "weapon_bulletstorm_name"
+	SWEP.TranslateDesc = "weapon_bulletstorm_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_smg_p90.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_p90.Single")
-SWEP.Primary.Damage = 15
+SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.06
 
@@ -33,8 +33,8 @@ SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.1
-SWEP.ConeMin = 0.03
-SWEP.Recoil = 0.9
+SWEP.ConeMin = 0.02
+SWEP.Recoil = 0.45
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1

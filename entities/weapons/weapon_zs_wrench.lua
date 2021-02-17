@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "메카닉의 렌치"
+	SWEP.TranslateName = "weapon_mechanicwrench_name"
+	SWEP.TranslateDesc = "weapon_mechanicwrench_desc"
 
 	SWEP.ViewModelFOV = 55
 	SWEP.ViewModelFlip = false

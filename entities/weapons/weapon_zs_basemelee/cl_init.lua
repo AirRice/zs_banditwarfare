@@ -1,6 +1,7 @@
 include("shared.lua")
 include("animations.lua")
 
+SWEP.PrintName = "" -- We are no longer using PrintName.
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = false
 SWEP.ViewModelFOV = 60

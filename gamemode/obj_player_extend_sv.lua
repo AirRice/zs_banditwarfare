@@ -83,7 +83,7 @@ function meta:ProcessDamage(dmginfo)
 	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
 	local lasthitgroup = self:LastHitGroup()
 	if attacker:IsPlayer() then
-		if attacker:LessPlayersOnTeam() and attackweapon and not attackweapon.NoScaleToLessPlayers then
+		if attacker:LessPlayersOnTeam() and attackweapon and not attackweapon.NoScaleToLessPlayers and not attackweapon.IgnoreDamageScaling then
 			dmginfo:ScaleDamage(1.25)
 		end
 		if self:GetBodyArmor() and self:GetBodyArmor() > 0 then

@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ENT.Type = "anim"
-ENT.LifeTime = 2.75
+ENT.LifeTime = 2
 
 ENT.NoPropDamageDuringWave0 = true
 ENT.NextEmit = 0

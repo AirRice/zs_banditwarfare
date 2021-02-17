@@ -170,7 +170,15 @@ function meta:GetSecondaryAmmoTypeString()
 	if self.Secondary and self.Secondary.Ammo then return string.lower(self.Secondary.Ammo) end
 	return TranslatedAmmo[self:GetSecondaryAmmoType()] or "none"
 end
-
+meta.OldGetPrintName = FindMetaTable("Weapon").GetPrintName
+function meta:GetPrintName()
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
+	return self.PrintName and self.PrintName or self:GetClass()
+end
 if not CLIENT then return end
 
 function meta:DrawCrosshair()
@@ -287,18 +295,7 @@ function meta:DrawCrosshairDot()
 	surface.DrawOutlinedRect(x - 2, y - 2, 4, 4)
 end
 
---[[function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
-	--if killicon.Get(self:GetClass()) then
-		killicon.Draw(x + wide * 0.5, y + tall * 0.5, self:GetClass(), 255)
-		draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmall", x + wide * 0.5, y + tall * 0.25, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	else
-		draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmaller", x + wide * 0.5, y + tall * 0.5, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	end
-end]]
-
 function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
-	local ammotype1 = self:ValidPrimaryAmmo()
-	local ammotype2 = self:ValidSecondaryAmmo()
 
 	--killicon.Draw(x + wide * 0.5, y + tall * 0.5, self:GetClass(), 255)
 	-- Doesn't work with pngs...
@@ -310,13 +307,14 @@ function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
 	elseif ki then
 		local material = Material(ki[1])
 		local wid, hei = material:Width(), material:Height()
-
 		surface.SetMaterial(material)
 		surface.SetDrawColor(cols.r, cols.g, cols.b, alpha )
 		surface.DrawTexturedRect(x + wide * 0.5 - wid * 0.5, y + tall * 0.5 - hei * 0.5, wid, hei)
+		
 	end
-
-	draw.SimpleTextBlur(self:GetPrintName(), "ZSHUDFontSmall", x + wide * 0.5, y + tall * 0.15, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	surface.SetDrawColor(color_black_alpha220)
+	surface.DrawRect(x, y + tall * 0.65, wide, tall * 0.2)
+	draw.SimpleText(self:GetPrintName(), "ZSHUDFontSmallNS", x + wide * 0.5, y + tall * 0.75, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	return true
 end
 local function empty() end

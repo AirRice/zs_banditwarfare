@@ -50,6 +50,9 @@ function SWEP:Initialize()
 
 	if CLIENT then
 		self:Anim_Initialize()
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
 	end
 end
 

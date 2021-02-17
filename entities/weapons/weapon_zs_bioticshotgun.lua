@@ -1,8 +1,8 @@
 AddCSLuaFile()
 local util_SharedRandom = util.SharedRandom
 if CLIENT then
-	SWEP.PrintName = "'퓨크 블래스트' 생체 산탄총"
-	SWEP.Description = "이 산탄총은 좀비의 것과 비슷한 독을 앞으로 분사한다. 이 독에 맞으면 일시적으로 체력이 닳았다가 빠르게 회복한다."
+	SWEP.TranslateName = "weapon_bioticshotgun_name"
+	SWEP.TranslateDesc = "weapon_bioticshotgun_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 	

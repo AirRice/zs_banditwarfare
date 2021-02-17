@@ -44,6 +44,7 @@ BoneTranslates["models/zombie/classic.mdl"] = {["ValveBiped.Bip01_Head1"]="Valve
 BoneTranslates["models/zombie/poison.mdl"] = {["ValveBiped.Bip01_Head1"]="ValveBiped.Bip01_Spine4"}
 BoneTranslates["models/zombie/fast.mdl"] = {["ValveBiped.Bip01_Head1"]="ValveBiped.HC_BodyCube"}
 BoneTranslates["models/player/zombie_classic.mdl"] = {["ValveBiped.Bip01_Head1"]="ValveBiped.Bip01_Spine4"}
+BoneTranslates["models/player/zombie_classic_hbfix.mdl"] = {["ValveBiped.Bip01_Head1"]="ValveBiped.Bip01_Spine4"}
 
 local function CollideCallback(particle, hitpos, hitnormal)
 	if particle:GetDieTime() == 0 then return end
@@ -157,6 +158,7 @@ function EFFECT:Render()
 			end
 		end
 
-		emitter:Finish()
+		emitter:Finish() emitter = nil collectgarbage("step", 64)
 	end
 end
+

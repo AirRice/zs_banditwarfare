@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "신호 증폭기"
-	SWEP.Description = "손에 들고 있을 시 더 빠르게 송신기를 점령한다. 또한 송신기 추적장치가 내장되어 있어 송신기의 상황을 파악할 수 있다."
+	SWEP.TranslateName = "weapon_signalbooster_name"
+	SWEP.TranslateDesc = "weapon_signalbooster_desc"
 
 	SWEP.ViewModelFOV = 80
 

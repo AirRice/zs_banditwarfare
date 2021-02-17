@@ -1,6 +1,7 @@
 include("shared.lua")
 include("animations.lua")
 
+SWEP.PrintName = "" -- We are no longer using PrintName.
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = false
 SWEP.ViewModelFOV = 60
@@ -102,8 +103,23 @@ function SWEP:Draw3DHUD(vm, pos, ang)
 
 	cam.Start3D2D(pos, ang, self.HUD3DScale / 2)
 		draw.RoundedBoxEx(32, x, y, wid, hei, colBG, true, false, true, false)
-		if self.ShowOnlyClip then
-			draw.SimpleTextBlurry(spare, spare >= 1000 and "ZS3D2DFontSmall" or "ZS3D2DFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		if self.HasNoClip then
+			local font = "ZS3D2DFontBig"
+			if spare >= 1000 then
+				font = "ZS3D2DFontSmall"
+			elseif spare >= 100 then
+				font = "ZS3D2DFont"
+			end
+			draw.SimpleTextBlurry(spare, font, x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		elseif self.ShowOnlyClip then
+			local font = "ZS3D2DFontBig"
+			if clip >= 1000 then
+				font = "ZS3D2DFontSmall"
+			elseif clip >= 100 then
+				font = "ZS3D2DFont"
+			end
+			GetAmmoColor(clip, maxclip)
+			draw.SimpleTextBlurry(clip, font, x + wid * 0.5, y + hei * 0.5, colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		else
 			local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
 			if displayspare then
@@ -131,8 +147,23 @@ function SWEP:Draw2DHUD()
 	end
 
 	draw.RoundedBox(16, x, y, wid, hei, colBG)
-	if self.ShowOnlyClip then
-		draw.SimpleTextBlurry(spare, spare >= 1000 and "ZSHUDFontSmall" or "ZSHUDFont", x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	if self.HasNoClip then
+		local font = "ZSHUDFontBig"
+		if spare >= 1000 then
+			font = "ZSHUDFontSmall"
+		elseif spare >= 100 then
+			font = "ZSHUDFont"
+		end
+		draw.SimpleTextBlurry(spare,font, x + wid * 0.5, y + hei * 0.5, spare == 0 and colRed or spare <= (self.LowAmmoThreshold and self.LowAmmoThreshold or 100) and colYellow or colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	elseif self.ShowOnlyClip then
+		local font = "ZSHUDFontBig"
+		if clip >= 1000 then
+			font = "ZSHUDFontSmall"
+		elseif clip >= 100 then
+			font = "ZSHUDFont"
+		end
+		GetAmmoColor(clip, maxclip)
+		draw.SimpleTextBlurry(clip, font, x + wid * 0.5, y + hei * 0.5, colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	else
 		local displayspare = maxclip > 0 and self.Primary.DefaultClip ~= 99999
 		if displayspare then

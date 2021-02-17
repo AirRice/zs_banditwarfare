@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'세이비어' 메디컬 건"
-	SWEP.Description = "장거리에서 팀원을 치료할 수 있는 탄환을 발사한다. 메디컬 킷보다는 강하지만 빗맞출 시 아군에게 아무 도움을 주지 못한다."
+	SWEP.TranslateName = "weapon_medigun_name"
+	SWEP.TranslateDesc = "weapon_medigun_desc"
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 	

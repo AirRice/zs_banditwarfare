@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "메가매셔"
+	SWEP.TranslateName = "weapon_megamasher_name"
+	SWEP.TranslateDesc = "weapon_megamasher_desc"
 	SWEP.ViewModelFOV = 75
 
 	SWEP.VElements = {
@@ -58,4 +59,13 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("explosion", effectdata)
+	if IsValid(hitent) then
+		if not hitent:IsPlayer() and self.Owner:IsPlayer() then
+			if hitent:GetClass() == "prop_drone" or hitent:GetClass() == "prop_manhack" and not hitent:IsSameTeam(self.Owner) and SERVER then
+				hitent:Destroy()
+			elseif (hitent:IsNailed() and not hitent:IsSameTeam(self.Owner)) or (hitent.IsBarricadeObject and not hitent:IsSameTeam(self.Owner) and SERVER) then
+				hitent:TakeSpecialDamage(math.max(hitent:GetBarricadeHealth() or self.MeleeDamage,500), DMG_DIRECT, self.Owner, self, tr.HitPos)
+			end
+		end
+	end
 end

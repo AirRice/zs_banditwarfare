@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'아크바' 돌격소총"
+	SWEP.TranslateName = "weapon_kalashnikov_name"
+	SWEP.TranslateDesc = "weapon_kalashnikov_desc"
 	SWEP.Slot = 2
 	SWEP.SlotPos = 0
 
@@ -24,7 +25,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AK47.Clipout")
 SWEP.Primary.Sound = Sound("Weapon_AK47.Single")
-SWEP.Primary.Damage = 14
+SWEP.Primary.Damage = 17
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.13
 
@@ -33,11 +34,13 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "ar2"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.035
-SWEP.ConeMin = 0.004
-SWEP.MovingConeOffset = 0.11
+
+SWEP.ConeMax = 0.07
+SWEP.ConeMin = 0.008
+SWEP.MovingConeOffset = 0.12
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-SWEP.Recoil = 0.49
+SWEP.AimExpandUnit = 0.05
+SWEP.Recoil = 0.75
 
 SWEP.WalkSpeed = SPEED_SLOW
 

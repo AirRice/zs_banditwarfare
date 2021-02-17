@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "송신기 추적장치"
-	SWEP.Description = "송신기의 위치를 표시한다."
+	SWEP.TranslateName = "weapon_objectiveradar_name"
+	SWEP.TranslateDesc = "weapon_objectiveradar_desc"
 
 	SWEP.ViewModelFOV = 70
 

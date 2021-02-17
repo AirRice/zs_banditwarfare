@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "납 파이프"
-	SWEP.Description = "이 무기에 가격당한 적은 잠시 머리가 혼란스러워진다."
+	SWEP.TranslateName = "weapon_leadpipe_name"
+	SWEP.TranslateDesc = "weapon_leadpipe_desc"
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
 
@@ -52,9 +52,7 @@ if SERVER then
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() and CurTime() >= (hitent._NextLeadPipeEffect or 0) then
 		hitent._NextLeadPipeEffect = CurTime() + 3
-
-		hitent:GiveStatus("disorientation")
-		--[[local x = math.Rand(0.75, 1)
+		local x = math.Rand(0.75, 1)
 		x = x * (math.random(2) == 2 and 1 or -1)
 
 		local ang = Angle(1 - x, x, 0) * 38
@@ -65,7 +63,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		eyeangles:RotateAroundAxis(eyeangles:Right(), ang.pitch)
 		eyeangles.pitch = math.Clamp(ang.pitch, -89, 89)
 		eyeangles.roll = 0
-		hitent:SetEyeAngles(eyeangles)--]]
+		hitent:SetEyeAngles(eyeangles)
 	end
 end
 end

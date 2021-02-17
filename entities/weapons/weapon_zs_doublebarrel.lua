@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "'카우' 더블배럴 샷건"
-	--SWEP.Description = "테스트"
+	SWEP.TranslateName = "weapon_cowpoke_name"
+	SWEP.TranslateDesc = "weapon_cowpoke_desc"
 	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 	
@@ -43,7 +43,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
 SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 7
+SWEP.Primary.NumShots = 6
 SWEP.Primary.Delay = 0.4
 SWEP.Recoil = 5.71
 SWEP.ReloadDelay = 0.8
@@ -51,8 +51,7 @@ SWEP.ReloadDelay = 0.8
 SWEP.Primary.ClipSize = 2
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "buckshot"
-SWEP.ClipMultiplier = 4
-GAMEMODE:SetupDefaultClip(SWEP.Primary)
+SWEP.Primary.DefaultClip = 10
 
 SWEP.ConeMax = 0.11
 SWEP.ConeMin = 0.076

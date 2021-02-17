@@ -35,7 +35,7 @@ end
 
 function ENT:GiveToActivator(activator)
 	if self.DieTime ~= 0 and activator:IsPlayer() and activator:Alive() and (activator:Team() == TEAM_HUMAN or activator:Team() == TEAM_BANDIT) then
-		activator:GiveAmmo( 1, "GaussEnergy", false )
+		activator:GiveAmmo( 1, "XBowBolt", false )
 		self:EmitSound("weapons/crossbow/reload1.wav")
 		self.DieTime = 0
 	end

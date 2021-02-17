@@ -1,8 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-	SWEP.PrintName = "오함마"
-	SWEP.Description = "적 바리케이드에는 3배의 피해를 가한다."
+	SWEP.TranslateName = "weapon_sledgehammer_name"
+	SWEP.TranslateDesc = "weapon_sledgehammer_desc"
 	SWEP.ViewModelFOV = 75
 end
 

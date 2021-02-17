@@ -4,7 +4,8 @@ if CLIENT then
 	SWEP.ViewModelFOV = 50
 	SWEP.BobScale = 0.5
 	SWEP.SwayScale = 0.5
-	SWEP.PrintName = "C4 기폭장치"
+	SWEP.TranslateName = "weapon_detpackremote_name"
+	SWEP.TranslateDesc = "weapon_detpackremote_desc"
 
 	SWEP.Slot = 4
 	SWEP.SlotPos = 0
@@ -34,6 +35,11 @@ SWEP.HoldType = "slam"
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 if SERVER then

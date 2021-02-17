@@ -21,6 +21,11 @@ function SWEP:Initialize()
 	self:SetWeaponHoldType("slam")
 	self:SetDeploySpeed(1.1)
 	self:HideViewAndWorldModel()
+	if CLIENT then
+		if self.TranslateName then
+			self.PrintName = translate.Get(self.TranslateName)
+		end
+	end
 end
 
 function SWEP:SetReplicatedAmmo(count)

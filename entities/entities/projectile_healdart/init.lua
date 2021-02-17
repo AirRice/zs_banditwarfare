@@ -79,6 +79,10 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 				if (tox and tox:IsValid()) then
 					tox:SetTime(1)
 				end
+				local bleed = eHitEntity:GetStatus("bleed")
+				if (bleed and bleed:IsValid()) then
+					bleed:SetDamage(1)
+				end
 				for _, hook in pairs(ents.FindInSphere(self:GetPos(), 60 )) do
 					if hook:GetClass() == "prop_meathook" and hook:GetParent() == eHitEntity then
 						hook.TicksLeft = 0
