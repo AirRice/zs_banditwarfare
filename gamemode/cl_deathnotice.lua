@@ -74,7 +74,7 @@ killicon.Add("weapon_zs_special_wow", "sprites/glow04_noz", color_white)
 
 killicon.Add("prop_gunturret", "zombiesurvival/killicons/prop_gunturret", color_white)
 killicon.Add("weapon_zs_gunturret", "zombiesurvival/killicons/prop_gunturret", color_white)
-killicon.Add("weapon_zs_gunturretremove", "zombiesurvival/killicons/prop_gunturret", color_white)
+killicon.Add("weapon_zs_gunturretcontrol", "zombiesurvival/killicons/prop_gunturret", color_white)
 killicon.AddFont("projectile_zsgrenade", "zsdeathnotice", "4", color_white)
 killicon.AddFont("weapon_zs_grenade", "zsdeathnotice", "4", color_white)
 killicon.AddFont("weapon_zs_stubber", "zsdeathnoticecs", "n", color_white)
@@ -145,6 +145,10 @@ killicon.Add("weapon_zs_bioticrifle", "killicon/weapon_zs_bioticrifle", color_wh
 killicon.Add("weapon_zs_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("prop_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("weapon_zs_manhackcontrol", "killicon/weapon_zs_manhack", color_white)
+
+killicon.Add("weapon_zs_manhack_saw", "killicon/weapon_zs_manhack", color_white)
+killicon.Add("prop_manhack_saw", "killicon/weapon_zs_manhack", color_white)
+killicon.Add("weapon_zs_manhackcontrol_saw", "killicon/weapon_zs_manhack", color_white)
 
 killicon.Add("weapon_zs_drone", "killicon/weapon_zs_drone3.png", color_white)
 killicon.Add("weapon_zs_dronecontrol", "killicon/weapon_zs_drone3.png", color_white)

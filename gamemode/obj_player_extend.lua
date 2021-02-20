@@ -41,6 +41,14 @@ function meta:GetPoints()
 	return self:GetDTInt(1)
 end
 
+function meta:SetFullPoints(points)
+	self:SetDTInt(2, points)
+end
+
+function meta:GetFullPoints()
+	return self:GetDTInt(2)
+end
+
 function meta:SetSamples(samples)
 	self:SetDTInt(3, samples)
 end
@@ -69,6 +77,38 @@ function meta:Dismember(dismembermenttype)
 	util.Effect("dismemberment", effectdata, true, true)
 end
 
+function meta:ApplyAdrenaline()
+	if not self.HumanSpeedAdder or self.HumanSpeedAdder  <= 100 then
+		self.HumanSpeedAdder = (self.HumanSpeedAdder or 0) +20
+		self:ResetSpeed() 
+		if SERVER then 
+			self:SetMaxHealth(self:GetMaxHealth()-10)
+			if self:Health() > self:GetMaxHealth() then
+				self:SetHealth(self:GetMaxHealth())
+			end
+		end
+		self:EmitSound("player/suit_sprint.wav")	
+		return true
+	else
+		self:PrintMessage(HUD_PRINTCENTER, "아드레날린을 더 사용하는 것은 자살행위다.")
+		return false
+	end
+end
+
+function meta:WearBodyArmor()
+	if self:GetBodyArmor() and self:GetBodyArmor() < 100 then
+		self.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -25
+		self:ResetSpeed() 
+		self:SetBodyArmor(100)
+		self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
+		return true
+	else
+		self.Owner:PrintMessage(HUD_PRINTTALK, "방탄복을 이미 입고 있다.")
+		return false
+	end
+end
+
+
 function meta:NearestDismemberableBone(pos)
 	local dismemberables = {"ValveBiped.Bip01_Head1", "ValveBiped.Bip01_L_Calf","ValveBiped.Bip01_R_Calf", "ValveBiped.Bip01_L_Forearm","ValveBiped.Bip01_R_Forearm"}
 	local Dismembers = {DISMEMBER_HEAD, DISMEMBER_LEFTLEG, DISMEMBER_RIGHTLEG, DISMEMBER_LEFTARM, DISMEMBER_RIGHTARM}
@@ -91,11 +131,6 @@ end
 local TEAM_SPECTATOR = TEAM_SPECTATOR
 function meta:IsSpectator()
 	return self:Team() == TEAM_SPECTATOR
-end
-
-function meta:GetAuraRange()
-	local wep = self:GetActiveWeapon()
-	return wep:IsValid() and wep.GetAuraRange and wep:GetAuraRange() or 4096
 end
 
 function meta:GetPoisonDamage()
@@ -315,20 +350,16 @@ end
 
 
 function meta:SetSpeed(speed)
-	if not speed then speed = 220 end
+	if not speed then speed = SPEED_NORMAL end
 
 	self:SetWalkSpeed(speed)
 	self:SetRunSpeed(speed)
 	self:SetMaxSpeed(speed)
 end
 
-function meta:SetHumanSpeed(speed)
-	if self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT then self:SetSpeed(speed) end
-end
-
-function meta:ResetSpeed(noset, health)
+function meta:ResetSpeed(noset)
 	if not self:IsValid() then return end
-
+	noset = noset or false
 	local wep = self:GetActiveWeapon()
 	local speed
 
@@ -465,9 +496,6 @@ end
 meta.OldSetHealth = FindMetaTable("Entity").SetHealth
 function meta:SetHealth(health)
 	self:OldSetHealth(health)
-	if self:Team() == TEAM_HUMAN and 1 <= health then
-		self:ResetSpeed(nil, health)
-	end
 end
 
 function meta:AirBrake()

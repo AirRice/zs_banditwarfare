@@ -31,7 +31,7 @@ local color_frame_background = Color(0, 0, 0, 240)
 SKIN.color_frame_background = color_frame_background
 SKIN.color_frame_border = Color(0, 80, 0, 255)
 
-SKIN.colTextEntryText = Color(10, 10, 10)
+SKIN.colTextEntryText = Color(200, 200, 200)
 SKIN.colTextEntryTextHighlight = Color(30, 255, 0)
 SKIN.colTextEntryTextBorder = Color(70, 90, 70, 255)
 
@@ -68,9 +68,6 @@ function SKIN:PaintActiveTab(panel, w, h)
 	draw.RoundedBox(8, 0, 0, w, h, self.colTab)
 end
 
---[[SKIN.color_textentry_background = Color(40, 40, 40, 255)
-SKIN.color_textentry_border = Color(70, 90, 70, 255)]]
-
 function PaintGenericFrame(panel, x, y, wid, hei, edgesize)
 	edgesize = edgesize or math.ceil(math.min(hei * 0.1, math.min(16, wid * 0.1)))
 	local dedgesize = edgesize * 2
@@ -94,13 +91,9 @@ function SKIN:PaintNumSlider( panel, w, h )
 	local space = (w - 16) / panel.m_iNotches
 
 	for i=0, panel.m_iNotches do
-
 		surface.DrawRect( 8 + i * space, h / 2 + 3, 1, 10 )
-
 	end
 end
-
-
 
 --[[function SKIN:DrawBorder(x, y, w, h, border)
 	surface.SetDrawColor(border)

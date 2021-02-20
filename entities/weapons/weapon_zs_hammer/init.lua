@@ -75,6 +75,11 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			self:PlayRepairSound(hitent)
 			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed, self)
 			didrepair = true
+		elseif hitent:GetClass() == "prop_gunturret" and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() and hitent:GetObjectHealth() >= hitent:GetMaxObjectHealth() then 
+			local curammo = hitent:GetAmmo()
+			hitent:SetAmmo(curammo + 20)
+			hitent:EmitSound("npc/turret_floor/click1.wav")
+			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, 20, self)
 		elseif hitent.GetObjectHealth and 
 		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() or 
 		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self.Owner:Team()) then

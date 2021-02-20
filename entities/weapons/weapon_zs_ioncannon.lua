@@ -122,7 +122,7 @@ function SWEP:Reload()
 	end
 
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.4)
+		self.Owner:GetViewModel():SetPlaybackRate(0.5)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
 		self:SetNextPrimaryFire(self.IdleAnimation)
 		self:SetNextReload(self.IdleAnimation)

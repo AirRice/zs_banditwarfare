@@ -56,12 +56,12 @@ GM.AmmoResupply["grenlauncher"] = 1
 ------------
 GM:AddPointShopWeapon(0,"btlax", ITEMCAT_GUNS, 10, "weapon_zs_battleaxe")
 GM:AddPointShopWeapon(0,"pshtr", ITEMCAT_GUNS, 10, "weapon_zs_peashooter")
-GM:AddPointShopWeapon(0,"owens", ITEMCAT_GUNS, 12, "weapon_zs_owens")
+GM:AddPointShopWeapon(0,"owens", ITEMCAT_GUNS, 10, "weapon_zs_owens")
+GM:AddPointShopWeapon(0,"z9000", ITEMCAT_GUNS, 10, "weapon_zs_z9000")
 GM:AddPointShopWeapon(0,"doublebarrel", ITEMCAT_GUNS, 15, "weapon_zs_doublebarrel")
 GM:AddPointShopWeapon(0,"tossr", ITEMCAT_GUNS, 15, "weapon_zs_tosser")
 GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber")
 GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler")
-GM:AddPointShopWeapon(0,"z9000", ITEMCAT_GUNS, 15, "weapon_zs_z9000")
 GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 17, "weapon_zs_nailgun").NoClassicMode = true
 
 GM:AddPointShopWeapon(1,"medgun", ITEMCAT_GUNS, 55, "weapon_zs_medicgun")
@@ -83,7 +83,6 @@ GM:AddPointShopWeapon(2,"hunter", ITEMCAT_GUNS, 100, "weapon_zs_hunter")
 GM:AddPointShopWeapon(2,"stalker", ITEMCAT_GUNS, 120, "weapon_zs_m4")
 GM:AddPointShopWeapon(2,"bioshotgun", ITEMCAT_GUNS, 87, "weapon_zs_bioticshotgun")
 GM:AddPointShopWeapon(2,"ioncannon", ITEMCAT_GUNS, 110, "weapon_zs_ioncannon")
-
 
 GM:AddPointShopWeapon(3,"terminator", ITEMCAT_GUNS, 165, "weapon_zs_terminator")
 GM:AddPointShopWeapon(3,"immortal", ITEMCAT_GUNS, 170, "weapon_zs_immortal")
@@ -124,19 +123,19 @@ GM:AddPointShopItem(nil,"woodboards", "나무 판자 5개", nil, ITEMCAT_AMMO, 1
 
 GM:AddPointShopWeapon(nil,"crphmr", ITEMCAT_MELEE, 20, "weapon_zs_hammer").NoClassicMode = true
 --GM:AddPointShopItem(nil,"wrench", "메카닉의 렌치", nil, ITEMCAT_MELEE, 25, "weapon_zs_wrench").NoClassicMode = true
-GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 35, "weapon_zs_axe")
-GM:AddPointShopWeapon(nil,"crowbar", ITEMCAT_MELEE, 27, "weapon_zs_crowbar")
+GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 25, "weapon_zs_axe")
+GM:AddPointShopWeapon(nil,"crowbar", ITEMCAT_MELEE, 22, "weapon_zs_crowbar")
 GM:AddPointShopWeapon(nil,"stunbaton", ITEMCAT_MELEE, 23, "weapon_zs_stunbaton")
 GM:AddPointShopWeapon(nil,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
 --GM:AddPointShopWeapon(nil,"shovel", ITEMCAT_MELEE, 45, "weapon_zs_shovel")
-GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 70, "weapon_zs_sledgehammer")
-GM:AddPointShopWeapon(nil,"zpplnk", ITEMCAT_MELEE, 12, "weapon_zs_plank")
+GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 60, "weapon_zs_sledgehammer")
+GM:AddPointShopWeapon(nil,"zpplnk", ITEMCAT_MELEE, 15, "weapon_zs_plank")
 --GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
 --GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 32, "weapon_zs_pot")
-GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 29, "weapon_zs_butcherknife")
-GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 42, "weapon_zs_pipe")
+GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 35, "weapon_zs_butcherknife")
+GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
 GM:AddPointShopWeapon(nil,"hook", ITEMCAT_MELEE, 23, "weapon_zs_hook")
-GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 140, "weapon_zs_energysword")
+GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 70, "weapon_zs_energysword")
 
 local item = GM:AddPointShopWeapon(nil,"empgun", ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
 item.NoClassicMode = true
@@ -155,14 +154,17 @@ GM:AddPointShopWeapon(nil,"ammokit", ITEMCAT_TOOLS, 30, "weapon_zs_ammokit")
 
 local item = GM:AddPointShopWeapon(nil,"infturret", ITEMCAT_TOOLS, 60, "weapon_zs_gunturret")
 item.Countables = {"prop_gunturret"}
-item.NoClassicMode = true
+--item.ControllerWep = "weapon_zs_gunturretcontrol"
+--item.NoClassicMode = true
 
 local item = GM:AddPointShopWeapon(nil,"manhack", ITEMCAT_TOOLS, 55, "weapon_zs_manhack")
-item.Countables = {"prop_manhack"}
-item.NoClassicMode = true
+item.Countables = {"prop_manhack","weapon_zs_manhackcontrol"}
+item.ControllerWep = "weapon_zs_manhackcontrol"
+--item.NoClassicMode = true
 
 local item = GM:AddPointShopWeapon(nil,"drone", ITEMCAT_TOOLS, 50, "weapon_zs_drone")
-item.Countables = {"prop_drone"}
+item.Countables = {"prop_drone","weapon_zs_dronecontrol"}
+item.ControllerWep = "weapon_zs_dronecontrol"
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
 
@@ -173,8 +175,8 @@ GM:AddPointShopWeapon(nil,"boardpack", ITEMCAT_TOOLS, 25, "weapon_zs_boardpack")
 
 --GM:AddPointShopItem(nil,"tracker", "송신기 추적장치", nil, ITEMCAT_OTHER, 5, "weapon_zs_objectiveradar").NoClassicMode = true
 
-GM:AddPointShopWeapon(nil,"bodyarmor", ITEMCAT_OTHER, 35, "weapon_zs_bodyarmor")
-GM:AddPointShopWeapon(nil,"extraspd", ITEMCAT_OTHER, 15, "weapon_zs_extraspeed")
+--GM:AddPointShopWeapon(nil,"bodyarmor", ITEMCAT_OTHER, 35, "weapon_zs_bodyarmor")
+--GM:AddPointShopWeapon(nil,"extraspd", ITEMCAT_OTHER, 15, "weapon_zs_extraspeed")
 GM:AddPointShopWeapon(nil,"grenade", ITEMCAT_OTHER, 15, "weapon_zs_grenade")
 GM:AddPointShopWeapon(nil,"flashbang", ITEMCAT_OTHER, 10, "weapon_zs_flashbang")
 GM:AddPointShopWeapon(nil,"smoke", ITEMCAT_OTHER, 7, "weapon_zs_smokegrenade")
@@ -306,10 +308,7 @@ GM.TimeLostPerWave = 15
 GM.WaveZeroLength = 60
 
 -- Time players have between waves to do stuff.
-GM.WaveIntermissionLength = 35
-
--- For Classic Mode
-GM.WaveIntermissionLengthClassic = 25
+GM.WaveIntermissionLength = 20
 
 -- Time in seconds between end round and next map.
 GM.EndGameTime = 25

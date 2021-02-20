@@ -37,6 +37,8 @@ SWEP.SwingRotation = Angle(30, -30, -30)
 SWEP.SwingTime = 0.85
 SWEP.SwingHoldType = "grenade"
 
+SWEP.IsConsumable = true
+
 function SWEP:PlaySwingSound()
 	self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav", 75, math.random(95, 105))
 end

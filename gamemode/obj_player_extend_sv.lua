@@ -468,6 +468,11 @@ function meta:DropAllWeapons()
 	for _, wep in pairs(self:GetWeapons()) do
 		if wep:IsValid() then
 			if GAMEMODE:IsClassicMode() then 
+				for _, insuredwep in pairs(self.ClassicModeInsuredWeps) do
+					if weapons.GetStored(insuredwep) then
+						self:StripWeapon(insuredwep)
+					end
+				end
 				local ent = self:DropWeaponByType(wep:GetClass())
 				if ent and ent:IsValid() then
 					ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
@@ -590,7 +595,7 @@ end
 function meta:AddPoints(points)
 	--self:AddFrags(points)
 	self:SetPoints(self:GetPoints() + points)
-
+	self:SetFullPoints(self:GetFullPoints() + points)
 	gamemode.Call("PlayerPointsAdded", self, points)
 end
 

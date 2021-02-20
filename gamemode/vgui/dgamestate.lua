@@ -116,7 +116,7 @@ end
 
 function PANEL:Text3Paint()
 	if MySelf:IsValid() then
-		draw.SimpleText(translate.Get("points")..MySelf:GetPoints(), self.Font, 0, 0, COLOR_DARKRED)
+		draw.SimpleText(translate.Get("points")..MySelf:GetPoints().."/"..MySelf:GetFullPoints(), self.Font, 0, 0, COLOR_DARKRED)
 	end
 
 	return true

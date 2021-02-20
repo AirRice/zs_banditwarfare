@@ -20,6 +20,10 @@ ENT.AlwaysGhostable = true
 local NextCache = 0
 local CachedFilter = {}
 
+function ENT:ShouldNotCollide(ent)
+	return ent:IsPlayer() and self:GetObjectOwner():IsPlayer() and ent:Team() == self:GetObjectOwner():Team()
+end
+
 function ENT:GetLocalAnglesToTarget(target)
 	return self:WorldToLocalAngles(self:GetAnglesToTarget(target))
 end
@@ -87,14 +91,14 @@ function ENT:GetScanFilter()
 	return filter
 end
 
--- Getting all of some team is straining every frame when there's 5 or so turrets. I could probably use CONTENTS_TEAM* if I knew what they did.
+local NextCache = 0
 function ENT:GetCachedScanFilter()
-	if CurTime() < NextCache and CachedFilter then return CachedFilter end
+	if CurTime() < NextCache and self.CachedFilter then return self.CachedFilter end
 
-	CachedFilter = self:GetScanFilter()
+	self.CachedFilter = self:GetScanFilter()
 	NextCache = CurTime() + 1
 
-	return CachedFilter
+	return self.CachedFilter
 end
 
 local tabSearch = {mask = MASK_SHOT}
@@ -191,14 +195,6 @@ function ENT:GetMaxObjectHealth()
 	return self:GetDTInt(1)
 end
 
-function ENT:GetChannel()
-	return self:GetDTInt(2)
-end
-
-function ENT:SetChannel(channel)
-	self:SetDTInt(2, channel)
-end
-
 function ENT:GetTarget()
 	return self:GetDTEntity(0)
 end
@@ -253,13 +249,12 @@ end
 
 function ENT:GetManualControl()
 	local owner = self:GetObjectOwner()
-	if owner:IsValid() and owner:Alive() and (owner:Team() == TEAM_HUMAN or owner:Team() == TEAM_BANDIT) then
+	if owner:IsValid() and owner:Alive() and (owner:Team() == TEAM_HUMAN or owner:Team() == TEAM_BANDIT) and WorldVisible(self:DefaultPos(), owner:GetPos())then
 		local wep = owner:GetActiveWeapon()
-		if wep:IsValid() and wep:GetClass() == "weapon_zs_gunturretcontrol" and wep.GetTurret and wep:GetTurret() == self and not wep:GetDTBool(0) then
+		if wep:IsValid() and wep:GetClass() == "weapon_zs_gunturretcontrol" and not wep:GetDTBool(0) then
 			return true
 		end
 	end
-
 	return false
 end
 

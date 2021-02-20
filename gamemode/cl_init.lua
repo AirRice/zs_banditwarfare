@@ -137,7 +137,6 @@ GM.InputMouseX = 0
 GM.InputMouseY = 0
 GM.LastTimeDead = 0
 GM.LastTimeAlive = 0
-GM.HeartBeatTime = 0
 GM.FOVLerp = 1
 GM.HurtEffect = 0
 GM.PrevHealth = 0
@@ -159,13 +158,6 @@ GM.Beats = {
 "music/HL1_song17.mp3",
 "music/HL1_song10.mp3"
 }
-
-GM.DeathFog = 0
-GM.FogStart = 0
-GM.FogEnd = 8000
-GM.FogRed = 30
-GM.FogGreen = 30
-GM.FogBlue = 30
 
 function GM:ClickedPlayerButton(pl, button)
 end
@@ -238,92 +230,6 @@ function GM:InitPostEntity()
 	self:LocalPlayerFound()
 
 	self:EvaluateFilmMode()
-
-	timer.Simple(2, function() GAMEMODE:GetFogData() end)
-end
-
-function GM:SetupWorldFog()
-	if self.DeathFog == 0 then return end
-
-	local power = self.DeathFog
-	local rpower = 1 - self.DeathFog
-
-	local fogstart = self.FogStart * rpower
-	local fogend = self.FogEnd * rpower + 150 * power
-	local fogr = self.FogRed * rpower
-	local fogg = self.FogGreen * rpower + 40 * power
-	local fogb = self.FogBlue * rpower
-
-	render.FogMode(1)
-
-	render.FogStart(fogstart)
-	render.FogEnd(fogend)
-	render.FogColor(fogr, fogg, fogb)
-	render.FogMaxDensity(1)
-
-	return true
-end
-
-function GM:SetupSkyboxFog(skyboxscale)
-	if self.DeathFog == 0 then return end
-
-	local power = self.DeathFog
-	local rpower = 1 - self.DeathFog
-
-	local fogstart = self.FogStart * rpower
-	local fogend = self.FogEnd * rpower + 150 * power
-	local fogr = self.FogRed * rpower
-	local fogg = self.FogGreen * rpower + 40 * power
-	local fogb = self.FogBlue * rpower
-	local fogdensity = 1 - power * 0.1
-
-	render.FogMode(1)
-
-	render.FogStart(fogstart * skyboxscale)
-	render.FogEnd(fogend * skyboxscale)
-	render.FogColor(fogr, fogg, fogb)
-	render.FogMaxDensity(1)
-
-	return true
-end
-
-function GM:PreDrawSkyBox()
-	self.DrawingInSky = true
-end
-
-local matSky = CreateMaterial("SkyOverride", "UnlitGeneric", {["$basetexture"] = "color/white", ["$vertexcolor"] = 1, ["$vertexalpha"] = 1, ["$model"] = 1})
-local colSky = Color(0, 30, 0)
-function GM:PostDrawSkyBox()
-	self.DrawingInSky = false
-
-	if self.DeathFog == 0 then return end
-
-	colSky.a = self.DeathFog * 230
-
-	cam.Start3D(EyePos(), EyeAngles())
-		render.SuppressEngineLighting(true)
-
-		render.SetMaterial(matSky)
-
-		render.DrawQuadEasy(Vector(0, 0, 10240), Vector(0, 0, -1), 20480, 20480, colSky, 0)
-		render.DrawQuadEasy(Vector(0, 10240, 0), Vector(0, -1, 0), 20480, 20480, colSky, 0)
-		render.DrawQuadEasy(Vector(0, -10240, 0), Vector(0, 1, 0), 20480, 20480, colSky, 0)
-		render.DrawQuadEasy(Vector(10240, 0, 0), Vector(-1, 0, 0), 20480, 20480, colSky, 0)
-		render.DrawQuadEasy(Vector(-10240, 0, 0), Vector(1, 0, 0), 20480, 20480, colSky, 0)
-
-		render.SuppressEngineLighting(false)
-	cam.End3D()
-end
-
-function GM:GetFogData()
-	local fogstart, fogend = render.GetFogDistances()
-	local fogr, fogg, fogb = render.GetFogColor()
-
-	self.FogStart = fogstart
-	self.FogEnd = fogend
-	self.FogRed = fogr
-	self.FogGreen = fogg
-	self.FogBlue = fogb
 end
 
 local matAura = Material("models/debug/debugwhite")
@@ -361,11 +267,25 @@ function GM:OnReloaded()
 end
 
 -- The whole point of this is so we don't need to check if the local player is valid 1000 times a second.
-
+-- Empty functions get filled when the local player is found.
+function GM:Think() end
+GM.HUDWeaponPickedUp = GM.Think
+GM.Think = GM._Think
+GM.HUDShouldDraw = GM.Think
+GM.CalcView = GM.Think
+GM.ShouldDrawLocalPlayer = GM.Think
+GM.PostDrawOpaqueRenderables = GM.Think
+GM.PostDrawTranslucentRenderables = GM.Think
+GM.HUDPaint = GM.Think
+GM.HUDPaintBackground = GM.Think
+GM.CreateMove = GM.Think
+GM.PrePlayerDraw = GM.Think
+GM.PostPlayerDraw = GM.Think
+GM.InputMouseApply = GM.Think
+GM.GUIMousePressed = GM.Think
 function GM:LocalPlayerFound()
 	self.Think = self._Think
 	self.HUDShouldDraw = self._HUDShouldDraw
-	self.CachedFearPower = self._CachedFearPower
 	self.CalcView = self._CalcView
 	self.ShouldDrawLocalPlayer = self._ShouldDrawLocalPlayer
 	self.PostDrawOpaqueRenderables = self._PostDrawOpaqueRenderables
@@ -376,10 +296,11 @@ function GM:LocalPlayerFound()
 	self.PrePlayerDraw = self._PrePlayerDraw
 	self.PostPlayerDraw = self._PostPlayerDraw
 	self.InputMouseApply = self._InputMouseApply
+	self.GUIMousePressed = self._GUIMousePressed
 	self.HUDWeaponPickedUp = self._HUDWeaponPickedUp
 
 	LocalPlayer().LegDamage = 0
-	
+
 	if render.GetDXLevel() >= 80 then
 		self.RenderScreenspaceEffects = self._RenderScreenspaceEffects
 	end
@@ -410,11 +331,7 @@ function GM:IsClassicMode()
 end
 
 local lastwarntim = -1
-local NextGas = 0
 function GM:_Think()
-	if self.DeathFog > 0 then
-		self.DeathFog = math.max(self.DeathFog - FrameTime() / 5, 0)
-	end
 	
 	if self.HealthHUD and self.HealthHUD:Valid() then
 		if MySelf:Team() == TEAM_SPECTATOR then
@@ -686,7 +603,6 @@ function GM:ObserverHUD(obsmode)
 		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 5, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	end
 end
-
 local indicator_mat = Material("vgui/ico_friend_indicator_alone")
 
 function GM:_PostDrawTranslucentRenderables()
@@ -695,22 +611,19 @@ function GM:_PostDrawTranslucentRenderables()
 		self:DrawWorldHints()
 	end
 	if self.ShowIndicators then
-	client = LocalPlayer()
-	plys = team.GetPlayers(client:Team())
+		local plys = team.GetPlayers(MySelf:Team())
+		local indicator_col = team.GetColor(MySelf:Team())
+		local dir = MySelf:GetForward() * -1
 
-	local indicator_col = team.GetColor(client:Team())
-    dir = client:GetForward() * -1
-
-    render.SetMaterial(indicator_mat)
-
-    for i=1, #plys do
-        ply = plys[i]
-        if ply:IsPlayer() and ply:Team() == client:Team() and ply != client and ply:Alive() and client:Team() ~= TEAM_SPECTATOR then
-           pos = ply:GetPos()
-           pos.z = pos.z + 74
-           render.DrawQuadEasy(pos, dir, 16, 16, indicator_col, 180)
-        end
-      end
+		render.SetMaterial(indicator_mat)
+		for i=1, #plys do
+			ply = plys[i]
+			if ply:IsPlayer() and ply:Team() == MySelf:Team() and ply != MySelf and ply:Alive() then
+			   pos = ply:GetPos()
+			   pos.z = pos.z + 74
+			   render.DrawQuadEasy(pos, dir, 16, 16, indicator_col, 180)
+			end
+		end
 	end
 end
 
@@ -802,7 +715,9 @@ function GM:CreateFonts()
 	surface.CreateLegacyFont(fontfamily, screenscale * 28, fontweight, fontaa, false, "ZSHUDFontSmallNS", false, false)
 	surface.CreateLegacyFont(fontfamily, screenscale * 42, fontweight, fontaa, false, "ZSHUDFontNS", false, false)
 	surface.CreateLegacyFont(fontfamily, screenscale * 72, fontweight, fontaa, false, "ZSHUDFontBigNS", false, false)
-
+	
+	surface.CreateLegacyFont("arial", screenscale * 24, 0, true, false, "ZSIconFont", false, font)
+	
 	surface.CreateLegacyFont(fontfamily, screenscale * 16, 0, true, false, "ZSDamageResistance", false, true)
 	surface.CreateLegacyFont(fontfamily, screenscale * 16, 0, true, false, "ZSDamageResistanceBlur", false, true)
 
@@ -957,21 +872,7 @@ function GM:HumanMenu()
 
 	local panel = vgui.Create("DSideMenu")
 	self.HumanMenuPanel = panel
-	
-	local but = vgui.Create("DButton", panel)
-	but:SetFont("ZSHUDFontSmall")
-	but:SetText("탄약/소모품 구매")
-	but:SetTall(32)
-	but:SizeToContents()
-	but:SetContentAlignment(8)
-	but:Dock(TOP)
-	but:DockMargin(0,64,0,16)
-	but:SetZPos(1100)
-	but.DoClick = 
-	function() 
-		GAMEMODE:OpenPointsShop(WEAPONLOADOUT_NULL)
-		surface.PlaySound("buttons/button15.wav") 
-	end
+
 	panel:OpenMenu()
 end
 function GM:OnContextMenuOpen()
@@ -1399,6 +1300,16 @@ end)
 
 net.Receive("zs_bodyarmor", function(length)
 	LocalPlayer().BodyArmor = net.ReadFloat()
+end)
+GM.ClassicModeInsuredWeps = {}
+net.Receive("zs_insure_weapon", function(length)
+	local wep = net.ReadString()
+	GAMEMODE.ClassicModeInsuredWeps[wep] = true
+	local doMessage = net.ReadBool()
+	if doMessage then
+		local wepname = weapons.GetStored(wep).TranslateName and translate.Get(weapons.GetStored(wep).TranslateName)or wep
+		GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+	end
 end)
 
 net.Receive("zs_playerrespawntime", function(length)

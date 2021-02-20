@@ -84,7 +84,6 @@ local tColorModHuman = {
 }
 
 local redview = 0
-local matTankGlass = Material("models/props_lab/Tank_Glass001")
 function GM:_RenderScreenspaceEffects()
 	if MySelf.Confusion and MySelf.Confusion:IsValid() then
 		MySelf.Confusion:RenderScreenSpaceEffects()
@@ -115,6 +114,7 @@ function GM:_RenderScreenspaceEffects()
 		end
 	end
 end
+
 local matGlow = Material("Sprites/light_glow02_add_noz")
 local colHealthEmpty = GM.AuraColorEmpty
 local colHealthFull = GM.AuraColorFull
@@ -124,8 +124,10 @@ local colPullBeam = Color(255, 255, 255, 255)
 function GM:_PostDrawOpaqueRenderables()
 		if MySelf:Team() ~= TEAM_SPECTATOR then
 			local eyepos = EyePos()
-			for _, pl in pairs(team_GetPlayers(MySelf:Team())) do
-				if pl:Alive() and pl:GetPos():Distance(eyepos) <= pl:GetAuraRange() and pl ~= MySelf then
+			local plys = team.GetPlayers(MySelf:Team())
+			for _, pl in pairs(plys) do
+				local dist = pl:GetPos():DistToSqr(eyepos)
+				if pl:Alive() and dist <= 16777216 and pl ~= MySelf then
 					local healthfrac = math_max(pl:Health(), 0) / pl:GetMaxHealth()
 					colHealth.r = math_Approach(colHealthEmpty.r, colHealthFull.r, math_abs(colHealthEmpty.r - colHealthFull.r) * healthfrac)
 					colHealth.g = math_Approach(colHealthEmpty.g, colHealthFull.g, math_abs(colHealthEmpty.g - colHealthFull.g) * healthfrac)
@@ -138,7 +140,6 @@ function GM:_PostDrawOpaqueRenderables()
 				end
 			end
 		end
-
 		local holding = MySelf.status_human_holding
 		if holding and holding:IsValid() and holding:GetIsHeavy() then
 			local object = holding:GetObject()

@@ -10,14 +10,240 @@ translate.AddLanguage("en", "English")
 
 LANGUAGE.teamname_bandit							= "Bandits"
 LANGUAGE.teamname_human								= "Survivors"
+LANGUAGE.deathmatch_mode							= "DEATHMATCH"
+LANGUAGE.sample_collect_mode						= "COLLECTION"
+LANGUAGE.transmission_mode							= "TRANSMISSION"
 LANGUAGE.win										= "%s Win"
 LANGUAGE.draw										= "Draw"
-LANGUAGE.deathmatch_mode							= "DEATHMATCH"
-LANGUAGE.transmission_mode							= "TRANSMISSION"
+
+LANGUAGE.itemcategory_guns							= "Guns"
+LANGUAGE.itemcategory_ammo							= "Ammo"
+LANGUAGE.itemcategory_melee							= "Melee"
+LANGUAGE.itemcategory_tools							= "Tools"
+LANGUAGE.itemcategory_etc							= "Etc"
+
+LANGUAGE.playermodel_changed_to_x					= "Your playermodel has been set to %s."
+LANGUAGE.select_playermodel							= "Select Playermodel"
+LANGUAGE.player_color								= "Player Color"
+LANGUAGE.weapon_color								= "Weapon Color(Only certain weapons)"
+LANGUAGE.colors_button								= "Player Colors"
+LANGUAGE.options_button								= "Options"
+LANGUAGE.credits_button								= "Credits"
+LANGUAGE.close_button								= "Close"
+
+LANGUAGE.option_no_floating_scores					= "Do not show points floaters"
+LANGUAGE.option_show_team_indicators				= "Show ally team indicators"
+LANGUAGE.option_enable_killstreak_sounds			= "Enable killstreak sounds"
+LANGUAGE.option_spectator_mode						= "Spectator Mode (Applied next wave)"
+LANGUAGE.option_hide_most_of_hud					= "Film Mode (Hide most HUD elements)"
+LANGUAGE.option_simple_score_board					= "Simple Scoreboard (Hide Points)"
+LANGUAGE.option_play_music							= "Play Background Music"
+LANGUAGE.option_crosshair_while_ironsights			= "Show crosshairs while aiming down sights"
+LANGUAGE.option_crosshair_no_rotate					= "Disable crosshair rotation"
+LANGUAGE.option_enable_color_correction				= "Enable color correction"
+LANGUAGE.option_enable_pain_flashes					= "Enable pain effects"
+LANGUAGE.option_show_damage_indicators				= "Show damage indicators"
+LANGUAGE.option_enable_view_roll					= "Enable view roll"
+LANGUAGE.option_always_show_nail_info				= "Always show nail information"
+LANGUAGE.option_weapon_hud_style					= "Weapon HUD style"
+LANGUAGE.option_music_volume						= "Music Volume"
+LANGUAGE.option_ally_transparency_radius			= "Ally transparency radius"
+
+LANGUAGE.option_crosshair_color_primary				= "Crosshair Color - Primary"
+LANGUAGE.option_crosshair_color_secondary			= "Crosshair Color - Secondary"
+LANGUAGE.option_health_color_full					= "Health Color - 100%"
+LANGUAGE.option_health_color_empty					= "Health Color - 0%"
 
 LANGUAGE.loser_points_added							= "You get %d points for being on the losing team."
 LANGUAGE.winner_points_added						= "You get %d points for being on the winning team."
 LANGUAGE.draw_points_added							= "Draw. You get %d points."
+LANGUAGE.less_players_points_added					= "You get %d points for having less people on your team."
+LANGUAGE.teambalance_shuffle_in_5_seconds			= "Teams will be shuffled for balance in 5 seconds."
+LANGUAGE.weapon_aegiskit_name						= "'Aegis' Barricade Kit"
+LANGUAGE.weapon_aegiskit_desc						= "An easy-to-use kit for installing planks.\nCan automatically place planks parallel to most static surfaces."
+LANGUAGE.weapon_boardpack_name 						= "Pack of boards"
+LANGUAGE.weapon_boardpack_desc 						= "Several boards held together. \nUseful as props for barricading when there are no other props around.\nRequires a separate tool for installation such as a hammer or nailgun."
+LANGUAGE.weapon_detpack_name 						= "Remote Detonated C4"
+LANGUAGE.weapon_detpack_desc 						= "A plastic explosive that can be detonated remotely after placement. \nRequires careful usage due to its extremely large blast radius."
+LANGUAGE.weapon_detpackremote_name 					= "C4 Detonator"
+LANGUAGE.weapon_detpackremote_desc 					= "A remote that can be used to detonate explosives that have been placed down."
+LANGUAGE.weapon_ffield_name							= "Forcefield Emitter"
+LANGUAGE.weapon_ffield_desc 						= "Upon placement, projects an energy field directly outwards.\nThis forcefield can block bullets, but humans, props and other projectiles can pass through. \nThe forcefield itself is immune to damage; The emitter is still vulnerable."
+LANGUAGE.weapon_hegrenade_name 						= "Grenade"
+LANGUAGE.weapon_hegrenade_desc 						= "Rudimentary fragmentation grenade. Explodes 1.5 seconds after thrown. \nClever usage can heavily damage many enemy targets at once."
+LANGUAGE.weapon_gunturret_name 						= "Automated Turret"
+LANGUAGE.weapon_gunturret_desc						= "This turret will automatically search for targets in front of it to shoot at.\nInvaluable in fortifying strategically important areas.\nContains 150 bullets by default, and can be rearmed by hitting them with a carpenter's hammer."
+LANGUAGE.weapon_carphammer_name						= "Carpenter's Hammer"
+LANGUAGE.weapon_carphammer_desc						= "This otherwise lackluster melee weapon can be used in a stunningly numerous amount of ways.\n It is primarily used to nail in props to build barricades and other structures.\nCan also be used to fix friendly structures such as turrets as well as replenishing their ammo by hitting them.\nCan also be used to counteract EMP effects on transmitters.\nPrimary attack: Repair/attack\nSecondary attack: Nail in prop\nReload: Remove nail"
+LANGUAGE.weapon_ammokit_name 						= "Ammo Box"
+LANGUAGE.weapon_ammokit_desc						= "A box holding several bags full of ammunition. Can be used to throw said bags forward.\nThese bags will replenish the ammunition of whatever weapon you or your teammates are holding if picked up."
+LANGUAGE.weapon_annabelle_name						= "'Annabelle' Rifle"
+LANGUAGE.weapon_annabelle_desc						= "This hunting rifle's bullets have been modified to fragment on impact.\nUpon impacting a wall, these fragments will damage nearby targets within a small radius."
+LANGUAGE.weapon_axe_name							= "Wood Axe"
+LANGUAGE.weapon_axe_desc							= "A decently powerful melee weapon. Relatively slow to swing."
+LANGUAGE.weapon_backdoor_name 						= "Comms Backdoor"
+LANGUAGE.weapon_backdoor_desc 						= "One-time-use tool for hacking. Can be used while looking at an enemy-controlled transmitter to hack it.\nUpon hacking completion the enemy's current transmission will be partially corrupted setting back their progress, and the transmitter will immediately come under your control."
+LANGUAGE.weapon_battleaxe_name 						= "'Battleaxe' Pistol"
+LANGUAGE.weapon_battleaxe_desc 						= "An accurate and relatively powerful pistol with a low fire rate."
+LANGUAGE.weapon_bioticrifle_name					= "'Black Crab' Biorifle"
+LANGUAGE.weapon_bioticrifle_desc					= "A rifle that fires pellets of refined poison from headcrabs.\nIf the pellet hits an enemy in the head they will suffer from temporary confusion.\nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_bioticshotgun_name					= "'Puker' Bioshotgun"
+LANGUAGE.weapon_bioticshotgun_desc					= "This modified shotgun fires a stream of bile akin to those of zombies. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_blitzrifle_name						= "'Blitz' Assault Rifle"
+LANGUAGE.weapon_blitzrifle_desc						= "An assault rifle with an attached high-magnification scope.\n Fires high caliber bullets that do a great deal of damage at a manageable recoil and spread."
+LANGUAGE.weapon_boomstick_name						= "Boomstick"
+LANGUAGE.weapon_boomstick_desc						= "This legendary shotgun can hold 4 shells in its chamber at once, which are all fired at the same time.\nThe gun is so powerful that even the shooters themselves are knocked out for a considerable length of time upon firing."
+LANGUAGE.weapon_bulletstorm_name					= "'Bulletstorm' SMG"
+LANGUAGE.weapon_bulletstorm_desc					= "A High-capacity SMG that can fire 2 bullets at once at a reduced fire rate. \nTo activate this mode, simply aim down the sights."
+LANGUAGE.weapon_meatcleaver_name					= "Butcher Knife"
+LANGUAGE.weapon_meatcleaver_desc					= "A sharp knife originally used for cutting bone and sinew. \nCauses deep cuts in enemies which will bleed for more damage over time."
+LANGUAGE.weapon_crackler_name						= "'Crackler' Assault Rifle"
+LANGUAGE.weapon_crackler_desc						= "An accurate assault rifle with low recoil. This is an older model that fires relatively low caliber rounds."
+LANGUAGE.weapon_impalercbow_name					="'Impaler' Crossbow"
+LANGUAGE.weapon_impalercbow_desc					= "Fires superheated nails at a high speed. \nThis nail will pierce through several enemies dealing consecutively less damage as more enemies are pierced.\nFired nails are not recoverable, nor can this weapon be used to nail props down."
+LANGUAGE.weapon_crowbar_name						= "Crowbar"
+LANGUAGE.weapon_crowbar_desc						= "A surprisingly useful melee weapon. \nWhen hitting an enemy barricade this weapon has a chance to immediately pull out a single nail."
+LANGUAGE.weapon_deagle_name 						= "'Zombie Drill' Pistol"
+LANGUAGE.weapon_deagle_desc							= "This pistol's high stopping power and accuracy lends itself well to even long-range engagements."
+LANGUAGE.weapon_cowpoke_name						= "'Cowpoke' Shotgun"
+LANGUAGE.weapon_cowpoke_desc						= "A double barreled shotgun that can fire both barrels at once. \nIts low capacity will leave users open for attack while reloading this weapon."
+LANGUAGE.weapon_capturedrone_name					= "Drone"
+LANGUAGE.weapon_capturedrone_desc					= "A remotely controllable surveillance drone.\nBesides reconaissance, it can also be used to remotely capture transmitters. Drones can also see the locations of transmitters and their status from afar.\nUpon taking enough damage, the drone will explode, dealing damage to its surroundings."
+LANGUAGE.weapon_capturedroneremote_name				= "Drone Controller"
+LANGUAGE.weapon_capturedroneremote_desc				= "Can be used to control drones remotely"
+LANGUAGE.weapon_empgun_name							= "EMP Gun"
+LANGUAGE.weapon_empgun_desc							= "A specialised tool that causes an EMP blast. \nThe shots fired by this weapon can destroy turrets, manhacks, or other deployables instantly.\nThis also includes barriades, for which the EMP blast will destroy all nails on the target prop. \nThe shot can also temporarily disable transmitters controlled by the enemy to hinder their transmission."
+LANGUAGE.weapon_endershotgun_name					= "'Ender' Shotgun"
+LANGUAGE.weapon_endershotgun_desc					= "An automatic shotgun that can fire many shells in a short timespan. Many legends of its power at close ranges have been told over the years."
+LANGUAGE.weapon_enemyradar_name						= "Biometric Scanner"
+LANGUAGE.weapon_enemyradar_desc						= "Exceedingly important in tracking enemy movement, this tool will send out a ping that displays all enemies' current locations.\nThe ping will update every 15 seconds."
+LANGUAGE.weapon_energysword_name					= "Energy Sword"
+LANGUAGE.weapon_energysword_desc					= "A combine blade that cuts down enemies using dark energy.\n It has the ability to momentarily propel the user forward at a high speed with its secondary function."
+LANGUAGE.weapon_eraser_name							= "'Eraser' Pistol"
+LANGUAGE.weapon_eraser_desc							= "An uniquely built tactical pistol that deals more damage the less rounds are remaining in its magazine.\nThe final bullet in the magazine will deal up to three times its normal damage."
+LANGUAGE.weapon_flashbang_name						= "Flashbang"
+LANGUAGE.weapon_flashbang_desc						= "A flashbang that will explode 1.5 seconds after being thrown. \nPlayers looking at the flashbang when it explodes will be temporarily blinded, with a 25% chance of also being temporarily incapacitated."
+LANGUAGE.weapon_crossfire_name						= "'Crossfire' Pistol"
+LANGUAGE.weapon_crossfire_desc						= "Each bullet fired by this pistol will split into three upon leaving the barrel.\nThe pistol has a low capacity, but can prove to be very effective in the hands of a skilled user."
+LANGUAGE.weapon_grenadelauncher_name				= "Grenade Launcher"
+LANGUAGE.weapon_grenadelauncher_desc				= "This weapon will fire, at relatively high speeds, grenades that explode upon impact dealing a substantial amount of damage."
+LANGUAGE.weapon_turretcontrol_name					= "Turret Manual Remote"
+LANGUAGE.weapon_turretcontrol_desc					= "This tool can be used to manually control turrets and direct their fire at specified targets."
+LANGUAGE.weapon_meathook_name						= "Meat Hook"
+LANGUAGE.weapon_meathook_desc						= "Upon hitting an enemy with this hook, it will become embedded in them and deal constant damage.\nThe wielder will lose control of the weapon while it is embedded."
+LANGUAGE.weapon_hunter_name							= "'Hunter' Rifle"
+LANGUAGE.weapon_hunter_desc							= "A sniper rifle firing very high caliber rounds. The magazine only holds one round, but the shot is extremely powerful.\nThe shot will cause a concussion in the target upon hitting their head, given that it does not kill them outright."
+LANGUAGE.weapon_immortal_name						= "'Immortal' Pistol"
+LANGUAGE.weapon_immortal_desc						= "This revolver has been enhanced with combine technology. \nThe shots made by this pistol will deal up to two times its original damage depending on how hurt the wielder is."
+LANGUAGE.weapon_inferno_name						= "'Inferno' Assault Rifle"
+LANGUAGE.weapon_inferno_desc						= "This gun is accurate even compared to other rifles. It is also equipped with a magnifying scope, making it very useful for long range engagements."
+LANGUAGE.weapon_inquisition_name					= "'Inquisition' Crossbow"
+LANGUAGE.weapon_inquisition_desc					= "A pistol-style crossbow modified to fire nails. Each nail is cut into three smaller projectiles and fired consecutively.\nFired nails are irrecoverable and this weapon cannot be used to nail down props."
+LANGUAGE.weapon_ioncannon_name						= "Ion Cannon"
+LANGUAGE.weapon_ioncannon_desc						= "A futuristic firearm which fires several streams of pulse energy.\nIts accuracy improves as it fires, but due to its low magazine size it is hard to keep accurate for long."
+LANGUAGE.weapon_kalashnikov_name					= "'Kalash' Assault Rifle"
+LANGUAGE.weapon_kalashnikov_desc					= "This rifle gets much more inaccurate during continuous fire compared to other assault rifles, but its high power is almost unmatched."
+LANGUAGE.weapon_stalker_name						= "'Stalker' Assault Rifle"
+LANGUAGE.weapon_stalker_desc						= "An all-rounder rifle with good accuracy and firing speed, this firearm is a good choice for many types of engagements."
+LANGUAGE.weapon_ricochet_name						= "'Ricochet' Pistol"
+LANGUAGE.weapon_ricochet_desc 						= "This revolver uses specially hardened bullets that can ricochet off walls and buildings. \nThese bullets will deal 1.5 times its original damage when hitting an enemy after bouncing off a surface."
+LANGUAGE.weapon_manhack_name						= "Manhack"
+LANGUAGE.weapon_manhack_desc						= "A short-range attack drone equipped with razor sharp blades.\nCan be used to remotely attack enemies via slicing them apart, but has low health and requires skill to use effectively."
+LANGUAGE.weapon_manhackcontrol_name					= "Manhack Remote"
+LANGUAGE.weapon_manhackcontrol_desc					= "A remote controller used to maneuver a manhack remotely."
+LANGUAGE.weapon_medikit_name						= "Medical Kit"
+LANGUAGE.weapon_medikit_desc						= "A small first aid kit equipped with various medical supplies.\nCan be used to efficiently and quickly heal teammates.\nThe secondary attack is used to heal the wielder, but this will make the kit unavailable to heal teammates for a while."
+LANGUAGE.weapon_medigun_name						= "'Savior' Medical Gun"
+LANGUAGE.weapon_medigun_desc						= "Fires projectiles that can heal teammates from afar.\nEach shot heals more than a medical kit but uses up more medical supplies at once.\nHitting enemies will apply a lethal dosage and cause continuous toxic damage."
+LANGUAGE.weapon_megamasher_name						= "Megamasher"
+LANGUAGE.weapon_megamasher_desc						= "A melee weapon built using a substantial amount of metal salvage.\nExceptionally heavy and slow to use, but no weapons come close to its sheer destructive power.\nEspecially effective against barricades."
+LANGUAGE.weapon_nailgun_name						= "Nailgun"
+LANGUAGE.weapon_nailgun_desc						= "Fires nails at an extremely high speed.\nFiring this weapon while looking at a prop will nail it at the impact spot similar to a hammer.\nNails will be reusable if hitting solid surfaces such as walls and floors.\nFired nails are treated as bullets, and will be blocked by force fields. They will not be affected by any anti-projectile mechanisms."
+LANGUAGE.weapon_neutrinoLMG_name					= "'Neutrino' Pulse LMG"
+LANGUAGE.weapon_neutrinoLMG_desc					= "Fires bolts of pulse energy. Fires slowly, but gets faster the more shots are fired in a single volley.\nTakes ammo directly from the ammo pool, without having to be reloaded."
+LANGUAGE.weapon_positron_name						= "'Positron' Beam Cannon"
+LANGUAGE.weapon_positron_desc						= "Fires a beam of charged positrons. The beam is weak upon first coming in contact with an enemy, but charges up in power the longer it stays on a single target. \nTakes ammo directly from the ammo pool, without having to be reloaded."
+LANGUAGE.weapon_owenspistol_name					= "'Owens' Pistol"
+LANGUAGE.weapon_owenspistol_desc					= "This pistol will fire rounds that split into two upon leaving the barrel.\nRelatively inaccurate for a pistol, it is most effective at close ranges."
+LANGUAGE.weapon_peashooterpistol_name				= "'Peashooter' Pistol"
+LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol with a high rate of fire. The rounds have a small caliber but the pistol can sustain a constant stream of fire."
+LANGUAGE.weapon_leadpipe_name						= "Lead Pipe"
+LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off."
+LANGUAGE.weapon_plankmelee_name						= "Plank"
+LANGUAGE.weapon_plankmelee_desc						= "A seemingly useless melee weapon.\nIt can be swung faster every time it hits a target."
+LANGUAGE.weapon_practicion_name						= "'Practicion' Medical Rifle"
+LANGUAGE.weapon_practicion_desc						= "A firearm that utilises medical supplies. Causes overdoses that deal continuous toxic damage.\nHitting friendly targets will heal them slightly every hit. Hitting them in the head will heal more at once."
+LANGUAGE.weapon_adonispulse_name					= "'Adonis' Pulse Rifle"
+LANGUAGE.weapon_adonispulse_desc					= "A powerful assault rifle utilising pulse energy.\nHas a slow rate of fire, but has very low recoil.\nSlows down enemies that are hit by the shot."
+LANGUAGE.weapon_reaperUMP_name						= "'Reaper' SMG"
+LANGUAGE.weapon_reaperUMP_desc						= "This SMG is comparable to high caliber assault weaponry in its stopping power, but its accuracy is still quite poor much like other SMGs."
+LANGUAGE.weapon_redeemer_name						= "'Redeemer' Dual Pistols"
+LANGUAGE.weapon_redeemer_desc						= "Two pistols each modified to fire bullets that spread out into 6 smaller bullets. The bullets spread rather closely, making it useful at most ranges."
+LANGUAGE.weapon_helvetica_name						= "'Helvetica' Rifle"
+LANGUAGE.weapon_helvetica_desc						= "A Marksman's Rifle that deals a set amount of damage, piercing body armor.\nIts damage stays constant and is not affected by headshots or other buffs."
+LANGUAGE.weapon_shovel_name							= "Shovel"
+LANGUAGE.weapon_shovel_desc							= ""
+LANGUAGE.weapon_signalbooster_name					= "Signal Booster"
+LANGUAGE.weapon_signalbooster_desc					= "Holding this weapon in your hand will allow you to capture transmitters at double the speed.\nIt is also able to display the locations of all transmitters and their status."
+LANGUAGE.weapon_silencer_name						= "'Silencer' Machine Pistol"
+LANGUAGE.weapon_silencer_desc						= "An automatic pistol with an exceptionally fast rate of fire. \nCan easily dispatch any enemy up close, but is extremely hard to handle and cannot be fired in bursts effectively."
+LANGUAGE.weapon_sledgehammer_name					= "Sledgehammer"
+LANGUAGE.weapon_sledgehammer_desc					= "A heavy blunt melee weapon that is slow to swing. \nDeals heavy knockback and damage, especially to barricades, to which it deals 3 times the normal damage."
+LANGUAGE.weapon_tinyslug_name						= "'Tiny' Slug Gun"
+LANGUAGE.weapon_tinyslug_desc						= "This shotgun has been modified to fire large slugs very accurately. \nMuch like rifles, it now fires one projectile instead of several.\nIt does not, however, have a scope attached to it."
+LANGUAGE.weapon_shredder_name						= "'Shredder' SMG"
+LANGUAGE.weapon_shredder_desc						= "This SMG is relatively accurate and has a lower recoil than most SMGs."
+LANGUAGE.weapon_smokegrenade_name					= "Smoke Grenade"
+LANGUAGE.weapon_smokegrenade_desc					= "Emits a thick smoke 2 seconds after being thrown. The smoke stays for a very long time and obscures vision, allowing strategic use."
+LANGUAGE.weapon_stubber_name						= "'Stubber' Rifle"
+LANGUAGE.weapon_stubber_desc						= "A low caliber rifle with a magnifying scope. Its low upfront damage means careful aim is of the essence."
+LANGUAGE.weapon_stunstick_name						= "Stun Baton"
+LANGUAGE.weapon_stunstick_desc						= "Weaker than other melee weapons, but temporarily stuns the target and prevents them from taking action."
+LANGUAGE.weapon_sweeper_name						= "'Sweeper' Shotgun"
+LANGUAGE.weapon_sweeper_desc						= "A pump shotgun holding 6 shells. It has a low rate of fire, but packs considerable power in each shot."
+LANGUAGE.weapon_combatknife_name					= "Combat Knife"
+LANGUAGE.weapon_combatknife_desc					= "A knife that can be swung very quickly. Striking the enemy's back will deal two times the damage."
+LANGUAGE.weapon_terminator_name						= "'Terminator' Pistol"
+LANGUAGE.weapon_terminator_desc						= "A semi-automatic pistol that holds 3 rounds in each magazine. \nThe magazines are specially built such that hitting the enemy's head will automatically reload all rounds.\nCareful aim with this weapon will allow for a stream of very damaging fire, but missing will leave the wielder open for attack."
+LANGUAGE.weapon_tommysmg_name						= "'Tommy' SMG"
+LANGUAGE.weapon_tommysmg_desc						= "Equipped with a massive 75-round drum magazine, this machine gun can lay down an impressive amount of fire.\nIt is however held back by its slow reload speed and very inaccurate spread."
+LANGUAGE.weapon_tosser_name							= "'Tosser' SMG"
+LANGUAGE.weapon_tosser_desc							= "SMG with a 25-round capacity magazine. Has a decent rate of fire, but its low caliber and outdated design leaves much to be desired."
+LANGUAGE.weapon_sprayer_name						= "'Sprayer' SMG"
+LANGUAGE.weapon_sprayer_desc						= "This SMG has a large capacity magazine, but is extremely inaccurate.\nIt is most useful up close and personal."
+LANGUAGE.weapon_waraxe_name							= "'Waraxe' Pistol"
+LANGUAGE.weapon_waraxe_desc							= "A pistol firing rounds that split into four upon leaving the barrel.\nIt is more accurate than most shotguns making it viable at longer ranges as well."
+LANGUAGE.weapon_pulsepistol_name					= "'Z9000' Pulse Pistol"
+LANGUAGE.weapon_pulsepistol_desc					= "This is a pulse energy weapon. It cannot deal much damage, but slows down enemies considerably.\nThe internal machinery of this pistol is used as a basis for all other pulse weaponry."
+LANGUAGE.weapon_zeusrifle_name						= "'Zeus' Rifle"
+LANGUAGE.weapon_zeusrifle_desc						= "This Marksman's Rifle is fully automatic and remains accurate even while firing.\nIts high-magnification scope is also useful for taking out targets that are far away."
+LANGUAGE.weapon_whirlwind_name						= "'Whirlwind' Interceptor"
+LANGUAGE.weapon_whirlwind_desc						= "This gun charges its internal capacity automatically over time. \nIt will fire upon enemy projectiles located in front of the user automatically, reflecting them towards roughly where it is aimed at.\nLeaves a lot to be desired as a firearm, but its interception capabilities fill a valuable strategic niche."
+
+LANGUAGE.statusname_invuln							= "INVULNERABLE"
+LANGUAGE.statusname_bodyarmor						= "BODY ARMOR"
+LANGUAGE.statusname_poisonrecover					= "POISON RECOVERY"
+LANGUAGE.statusname_toxic							= "OVERDOSE"
+LANGUAGE.statusname_bleeding						= "BLEEDING"
+
+LANGUAGE.consecutive_kills							= " Kills"
+LANGUAGE.cant_purchase_in_this_mode					= "Cannot be used in this mode."
+LANGUAGE.already_have_weapon						= "You already own this."
+LANGUAGE.cant_use_in_classic_mode					= "Cannot be used in deathmatch mode."
+
+LANGUAGE.purchased_for_x_points						= "Purchased for %d Points."
+LANGUAGE.require_x_more_points						= "Requires %d more points"
+LANGUAGE.purchase_item								= "Purchase"
+LANGUAGE.pointshop_title							= "Points Shop"
+LANGUAGE.pointshop_title_guns1						= "Purchase Weapon 1"
+LANGUAGE.pointshop_title_guns2						= "Purchase Weapon 2"
+LANGUAGE.pointshop_title_melee						= "Purchase Melee Weapon"
+LANGUAGE.pointshop_title_tools						= "Purchase Tool"
+
+LANGUAGE.tier_x										= "Tier %d"
+LANGUAGE.button_help								= "HELP"
+LANGUAGE.button_buyammo								= "Purchase Ammo"
+LANGUAGE.weapon_insured								= "Weapon Insured"
 
 LANGUAGE.disconnect_killed							= "%s ragequit after being killed by %s."
 LANGUAGE.nail_removed_by							= "%s removed %s's nail."
@@ -27,13 +253,14 @@ LANGUAGE.prepare_yourself							= "Prepare for the battle..."
 LANGUAGE.purchased_x_for_y_points					= "Purchased %s for %d points!"
 LANGUAGE.will_appear_after_respawn					= "This will be given to you after respawning."
 
-LANGUAGE.that_life									= "That life..."
-LANGUAGE.x_damage_to_barricades						= "Dealt %d damage to barricades"
-LANGUAGE.x_damage_to_enemies						= "Dealt %d damage to enemies"
-LANGUAGE.x_kills									= "Killed %d enemies"
-
+LANGUAGE.samples_collected							= "Samples Collected: %s"
+LANGUAGE.that_life									= "That Life..."
+LANGUAGE.x_damage_to_barricades						= "%d damage to barriaces"
+LANGUAGE.x_damage_to_enemies						= "%d damage to enemies"
+LANGUAGE.x_kills									= "%d kills"
 LANGUAGE.press_jump_to_free_roam					= "Press JUMP to use free roam camera"
 LANGUAGE.press_rmb_to_cycle_targets					= "Right Mouse Button to change spectate target"
+LANGUAGE.press_duck_to_toggle_eyecam				= "Press DUCK to toggle between third/first person view"
 LANGUAGE.press_lmb_to_spawn							= "Left Mouse Button to respawn"
 LANGUAGE.you_respawned								= "You respawned."
 
@@ -46,8 +273,11 @@ LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 LANGUAGE.one_sigil_taken_by_x						= "%s have taken a transmitter!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s have finished their transmission."
 LANGUAGE.sigil_comms_tied							= "Both teams finished their transmissions."
+LANGUAGE.samples_finished_by_x						= "%s have collected enough samples."
+LANGUAGE.samples_tied								= "Both teams have collected enough samples."
+LANGUAGE.nest_destroyed_by_x				 		= "%s has destroyed a nest!"
 
-LANGUAGE.sigil_comms_disrupted_x					= "The %s' transmitter has been hacked! The opposite team now controls it."
+LANGUAGE.sigil_comms_disrupted_x					= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
 LANGUAGE.x_killed_all_enemies					    = "%s have killed all enemies."
 LANGUAGE.before_wave_cant_go_outside_spawn			= "You cannot leave the spawn before the round starts!"
 LANGUAGE.you_have_died								= "You have died"
@@ -68,11 +298,11 @@ LANGUAGE.object_too_damaged_to_be_used				= "This object is too damaged to hamme
 LANGUAGE.x_turned_on_noclip							= "%s turned on noclip."
 LANGUAGE.x_turned_off_noclip						= "%s turned off noclip."
 
-LANGUAGE.points_x									= "Points: %s points"
+LANGUAGE.points										= "Points: "
 LANGUAGE.next_wave_in_x								= "Next wave in %s seconds"
 LANGUAGE.wave_ends_in_x								= "Wave ends in %s seconds"
 LANGUAGE.wave_x_of_y								= "Wave %d/%d"
-LANGUAGE.zombie_invasion_in_x						= "Round begins in %s seconds"
+LANGUAGE.game_start_in_x							= "Round begins in %s seconds"
 LANGUAGE.intermission								= "Intermission"
 LANGUAGE.breath										= "O2"
 LANGUAGE.waiting_for_players						= "Waiting for players..."
@@ -96,22 +326,40 @@ LANGUAGE.help_cat_introduction						= "Zombie Survival: Bandit Warfare"
 LANGUAGE.help_cat_keys								= "Controls"
 LANGUAGE.help_cat_tips								= "Tips"
 LANGUAGE.help_cat_barricading						= "Barricading"
-LANGUAGE.help_cat_upgrades							= "Points"
+LANGUAGE.help_cat_upgrades							= "Upgrades"
 
 LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between antagonistic bandits and hardened survivors after the zombie apocalypse.</p><br>
 <h1>Who will survive?</h1> <br>
-<p><h3>There are two gamemodes in Bandit Warfare.</h3></p>
+<p><h3>There are three game modes in Bandit Warfare.</h3></p>
+<hr>
 <h2>Transmission</h2> <br>
-<p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for help before the other team. Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
-<p>If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter adds 0.5 percent to the overall transmission progress once they are controlled.</p>
-<p>Remember that the transmitters are the most important in this mode! Even if you kill members of the opposite team you cannot win if you do not control these. If you purchase a "Transmitter Radar", it can help you locate them by showing where they are and how far you are from them.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons and replace your original weapon with it. Every time you respawn you will spawn with the three weapons in your loadout, but they will not be given to you until your next respawn.</p>
-<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from using it to send a transmission temporarily. A hacking tool may be used to immediately take over an enemy transmitter while corrupting part of their existing transmission, reducing their progress. You can purchase these by pressing F2 and are given to you when you buy them immediately unlike weapons.</p>
-<p>Points are obtained by killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
-<br>
+<p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for reinforcements before the other team.</p>
+<p>Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
+<p>Once a wave begins, three transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5%% of the overall transmission progress every second while they are controlled.</p>
+<p>Remember that the transmitters are the most important thing in this mode! Even if you kill members of the opposite team you cannot win if you do not control them. Several tools can help you locate them by showing where they are and how far you are from each.</p>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the original slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn.</p>
+<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely.</p>
+<p>Points are obtained by doing various activities including killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
+<hr>
+
+<h2>Collection</h2> <br>
+<p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
+<p>Samples can be earned by killing enemies. Headshots will make them drop twice the samples. You can also earn 30 samples each by destroying zombie nests located around the map.</p>
+<p>Simply collecting the samples is not enough. You need to insert the samples into your team's research terminal. After collecting samples, return to your spawn point. Standing near the research terminals will automatically insert the samples at a rate of 5 per second.</p>
+<p>Much like the transmission mode, you are able to use the weapon loadout via the Spawn Menu button but some tools are unavailable.</p>
+<p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>
+<hr>
+
 <h2>Deathmatch</h2> <br>
-<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using the F2 menu (Also openable with the spawnmenu key). In this mode weapons and other tools are given to you directly.</p>
-<p>With deathmatch the entire game is faster paced and you have less time to complete the objective (kill everyone). In addition, when you die in this mode you drop everything you have, including weapons and ammunition. Furthermore, all purchases are 25% cheaper!</p>
+<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one large shop. Here, purchasing weapons and other tools will give them to you directly.</p>
+<p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 25% cheaper!</p>
+<p>There is also a chance you will drop your weapon for enemies to use upon dying, but there are specific circumstances:</p>
+<ul><li>Weapons that show up as blue are <strong>"Insured"</strong>: You will not lose them upon death.</li> 
+<li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>
+<li>Consumables such as grenades or flashbangs, and tools such as forcefields that you place into the world, will never be insured. You will lose these every time.</li>
+<li>Weapons you do not buy, such as those you get by picking them up from the ground, will never be insured.</li>
+</ul>
+
 ]]
 
 LANGUAGE.help_cont_keys					= 
@@ -137,6 +385,11 @@ LANGUAGE.help_cont_keys					=
     <td>F1</td>
     <td>Show menu with various options</td>
   </tr>
+   <tr>
+    <td>Context Menu</td>
+    <td>C</td>
+    <td>Show stats of currently held weapon</td>
+  </tr>
   <tr>
     <td>Spawnmenu</td>
     <td>Q</td>
@@ -148,11 +401,6 @@ LANGUAGE.help_cont_keys					=
     <td>Open shop</td>
   </tr>
   <tr>
-    <td>Information</td>
-    <td>F3</td>
-    <td>Check weapon stats</td>
-  </tr>
-  <tr>
     <td>Options</td>
     <td>F4</td>
     <td>Show options menu</td>
@@ -160,24 +408,52 @@ LANGUAGE.help_cont_keys					=
    <tr>
     <td>Rotate</td>
     <td>Left Alt</td>
-    <td>Press and hold while holding a prop and you can rotate said prop.</td>
+    <td>If held down while holding a prop you can rotate said prop.</td>
   </tr>
-</table>]]
+</table>
+<br>
+<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with Reload/Alternate Fire (R and Right Mouse respectively) and finally placed with the "Attack" key (Default: Left Mouse Button).</li> 
+<li>Press and hold Run (Default: Shift) to pack them back up for later.</li>
+<li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default: E).</li>
+<li>Press 'gmod_undo' (Default: Z) to enter phase mode for a while where you can phase through friendly barricaded props. "Suit Zoom" will let you indefinitely hold phase mode, but it is not bound by default and must be manually set to a key in your options menu.</li>
+</ul>
+]]
 
 LANGUAGE.help_cont_tips								= [[<p>Tips:
-<ul><li>Press 'gmod_undo' (Default Z) to enter phase mode where you can phase through friendly barricaded props.</li>
-<li>You deal more damage to enemies when you are outnumbered - 25% more to be exact.</li>
-<li>More expensive weapons are generally more powerful, but it is crucial to purchase the weapon best suited for the current situation.</li>
-<li>Placable tools are placed with the "Attack" key (Default Left Mouse Button), and Reload/Alternate Fire (R and Right Mouse respectively) rotates them before placement.<br> Press and hold Run (Default Shift) to pack them back up for later.</li>
-<li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default E).</li>
-<li>You can block pathways with heavy props but you won't be able to phase past them if they aren't nailed down.</li>
-<li>You can earn points by healing and supplying ammo for your teammates.</li>
-<li>You do not collide nor deal damage to your teammates and can recognize them from the icon that appears over their heads.</li>
-<li>In Transmission, use the tools to your advantage. EMP tools are great for slowing down the enemy transmission while you take control of their transmitters. Hacking tools can help you gain an edge if you use them on enemy transmitters. Drones can capture transmitters remotely.</li>
+<ul><li>You deal more damage to enemies when you are outnumbered - 25% more to be exact.</li>
+<li>More expensive weapons are generally more powerful, but it is crucial to manage your points and weapons.</li>
+<li>Even helping your teammates kill the enemy will net you points. Over half the points from the kill will go to the person who dealt the final blow, but since you do get some points out of helping your teammates, teamwork is very lucrative.</li>
+<li>Even the most expensive weapons will be less useful if you do not know how to make the most of them. Be sure to learn the weapons' special effects and general niche before jumping into a purchase.</li>
 <li>Force field barriers are impervious except for their base. shoot them in the base to destroy them.</li>
 <li>Scoring headshots mean more damage!</li>
-<li>There is a slow down effect if you get hit in the leg. If an enemy is charging at you try shooting them in the knees.</li>
+<li>There is a slowing down effect if you get hit in the leg. If an enemy is charging at you try shooting them in the knees.</li>
+<li>You do not collide nor deal damage to your teammates and can recognize them from the icon that appears over their heads.</li>
+
+<li>Props that are nailed down will eventually explode when the nail's health reaches zero. There is no way to reuse props if this happens.</li>
+
 </ul></p>
 ]]
-LANGUAGE.help_cont_barricading						= [[<p>COMING SOON</p>]]
+LANGUAGE.help_cont_barricading						= [[<p><h3>Barricades are an important aspect of gameplay that can change the tide of battle.</h3></p>
+<p>A well-built barricade and tight strategies will lead the team to victory.</p>
+
+<p>Looking at a non-stationary prop and pressing the 'use' key (Default: E) will let you pick it up.<br>
+Pressing down the 'walk' key (Default: Alt) will let you rotate the prop by moving your mouse, and pressing the 'run' key (Default: Shift) will hold the prop down in place.<br>
+While holding the prop down, using the hammer's secondary attack or shooting the nailgun will nail the prop to whatever is behind it at the moment. Two props nailed together can move with each other, so to make a sturdy barricade props need to be nailed to stationary targets such as walls and floors.<br>
+Hitting the prop with a hammer will repair it. Holding down the 'run' key (Default: Shift) will display all nails' current healths, given that they are nailed down by friendly players or yourself.
+If a prop has been nailed down by mistake, or if you simply want to move the prop somewhere else, simply press the 'reload' key (Default:R) holding the hammer to pull out any nails placed by friendly players or yourself.
+The health of the barricade depends on the props' mass and volume. A large, heavy prop has more health than small props.</p>
+<p></p>
+<hr>
+<p>The 'Aegis' Barricade kit is a tool to quickly place a barricade on sturdy static surfaces. By turning the red indicator which tells you where the planks will go, you can place the planks by simply firing the kit. The indicator will turn green if you can place down the plank.<br>
+Each plank placed down will use up one plank. These planks are different from nailed planks as they are treated like other placeables. Alongside turrets and forcefields, clever usage of these placeables alongside nailed barricades is a good way to build a sturdy barrier to control enemy movement.</p>
+
+<p>Tips:
+<ul>
+<li>You can block pathways with heavy props but you won't be able to phase past them if they aren't nailed down. Remember to nail them down to finish the barricade!</li>
+<li>Large, heavy props are good for barricades as the barricade will have more health, as well as allowing for more space for nails. You can put up to three nails into one prop, and each nail will increase its health.</li>
+<li>Carpenter's Hammers are one of the most useful weapons ever. They can be used to build barricades, repair turrets and other placeables, restore turret ammunition, and even get rid of EMP effects on transmitters. An aspiring engineer should most certainly take one.</li>
+<li>Barricades cannot be repaired indefinitely. Past a certain threshold barricades cannot be repaired, and once a barricade prop's health goes down to zero, it will break after a short period, being unable to nail back down. In other words, props are the limiting factor of barricades.</li>
+<li>There are many methods of combating barricades. Weapons that deal AoE damage, such as explosives, can harm multiple props at once. Sledgehammers do more damage to barricades and placeable tools, and a crowbar can remove nails from barricades by hitting them. EMP guns can dissole all barricade nails entirely from a prop by shooting it.</li>
+<li>Leaving holes inside your barricades for shooting at enemies is a good way to keep attacking the enemy while giving yourself some cover. Building a barricade in a strategic location, such as to block off pathways, is a surefire way to gain a strategic edge over your opponents.</li>
+</ul></p>]]
 LANGUAGE.help_cont_upgrades							= [[<p>COMING SOON</p>]]

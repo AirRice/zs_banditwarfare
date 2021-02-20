@@ -46,6 +46,7 @@ SWEP.Secondary.Ammo = "dummy"
 SWEP.WalkSpeed = SPEED_FAST
 SWEP.ShowOnlyClip = true
 SWEP.HoldType = "slam"
+SWEP.IsConsumable = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType("slam")

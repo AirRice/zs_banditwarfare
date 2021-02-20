@@ -19,7 +19,6 @@ function ENT:Initialize()
 	local ent = ents.Create("prop_ffemitterfield")
 	if ent:IsValid() then
 		self.Field = ent
-
 		ent:SetPos(self:GetPos() + self:GetForward() * 48)
 		ent:SetAngles(self:GetAngles())
 		ent:SetOwner(self)

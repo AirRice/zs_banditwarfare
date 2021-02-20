@@ -1,4 +1,4 @@
-GM.Name		=	"ZS:밴딧 워페어"
+GM.Name		=	"ZS:Bandit Warfare"
 GM.Author	=	"Jooho \"air rice\" Lee"
 GM.Email	=	""
 GM.Website	=	""
@@ -219,13 +219,12 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 	end
 	local mul = 1
 
-	pl:SetVelocity(- pl:GetVelocity() / 4)
 	local damage = math.max(0,0.165*(speed-512))
 	damage = damage * mul
 	if hitfloater then damage = damage / 2 end
 	if math.floor(damage) > 0 then
+		pl:SetVelocity(- pl:GetVelocity() / 4)
 		if SERVER then
-			print(damage)
 			local groundent = pl:GetGroundEntity()
 			local tohurt = pl
 			local isgoomba = false
@@ -259,7 +258,6 @@ function GM:PlayerTraceAttack(pl, dmginfo, dir, trace)
 end
 
 function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
-	
 	local attacker = dmginfo:GetAttacker()
 	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
 	local headshot = hitgroup == HITGROUP_HEAD
@@ -324,85 +322,6 @@ function GM:GetClosestSpawnPoint(teamid, pos)
 	table.sort(spawnpoints, SortByDistance)
 	return spawnpoints[1]
 end
-
-local FEAR_RANGE = 768
-local FEAR_PERINSTANCE = 0.075
-local RALLYPOINT_THRESHOLD = 0.3
-
-local function GetEpicenter(tab)
-	local vec = Vector(0, 0, 0)
-	if #tab == 0 then return vec end
-
-	for k, v in pairs(tab) do
-		vec = vec + v:GetPos()
-	end
-
-	return vec / #tab
-end
-
-function GM:GetTeamRallyGroups(teamid)
-	local groups = {}
-	local ingroup = {}
-
-	local plys = team.GetPlayers(teamid)
-
-	for _, pl in pairs(plys) do
-		if not ingroup[pl] and pl:Alive() then
-			local plpos = pl:GetPos()
-			local group = {pl}
-
-			for __, otherpl in pairs(plys) do
-				if otherpl ~= pl and not ingroup[otherpl] and otherpl:Alive() then
-					group[#group + 1] = otherpl
-				end
-			end
-
-			if #group * FEAR_PERINSTANCE >= RALLYPOINT_THRESHOLD then
-				for k, v in pairs(group) do
-					ingroup[v] = true
-				end
-				groups[#groups + 1] = group
-			end
-		end
-	end
-
-	return groups
-end
-
-function GM:GetTeamRallyPoints(teamid)
-	local points = {}
-
-	for _, group in pairs(self:GetTeamRallyGroups(teamid)) do
-		points[#points + 1] = {GetEpicenter(group), math.min(1, (#group * FEAR_PERINSTANCE - RALLYPOINT_THRESHOLD) / (1 - RALLYPOINT_THRESHOLD))}
-	end
-
-	return points
-end
-
-local CachedEpicentreTimes = {}
-local CachedEpicentres = {}
-function GM:GetTeamEpicentre(teamid, nocache)
-	if not nocache and CachedEpicentres[teamid] and CurTime() < CachedEpicentreTimes[teamid] then
-		return CachedEpicentres[teamid]
-	end
-
-	local plys = team.GetPlayers(teamid)
-	local vVec = Vector(0, 0, 0)
-	for _, pl in pairs(plys) do
-		if pl:Alive() then
-			vVec = vVec + pl:GetPos()
-		end
-	end
-
-	local epicentre = vVec / #plys
-	if not nocache then
-		CachedEpicentreTimes[teamid] = CurTime() + 0.5
-		CachedEpicentres[teamid] = epicentre
-	end
-
-	return epicentre
-end
-GM.GetTeamEpicenter = GM.GetTeamEpicentre
 
 function GM:GetCurrentEquipmentCount(id,countteam)
 	local count = 0

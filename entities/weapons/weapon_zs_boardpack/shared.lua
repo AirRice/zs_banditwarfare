@@ -17,13 +17,14 @@ SWEP.Secondary.Delay = 0.15
 
 SWEP.WalkSpeed = SPEED_NORMAL
 SWEP.FullWalkSpeed = SPEED_SLOWEST
+SWEP.IsConsumable = true
 
 SWEP.JunkModels = {
-	--Model("models/props_debris/wood_board04a.mdl"),
-	Model("models/props_debris/wood_board06a.mdl")
-	--Model("models/props_debris/wood_board02a.mdl"),
-	--Model("models/props_debris/wood_board01a.mdl"),
-	--Model("models/props_debris/wood_board07a.mdl"),
+	Model("models/props_debris/wood_board04a.mdl"),
+	Model("models/props_debris/wood_board06a.mdl"),
+	Model("models/props_debris/wood_board02a.mdl"),
+	Model("models/props_debris/wood_board01a.mdl"),
+	Model("models/props_debris/wood_board07a.mdl")
 	--Model("models/props_c17/furnituredrawer002a.mdl"),
 	--Model("models/props_c17/furnituredrawer003a.mdl"),
 	--Model("models/props_c17/furnituredrawer001a_chunk01.mdl"),

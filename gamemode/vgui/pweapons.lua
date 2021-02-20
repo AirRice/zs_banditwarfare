@@ -12,14 +12,14 @@ local Features = {
 }
 
 function GM:MakeWeaponInfo(swep)
-	local wid, hei = 400, 350
+	local wid, hei = 500, 450
 	local scrwid = ScrW()
 	local scrhei = ScrH()
 	local frame = vgui.Create("DFrame")
 	frame:ShowCloseButton(false)
 	frame:SetDeleteOnClose(true)
 	frame:SetSize(wid, hei)
-	frame:SetPos(scrwid*0.15, ScrH()-hei-40) 
+	frame:SetPos(scrwid*0.18, ScrH()-hei-40) 
 	frame:SetTitle(" ")
 	frame:DockPadding(8, 4, 8, 4)
 	self.m_weaponInfoFrame = frame

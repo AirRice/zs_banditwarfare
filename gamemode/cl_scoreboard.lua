@@ -314,7 +314,7 @@ function PANEL:Refresh()
 		name = string.sub(name, 1, 24)..".."
 	end
 	self.m_PlayerLabel:SetText(name)
-	if GAMEMODE.SimpleScoreBoard then
+	if GAMEMODE.SimpleScoreBoard or pl:Team() ~= LocalPlayer():Team() then
 		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D")
 	else
 		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D | "..pl:GetPoints())

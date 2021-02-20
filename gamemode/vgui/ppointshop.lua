@@ -105,13 +105,13 @@ function PANEL:Init()
 	self.IconFrame:SetWide(self:GetTall() *2)
 	self.IconFrame:SetTall(self:GetTall()-8)
 	self.IconFrame:Dock(LEFT)
-	self.IconFrame:DockMargin(0, 0, 20, 0)
+	self.IconFrame:DockMargin(0, 0, 8, 0)
 
 	self.NameLabel = EasyLabel(self, "", "ZSHUDFontSmaller")
 	self.NameLabel:SetContentAlignment(4)
 	self.NameLabel:Dock(TOP)
 
-	self.PriceLabel = EasyLabel(self, "", "ZSHUDFontSmaller")
+	self.PriceLabel = EasyLabel(self, "", "ZSHUDFontSmallest")
 	self.PriceLabel:SetWide(100)
 	self.PriceLabel:SetContentAlignment(6)
 	self.PriceLabel:Dock(RIGHT)
@@ -133,9 +133,9 @@ local function SetWeaponViewerSWEP(swep)
 	if frame.m_WeaponViewer and frame.m_WeaponViewer:Valid() then
 		frame.m_WeaponViewer:Remove()
 	end
-	local wid, hei = math.min(ScrW(), 760), ScrH() * 0.7
+	local wid, hei = frame:GetWide(), frame:GetTall()
 	local weaponviewer = vgui.Create("DPanel", frame)
-	weaponviewer:SetSize(wid*0.4, hei*0.6)
+	weaponviewer:SetSize(wid*0.5, hei*0.6)
 	weaponviewer:DockPadding(8, 0, 8, 0)
 	if frame.m_TopSpace then
 		weaponviewer:MoveBelow(frame.m_TopSpace, 4)
@@ -143,7 +143,7 @@ local function SetWeaponViewerSWEP(swep)
 	weaponviewer:AlignRight(0)
 	frame.m_WeaponViewer = weaponviewer
 	
-	local title = EasyLabel(weaponviewer, sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swep, "ZSHUDFontSmall", COLOR_GRAY)
+	local title = EasyLabel(weaponviewer, sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swep, "ZSHUDFontSmaller", COLOR_GRAY)
 	title:SetContentAlignment(8)
 	title:Dock(TOP)
 	local text = ""
@@ -256,6 +256,7 @@ local function PurchaseButtonThink(self)
 		end
 		local enoughcost = MySelf:GetPoints() >= self.m_LastPrice
 		local notduplicate = not (itemtab.SWEP and MySelf:HasWeapon(itemtab.SWEP))
+		and not (itemtab.ControllerWep and MySelf:HasWeapon(itemtab.ControllerWep))
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon1() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
@@ -398,7 +399,7 @@ function GM:OpenPointsShop(weaponslot)
 		end
 	end
 
-	local wid, hei = math.min(ScrW(), 760), ScrH() * 0.7
+	local wid, hei = math.min(ScrW(), 900), ScrH() * 0.7
 	
 	local frame = vgui.Create("DFrame")
 	frame:SetSize(wid, hei)
@@ -481,22 +482,22 @@ function GM:OpenPointsShop(weaponslot)
 	local botx, boty = bottomspace:GetPos()
 
 	local propertysheet = vgui.Create("DPropertySheet", frame)
-	propertysheet:SetSize(wid*0.6, boty - topy - 8 - topspace:GetTall())
+	propertysheet:SetSize(wid*0.5, boty - topy - 8 - topspace:GetTall())
 	propertysheet:MoveBelow(topspace, 4)
 	propertysheet:AlignLeft(0)
 	
 	local purchasebutton = vgui.Create("BuySelectedButton", frame)
 	purchasebutton:SetWide(wid*0.3)
-	purchasebutton:AlignRight(wid*0.05)
+	purchasebutton:AlignRight(wid*0.1)
 	purchasebutton:MoveAbove(bottomspace,10)
 	
 	local refusesellpanel = EasyLabel(frame, "", "ZSHUDFontSmaller", COLOR_RED)
-	refusesellpanel:SetWide(wid*0.4)
-	refusesellpanel:SetTall(hei*0.2)
+	refusesellpanel:SetWide(wid*0.5)
+	refusesellpanel:SetTall(hei*0.1)
 	refusesellpanel:AlignRight(0)
 	refusesellpanel:MoveAbove(purchasebutton,10)
 	refusesellpanel:SetMultiline(true)
-	refusesellpanel:SetContentAlignment(7)
+	refusesellpanel:SetContentAlignment(8)
 	refusesellpanel:SetWrap(true)
 	frame.RefusePurchaseLabel = refusesellpanel
 	local sweptable = nil

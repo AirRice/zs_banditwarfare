@@ -5,6 +5,7 @@ include("shared.lua")
 
 ENT.NextWaterDamage = 0
 
+
 function ENT:Initialize()
 	self:SetModel(self.Model)
 	self:SetUseType(SIMPLE_USE)
@@ -125,9 +126,9 @@ end
 function ENT:OnPackedUp(pl)
 	pl:GiveEmptyWeapon(self.WeaponClass)
 	pl:GiveAmmo(1, self.AmmoType)
-
+	
 	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth())
-
+	pl:StripWeapon(self.ControllerClass)
 	self:Remove()
 end
 
@@ -214,6 +215,17 @@ function ENT:Destroy()
 		effectdata:SetScale(1.5)
 	util.Effect("sparks", effectdata)
 end
+
+local function RefreshManhackOwners(pl)
+	for _, ent in pairs(ents.FindByClass("prop_manhack")) do
+		if ent:IsValid() and ent:GetOwner() == pl then
+			ent:Destroy()
+		end
+	end
+end
+
+hook.Add("PlayerDisconnected", "Manhack.PlayerDisconnected", RefreshManhackOwners)
+hook.Add("PlayerChangedTeam", "Manhack.PlayerChangedTeam", RefreshManhackOwners)
 
 ENT.PhysDamageImmunity = 0
 function ENT:Think()

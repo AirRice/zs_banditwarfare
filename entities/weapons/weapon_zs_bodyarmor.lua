@@ -32,6 +32,7 @@ SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "healingfactor"
 
 SWEP.WalkSpeed = SPEED_FAST
+SWEP.IsConsumable = true
 
 function SWEP:PrimaryAttack()
 	if (self:CanPrimaryAttack()) then

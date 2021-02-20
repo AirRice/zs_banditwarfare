@@ -29,7 +29,7 @@ function MakepCredits()
 	frame:SetTitle(" ")
 	frame:SetKeyboardInputEnabled(false)
 
-	local label = EasyLabel(frame, "ZS 제작진", "ZSHUDFontNS", color_white)
+	local label = EasyLabel(frame, "ZS Credits", "ZSHUDFontNS", color_white)
 	label:AlignTop(y)
 	label:CenterHorizontal()
 	y = y + label:GetTall() + 8
@@ -89,7 +89,7 @@ function MakepHelp()
 	Window:SetCursor("pointer")
 	pHelp = Window
 
-	local label = EasyLabel(Window, "도움말", "ZSHUDFont", color_white)
+	local label = EasyLabel(Window, translate.Get("button_help"), "ZSHUDFont", color_white)
 	label:CenterHorizontal()
 	label:AlignTop(8)
 

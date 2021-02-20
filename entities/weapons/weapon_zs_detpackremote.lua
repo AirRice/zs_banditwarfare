@@ -32,6 +32,7 @@ SWEP.Undroppable = true
 SWEP.NoPickupNotification = true
 
 SWEP.HoldType = "slam"
+SWEP.IsConsumable = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
@@ -55,13 +56,15 @@ end
 end
 
 function SWEP:PrimaryAttack()
-	self:SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE)
+	if GAMEMODE:GetWaveActive() then
+		self:SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE)
 
-	if CLIENT then return end
+		if CLIENT then return end
 
-	for _, ent in pairs(ents.FindByClass("prop_detpack")) do
-		if ent:GetOwner() == self.Owner and ent:GetExplodeTime() == 0 then
-			ent:SetExplodeTime(CurTime() + ent.ExplosionDelay)
+		for _, ent in pairs(ents.FindByClass("prop_detpack")) do
+			if ent:GetOwner() == self.Owner and ent:GetExplodeTime() == 0 then
+				ent:SetExplodeTime(CurTime() + ent.ExplosionDelay)
+			end
 		end
 	end
 end

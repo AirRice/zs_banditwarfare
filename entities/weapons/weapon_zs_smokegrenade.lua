@@ -37,6 +37,7 @@ SWEP.Secondary.DefaultClip = 1
 SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_FAST
+SWEP.IsConsumable = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType("grenade")

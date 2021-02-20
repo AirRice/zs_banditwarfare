@@ -9,6 +9,8 @@ ENT.NoNails = true
 function ENT:ShouldNotCollide(ent)
 	if ent:IsProjectile() then 
 		return true 
+	elseif (ent:GetClass() == "prop_drone") or (ent:GetClass() == "prop_manhack") then
+		return true
 	else
 		return false
 	end

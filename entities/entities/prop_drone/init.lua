@@ -90,11 +90,11 @@ function ENT:PhysicsCollide(data, phys)
 end
 
 function ENT:OnPackedUp(pl)
-	pl:GiveEmptyWeapon("weapon_zs_drone")
+	pl:GiveEmptyWeapon(self.WeaponClass)
 	pl:GiveAmmo(1, "drone")
 
 	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth())
-
+	pl:StripWeapon(self.ControllerClass)
 	self:Remove()
 end
 
@@ -167,10 +167,10 @@ function ENT:PhysicsSimulate(phys, frametime)
 end
 
 
-function ENT:Destroy()
+function ENT:Destroy(noexplosion)
 	if self.Destroyed then return end
 	self.Destroyed = true
-
+	noexplosion = noexplosion or false
 	local pos = self:LocalToWorld(self:OBBCenter())
 
 	self:EmitSound("npc/scanner/scanner_explode_crash2.wav")
@@ -183,17 +183,26 @@ function ENT:Destroy()
 	util.Effect("sparks", effectdata)
 
 	local owner = self:GetOwner()
-	if owner:IsPlayer() then
+	if owner:IsPlayer() and not noexplosion then
 		effectdata = EffectData()
 			effectdata:SetOrigin(pos)
 			effectdata:SetNormal(Vector(0, 0, -1))
-		util.Effect("decal_scorch", effectdata)
-
+		util.Effect("HelicopterMegaBomb", effectdata, true, true)
 		self:EmitSound("npc/env_headcrabcanister/explosion.wav", 100, 100)
 		util.BlastDamage2(self, owner, pos, 128, 32)
-		util.Effect("HelicopterMegaBomb", effectdata, true, true)
 	end
 end
+
+local function RefreshDroneOwners(pl)
+	for _, ent in pairs(ents.FindByClass("prop_drone")) do
+		if ent:IsValid() and ent:GetOwner() == pl then
+			ent:Destroy(true)
+		end
+	end
+end
+
+hook.Add("PlayerDisconnected", "Drone.PlayerDisconnected", RefreshDroneOwners)
+hook.Add("PlayerChangedTeam", "Drone.PlayerChangedTeam", RefreshDroneOwners)
 
 ENT.PhysDamageImmunity = 0
 function ENT:Think()

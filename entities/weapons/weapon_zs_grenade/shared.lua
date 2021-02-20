@@ -3,6 +3,7 @@ SWEP.WorldModel = "models/weapons/w_grenade.mdl"
 SWEP.UseHands = true
 
 SWEP.AmmoIfHas = true
+SWEP.IsConsumable = true
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = false

@@ -29,6 +29,7 @@ SWEP.MeleeRange = 55
 SWEP.MeleeSize = 1.5
 SWEP.MeleeKnockBack = 32
 
+SWEP.Primary.Delay = 1.25
 SWEP.WalkSpeed = SPEED_FAST
 
 SWEP.SwingTime = 0.6
@@ -43,7 +44,7 @@ function SWEP:PlaySwingSound()
 end
 
 function SWEP:PlayHitSound()
-	self:EmitSound("weapons/melee/golf club/golf_hit-0"..math.random(4)..".ogg")
+	self:EmitSound("weapons/melee/golfclub/golf_hit-0"..math.random(4)..".ogg")
 end
 
 function SWEP:PlayHitFleshSound()

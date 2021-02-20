@@ -21,17 +21,31 @@ function PANEL:Init()
 	weptoolbutton:SetWeaponSlot(WEAPONLOADOUT_TOOLS)
 	weptoolbutton:SetParent(self)
 	table.insert(self.WeaponButtons, weptoolbutton)
+	local but = vgui.Create("DButton", self)
+	but:SetFont("ZSHUDFontSmall")
+	but:SetText("탄약/소모품 구매")
+	but:SetTall(32)
+	but:SizeToContents()
+	but:SetContentAlignment(8)
+	but:Dock(BOTTOM)
+	but:DockMargin(0,64,0,16)
+	but:SetZPos(1100)
+	but.DoClick = 
+	function() 
+		GAMEMODE:OpenPointsShop(WEAPONLOADOUT_NULL)
+		surface.PlaySound("buttons/button15.wav") 
+	end
 	self:RefreshSize()
 end
 
 
 function PANEL:RefreshSize()
 	local screenscale = BetterScreenScale()
-	self:SetSize(screenscale * 256, ScrH())
+	self:SetSize(screenscale * 300, ScrH())
 	for k, item in pairs(self.WeaponButtons) do
 		if item and item:Valid() then
 			item:SetWide(self:GetWide() - 16)
-			item:SetTall(screenscale * 180)
+			item:SetTall(screenscale * 210)
 		end
 	end
 end
@@ -57,13 +71,7 @@ function PANEL:Paint()
 end
 
 function PANEL:PerformLayout()
-	local y = ScrH() * 0.5
-	for k, item in pairs(self.WeaponButtons) do
-		if item and item:Valid() then
-			y = y - (item:GetTall() + self.Spacing) * 0.5
-		end
-	end
-
+	local y = ScrH() * 0.05
 	for k, item in ipairs(self.WeaponButtons) do
 		if item and item:Valid() then
 			item:SetPos(0, y)
@@ -115,7 +123,7 @@ function PANEL:Init()
 	self.m_WeaponModelButton.DoClick = WeaponButtonDoClick
 	function self.m_WeaponModelButton:LayoutEntity( Entity ) return end 
 	
-	self.m_WeaponNameLabel = EasyLabel(self, "", "ZSHUDFontSmallBold", COLOR_WHITE)
+	self.m_WeaponNameLabel = EasyLabel(self, "", "ZSHUDFontSmallest", COLOR_WHITE)
 	self.m_WeaponNameLabel:SetContentAlignment(8)
 	self.m_WeaponNameLabel:Dock(TOP)
 	self.m_WeaponModelButton:SetZPos(1100)

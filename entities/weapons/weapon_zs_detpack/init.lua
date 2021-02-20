@@ -3,6 +3,8 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+SWEP.IsConsumable = true
+
 function SWEP:Deploy()
 	gamemode.Call("WeaponDeployed", self.Owner, self)
 

@@ -23,9 +23,9 @@ SWEP.WorldModel = "models/weapons/w_pist_elite.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
-SWEP.Primary.Damage = 6
+SWEP.Primary.Damage = 5
 SWEP.Primary.NumShots = 6
-SWEP.Primary.Delay = 0.3
+SWEP.Primary.Delay = 0.25
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true
@@ -34,7 +34,7 @@ SWEP.Primary.DefaultClip = 90
 
 SWEP.ConeMax = 0.055
 SWEP.ConeMin = 0.01
-SWEP.Recoil = 0.3
+SWEP.Recoil = 0.65
 function SWEP:SecondaryAttack()
 end
 

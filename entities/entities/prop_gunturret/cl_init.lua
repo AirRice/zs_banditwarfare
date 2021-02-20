@@ -14,19 +14,16 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if self:GetObjectOwner():IsValid() then
-		local owner = self:GetObjectOwner()
-		if self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
-			self.ScanningSound:PlayEx(0.55, 100 + math.sin(CurTime()))
-			if self:IsFiring() or self:GetTarget():IsValid() then
-				self.ShootingSound:PlayEx(1, 100 + math.cos(CurTime()))
-			else
-				self.ShootingSound:Stop()
-			end
+	if self:GetObjectOwner():IsValid() and self:GetAmmo() > 0 and self:GetMaterial() == "" and GAMEMODE:GetWaveActive() then
+		self.ScanningSound:PlayEx(0.55, 100 + math.sin(CurTime()))
+		if self:IsFiring() or self:GetTarget():IsValid() then
+			self.ShootingSound:PlayEx(1, 100 + math.cos(CurTime()))
 		else
-			self.ScanningSound:Stop()
 			self.ShootingSound:Stop()
 		end
+	else
+		self.ScanningSound:Stop()
+		self.ShootingSound:Stop()
 	end
 end
 
@@ -82,6 +79,8 @@ function ENT:Draw()
 		particle:SetBounce(0.2)
 
 		emitter:Finish()
+		emitter = nil 
+		collectgarbage("step", 64)
 	end
 
 	local owner = self:GetObjectOwner()
@@ -118,13 +117,10 @@ function ENT:Draw()
 		elseif flash then
 			draw_SimpleText(translate.Get("empty"), "DefaultFontBold", x, 55, COLOR_RED, TEXT_ALIGN_CENTER)
 		end
-
-		draw_SimpleText("CH. "..self:GetChannel().." / "..GAMEMODE.MaxChannels[self:GetClass()], "DefaultFontSmall", x, 70, COLOR_WHITE, TEXT_ALIGN_CENTER)
-
 	cam_End3D2D()
 end
 
-local matBeam = Material("effects/laser1")
+local matBeam = Material("trails/laser")
 local matGlow = Material("sprites/glow04_noz")
 function ENT:DrawTranslucent()
 	if self:GetMaterial() ~= "" then return end
@@ -132,57 +128,43 @@ function ENT:DrawTranslucent()
 	local lightpos = self:LightPos()
 
 	local ang = self:GetGunAngles()
-	local owner = self:GetObjectOwner()
+	
+	
 	local colBeam = self.BeamColor
-	if owner:IsPlayer() and (owner:Team() == TEAM_BANDIT or owner:Team()  == TEAM_HUMAN) then
-		colBeam = team.GetColor(owner:Team())
-	end
-	local hasowner = self:GetObjectOwner():IsValid()
+	
+	local owner = self:GetObjectOwner()
+	local hasowner = owner:IsValid() and owner:IsPlayer()
 	local hasammo = self:GetAmmo() > 0
 	local manualcontrol = self:GetManualControl()
 	local waveactive = GAMEMODE:GetWaveActive()
 
-	local tr = util.TraceLine({start = lightpos, endpos = lightpos + ang:Forward() * (manualcontrol and 4096 or self.SearchDistance), mask = MASK_SHOT, filter = self:GetCachedScanFilter()})
+	local tr = util.TraceLine({start = lightpos + ang:Forward(), endpos = lightpos + ang:Forward() * 4096, mask = MASK_SHOT, filter = self:GetCachedScanFilter()})
 
 	if not hasowner then
-		local rate = FrameTime() * 512
-		colBeam.r = math.Approach(colBeam.r, 0, rate)
-		colBeam.g = math.Approach(colBeam.g, 0, rate)
-		colBeam.b = math.Approach(colBeam.b, 255, rate)
-	elseif not hasammo or not manualcontrol and self:GetTarget():IsValid() then
-		local rate = FrameTime() * 512
-		colBeam.r = math.Approach(colBeam.r, 255, rate)
-		colBeam.g = math.Approach(colBeam.g, 0, rate)
-		colBeam.b = math.Approach(colBeam.b, 0, rate)
-	elseif manualcontrol then
-		local rate = FrameTime() * 512
-		colBeam.r = math.Approach(colBeam.r, 255, rate)
-		colBeam.g = math.Approach(colBeam.g, 255, rate)
-		colBeam.b = math.Approach(colBeam.b, 0, rate)
+		colBeam.r = 0
+		colBeam.g = 0
+		colBeam.b = 255
+	elseif not hasammo then
+		colBeam.r = 255
+		colBeam.g = 0
+		colBeam.b = 0
 	elseif not waveactive then
-		local rate = FrameTime() * 512
-		colBeam.r = math.Approach(colBeam.r, 130, rate)
-		colBeam.g = math.Approach(colBeam.g, 130, rate)
-		colBeam.b = math.Approach(colBeam.b, 130, rate)
-	else
-		local rate = FrameTime() * 200
-		colBeam.r = math.Approach(colBeam.r, 0, rate)
-		colBeam.g = math.Approach(colBeam.g, 255, rate)
-		colBeam.b = math.Approach(colBeam.b, 0, rate)
-	end
-
-	if hasowner and hasammo and waveactive then
+		colBeam.r = 130
+		colBeam.g = 130
+		colBeam.b = 130
+	elseif (owner:Team() == TEAM_BANDIT or owner:Team()  == TEAM_HUMAN) then
+		local colTeam = team.GetColor(owner:Team())
+		colBeam.r = colTeam.r
+		colBeam.g = colTeam.g
+		colBeam.b = colTeam.b
 		render.SetMaterial(matBeam)
 		render.DrawBeam(lightpos, tr.HitPos, 1, 0, 1, COLOR_WHITE)
 		render.DrawBeam(lightpos, tr.HitPos, 4, 0, 1, colBeam)
 		render.SetMaterial(matGlow)
-		render.DrawSprite(lightpos, 4, 4, COLOR_WHITE)
-		render.DrawSprite(lightpos, 16, 16, colBeam)
 		render.DrawSprite(tr.HitPos, 2, 2, COLOR_WHITE)
 		render.DrawSprite(tr.HitPos, 8, 8, colBeam)
-	else
-		render.SetMaterial(matGlow)
-		render.DrawSprite(lightpos, 4, 4, COLOR_WHITE)
-		render.DrawSprite(lightpos, 16, 16, colBeam)
 	end
+	render.SetMaterial(matGlow)
+	render.DrawSprite(lightpos, 4, 4, COLOR_WHITE)
+	render.DrawSprite(lightpos, 16, 16, colBeam)
 end

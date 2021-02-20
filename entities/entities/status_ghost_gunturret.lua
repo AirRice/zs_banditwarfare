@@ -7,4 +7,4 @@ ENT.GhostModel = Model("models/Combine_turrets/Floor_turret.mdl")
 ENT.GhostRotation = Angle(270, 0, 0)
 ENT.GhostEntity = "prop_gunturret"
 ENT.GhostWeapon = "weapon_zs_gunturret"
-ENT.GhostDistance = 140
+ENT.GhostDistance = 64

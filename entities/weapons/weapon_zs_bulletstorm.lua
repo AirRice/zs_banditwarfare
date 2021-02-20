@@ -23,9 +23,9 @@ SWEP.WorldModel = "models/weapons/w_smg_p90.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_p90.Single")
-SWEP.Primary.Damage = 14
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.06
+SWEP.Primary.Delay = 0.05
 
 SWEP.Primary.ClipSize = 50
 SWEP.Primary.Automatic = true
@@ -34,8 +34,9 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.1
 SWEP.ConeMin = 0.02
-SWEP.Recoil = 0.45
+SWEP.Recoil = 0.65
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.AimExpandUnit = 0.1
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
@@ -47,19 +48,20 @@ SWEP.IronSightsAng = Vector(0, 2, 0)
 SWEP.Primary.DefaultNumShots = SWEP.Primary.NumShots
 SWEP.Primary.DefaultDelay = SWEP.Primary.Delay
 SWEP.Primary.IronsightsNumShots = SWEP.Primary.NumShots * 2
-SWEP.Primary.IronsightsDelay = SWEP.Primary.Delay * 1.8
-
+SWEP.Primary.IronsightsDelay = SWEP.Primary.Delay * 1.6
+SWEP.DefaultConeMin = SWEP.ConeMin
+SWEP.IronsightsConeMin = SWEP.ConeMin * 3
 function SWEP:SetIronsights(b)
 	if self:GetIronsights() ~= b then
 		if b then
 			self.Primary.NumShots = self.Primary.IronsightsNumShots
 			self.Primary.Delay = self.Primary.IronsightsDelay
-
+			self.ConeMin = self.IronsightsConeMin 
 			self:EmitSound("npc/scanner/scanner_scan4.wav", 40)
 		else
 			self.Primary.NumShots = self.Primary.DefaultNumShots
 			self.Primary.Delay = self.Primary.DefaultDelay
-
+			self.ConeMin = self.DefaultConeMin 
 			self:EmitSound("npc/scanner/scanner_scan2.wav", 40)
 		end
 	end

@@ -252,37 +252,6 @@ function meta:DrawCrosshairCross()
 		render.PopFilterMag()
 		render.PopFilterMin()
 	end]]
-	--[[local x = ScrW() * 0.5
-	local y = ScrH() * 0.5
-
-	local ironsights = self.GetIronsights and self:GetIronsights()
-
-	local owner = self.Owner
-
-	local cone = self:GetCone()
-
-	if cone <= 0 or ironsights and not ironsightscrosshair then return end
-
-	cone = ScrH() / 76.8 * cone
-
-	CrossHairScale = math.Approach(CrossHairScale, cone, FrameTime() * math.max(5, math.abs(CrossHairScale - cone) * 0.02))
-
-	local midarea = 40 * CrossHairScale
-
-	local vel = LocalPlayer():GetVelocity()
-	local len = vel:Length()
-	if GAMEMODE.NoCrosshairRotate then
-		baserot = 0
-	else
-		baserot = math.NormalizeAngle(baserot + vel:GetNormalized():Dot(EyeAngles():Right()) * math.min(10, len / 200))
-	end
-
-	local ang = Angle(0, 0, baserot)
-	for i=0, 359, 60 do
-		ang.roll = baserot + i
-		local p = ang:Up() * midarea
-		DrawDot(x + p.y, y + p.z)
-	end]]
 end
 
 function meta:DrawCrosshairDot()
@@ -294,9 +263,8 @@ function meta:DrawCrosshairDot()
 	surface.SetDrawColor(0, 0, 0, 220)
 	surface.DrawOutlinedRect(x - 2, y - 2, 4, 4)
 end
-
+local insuredcolor = Color(0, 180, 255)
 function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
-
 	--killicon.Draw(x + wide * 0.5, y + tall * 0.5, self:GetClass(), 255)
 	-- Doesn't work with pngs...
 	local ki = killicon.Get(self:GetClass())
@@ -312,9 +280,14 @@ function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
 		surface.DrawTexturedRect(x + wide * 0.5 - wid * 0.5, y + tall * 0.5 - hei * 0.5, wid, hei)
 		
 	end
+	local isinsured = GAMEMODE.ClassicModeInsuredWeps[self:GetClass()]
 	surface.SetDrawColor(color_black_alpha220)
 	surface.DrawRect(x, y + tall * 0.65, wide, tall * 0.2)
-	draw.SimpleText(self:GetPrintName(), "ZSHUDFontSmallNS", x + wide * 0.5, y + tall * 0.75, COLOR_RED, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	drawcol = isinsured and insuredcolor or COLOR_RED
+	draw.SimpleText(self:GetPrintName(), "ZSHUDFontSmallNS", x + wide * 0.5, y + tall * 0.75, drawcol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	if isinsured then
+		draw.SimpleText("!", "ZSIconFont", x + wide -12, y + 12, drawcol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	end
 	return true
 end
 local function empty() end

@@ -40,7 +40,7 @@ SWEP.UseHands = true
 SWEP.ShowViewModel = false
 
 SWEP.Primary.Sound = Sound("Weapon_M249.Single")
-SWEP.Primary.Damage = 16
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.075
 

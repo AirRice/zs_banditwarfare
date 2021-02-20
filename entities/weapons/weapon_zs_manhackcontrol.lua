@@ -40,6 +40,7 @@ SWEP.Undroppable = true
 SWEP.NoPickupNotification = true
 
 SWEP.HoldType = "slam"
+SWEP.IsConsumable = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)

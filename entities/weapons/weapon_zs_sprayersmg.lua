@@ -24,9 +24,9 @@ SWEP.WorldModel = "models/weapons/w_smg_mac10.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_MAC10.Single")
-SWEP.Primary.Damage = 15
+SWEP.Primary.Damage = 10
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.06
+SWEP.Primary.Delay = 0.055
 
 SWEP.Primary.ClipSize = 40
 SWEP.Primary.Automatic = true
@@ -37,9 +37,9 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.125
-SWEP.ConeMin = 0.03
-SWEP.Recoil = 0.65
+SWEP.ConeMax = 0.13
+SWEP.ConeMin = 0.025
+SWEP.Recoil = 0.45
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.WalkSpeed = SPEED_NORMAL
 

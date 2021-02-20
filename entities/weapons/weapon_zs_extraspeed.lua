@@ -39,6 +39,7 @@ SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "adrenaline"
 
 SWEP.WalkSpeed = SPEED_FAST
+SWEP.IsConsumable = true
 
 function SWEP:PrimaryAttack()
 	if (self:CanPrimaryAttack()) then

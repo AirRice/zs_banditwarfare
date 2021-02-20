@@ -38,6 +38,7 @@ SWEP.Undroppable = true
 SWEP.NoPickupNotification = true
 
 SWEP.HoldType = "slam"
+SWEP.IsConsumable = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
@@ -56,32 +57,12 @@ function SWEP:Think()
 	end
 
 	if SERVER then
-		self:ControlClosestTurret()
-
 		for _, ent in pairs(ents.FindByClass("prop_gunturret")) do
 			if ent:GetObjectOwner() == self.Owner then
 				return
 			end
 		end
-
 		self.Owner:StripWeapon(self:GetClass())
-	end
-end
-
-function SWEP:ControlClosestTurret()
-	local closest, closestdist
-	local ownerpos = self.Owner:GetPos()
-	for _, ent in pairs(ents.FindByClass("prop_gunturret")) do
-		if ent:GetObjectOwner() == self.Owner then
-			local dist = ent:NearestPoint(ownerpos):Distance(ownerpos)
-			if not closestdist or dist < closestdist then
-				closest = ent
-				closestdist = dist
-			end
-		end
-	end
-	if closest then
-		self:SetTurret(closest)
 	end
 end
 
@@ -96,14 +77,6 @@ function SWEP:SecondaryAttack()
 			LocalPlayer():EmitSound(self:GetDTBool(0) and "buttons/button17.wav" or "buttons/button19.wav", 0)
 		end
 	end
-end
-
-function SWEP:GetTurret()
-	return self:GetDTEntity(0)
-end
-
-function SWEP:SetTurret(ent)
-	self:SetDTEntity(0, ent)
 end
 
 function SWEP:Reload()

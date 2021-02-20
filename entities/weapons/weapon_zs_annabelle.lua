@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 35
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1
 SWEP.ReloadDelay = 0.4
@@ -35,7 +35,7 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
 SWEP.Primary.DefaultClip = 24
 
-SWEP.ConeMax = 0.006
+SWEP.ConeMax = 0.008
 SWEP.ConeMin = 0.004
 SWEP.MovingConeOffset = 0.11
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
@@ -48,90 +48,70 @@ SWEP.nextreloadfinish = 0
 SWEP.IronSightsPos = Vector(-8.8, 10, 4.32)
 SWEP.IronSightsAng = Vector(1.4,0.1,5)
 
+function SWEP:SetupDataTables()
+	self:NetworkVar("Float", 5, "ReloadTimer")
+	self:NetworkVar("Bool", 5, "IsReloading")
+	if self.BaseClass.SetupDataTables then
+		self.BaseClass.SetupDataTables(self)
+	end
+end
+
 function SWEP:Reload()
-	if self.reloading then return end
+	if self:GetReloadTimer() > 0 then return end
 
 	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
-		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
-		self.reloading = true
-		self.reloadtimer = CurTime() + self.ReloadDelay
+		self:SetNextPrimaryFire(CurTime() + math.max(self.ReloadDelay,self.Primary.Delay))
+		self:SetIsReloading(true)
+		self:SetReloadTimer(CurTime() + self.ReloadDelay)
 		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
-		self.Owner:DoReloadEvent()
+		self:GetOwner():DoReloadEvent()
 	end
-	
+	self:SetIronsights(false)
 end
 
-if SERVER then
 function SWEP:Think()
-	if self.reloading and self.reloadtimer < CurTime() then
-		self.reloadtimer = CurTime() + self.ReloadDelay
-		self:SendWeaponAnim(ACT_VM_RELOAD)
-
-		self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
-		self:SetClip1(self:Clip1() + 1)
-		self:EmitSound("Weapon_Shotgun.Reload")
-
-		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
-			self.nextreloadfinish = CurTime() + self.ReloadDelay
-			self.reloading = false
-			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		end
-	end
-
-	local nextreloadfinish = self.nextreloadfinish
-	if nextreloadfinish ~= 0 and nextreloadfinish < CurTime() then
-		self:SendWeaponAnim(ACT_SHOTGUN_PUMP)
-		self:EmitSound("Weapon_Shotgun.Special1")
-		self.nextreloadfinish = 0
-	end
-
-	if self.IdleAnimation and self.IdleAnimation <= CurTime() then
-		self.IdleAnimation = nil
-		self:SendWeaponAnim(ACT_VM_IDLE)
-	end
-
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
-	end
-	self.BaseClass.Think(self)
-end
-end
-
-if CLIENT then
-function SWEP:Think()
-	if self.reloading and self.reloadtimer < CurTime() then
-		self.reloadtimer = CurTime() + self.ReloadDelay
-		self:SendWeaponAnim(ACT_VM_RELOAD)
-
-		self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
-		self:SetClip1(self:Clip1() + 1)
-		self:EmitSound("Weapon_Shotgun.Reload")
-
-		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
-			self.nextreloadfinish = CurTime() + self.ReloadDelay
-			self.reloading = false
-			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-		end
-	end
-
-	local nextreloadfinish = self.nextreloadfinish
-	if nextreloadfinish ~= 0 and nextreloadfinish < CurTime() then
-		self:SendWeaponAnim(ACT_SHOTGUN_PUMP)
-		self:EmitSound("Weapon_Shotgun.Special1")
-		self.nextreloadfinish = 0
-	end
-
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
+	if self:GetReloadTimer() > 0 and CurTime() >= self:GetReloadTimer() then
+		self:DoReload()
 	end
 	if self.BaseClass.Think then
 		self.BaseClass.Think(self)
 	end
+	self:NextThink(CurTime())
+	return true
 end
+
+function SWEP:DoReload()
+	if not (self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo)) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
+		self:StopReloading()
+		return
+	end
+
+	local delay = self.ReloadDelay
+	self:SendWeaponAnim(ACT_VM_RELOAD)
+	self:EmitSound("Weapon_Shotgun.Reload")
+	self:GetOwner():RemoveAmmo(1, self.Primary.Ammo, false)
+	self:SetClip1(self:Clip1() + 1)
+
+	self:SetIsReloading(false)
+	-- We always wanna call the reload function one more time. Forces a pump to take place.
+	self:SetReloadTimer(CurTime() + delay)
+	self:SetNextPrimaryFire(CurTime() + math.max(self.Primary.Delay, delay))
+end
+
+function SWEP:StopReloading()
+	self:SetReloadTimer(0)
+	self:SetIsReloading(false)
+	self:SetNextPrimaryFire(CurTime() + math.max(self.Primary.Delay, self.ReloadDelay) * 0.75)
+	if self:Clip1() > 0 then
+		self:SendWeaponAnim(ACT_SHOTGUN_PUMP)
+		self:EmitSound("Weapon_Shotgun.Special1")
+	else
+		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+	end
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:Clip1() <= 0 then
 		self:EmitSound("Weapon_Shotgun.Empty")
@@ -139,19 +119,12 @@ function SWEP:CanPrimaryAttack()
 		return false
 	end
 
-	if self.reloading then
-		if 0 < self:Clip1() then
-			self:SendWeaponAnim(ACT_SHOTGUN_PUMP)
-			self:EmitSound("Weapon_Shotgun.Special1")
-		else
-			self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
-		end
-		self.reloading = false
-		self:SetNextPrimaryFire(CurTime() + 0.25)
+	if self:GetIsReloading() then
+		self:StopReloading()
 		return false
 	end
 
-	return true
+	return self:GetNextPrimaryFire() <= CurTime()
 end
 
 local function DoRicochet(attacker, hitpos, hitnormal, normal, damage)

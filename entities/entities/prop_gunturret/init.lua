@@ -14,6 +14,7 @@ local function RefreshTurretOwners(pl)
 	end
 end
 hook.Add("PlayerDisconnected", "GunTurret.PlayerDisconnected", RefreshTurretOwners)
+hook.Add("PlayerChangedTeam", "GunTurret.PlayerChangedTeam", RefreshTurretOwners)
 
 function ENT:Initialize()
 	self:SetModel("models/Combine_turrets/Floor_turret.mdl")
@@ -31,6 +32,7 @@ function ENT:Initialize()
 	self:SetAmmo(self.DefaultAmmo)
 	self:SetMaxObjectHealth(150)
 	self:SetObjectHealth(self:GetMaxObjectHealth())
+	hook.Add("SetupPlayerVisibility", self, self.SetupPlayerVisibility)
 end
 
 function ENT:SetObjectHealth(health)
@@ -43,26 +45,6 @@ function ENT:SetObjectHealth(health)
 		local effectdata = EffectData()
 			effectdata:SetOrigin(pos)
 		util.Effect("Explosion", effectdata, true, true)
-
-		local amount = math.ceil(self:GetAmmo() * 0.5)
-		while amount > 0 do
-			local todrop = math.min(amount, 50)
-			amount = amount - todrop
-			local ent = ents.Create("prop_ammo")
-			if ent:IsValid() then
-				local heading = VectorRand():GetNormalized()
-				ent:SetAmmoType("smg1")
-				ent:SetAmmo(todrop)
-				ent:SetPos(pos + heading * 8)
-				ent:SetAngles(VectorRand():Angle())
-				ent:Spawn()
-
-				local phys = ent:GetPhysicsObject()
-				if phys:IsValid() then
-					phys:ApplyForceOffset(heading * math.Rand(8000, 32000), pos)
-				end
-			end
-		end
 	end
 end
 
@@ -104,15 +86,19 @@ local function BulletCallback(attacker, tr, dmginfo)
 	end
 end
 
+function ENT:PlayShootSound()
+	-- Handled by the looping sound.
+end
+
 function ENT:FireTurret(src, dir)
 	if self:GetNextFire() <= CurTime() then
 		local curammo = self:GetAmmo()
 		if curammo > 0 then
 			self:SetNextFire(CurTime() + 0.03)
 			self:SetAmmo(curammo - 1)
-
 			self:StartBulletKnockback()
-			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback})
+			self:PlayShootSound()
+			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback, IgnoreEntity = self:GetObjectOwner() or nil})
 			self:DoBulletKnockback(0.01)
 			self:EndBulletKnockback()
 		else
@@ -127,8 +113,6 @@ function ENT:Think()
 		self:Remove()
 		return
 	end
-
-	
 	self:CalculatePoseAngles()
 
 	local owner = self:GetObjectOwner()
@@ -171,21 +155,18 @@ function ENT:Think()
 	return true
 end
 
+function ENT:SetupPlayerVisibility(pl)
+	if pl ~= self:GetObjectOwner() then return end
+
+	AddOriginToPVS(self:GetPos())
+	AddOriginToPVS(self:GetPos() + pl:GetAimVector() * 1024)
+end
+
+
 function ENT:Use(activator, caller)
 	if self.Removing or not activator:IsPlayer() or self:GetMaterial() ~= "" then return end
 
-	if self:GetObjectOwner():IsValid() then
-		if activator:Team() ~= self:GetObjectOwner():Team() then return end
-		local curammo = self:GetAmmo()
-		local togive = math.min(math.min(15, activator:GetAmmoCount("smg1")), self.MaxAmmo - curammo)
-		if togive > 0 then
-			self:SetAmmo(curammo + togive)
-			activator:RemoveAmmo(togive, "smg1")
-			activator:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
-			self:EmitSound("npc/turret_floor/click1.wav")
-			--gamemode.Call("PlayerRepairedObject", activator, self, togive * 1.5, self)
-		end
-	else
+	if !self:GetObjectOwner():IsValid() then
 		self:SetObjectOwner(activator)
 		if not activator:HasWeapon("weapon_zs_gunturretcontrol") then
 			activator:Give("weapon_zs_gunturretcontrol")
@@ -202,7 +183,6 @@ function ENT:OnPackedUp(pl)
 	pl:GiveAmmo(1, "thumper")
 
 	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth(), self:GetAmmo())
-	pl:GiveAmmo(self:GetAmmo(), "smg1")
 
 	self:Remove()
 end

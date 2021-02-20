@@ -17,7 +17,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if self:GetLastCalcedNearby() <= CurTime() - 1 then 
+	if self:GetLastCalcedNearby() <= CurTime() - 1 and not GAMEMODE.SamplesEnd  then 
 		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
 			if pl:IsPlayer() and pl:Team() == self:GetOwnerTeam() and pl:Alive() then
 				local plysamples = pl:GetSamples()

@@ -44,6 +44,7 @@ SWEP.WalkSpeed = SPEED_NORMAL
 
 SWEP.HoldType = "slam"
 SWEP.IsHacking = false
+SWEP.IsConsumable = true
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 0, "Charged")

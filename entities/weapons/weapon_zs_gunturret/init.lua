@@ -3,6 +3,8 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+SWEP.IsConsumable = true
+
 function SWEP:Deploy()
 	gamemode.Call("WeaponDeployed", self.Owner, self)
 
@@ -51,13 +53,6 @@ function SWEP:PrimaryAttack()
 
 	self:SetNextPrimaryAttack(CurTime() + self.Primary.Delay)
 
-	local channel = GAMEMODE:GetFreeChannel("prop_gunturret")
-	if channel == -1 then
-		owner:SendLua("surface.PlaySound(\"buttons/button8.wav\")")
-		owner:CenterNotify(COLOR_RED, translate.ClientGet(owner, "no_free_channel"))
-		return
-	end
-
 	local ent = ents.Create("prop_gunturret")
 	if ent:IsValid() then
 		ent:SetPos(pos)
@@ -65,7 +60,6 @@ function SWEP:PrimaryAttack()
 		ent:Spawn()
 
 		ent:SetObjectOwner(owner)
-		ent:SetChannel(channel)
 
 		ent:EmitSound("npc/dog/dog_servo12.wav")
 

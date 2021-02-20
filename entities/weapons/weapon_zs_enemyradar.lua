@@ -55,20 +55,28 @@ end
 function SWEP:Reload()
 end
 
-if not CLIENT then return end
-local texGradDown = surface.GetTextureID("VGUI/gradient_down")
-function SWEP:DrawHUD()
-	if GAMEMODE:GetWaveActive() then
-	if self.LastScan + self.ScanDelay <= CurTime() then
+function SWEP:Think()
+	if CLIENT and GAMEMODE:GetWaveActive() and self.LastScan + self.ScanDelay <= CurTime() then
 		self.targets = {}
-		for _, ent in pairs(player.GetAll()) do
-			if self.Owner:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive() then 
+		local toscan = player.GetAll()
+		table.Merge(toscan, ents.FindByClass("prop_obj_nest"))
+		for _, ent in pairs(toscan) do
+			if (ent:GetClass() == "prop_obj_nest") or (self.Owner:IsPlayer() and ent:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive()) then 
 				table.insert(self.targets,ent:GetPos())
 			end
 		end
 		self.LastScan = CurTime()
 		surface.PlaySound("npc/combine_gunship/gunship_ping_search.wav")
 	end
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
+	end
+end
+
+if not CLIENT then return end
+local texGradDown = surface.GetTextureID("VGUI/gradient_down")
+function SWEP:DrawHUD()
+	if GAMEMODE:GetWaveActive() then
 	for _, pos in pairs(self.targets) do
 		self:DrawTarget(pos,18,0)
 	end
@@ -77,7 +85,7 @@ function SWEP:DrawHUD()
 	local width = 200
 	local height = 20
 	local x, y = ScrW() - width - 32, ScrH() - height - 72
-	local ratio = (CurTime() - self.LastScan) / self.ScanDelay
+	local ratio = math.Clamp((CurTime() - self.LastScan) / self.ScanDelay,0,1)
 	
 	surface.SetDrawColor(5, 5, 5, 180)
 	surface.DrawRect(x, y, width, height)
