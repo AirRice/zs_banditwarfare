@@ -28,24 +28,25 @@ end
 function ENT:CalcClosePlayers()
 	local bnum = 0
 	local hnum = 0
-	for _, pl in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
+	local nearbyents = ents.FindInSphere(self:GetPos(), 150 )
+	for _, pl in pairs(nearbyents) do
 		if util.SkewedDistance(pl:GetPos(),self:GetPos(), 2.75) <= 128 then
-		if pl:IsPlayer() then
-			local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
-			if pl:Team() == TEAM_HUMAN and pl:Alive() then
-					hnum = hnum + (doubleSpeed and 2 or 1)
-			elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
-					bnum = bnum + (doubleSpeed and 2 or 1)
-			end
-		elseif pl:GetClass() == "prop_drone" then
-			if pl:GetOwner():IsPlayer() then 
-				if pl:GetOwner():Team() == TEAM_HUMAN and pl:GetObjectHealth() > 0 then
-					hnum = hnum + 1
-				elseif pl:GetOwner():Team() == TEAM_BANDIT and pl:GetObjectHealth() > 0 then
-					bnum = bnum + 1
+			if pl:IsPlayer() then
+				local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
+				if pl:Team() == TEAM_HUMAN and pl:Alive() then
+						hnum = hnum + (doubleSpeed and 2 or 1)
+				elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
+						bnum = bnum + (doubleSpeed and 2 or 1)
+				end
+			elseif pl:GetClass() == "prop_drone" then
+				if pl:GetOwner():IsPlayer() and not table.HasValue(nearbyents,pl:GetOwner()) then 
+					if pl:GetOwner():Team() == TEAM_HUMAN and pl:GetObjectHealth() > 0 then
+						hnum = hnum + 1
+					elseif pl:GetOwner():Team() == TEAM_BANDIT and pl:GetObjectHealth() > 0 then
+						bnum = bnum + 1
+					end
 				end
 			end
-		end
 		end
 	end
 	if not (bnum > 0 and hnum > 0) then
@@ -65,19 +66,14 @@ function ENT:Think()
 	end
 	
 	local oldhealth = self:GetSigilHealth()
-	--[[for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
-		if pl:IsPlayer() and pl:Team() == cappingteam then
-			cappers = cappers +1
-		end
-	end]]
 	if self:GetSigilTeam() ~= cappingteam and (cappingteam == TEAM_HUMAN or cappingteam == TEAM_BANDIT) and self:GetSigilLastDamaged() <= CurTime() - 1 then 
 		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
 			if pl:IsPlayer() and pl:Team() == cappingteam and pl:Alive() then
-				pl:AddPoints(2)
+				pl:AddPoints(1)
 				gamemode.Call("AddPlayerCaptime",pl)
 				net.Start("zs_capture")
 					net.WriteEntity(self)
-					net.WriteUInt(2, 16)
+					net.WriteUInt(1, 16)
 				net.Send(pl)
 			end
 		end

@@ -1,4 +1,4 @@
-GM.Name		=	"ZS:Bandit Warfare"
+GM.Name		=	"Bandit Warfare"
 GM.Author	=	"Jooho \"air rice\" Lee"
 GM.Email	=	""
 GM.Website	=	""
@@ -6,13 +6,13 @@ GM.Website	=	""
 -- No, adding a gun doesn't make your name worth being here.
 GM.Credits = {
 	{"William \"JetBoom\" Moodhe", "williammoodhe@gmail.com (www.noxiousnet.com)", "Original Mod Creator / Programmer"},
+	{"Jooho 'air rice' Lee", "", "Bandit Warfare Programmer"},
 	{"11k", "tjd113@gmail.com", "Zombie view models"},
 	{"Eisiger", "k2deseve@gmail.com", "Zombie kill icons"},
 	{"Austin \"Little Nemo\" Killey", "austin_odyssey@yahoo.com", "Ambient music"},
 	{"Zombie Panic: Source", "http://www.zombiepanic.org/", "Melee weapon sounds"},
 	{"Samuel", "samuel_games@hotmail.com", "Board Kit model"},
 	{"Typhon", "lukas-tinel@hotmail.com", "HUD textures"},
-	{"Jooho 'air rice' Lee", "", "ZS:Bandit Warfare Programmer"},
 	{"honsal", "", "Korean translation"}
 }
 
@@ -193,8 +193,8 @@ end
 function GM:Move(pl, move)
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		if pl:GetBarricadeGhosting() then
-			move:SetMaxSpeed(36)
-			move:SetMaxClientSpeed(36)
+			move:SetMaxSpeed(64)
+			move:SetMaxClientSpeed(64)
 		--[[elseif move:GetForwardSpeed() < 0 then
 			move:SetMaxSpeed(move:GetMaxSpeed() * 0.5)
 			move:SetMaxClientSpeed(move:GetMaxClientSpeed() * 0.5)
@@ -203,7 +203,7 @@ function GM:Move(pl, move)
 			move:SetMaxClientSpeed(move:GetMaxClientSpeed() * 0.95)]]
 		end
 	end
-
+	
 	local legdamage = pl:GetLegDamage()
 	if legdamage > 0 then
 		local scale = 1 - math.min(1, legdamage/self.MaxLegDamage)
@@ -427,6 +427,9 @@ end
 
 if GM:GetWave() == 0 then
 	GM:SetWaveStart(GM.WaveZeroLength)
+	if SERVER then
+		GM.CurrentMapLoadedPlayers = 0
+	end
 	GM:SetWaveEnd(GM.WaveZeroLength + GM:GetWaveOneLength())
 end
 

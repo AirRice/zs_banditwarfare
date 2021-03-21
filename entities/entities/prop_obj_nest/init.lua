@@ -38,8 +38,8 @@ function ENT:OnTakeDamage(dmginfo)
 	self:SetNestHealth(self:GetNestHealth() - dmginfo:GetDamage())
 	if self:GetNestHealth() <= 0 then
 		if attacker:IsValid() and attacker:IsPlayer() and (attacker:Team() == TEAM_HUMAN or attacker:Team() == TEAM_BANDIT) then
-			attacker:AddPoints(20)
-			attacker:FloatingScore(self, "floatingscore", 20, FM_NONE)
+			attacker:AddPoints(5)
+			attacker:FloatingScore(self, "floatingscore", 5, FM_NONE)
 			gamemode.Call("OnNestDestroyed",attacker)
 		end
 		self:Destroy()
@@ -48,7 +48,7 @@ end
 
 function ENT:Destroy()
 	self.Destroyed = true
-	self:DropSample(30)
+	self:DropSample(10)
 	local pos = self:WorldSpaceCenter()
 
 	local effectdata = EffectData()

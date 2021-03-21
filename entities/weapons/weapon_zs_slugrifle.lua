@@ -36,22 +36,22 @@ SWEP.WorldModel = "models/weapons/w_shot_xm1014.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_XM1014.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 50
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 1
-SWEP.ReloadDelay = 0.6
+SWEP.Primary.Delay = 0.5
+SWEP.ReloadDelay = 0.4
 
-SWEP.Primary.ClipSize = 3
+SWEP.Primary.ClipSize = 6
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
-SWEP.Primary.DefaultClip = 12
+SWEP.Primary.DefaultClip = 18
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
 SWEP.ConeMax = 0.005
 SWEP.ConeMin = 0
-SWEP.Recoil = 3.25
+SWEP.Recoil = 2.25
 SWEP.MovingConeOffset = 0.28
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(-7.04, 1, 1.68)

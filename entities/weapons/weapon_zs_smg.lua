@@ -24,9 +24,9 @@ SWEP.WorldModel = "models/weapons/w_smg_mp5.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_MP5Navy.Single")
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.09
+SWEP.Primary.Delay = 0.095
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true

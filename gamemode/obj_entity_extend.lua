@@ -259,8 +259,9 @@ end
 
 function meta:IsSameTeam(pl)
 	if not pl:IsPlayer() then return end
-
-	if self.IsBarricadeObject and self.GetObjectOwner and self:GetObjectOwner() ~= nil and self:GetObjectOwner():IsPlayer() then
+	if self.GetOwner and self:GetOwner() ~= nil and self:GetOwner():IsPlayer() then
+		return self:GetOwner():Team() == pl:Team()
+	elseif self.IsBarricadeObject and self.GetObjectOwner and self:GetObjectOwner() ~= nil and self:GetObjectOwner():IsPlayer() then
 		return self:GetObjectOwner():Team() == pl:Team()
 	elseif self:IsNailed() then
 		local nailowner = self:GetNailedPropOwner()
@@ -379,7 +380,7 @@ function meta:PoisonDamage(damage, attacker, inflictor, hitpos, noreduction)
 			end
 		end
 		if SERVER then
-			self:GiveStatus("poisonrecovery"):AddDamage(math.floor(damage*0.8))
+			self:GiveStatus("poisonrecovery"):AddDamage(math.floor(damage*0.75))
 		end
 		if self:Health() <= damage then 
 			self:Gib()

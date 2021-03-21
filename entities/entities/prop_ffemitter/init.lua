@@ -9,6 +9,7 @@ function ENT:Initialize()
 	self:SetModel("models/props_lab/lab_flourescentlight002b.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
+	self:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
 
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then

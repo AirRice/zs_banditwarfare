@@ -45,7 +45,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AK47.Clipout")
 SWEP.Primary.Sound = Sound("weapons/grenade_launcher1.wav", 70, math.random(90,120))
-SWEP.Primary.Damage = 8
+SWEP.Primary.Damage = 4
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.14
 SWEP.Primary.ClipSize = 30
@@ -61,9 +61,9 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.NoAmmo = false
 SWEP.Recoil = 0.26
 SWEP.ToxicDamage = 2
-SWEP.ToxicTick = 0.2
-SWEP.ToxDuration = 1.2
-SWEP.Heal = 1
+SWEP.ToxicTick = 0.25
+SWEP.ToxDuration = 1.5
+SWEP.Heal = 2
 SWEP.WalkSpeed = SPEED_SLOW
 
 SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)

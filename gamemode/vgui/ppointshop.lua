@@ -16,7 +16,7 @@ local function imgAdj(img, maximgx, maximgy)
 	img:Center()
 end
 	
-local function WeaponIconModel(class,parent,islarge)
+local function WeaponIconFill(class,parent,islarge)
 	islarge = islarge or false
 	local ki = killicon.Get(class)
 	local col = ki and Color(ki[#ki].r, ki[#ki].g, ki[#ki].b) or color_white
@@ -75,13 +75,14 @@ PANEL = {}
 local function ItemButtonThink(self)
 	local itemtab = FindItem(self.ID)
 	if itemtab then 
-		local newcost = itemtab.Worth * (GAMEMODE:IsClassicMode() and 0.75 or 1)
+		local newcost = math.floor(itemtab.Worth * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
 		if newcost ~= self.m_LastPrice then
 			self.PriceLabel:SetText(tostring(math.ceil(newcost)).." Pts")	
 			self.m_LastPrice = newcost
 		end
 		local newstate = (MySelf:GetPoints() >= self.m_LastPrice
 		and not (itemtab.SWEP and MySelf:HasWeapon(itemtab.SWEP))
+		and not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(MySelf))
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon1() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
 		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
@@ -93,37 +94,6 @@ local function ItemButtonThink(self)
 			self.m_LastAbleToBuy = newstate
 		end
 	end
-end
-
-function PANEL:Init()
-	self:SetText("")
-
-	self:DockPadding(4, 4, 4, 4)
-	self:SetTall(60)
-
-	self.IconFrame = vgui.Create("DEXRoundedPanel", self)
-	self.IconFrame:SetWide(self:GetTall() *2)
-	self.IconFrame:SetTall(self:GetTall()-8)
-	self.IconFrame:Dock(LEFT)
-	self.IconFrame:DockMargin(0, 0, 8, 0)
-
-	self.NameLabel = EasyLabel(self, "", "ZSHUDFontSmaller")
-	self.NameLabel:SetContentAlignment(4)
-	self.NameLabel:Dock(TOP)
-
-	self.PriceLabel = EasyLabel(self, "", "ZSHUDFontSmallest")
-	self.PriceLabel:SetWide(100)
-	self.PriceLabel:SetContentAlignment(6)
-	self.PriceLabel:Dock(RIGHT)
-	self.PriceLabel:DockMargin(8, 0, 4, 0)
-
-	self.ItemCounter = vgui.Create("ItemAmountCounter", self)
-	
-	self.Think = ItemButtonThink
-	self.m_LastAbleToBuy = true
-	self.m_LastPrice = nil
-	self.m_LoadoutSlot = WEAPONLOADOUT_NULL
-	self:SetupItemButton(nil,nil)
 end
 
 local function SetWeaponViewerSWEP(swep)
@@ -159,15 +129,80 @@ local function SetWeaponViewerSWEP(swep)
 	desc:Dock(FILL)
 end
 
+local function SetViewer(tab)
+	local frame = GAMEMODE.m_PointsShop
+	if frame.m_WeaponViewer and frame.m_WeaponViewer:Valid() then
+		frame.m_WeaponViewer:Remove()
+	end
+	local wid, hei = frame:GetWide(), frame:GetTall()
+	local weaponviewer = vgui.Create("DPanel", frame)
+	weaponviewer:SetSize(wid*0.5, hei*0.6)
+	weaponviewer:DockPadding(8, 0, 8, 0)
+	if frame.m_TopSpace then
+		weaponviewer:MoveBelow(frame.m_TopSpace, 4)
+	end
+	weaponviewer:AlignRight(0)
+	frame.m_WeaponViewer = weaponviewer
+	
+	local title = EasyLabel(weaponviewer, tab.TranslateName and translate.Get(tab.TranslateName) or "", "ZSHUDFontSmaller", COLOR_GRAY)
+	title:SetContentAlignment(8)
+	title:Dock(TOP)
+	local text = ""
+
+	if tab.TranslateDesc then
+		text = text..translate.Get(tab.TranslateDesc)
+	end
+
+	local desc = EasyLabel(weaponviewer, text, "ZSHUDFontSmallest", COLOR_GRAY)
+	desc:SetMultiline(true)
+	desc:SetContentAlignment(7)
+	desc:SetWrap(true)
+	desc:Dock(FILL)
+end
+
+function PANEL:Init()
+	self:SetText("")
+
+	self:DockPadding(4, 4, 4, 4)
+	self:SetTall(60)
+
+	self.IconFrame = vgui.Create("DEXRoundedPanel", self)
+	self.IconFrame:SetWide(self:GetTall() *2)
+	self.IconFrame:SetTall(self:GetTall()-8)
+	self.IconFrame:Dock(LEFT)
+	self.IconFrame:DockMargin(0, 0, 8, 0)
+
+	self.NameLabel = EasyLabel(self, "", "ZSHUDFontSmallest")
+	self.NameLabel:SetContentAlignment(4)
+	self.NameLabel:Dock(TOP)
+
+	self.PriceLabel = EasyLabel(self, "", "ZSHUDFontSmallest")
+	self.PriceLabel:SetWide(100)
+	self.PriceLabel:SetContentAlignment(6)
+	self.PriceLabel:Dock(RIGHT)
+	self.PriceLabel:DockMargin(8, 0, 4, 0)
+
+	self.ItemCounter = vgui.Create("ItemAmountCounter", self)
+	
+	self.Think = ItemButtonThink
+	self.m_LastAbleToBuy = true
+	self.m_LastPrice = nil
+	self.m_LoadoutSlot = WEAPONLOADOUT_NULL
+	self:SetupItemButton(nil,nil)
+end
 
 function PANEL:DoClick()
 	local id = self.ID
 	local tab = FindItem(id)
 	if not tab then return end
 	if !GAMEMODE.m_PointsShop or !GAMEMODE.m_PointsShop:Valid() then return end
-	if not tab.SWEP then return end
+	if tab.SWEP then 
+		SetWeaponViewerSWEP(tab.SWEP)
+	else
+		SetViewer(tab)
+	end
 	surface.PlaySound("buttons/button17.wav")
-	SetWeaponViewerSWEP(tab.SWEP)
+	
 	GAMEMODE.m_PointsShop.CurrentID = id
 	GAMEMODE.m_PointsShop.m_LoadoutSlot = self.m_LoadoutSlot
 	--[[if not self.m_LastAbleToBuy then
@@ -203,9 +238,20 @@ function PANEL:SetupItemButton(id,slot)
 		self.NameLabel:SetText("")
 		return
 	end
+	local nametext = ""
 	if tab.SWEP then
 		self.IconFrame:SetVisible(true)
-		WeaponIconModel(tab.SWEP,self.IconFrame)
+		WeaponIconFill(tab.SWEP,self.IconFrame)
+		local sweptable = weapons.GetStored(tab.SWEP)
+		if sweptable then 
+			nametext = sweptable.TranslateName and translate.Get(sweptable.TranslateName) or ""
+			--[[if sweptable.Primary and sweptable.Base == "weapon_zs_base" and sweptable.Primary.Damage then
+				nametext = " DPS: "..math.floor(sweptable.Primary.Damage*(sweptable.Primary.NumShots or 1)/sweptable.Primary.Delay)
+			end]]
+		end
+	else
+		self.IconFrame = nil
+		nametext = tab.TranslateName and translate.Get(tab.TranslateName) or ""	
 	end
 	if tab.SWEP or tab.Countables then
 		self.ItemCounter:SetItemID(id)
@@ -214,7 +260,7 @@ function PANEL:SetupItemButton(id,slot)
 		self.ItemCounter:SetVisible(false)
 	end
 	
-	self.NameLabel:SetText(weapons.GetStored(tab.SWEP).TranslateName and translate.Get(weapons.GetStored(tab.SWEP).TranslateName) or "")
+	self.NameLabel:SetText(nametext)
 	
 	--[[if tab.Worth then
 		self.PriceLabel:SetText(tostring(tab.Worth).." Pts")
@@ -250,7 +296,7 @@ local function PurchaseButtonThink(self)
 	local refusesellpanel = GAMEMODE.m_PointsShop.RefusePurchaseLabel
 	local itemtab = FindItem(id)
 	if itemtab then 
-		local newcost = itemtab.Worth * (GAMEMODE:IsClassicMode() and 0.75 or 1)
+		local newcost = math.floor(itemtab.Worth * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
 		if newcost ~= self.m_LastPrice then
 			self.m_LastPrice = newcost
 		end
@@ -264,7 +310,8 @@ local function PurchaseButtonThink(self)
 		local fitformode = not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
 		not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
 		not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())
-		local newstate = enoughcost and notduplicate and fitformode
+		local auxreason = not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(MySelf))
+		local newstate = enoughcost and notduplicate and fitformode and auxreason
 		if newstate ~= self.m_LastAbleToBuy then
 			self.m_LastAbleToBuy = newstate
 			if newstate then
@@ -274,7 +321,9 @@ local function PurchaseButtonThink(self)
 			end
 		end
 		local refusepurchasereasons = ""
-		if !fitformode then
+		if !auxreason then
+			refusepurchasereasons = itemtab.FailTranslateString and translate.Get(itemtab.FailTranslateString) or translate.Get("cant_purchase_right_now")
+		elseif !fitformode then
 			refusepurchasereasons = translate.Get("cant_purchase_in_this_mode")
 		elseif !notduplicate then 
 			refusepurchasereasons = translate.Get("already_have_weapon")
@@ -339,8 +388,6 @@ end
 
 vgui.Register("BuySelectedButton", PANEL, "DButton")
 
-if tab and tab.Worth <= MySelf:GetPoints() then return end
-
 local function pointscounterThink(self)
 	local points = MySelf:GetPoints()
 	if self.m_LastPoints ~= points then
@@ -380,9 +427,12 @@ end
 local function helpDoClick()
 	MakepHelp()
 end
-local function currentAmmoDoClick()
-	if not ammonames[tostring(MySelf:GetActiveWeapon().Primary.Ammo)] then return end
-	RunConsoleCommand("zsb_pointsshopbuy", "ps_"..ammonames[tostring(MySelf:GetActiveWeapon().Primary.Ammo)])
+
+local function closeDoClick()
+	if GAMEMODE.m_PointsShop and GAMEMODE.m_PointsShop:Valid() then
+		PlayMenuOpenSound()
+		GAMEMODE.m_PointsShop:Close()
+	end
 end
 
 local function PointsShopOnClose()
@@ -407,15 +457,14 @@ function GM:OpenPointsShop(weaponslot)
 	frame:SetDeleteOnClose(true)
 	frame:SetTitle(" ")
 	frame:SetDraggable(false)
-	--if frame.btnClose and frame.btnClose:Valid() then frame.btnClose:SetVisible(false) end
+	if frame.btnClose and frame.btnClose:Valid() then frame.btnClose:SetVisible(false) end
 	if frame.btnMinim and frame.btnMinim:Valid() then frame.btnMinim:SetVisible(false) end
 	if frame.btnMaxim and frame.btnMaxim:Valid() then frame.btnMaxim:SetVisible(false) end
 	frame.Think = PointsShopThink
-	frame.CurrentID = nil
 	frame.OnClose = PointsShopOnClose
 	self.m_PointsShop = frame
 	local topspace = vgui.Create("DPanel", frame)
-	topspace:SetWide(wid - 64)
+	topspace:SetWide(wid - 16)
 	frame.m_TopSpace = topspace
 	
 	local title = EasyLabel(topspace, translate.Get("pointshop_title"), "ZSHUDFontSmall", COLOR_WHITE)
@@ -457,26 +506,30 @@ function GM:OpenPointsShop(weaponslot)
 	div:SetWide(256)
 	div:AlignLeft(4)
 	
-	local help = EasyButton(topspace, translate.Get("button_help"), 14, 6)
+	local closebutton = EasyButton(topspace, translate.Get("close_button"))
+	closebutton:SetTall(topspace:GetTall())
+	closebutton:SetWide(128)
+	closebutton:SetContentAlignment(5)
+	closebutton:SetFont("ZSHUDFontSmaller")
+	closebutton:AlignRight(32)
+	closebutton.DoClick = closeDoClick
+	
+	local help = EasyButton(topspace, translate.Get("button_help"))
+	help:SetTall(topspace:GetTall())
+	help:SetWide(128)
 	help:SetFont("ZSHUDFontSmaller")
-	help:AlignRight(8)
-	help:AlignTop(8)
+	help:SetContentAlignment(5)
+	help:MoveLeftOf(closebutton, 8 )
 	help.DoClick = helpDoClick
 
+
+	
 	local bottomspace = vgui.Create("DPanel", frame)
 	bottomspace:SetWide(topspace:GetWide())
-	frame.m_BottomSpace = bottomspace
-	
-	local currammo = EasyButton(bottomspace, translate.Get("button_buyammo"), 40, 8)
-	currammo:SetFont("ZSHUDFontSmaller")
-	currammo:AlignRight(8)
-	currammo:AlignTop(0)
-	currammo.DoClick = currentAmmoDoClick
-	
-	local _, y = pointslabel:GetPos()
-	bottomspace:SetTall(40)
-	bottomspace:AlignBottom(8)
+	bottomspace:SetTall(60)
+	bottomspace:AlignBottom(4)
 	bottomspace:CenterHorizontal()
+	frame.m_BottomSpace = bottomspace
 
 	local topx, topy = topspace:GetPos()
 	local botx, boty = bottomspace:GetPos()
@@ -501,6 +554,7 @@ function GM:OpenPointsShop(weaponslot)
 	refusesellpanel:SetWrap(true)
 	frame.RefusePurchaseLabel = refusesellpanel
 	local sweptable = nil
+	frame.CurrentID = nil
 	for catid, catname in ipairs(GAMEMODE.ItemCategories) do
 		local hasitems = false
 		for i, tab in ipairs(GAMEMODE.Items) do
@@ -543,17 +597,26 @@ function GM:OpenPointsShop(weaponslot)
 						frame.CurrentID = i
 						SetWeaponViewerSWEP(tab.SWEP)
 					end
-					if tab.NoClassicMode and isclassic then
-						itembut:SetAlpha(120)
-					end
-					sweptable = weapons.GetStored(tab.SWEP)
 					list:AddItem(itembut)
 				end
 				end
 			end
 		end
 	end
-	
+	local left = 0
+	for i, tab in ipairs(GAMEMODE.Items) do
+		if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 
+		not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+		not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())then 
+			if tab.Category == ITEMCAT_OTHER then
+				local itembut = vgui.Create("ShopItemButton",bottomspace)
+				itembut:SetupItemButton(i,WEAPONLOADOUT_NULL)
+				itembut:AlignLeft(left)
+				itembut:SetWide(156)
+				left = left + itembut:GetWide() + 8
+			end
+		end
+	end	
 	frame:MakePopup()
 end
 

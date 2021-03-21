@@ -36,20 +36,20 @@ SWEP.HoldType = "rpg"
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 
-SWEP.ReloadDelay = 0.4
+SWEP.ReloadDelay = 0.3
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 4
+SWEP.Primary.Damage = 6
 SWEP.Primary.NumShots = 10
 SWEP.Primary.Delay = 0.55
-SWEP.Recoil = 3.72
+SWEP.Recoil = 1.96
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "alyxgun"
-GAMEMODE:SetupDefaultClip(SWEP.Primary)
+SWEP.Primary.DefaultClip = 32
 
-SWEP.ConeMax = 0.08
-SWEP.ConeMin = 0.07
+SWEP.ConeMax = 0.06
+SWEP.ConeMin = 0.045
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOWER

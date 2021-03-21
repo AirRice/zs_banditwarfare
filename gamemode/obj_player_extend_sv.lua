@@ -87,14 +87,14 @@ function meta:ProcessDamage(dmginfo)
 			dmginfo:ScaleDamage(1.25)
 		end
 		if self:GetBodyArmor() and self:GetBodyArmor() > 0 then
-			local ratio = 0
-			if attackweapon and attackweapon.IsMelee or dmginfo:IsDamageType(DMG_BLAST) then
-				ratio = dmginfo:IsDamageType(DMG_BLAST) and 3 or 0.5
-				dmginfo:ScaleDamage(0.4)
-			elseif !dmginfo:IsDamageType(DMG_NERVEGAS) and !dmginfo:IsDamageType(DMG_DISSOLVE) and !dmginfo:IsDamageType(DMG_DIRECT) 
-			and not attackweapon.IgnoreDamageScaling and not (lasthitgroup == HITGROUP_HEAD) and attackweapon then
-				ratio = 0.5
+			local ratio = 0.75
+			if dmginfo:IsDamageType(DMG_BLAST) then
+				ratio = ratio * 0.5
 				dmginfo:ScaleDamage(0.5)
+			elseif (dmginfo:IsDamageType(DMG_BULLET) or dmginfo:IsDamageType(DMG_CLUB) or dmginfo:IsDamageType(DMG_SLASH)) 
+			and not (attackweapon and attackweapon.IgnoreDamageScaling) and not (lasthitgroup == HITGROUP_HEAD) then
+				ratio = ratio * 0.4
+				dmginfo:ScaleDamage(0.4)
 			end
 			self:AddBodyArmor(dmginfo:GetDamage()*-ratio)
 		end
@@ -317,6 +317,14 @@ function meta:RemoveAllStatus(bSilent, bInstant)
 			end
 		end
 	end
+end
+
+function meta:PurgeStatusEffects()
+	self:RemoveStatus("confusion", false, true)
+	self:RemoveStatus("ghoultouch", false, true)
+	self:RemoveStatus("bleed", false, true)
+	self:RemoveStatus("poisonrecovery", false, true)
+	self:RemoveStatus("tox", false, true)
 end
 
 function meta:RemoveStatus(sType, bSilent, bInstant, sExclude)
@@ -545,6 +553,14 @@ function meta:DropAllAmmo()
 	end
 end
 
+function meta:RefillActiveWeapon()
+	if not self:ActiveWeaponCanBeRefilled() then return end
+	local wep = self:GetActiveWeapon()
+	local ammotype = wep:GetPrimaryAmmoTypeString()
+	local togive = wep.Primary.DefaultClip and wep.Primary.DefaultClip or GAMEMODE.AmmoResupply[ammotype] * 3 
+	self:GiveAmmo(togive, ammotype)
+end
+
 -- Lets other players know about our maximum health.
 meta.OldSetMaxHealth = FindMetaTable("Entity").SetMaxHealth
 function meta:SetMaxHealth(num)
@@ -567,10 +583,14 @@ function meta:GetAimAccuracy()
 end
 
 function meta:GetBounty()
+	local mult = 1
+	if GAMEMODE:IsClassicMode() then
+		mult = 2
+	end
 	if self.BountyModifier ~= nil then
-		return GAMEMODE.PointsPerKill+self.BountyModifier
+		return math.max(GAMEMODE.PointsPerKill * mult + self.BountyModifier,1)
 	else
-		return GAMEMODE.PointsPerKill
+		return GAMEMODE.PointsPerKill * mult
 	end
 end
 

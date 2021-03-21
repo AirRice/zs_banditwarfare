@@ -1,10 +1,8 @@
 GM.ItemCategoryIcons = {
 	[ITEMCAT_GUNS] = "icon16/gun.png",
-	[ITEMCAT_AMMO] = "icon16/box.png",
 	[ITEMCAT_MELEE] = "icon16/wand.png",
 	[ITEMCAT_TOOLS] = "icon16/wrench.png",
-	[ITEMCAT_OTHER] = "icon16/bomb.png",
-	--[ITEMCAT_CONS] = "icon16/bomb.png",
+	[ITEMCAT_CONS] = "icon16/bomb.png"
 	--[ITEMCAT_RETURNS] = "icon16/user_delete.png",
 }
 

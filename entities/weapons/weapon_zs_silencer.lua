@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_smg_tmp.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_TMP.Single")
-SWEP.Primary.Damage = 9
+SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.025
 SWEP.Recoil = 0.24
@@ -36,7 +36,7 @@ SWEP.Primary.DefaultClip = 75
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.14
+SWEP.ConeMax = 0.11
 SWEP.ConeMin = 0.02
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.AimExpandStayDuration = 0.2

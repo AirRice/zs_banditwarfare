@@ -23,9 +23,9 @@ SWEP.ViewModel = "models/weapons/cstrike/c_rif_m4a1.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_m4a1.mdl"
 SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_m4a1.Single")
-SWEP.Primary.Damage = 17
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.11
+SWEP.Primary.Delay = 0.1
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true

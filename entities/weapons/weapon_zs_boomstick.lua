@@ -27,9 +27,9 @@ SWEP.ReloadDelay = 0.55
 
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
 SWEP.Primary.Recoil = 22.75
-SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 8
-SWEP.Primary.Delay = 1.5
+SWEP.Primary.Damage = 8
+SWEP.Primary.NumShots = 6
+SWEP.Primary.Delay = 0.5
 
 SWEP.Primary.ClipSize = 4
 SWEP.Primary.Automatic = false
@@ -37,7 +37,7 @@ SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 16
 
 SWEP.ConeMax = 0.18
-SWEP.ConeMin = 0.17
+SWEP.ConeMin = 0.1
 SWEP.Recoil = 3.2
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.MovingConeOffset = 0.08
@@ -54,12 +54,13 @@ function SWEP:PrimaryAttack()
 
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * clip, self:GetCone())
 		local kotime = 0.2+math.Clamp(clip-1,0,3)*0.5
-		timer.Simple(0.05, function() if self.Owner:Alive() then self.Owner:KnockDown(kotime) end end)
 		self:TakePrimaryAmmo(clip)
 		self.Owner:ViewPunch(clip * 0.5 * self.Primary.Recoil * Angle(math.Rand(-0.1, -0.1), math.Rand(-0.1, 0.1), 0))
-
+		if self.Owner and self.Owner:IsPlayer() and self.Owner:Alive() then 	
+			self.Owner:KnockDown(kotime) 
+		end
 		self.Owner:SetGroundEntity(NULL)
-		self.Owner:SetVelocity(-120 * clip * self.Owner:GetAimVector())
+		self.Owner:SetVelocity(-160 * clip * self.Owner:GetAimVector())
 
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	end

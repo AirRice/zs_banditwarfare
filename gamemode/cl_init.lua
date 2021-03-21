@@ -323,11 +323,15 @@ function GM:TrackLastDeath()
 end
 
 function GM:IsSampleCollectMode()
-	return GetGlobalBool("samplesmode", false)
+	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_SAMPLES
 end
 
 function GM:IsClassicMode()
-	return GetGlobalBool("classicmode", false)
+	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_CLASSIC
+end
+
+function GM:IsTransmissionMode()
+	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_TRANSMISSION
 end
 
 local lastwarntim = -1
@@ -530,24 +534,13 @@ function GM:_HUDPaint()
 	local myteam = MySelf:Team()
 	if self:IsClassicMode() then		
 		draw_SimpleTextBlurry(translate.Get("deathmatch_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
-	else
-		if self:IsSampleCollectMode() then
-			draw_SimpleTextBlurry(translate.Get("sample_collect_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
-			if not MySelf:IsSpectator() then
-				draw_SimpleTextBlurry(translate.Format("samples_collected",MySelf:GetSamples()), "ZSHUDFont", w * 0.5, h - 64, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
-				for _, ent in pairs(ents.FindByClass("prop_sampledepositterminal")) do
-					if MySelf:Team() == ent:GetOwnerTeam() then
-						local teamcolor = team.GetColor(MySelf:Team())
-						local scrpos = (ent:GetPos()+ent:GetAngles():Up()*100):ToScreen()
-						scrpos.x = math.Clamp(scrpos.x, 32, ScrW() - 32)
-						scrpos.y = math.Clamp(scrpos.y, 32, ScrH() - 32)
-						draw.RoundedBox( 10,scrpos.x - 32, scrpos.y - 32, 32 * 2, 32 * 2, teamcolor or COLOR_DARKGREEN )
-					end
-				end
-			end
-		else
-			draw_SimpleTextBlurry(translate.Get("transmission_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
+	elseif self:IsSampleCollectMode() then
+		draw_SimpleTextBlurry(translate.Get("sample_collect_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+		if not MySelf:IsSpectator() then
+			draw_SimpleTextBlurry(translate.Format("samples_collected",MySelf:GetSamples()), "ZSHUDFont", w * 0.5, h - 64, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		end
+	elseif self:IsTransmissionMode() then
+		draw_SimpleTextBlurry(translate.Get("transmission_mode"), "ZSHUDFont", w * 0.5, h - 128, COLOR_DARKBLUE, TEXT_ALIGN_CENTER)
 	end
 	
 	local screenscale = BetterScreenScale()
@@ -565,7 +558,7 @@ function GM:_HUDPaint()
 	hitmarkeralpha = math.Approach( hitmarkeralpha, 0, 5 )
 	
 	local screen = Vector(ScrW() / 2, ScrH() / 2)
-	surface.SetDrawColor(255,255,255,hitmarkeralpha)
+	surface_SetDrawColor(255,255,255,hitmarkeralpha)
 	surface.DrawLine( screen.x - 35, screen.y - 35, screen.x - 25, screen.y - 25 )
 	surface.DrawLine( screen.x - 35, screen.y + 35, screen.x - 25, screen.y + 25 )
 	surface.DrawLine( screen.x + 35, screen.y - 35, screen.x + 25, screen.y - 25 )
@@ -590,9 +583,9 @@ function GM:ObserverHUD(obsmode)
 		end
 	end
 	if not self:IsClassicMode() and not self.IsInSuddenDeath and MySelf:Team() ~= TEAM_SPECTATOR then
-		if self.NextSpawnTime and math.floor(self.NextSpawnTime - CurTime()) > 0 then
-			draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.floor(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
-		elseif not self.NextSpawnTime or math.floor(self.NextSpawnTime - CurTime()) <= 0 then
+		if self.NextSpawnTime and self.NextSpawnTime - CurTime() > 0 then
+			draw_SimpleTextBlur(translate.Format("respawn_after_x_seconds",math.ceil(self.NextSpawnTime - CurTime())), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
+		elseif not self.NextSpawnTime or (self.NextSpawnTime - CurTime()) <= 0 then
 			draw_SimpleTextBlur(translate.Get("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		end
 	end
@@ -842,23 +835,54 @@ end
 local texGradientDown = surface.GetTextureID("vgui/gradient_down")
 local texGradientRight = surface.GetTextureID("vgui/gradient-r")]]
 --local color_black = color_black
+local texCircle = surface.GetTextureID("effects/select_ring")
+local defaultcolor =  Color(255, 255, 255, 255)
 function GM:_HUDPaintBackground()
-	--[[local w, h = ScrW(), ScrH()
-	local bordersize = BetterScreenScale() * 32
-
-	surface_SetDrawColor(color_black)
-
-	surface_SetTexture(texGradientDown)
-	surface_DrawTexturedRect(0, 0, w, bordersize)
-	surface_SetTexture(texGradientUp)
-	surface_DrawTexturedRect(0, h - bordersize, w, bordersize)
-	surface_SetTexture(texGradientRight)
-	surface_DrawTexturedRectRotated(bordersize / 2, h / 2, bordersize, h, 180)
-	surface_DrawTexturedRect(w - bordersize, 0, bordersize, h)]]
-
 	local wep = MySelf:GetActiveWeapon()
 	if wep:IsValid() and wep.DrawHUDBackground then
 		wep:DrawHUDBackground()
+	end
+	if self:IsSampleCollectMode() then
+		for _, ent in pairs(ents.FindByClass("prop_sampledepositterminal")) do
+			local uipos = ent:GetPos()+ent:GetAngles():Up()*30
+			if !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
+				local teamcolor = nil
+				if (ent:GetLastCaptureTeam() == TEAM_BANDIT or ent:GetLastCaptureTeam() == TEAM_HUMAN) then 
+					teamcolor = team.GetColor(ent:GetLastCaptureTeam())
+				end
+				local scrpos = uipos:ToScreen()
+				local colr,colg,colb,cola = (teamcolor ~= nil and teamcolor or defaultcolor):Unpack()
+				local size = 24
+				scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
+				scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
+				surface_SetTexture(texCircle)
+				surface_SetDrawColor( colr,colg,colb, 255)
+				surface_DrawTexturedRect(scrpos.x - size, scrpos.y - size, size*2, size*2)
+			end
+		end
+	elseif self:IsTransmissionMode() then
+		for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
+			local uipos = ent:GetPos()+ent:GetAngles():Up()*30
+			if !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
+				local teamcolor = nil
+				if ent:GetSigilTeam() ~= nil then 
+					teamcolor = team.GetColor(ent:GetSigilTeam())
+				end
+				local colr,colg,colb,cola = (teamcolor ~= nil and teamcolor or defaultcolor):Unpack()
+				local size = 24
+				local scrpos = uipos:ToScreen()
+				scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
+				scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
+				if MySelf:GetActiveWeapon().AdditionalSigilInfo then
+					local text = math.ceil(MySelf:GetPos():Distance(ent:GetPos()))
+					local w, h = surface.GetTextSize(text)
+					draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size - h/2)
+				end
+				surface_SetTexture(texCircle)
+				surface_SetDrawColor( colr,colg,colb, 255)
+				surface_DrawTexturedRect(scrpos.x - size, scrpos.y - size, size*2,size*2)
+			end
+		end
 	end
 end
 
@@ -876,7 +900,7 @@ function GM:HumanMenu()
 	panel:OpenMenu()
 end
 function GM:OnContextMenuOpen()
-	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) then
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and MySelf:Alive() then
 		gamemode.Call("MakeWeaponInfo",MySelf:GetActiveWeapon():GetClass() or nil)
 	end
 end
@@ -910,11 +934,12 @@ function GM:_CalcView(pl, origin, angles, fov, znear, zfar)
 			angles = rang
 		end
 	elseif pl.KnockedDown and pl.KnockedDown:IsValid() then
-		local rpos, rang = self:GetRagdollEyes(pl)
+		origin = pl:GetThirdPersonCameraPos(origin, angles)
+		--[[local rpos, rang = self:GetRagdollEyes(pl)
 		if rpos then
 			origin = rpos
 			angles = rang
-		end
+		end]]
 	elseif pl:ShouldDrawLocalPlayer() and pl:OldAlive() then
 		origin = pl:GetThirdPersonCameraPos(origin, angles)
 	end
@@ -1423,7 +1448,9 @@ net.Receive("zs_suddendeath", function(length)
 		GAMEMODE.IsInSuddenDeath = true
 		gamemode.Call("RestartBeats")
 		timer.Simple(0.1, function() surface_PlaySound("ambient/energy/whiteflash.wav")end)
-	end	
+	else
+		GAMEMODE.IsInSuddenDeath = false
+	end
 end)
 
 net.Receive("zs_waveend", function(length)

@@ -24,10 +24,10 @@ SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 35
+SWEP.Primary.Damage = 45
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 1
-SWEP.ReloadDelay = 0.4
+SWEP.Primary.Delay = 0.75
+SWEP.ReloadDelay = 0.35
 SWEP.Recoil = 2.24
 
 SWEP.Primary.ClipSize = 4
@@ -36,8 +36,8 @@ SWEP.Primary.Ammo = "357"
 SWEP.Primary.DefaultClip = 24
 
 SWEP.ConeMax = 0.008
-SWEP.ConeMin = 0.004
-SWEP.MovingConeOffset = 0.11
+SWEP.ConeMin = 0.002
+SWEP.MovingConeOffset = 0.22
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
@@ -45,7 +45,7 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 
-SWEP.IronSightsPos = Vector(-8.8, 10, 4.32)
+SWEP.IronSightsPos = Vector(-8.8, 10, 2)
 SWEP.IronSightsAng = Vector(1.4,0.1,5)
 
 function SWEP:SetupDataTables()
@@ -139,8 +139,19 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			timer.Simple(0, function() 
 				DoRicochet(attacker, hitpos, hitnormal, normal, dmginfo:GetDamage()/20) 
 			end)
-			util.BlastDamageEx(dmginfo:GetInflictor(), attacker, hitpos, 64 ,dmginfo:GetDamage()/1.5, DMG_BULLET)
+			for _, ent in pairs(ents.FindInSphere(hitpos, 64)) do
+				if ent and ent:IsValid() then
+					local nearest = ent:NearestPoint(hitpos)
+					if TrueVisibleFilters(hitpos, nearest, dmginfo:GetInflictor(), ent) then
+						ent:TakeSpecialDamage(dmginfo:GetDamage()/1.5, DMG_BULLET, attacker, dmginfo:GetInflictor(), nearest)
+					end
+				end
+			end
 		end
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
+
+if not CLIENT then return end
+
+SWEP.IronsightsMultiplier = 0.55

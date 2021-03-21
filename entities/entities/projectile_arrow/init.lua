@@ -13,9 +13,6 @@ function ENT:Initialize()
 	self:PhysicsInitBox(Vector(-4,-0.02,-0.02), Vector(8,0.02,0.02))
 	self:SetTrigger(true)
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
-	if SERVER then
-      self:SetGravity(0.01)
-	end
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:SetMass(3)
@@ -74,7 +71,6 @@ function ENT:PhysicsUpdate(phys)
 						self.Touched[trace.Entity] = trace
 						temp_pen_ents[trace.Entity] = true
 					end
-
 					break
 				end
 			end
@@ -99,9 +95,9 @@ function ENT:Think()
 
 	for ent, tr in pairs(self.Touched) do
 		if not self.Damaged[ent] then
-			self.Damaged[ent] = true
 			local damage = (self.Damage or 100)
 			ent:TakeDamage(math.max(damage-table.Count(self.Damaged)*25,1), owner, self)
+			self.Damaged[ent] = true
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
 
@@ -112,15 +108,20 @@ end
 
 function ENT:PhysicsCollide(data, phys)
 	if self.Done then return end
-	self.Done = true
 	self.PhysicsData = data
-
 	local owner = self:GetOwner()
 	if not owner:IsValid() then owner = self end
 	local vHitPos = self.PhysicsData.HitPos
 	local vHitNormal = self.PhysicsData.HitNormal
 	local eHitEntity = self.PhysicsData.HitEntity
 	local vOldVelocity = self.PhysicsData.OurOldVelocity
+	if eHitEntity:GetClass() == "func_breakable_surf" then 
+		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
+		self:SetAngles(vOldVelocity:Angle())
+		self:SetVelocity(vOldVelocity)
+		return 
+	end
+	self.Done = true
 	self:EmitSound("physics/metal/sawblade_stick"..math.random(3)..".wav", 75, 60)
 	self:SetSkin(0)
 	vHitPos = vHitPos or self:GetPos()

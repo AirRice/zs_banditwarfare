@@ -6,6 +6,10 @@ TEAM_SURVIVORS = TEAM_SURVIVOR
 TEAM_HUMAN = TEAM_SURVIVOR
 TEAM_HUMANS = TEAM_SURVIVOR
 
+ROUNDMODE_TRANSMISSION = 0
+ROUNDMODE_SAMPLES = 1
+ROUNDMODE_CLASSIC = 2
+
 DISMEMBER_HEAD = 1
 DISMEMBER_LEFTARM = 2
 DISMEMBER_RIGHTARM = 4
@@ -86,7 +90,7 @@ GM.BarricadeHealthMassFactor = 2
 GM.BarricadeHealthVolumeFactor = 2.5
 
 
-GM.PointsPerKill = 10
+GM.PointsPerKill = 5
 GM.HumanGibs = {
 Model("models/gibs/HGIBS.mdl"),
 Model("models/gibs/HGIBS_spine.mdl"),

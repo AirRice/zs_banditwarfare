@@ -42,7 +42,7 @@ SWEP.WorldModel = "models/weapons/w_pist_p228.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
-SWEP.Primary.Damage = 20
+SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 1
 
@@ -61,12 +61,11 @@ SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:TakeAmmo()
-	
+	self:SendWeaponAnimation()
 	for i = 0, self.Primary.NumShots-1 do
 		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, math.min((self.Primary.Delay-0.6)/self.Primary.NumShots,0.12) * i, 1, function()
 			if (self:IsValid() and self.Owner:Alive()) then
-				self:EmitFireSound()
-				self:SendWeaponAnimation()
+				self:EmitFireSound()	
 				self.Owner:DoAttackEvent()
 				self:ShootBullets(self.Primary.Damage, self:GetCone())
 			end

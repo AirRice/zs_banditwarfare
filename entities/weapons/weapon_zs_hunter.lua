@@ -35,7 +35,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 65
+SWEP.Primary.Damage = 75
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -49,9 +49,9 @@ SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 SWEP.NoScaleToLessPlayers = true
 
-SWEP.ConeMax = 0.001
+SWEP.ConeMax = 0.11
 SWEP.ConeMin = 0
-SWEP.MovingConeOffset = 0.21
+SWEP.MovingConeOffset = 0.31
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.IronSightsPos = Vector(5.015, -8, 2.52)
@@ -97,23 +97,17 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("hit_hunter", effectdata)
-	local hitent = tr.Entity
-	if hitent:IsValid() and hitent:IsPlayer() and CurTime() >= (hitent._NextDisorientEffect or 0) and tr.HitGroup == HITGROUP_HEAD then
-		hitent._NextDisorientEffect = CurTime() + 3
-		hitent:GiveStatus("disorientation")
-		--[[local x = math.Rand(0.75, 1)
-		x = x * (math.random(2) == 2 and 1 or -1)
+	if tr.HitGroup == HITGROUP_HEAD then
+		local ent = tr.Entity
+		if ent:IsValid() and ent:IsPlayer() then
+			ent.Gibbed = CurTime()
+		end
 
-		local ang = Angle(1 - x, x, 0) * 38
-		hitent:ViewPunch(ang)
-
-		local eyeangles = hitent:EyeAngles()
-		eyeangles:RotateAroundAxis(eyeangles:Up(), ang.yaw)
-		eyeangles:RotateAroundAxis(eyeangles:Right(), ang.pitch)
-		eyeangles.pitch = math.Clamp(ang.pitch, -89, 89)
-		eyeangles.roll = 0
-		hitent:SetEyeAngles(eyeangles)--]]
+		if gamemode.Call("PlayerShouldTakeDamage", ent, attacker) then
+			ent:SetHealth(1)
+		end
 	end
+
 	GenericBulletCallback(attacker, tr, dmginfo)
 end
 

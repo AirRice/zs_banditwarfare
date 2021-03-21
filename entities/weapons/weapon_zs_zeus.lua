@@ -34,9 +34,9 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Zeus.Single")
-SWEP.Primary.Damage = 26
+SWEP.Primary.Damage = 30
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.38
+SWEP.Primary.Delay = 0.4
 SWEP.ReloadDelay = SWEP.Primary.Delay
 
 SWEP.Primary.ClipSize = 10
@@ -50,7 +50,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
 
 SWEP.ConeMax = 0.01
 SWEP.ConeMin = 0.002
-SWEP.Recoil = 2.23
+SWEP.Recoil = 1.33
 SWEP.DefaultRecoil = 2.23
 SWEP.MovingConeOffset = 0.14
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
@@ -58,7 +58,7 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(5.427, -5.026, 2.21)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
-SWEP.WalkSpeed = SPEED_SLOWER
+SWEP.WalkSpeed = SPEED_SLOWEST
 
 SWEP.TracerName = "Tracer"
 
@@ -66,7 +66,7 @@ function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
 function SWEP:Think()
-	if (self.Owner:Crouching() and self:GetIronsights()) then
+	if (self:GetIronsights()) then
 		self.Recoil = self.DefaultRecoil*0.3
 	else
 		self.Recoil = self.DefaultRecoil

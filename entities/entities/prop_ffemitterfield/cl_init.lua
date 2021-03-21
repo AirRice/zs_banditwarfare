@@ -4,7 +4,6 @@ ENT.RenderGroup = RENDERGROUP_TRANSLUCENT
 
 function ENT:Initialize()
 	self.Seed = math.Rand(0, 10)
-	self:SetRenderMode(RENDERMODE_GLOW)
 	self:DrawShadow(false)
 
 	self.AmbientSound = CreateSound(self, "ambient/machines/combine_shield_touch_loop1.wav")

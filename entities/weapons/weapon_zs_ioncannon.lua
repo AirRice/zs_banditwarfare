@@ -56,7 +56,7 @@ sound.Add(
 })
 
 SWEP.Recoil = 4.1
-SWEP.Primary.Damage = 6
+SWEP.Primary.Damage = 7
 SWEP.Primary.NumShots = 7
 SWEP.Primary.Delay = 0.45
 SWEP.ReloadDelay = 1

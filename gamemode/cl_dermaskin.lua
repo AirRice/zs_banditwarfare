@@ -179,20 +179,20 @@ SKIN.Colours.TooltipText	= GWEN.TextureColor( 4 + 8 * 26, 500 );
 function SKIN:PaintButton(panel, w, h)
 	if not panel.m_bBackground then return end
 
-	local col
-
+	local outlinecol
 	if panel:GetDisabled() then
-		col = Color(5, 5, 5, 90)
+		outlinecol = Color(5, 5, 5, 90)
 	elseif panel.Depressed or panel:IsSelected() or panel:GetToggle() then
-		col = Color(60, 70, 100, 160)
+		outlinecol = COLOR_LIMEGREEN
 	elseif panel.Hovered then
-		col = Color(45, 45, 80, 160)
+		outlinecol = COLOR_DARKGREEN
 	else
-		col = Color(32, 32, 35, 160)
+		outlinecol = COLOR_DARKGRAY
 	end
 
 	local edgesize = math.min(math.ceil(w * 0.2), 24)
-	draw.RoundedBox(edgesize/2, 0, 0, w , h, col)
+	draw.RoundedBox(edgesize/2, 0, 0, w , h, outlinecol)
+	draw.RoundedBox(edgesize/4, 4, 4, w-8 , h-8, color_black)
 end
 
 derma.DefineSkin("banditwarfare", "The default Derma skin for Bandit Warfare", SKIN, "Default")

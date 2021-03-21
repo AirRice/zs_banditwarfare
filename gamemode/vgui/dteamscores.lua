@@ -112,7 +112,7 @@ function PANEL:Paint()
 	if GAMEMODE:IsSampleCollectMode() then 
 		value = math.Clamp(self:GetSamples(),self.Samples,self.MaxSamples) 
 		max = self.MaxSamples
-		appendstring = "개"
+		appendstring = "%"
 	end
 	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, w, h)

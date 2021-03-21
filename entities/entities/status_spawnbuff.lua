@@ -24,7 +24,7 @@ function ENT:Think()
 			numoutsidespawns = numoutsidespawns + 1
 		end
 	end
-	if self.DieTime <= CurTime() and (self.OwnerPos != self:GetOwner():GetPos() and numoutsidespawns >= #teamspawns or GAMEMODE:IsClassicMode() or GAMEMODE.SuddenDeath) then
+	if (self.DieTime <= CurTime() and (self.OwnerPos != self:GetOwner():GetPos() and numoutsidespawns >= #teamspawns or GAMEMODE:IsClassicMode() or GAMEMODE.SuddenDeath)) or  (self:GetOwner():IsPlayer() and self:GetOwner():KeyDown(IN_ATTACK)) then
 		self:Remove()
 		return
 	end

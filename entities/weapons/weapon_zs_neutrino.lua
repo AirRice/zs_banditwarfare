@@ -67,16 +67,16 @@ SWEP.ViewModelBoneMods = {
 
 sound.Add( {
 	name = "Loop_Neutrino_Charging",
-	channel = CHAN_VOICE,
+	channel = CHAN_WEAPON,
 	volume = 1,
 	level = 90,
-	pitch = 110,
+	pitch = 130,
 	sound = "weapons/gauss/chargeloop.wav"
 } )
 sound.Add( {
 	name = "Loop_Neutrino_Firing",
-	channel = CHAN_WEAPON,
-	volume = 1,
+	channel = CHAN_STATIC,
+	volume = 0.6,
 	level = 75,
 	pitch = 115,
 	sound = "weapons/smg1/smg1_fire1.wav"
@@ -84,21 +84,21 @@ sound.Add( {
 
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
 SWEP.Primary.Sound = Sound("Loop_Neutrino_Firing")
-SWEP.Recoil = 0.5
-SWEP.Primary.Damage = 9
+SWEP.Recoil = 0.2
+SWEP.Primary.Damage = 7
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.2
+SWEP.Primary.Delay = 0.16
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pulse"
 SWEP.Primary.DefaultClip = 200
 
-SWEP.ConeMax = 0.075
-SWEP.ConeMin = 0.02
+SWEP.ConeMax = 0.165
+SWEP.ConeMin = 0.011
 
 -- 에임이 늘어나는 단위
-SWEP.AimExpandUnit = 0.005
+SWEP.AimExpandUnit = 0.006
 
 -- 에임이 늘어난 상태가 유지되는 기간
 SWEP.AimExpandStayDuration = 0.01
@@ -108,7 +108,7 @@ SWEP.AimCollapseUnit = 0.2
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.TracerName = "Ar2Tracer"
-SWEP.PlayCharge = nil
+SWEP.PlayCharge = false
 SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 100
 function SWEP:SetIronsights()
@@ -126,10 +126,10 @@ function SWEP:PrimaryAttack()
 		return end
 		self:EmitSound(self.Primary.Sound)
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
-		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 40) and 2 or (self:GetDTInt(4) >= 80) and 3 or 1), self.Weapon:GetPrimaryAmmoType() )
+		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 90) and 2 or 1), self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
-		self:SetNextPrimaryFire(CurTime() + math.max(0.033, self.Primary.Delay * (1 - combo / 60)))
+		self:SetNextPrimaryFire(CurTime() + math.max(0.035, self.Primary.Delay * (1 - combo / 50)))
 		self:SetDTInt(4, combo + 1)
 	end
 end
@@ -138,11 +138,7 @@ function SWEP:Think()
 	local owner = self.Owner
 	if owner:KeyDown(IN_ATTACK) and self:CanPrimaryAttack() then 
 		if self:Ammo1()<=0 then return end
-		
-		if not self.PlayCharge then
-			self:EmitSound("Loop_Neutrino_Charging")
-			self.PlayCharge = true
-		end
+		self:EmitSound("Loop_Neutrino_Charging")
 		if CLIENT then
 			self.VElements["ring1"].angle.x = math.Approach(self.VElements["ring1"].angle.x, self.VElements["ring1"].angle.x+2, FrameTime()*120)
 			self.VElements["ring1+"].angle.x = math.Approach(self.VElements["ring1+"].angle.x, self.VElements["ring1+"].angle.x+3, FrameTime()*180)
@@ -152,10 +148,7 @@ function SWEP:Think()
         self.VElements["ring1+"].angle.x = math.Approach(self.VElements["ring1+"].angle.x, math.ceil(self.VElements["ring1+"].angle.x/180)*180, FrameTime()*200)
 	elseif not owner:KeyDown(IN_ATTACK) or not owner:Alive() then
 		self:SetDTInt(4, 0)
-		if self.PlayCharge then
-			self:StopSound("Loop_Neutrino_Charging")
-			self.PlayCharge = nil
-		end
+		self:StopSound("Loop_Neutrino_Charging")
 	end
 	if owner:KeyReleased(IN_ATTACK) then
 		owner:EmitSound("weapons/slam/mine_mode.wav")

@@ -44,21 +44,21 @@ SWEP.WorldModel = "models/weapons/w_smg1.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_Alyx_Gun.Reload")
 SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
-SWEP.Primary.Damage = 11
+SWEP.Primary.Damage = 4
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.07
 
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "autocharging"
-SWEP.Primary.DefaultClip = 30
+SWEP.Primary.DefaultClip = 20
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SHOTGUN
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.09
+SWEP.ConeMax = 0.06
 SWEP.ConeMin = 0.01
-SWEP.Recoil = 0.28
+SWEP.Recoil = 0.22
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
@@ -118,7 +118,7 @@ function SWEP:Think()
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
 	self.BaseClass.Think(self)	
-	if (self.LastAttack + self.Primary.Delay*3 <= curTime ) and self:Clip1() > 0 then
+	if (self.LastAttack + self.Primary.Delay*10 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
 			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then				

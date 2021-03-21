@@ -118,7 +118,7 @@ GM.VoiceSets["barney"] = {
 		Sound("vo/npc/Barney/ba_pain03.wav")
 	},
 	["EyePoisonedSounds"] = {
-		Sound("vo/k_lab/ba_thingaway02.wav")
+		Sound("vo/npc/Barney/ba_ohshit03.wav")
 	}
 }
 
@@ -213,7 +213,7 @@ GM.VoiceSets["combine"] = {
 		Sound("npc/combine_soldier/die2.wav"),
 		Sound("npc/combine_soldier/die3.wav")
 	},
-	["EyePoisonSounds"] = {
+	["EyePoisonedSounds"] = {
 		Sound("npc/combine_soldier/die1.wav"),
 		Sound("npc/combine_soldier/die2.wav"),
 		Sound("npc/metropolice/vo/shit.wav")
@@ -244,7 +244,7 @@ GM.VoiceSets["monk"] = {
 	["DeathSounds"] = {
 		Sound("vo/ravenholm/monk_death07.wav")
 	},
-	["EyePoisonSounds"] = {
+	["EyePoisonedSounds"] = {
 		Sound("vo/ravenholm/monk_death07.wav")
 	}
 }

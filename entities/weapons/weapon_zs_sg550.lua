@@ -27,8 +27,9 @@ SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
 SWEP.Primary.Damage = 33
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.26
-SWEP.Recoil = 0.89
+SWEP.Primary.Delay = 0.24
+SWEP.Recoil = 0.79
+SWEP.DefaultRecoil = 0.89
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "357"
@@ -47,14 +48,21 @@ SWEP.IronSightsPos = Vector(5.559, -8.633, 0)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
 
-SWEP.WalkSpeed = SPEED_SLOW
+SWEP.WalkSpeed = SPEED_SLOWEST
 SWEP.IgnoreDamageScaling = true
 SWEP.TracerName = "AR2Tracer"
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end
-
+function SWEP:Think()
+	if (self:GetIronsights()) then
+		self.Recoil = self.DefaultRecoil*0.3
+	else
+		self.Recoil = self.DefaultRecoil
+	end
+	self.BaseClass.Think(self)
+end
 if CLIENT then
 	SWEP.IronsightsMultiplier = 0.2
 

@@ -40,6 +40,6 @@ end
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() then
 		hitent:AddLegDamage(self.StunDamage)
-		hitent:KnockDown(0.3)
+		hitent:GiveStatus("stunned", 0.3)
 	end
 end

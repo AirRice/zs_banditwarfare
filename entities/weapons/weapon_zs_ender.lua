@@ -23,9 +23,9 @@ SWEP.WorldModel = "models/weapons/w_rif_galil.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Galil.Single")
-SWEP.Primary.Damage = 4
-SWEP.Primary.NumShots = 9
-SWEP.Primary.Delay = 0.22
+SWEP.Primary.Damage = 5
+SWEP.Primary.NumShots = 7
+SWEP.Primary.Delay = 0.23
 SWEP.Recoil = 1.72
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = true

@@ -30,6 +30,8 @@ function GM:MapHasEnoughSigils(mapname)
 		local nodes = Deserialize(file.Read(self:GetProfilerFilePreMade(), "DATA"))
 		if #self.ProfilerNodes >= self.MaxSigils then
 			return true
+		else
+			return false
 		end
 	else
 		return false

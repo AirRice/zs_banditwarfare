@@ -25,16 +25,16 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
 SWEP.Primary.Damage = 5
 SWEP.Primary.NumShots = 6
-SWEP.Primary.Delay = 0.25
+SWEP.Primary.Delay = 0.29
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.DefaultClip = 90
 
-SWEP.ConeMax = 0.055
-SWEP.ConeMin = 0.01
-SWEP.Recoil = 0.65
+SWEP.ConeMax = 0.32
+SWEP.ConeMin = 0.04
+SWEP.Recoil = 0.75
 function SWEP:SecondaryAttack()
 end
 

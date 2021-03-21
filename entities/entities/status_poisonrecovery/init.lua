@@ -17,6 +17,6 @@ function ENT:Think()
 
 	owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + 1))
 	self:AddDamage(-1)
-	self:NextThink(CurTime() + 0.08)
+	self:NextThink(CurTime() + 0.085)
 	return true
 end

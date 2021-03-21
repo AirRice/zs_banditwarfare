@@ -30,7 +30,7 @@ function ENT:Initialize()
 	end
 
 	self:SetAmmo(self.DefaultAmmo)
-	self:SetMaxObjectHealth(150)
+	self:SetMaxObjectHealth(110)
 	self:SetObjectHealth(self:GetMaxObjectHealth())
 	hook.Add("SetupPlayerVisibility", self, self.SetupPlayerVisibility)
 end
@@ -98,7 +98,7 @@ function ENT:FireTurret(src, dir)
 			self:SetAmmo(curammo - 1)
 			self:StartBulletKnockback()
 			self:PlayShootSound()
-			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 8, Callback = BulletCallback, IgnoreEntity = self:GetObjectOwner() or nil})
+			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 4, Callback = BulletCallback, IgnoreEntity = self:GetObjectOwner() or nil})
 			self:DoBulletKnockback(0.01)
 			self:EndBulletKnockback()
 		else

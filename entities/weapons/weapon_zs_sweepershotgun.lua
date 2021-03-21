@@ -27,22 +27,21 @@ SWEP.UseHands = true
 SWEP.ReloadDelay = 0.45
 
 SWEP.Primary.Sound = Sound("Weapon_M3.Single")
-SWEP.Primary.Damage = 4
-SWEP.Primary.NumShots = 8
-SWEP.Primary.Delay = 0.8
+SWEP.Primary.Damage = 6
+SWEP.Primary.NumShots = 9
+SWEP.Primary.Delay = 0.7
 SWEP.Recoil = 3
 SWEP.Primary.ClipSize = 6
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
--- 에임이 늘어난 상태가 유지되는 기간
-SWEP.AimExpandStayDuration = 0.002
 
 SWEP.ConeMax = 0.093
 SWEP.ConeMin = 0.059
 SWEP.MovingConeOffset = 0.07
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.AimExpandStayDuration = 0.002
 SWEP.Recoil = 2.89
 SWEP.WalkSpeed = SPEED_SLOWER
 

@@ -1,4 +1,4 @@
-local messages = {"사살",
+local messages = {"KILLED",
 }
 
 EFFECT.LifeTime = 3
@@ -13,7 +13,7 @@ function EFFECT:Init(data)
 
 	self.Pos = pos
 	if amount > 1 then
-		self.Message = amount.." 명 사살"
+		self.Message = amount.." KILLS"
 	else
 		self.Message = messages[math.random(#messages)]
 	end

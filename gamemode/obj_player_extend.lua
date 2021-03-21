@@ -61,6 +61,11 @@ function meta:GetMaxHealthEx()
 	return self:GetMaxHealth()
 end
 
+function meta:ActiveWeaponCanBeRefilled()
+	local wep = self:GetActiveWeapon()
+	return wep:IsValid() and GAMEMODE.AmmoResupply[wep:GetPrimaryAmmoTypeString()]
+end
+
 function meta:LessPlayersOnTeam()
 	if self:Team() == TEAM_BANDIT then
 		return #team.GetPlayers(self:Team()) < #team.GetPlayers(TEAM_HUMAN)
@@ -78,34 +83,24 @@ function meta:Dismember(dismembermenttype)
 end
 
 function meta:ApplyAdrenaline()
-	if not self.HumanSpeedAdder or self.HumanSpeedAdder  <= 100 then
-		self.HumanSpeedAdder = (self.HumanSpeedAdder or 0) +20
-		self:ResetSpeed() 
-		if SERVER then 
-			self:SetMaxHealth(self:GetMaxHealth()-10)
-			if self:Health() > self:GetMaxHealth() then
-				self:SetHealth(self:GetMaxHealth())
-			end
+	self.HumanSpeedAdder = (self.HumanSpeedAdder or 0) +20
+	self:ResetSpeed() 
+	if SERVER then 
+		self:SetMaxHealth(self:GetMaxHealth()-10)
+		if self:Health() > self:GetMaxHealth() then
+			self:SetHealth(self:GetMaxHealth())
 		end
-		self:EmitSound("player/suit_sprint.wav")	
-		return true
-	else
-		self:PrintMessage(HUD_PRINTCENTER, "아드레날린을 더 사용하는 것은 자살행위다.")
-		return false
 	end
+	self:EmitSound("player/suit_sprint.wav")	
+	return true
 end
 
 function meta:WearBodyArmor()
-	if self:GetBodyArmor() and self:GetBodyArmor() < 100 then
-		self.HumanSpeedAdder = (owner.HumanSpeedAdder or 0) -25
-		self:ResetSpeed() 
-		self:SetBodyArmor(100)
-		self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
-		return true
-	else
-		self.Owner:PrintMessage(HUD_PRINTTALK, "방탄복을 이미 입고 있다.")
-		return false
-	end
+	self.HumanSpeedAdder = (self.HumanSpeedAdder or 0) -25
+	self:ResetSpeed() 
+	self:SetBodyArmor(100)
+	self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
+	return true
 end
 
 
@@ -595,7 +590,7 @@ if not meta.OldAlive then
 end
 
 function meta:PlayEyePoisonedSound()
-	local snds = GAMEMODE.VoiceSets[self.VoiceSet].EyePoisonSounds
+	local snds = GAMEMODE.VoiceSets[self.VoiceSet].EyePoisonedSounds
 	if snds then
 		self:EmitSound(snds[math.random(1, #snds)])
 	end
@@ -646,7 +641,7 @@ local ViewHullMins = Vector(-8, -8, -8)
 local ViewHullMaxs = Vector(8, 8, 8)
 function meta:GetThirdPersonCameraPos(origin, angles)
 	local allplayers = player.GetAll()
-	local tr = util.TraceHull({start = origin, endpos = origin + angles:Forward() * -math.max(36, self:BoundingRadius()), mask = MASK_SHOT, filter = allplayers, mins = ViewHullMins, maxs = ViewHullMaxs})
+	local tr = util.TraceHull({start = origin, endpos = origin + angles:Forward() * -math.max(48, self:BoundingRadius()), mask = MASK_SHOT, filter = allplayers, mins = ViewHullMins, maxs = ViewHullMaxs})
 	return tr.HitPos + tr.HitNormal * 3
 end
 

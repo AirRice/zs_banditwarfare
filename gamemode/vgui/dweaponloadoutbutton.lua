@@ -21,14 +21,12 @@ function PANEL:Init()
 	weptoolbutton:SetWeaponSlot(WEAPONLOADOUT_TOOLS)
 	weptoolbutton:SetParent(self)
 	table.insert(self.WeaponButtons, weptoolbutton)
-	local but = vgui.Create("DButton", self)
+	local but = EasyButton(self, translate.Get("consumables_purchase_button"), 0, 0)
 	but:SetFont("ZSHUDFontSmall")
-	but:SetText("탄약/소모품 구매")
-	but:SetTall(32)
-	but:SizeToContents()
-	but:SetContentAlignment(8)
-	but:Dock(BOTTOM)
-	but:DockMargin(0,64,0,16)
+	but:SetContentAlignment(5)
+	but:SetTall(64)
+	but:DockMargin(0,32,0,16)	
+	but:Dock(TOP)
 	but:SetZPos(1100)
 	but.DoClick = 
 	function() 
@@ -71,7 +69,7 @@ function PANEL:Paint()
 end
 
 function PANEL:PerformLayout()
-	local y = ScrH() * 0.05
+	local y = ScrH() * 0.1
 	for k, item in ipairs(self.WeaponButtons) do
 		if item and item:Valid() then
 			item:SetPos(0, y)
@@ -130,18 +128,19 @@ function PANEL:Init()
 	
 	self.m_WeaponSlot = WEAPONLOADOUT_NULL
 end
-local col2 = Color(5, 5, 5, 180)
-local colhovered = Color(15, 200, 15, 180)
+
 function PANEL:Paint()
 	local colBG = team.GetColor(MySelf:Team())
+	local outlinecol
 	--self:SetBackgroundColor(colBG)
 	local tall = self:GetTall()
 	local wide = self:GetWide()
 	if self.m_WeaponModelButton:IsHovered() then
-		draw.RoundedBox(8, 0, 0, wide, tall, colhovered)
+		outlinecol = COLOR_DARKGREEN
 	else
-		draw.RoundedBox(8, 0, 0, wide, tall, col2)
+		outlinecol = COLOR_DARKGRAY
 	end
+	draw.RoundedBox(8, 0, 0, wide, tall, outlinecol)
 	draw.RoundedBox(8, 8,32, wide-16, tall-40, colBG)
 	return true
 end

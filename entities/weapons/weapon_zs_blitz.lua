@@ -24,9 +24,9 @@ SWEP.WorldModel = "models/weapons/w_rif_sg552.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_SG552.Single")
-SWEP.Primary.Damage = 22
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.12
+SWEP.Primary.Delay = 0.09
 SWEP.Primary.ClipSize = 30
 
 SWEP.Recoil = 0.5

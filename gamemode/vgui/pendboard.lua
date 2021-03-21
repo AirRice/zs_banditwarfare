@@ -7,7 +7,7 @@ function GM:AddHonorableMention(pl, mentionid, ...)
 	if not mentiontab then return end
 
 	local pan = vgui.Create("DEndBoardPlayerPanel", pEndBoard.List)
-	pan:SetPlayer(pl, mentiontab.Color and mentiontab.Color or team.GetColor(pl:Team()), string.format(mentiontab.String, mentiontab.Callback(pl, ...)), nil, mentiontab.Name)
+	pan:SetPlayer(pl, mentiontab.Color and mentiontab.Color or team.GetColor(pl:Team()), translate.Format(mentiontab.TranslateString, mentiontab.Callback(pl, ...)), nil, translate.Format(mentiontab.TranslateName))
 	pEndBoard.List:AddItem(pan)
 end
 
@@ -33,16 +33,16 @@ function MakepEndBoard(winner)
 	local subheading
 	if winner == TEAM_HUMAN then
 		surface.PlaySound("beams/beamstart5.wav")
-		heading = EasyLabel(frame, "생존자 승리", "ZSHUDFont", team.GetColor(TEAM_HUMAN))
-		subheading = EasyLabel(frame, "생존자들은 또 다른 날을 맞이할 것이다.", "ZSHUDFontSmall", COLOR_WHITE)
+		heading = EasyLabel(frame, translate.Get("survivors_victory"), "ZSHUDFont", team.GetColor(TEAM_HUMAN))
+		subheading = EasyLabel(frame, translate.Get("survivors_victory_desc"), "ZSHUDFontSmaller", COLOR_WHITE)
 	elseif winner == TEAM_BANDIT then
 		surface.PlaySound("ambient/levels/streetwar/city_battle"..math.random(3, 5)..".wav")
-		heading = EasyLabel(frame, "밴딧 승리", "ZSHUDFont", team.GetColor(TEAM_BANDIT))
-		subheading = EasyLabel(frame, "세계는 밴딧들에 의해 혼란 속으로 빠졌다.", "ZSHUDFontSmall", COLOR_WHITE)
+		heading = EasyLabel(frame, translate.Get("bandits_victory"), "ZSHUDFont", team.GetColor(TEAM_BANDIT))
+		subheading = EasyLabel(frame, translate.Get("bandits_victory_desc"), "ZSHUDFontSmaller", COLOR_WHITE)
 	else
 		surface.PlaySound("ambient/levels/citadel/strange_talk"..math.random(3, 11)..".wav")
-		heading = EasyLabel(frame, "무승부", "ZSHUDFont", COLOR_GRAY)
-		subheading = EasyLabel(frame, "무의미한 싸움 속에서 인류는 멸망했다.", "ZSHUDFontSmall", COLOR_WHITE)
+		heading = EasyLabel(frame, translate.Get("no_victory"), "ZSHUDFont", COLOR_GRAY)
+		subheading = EasyLabel(frame, translate.Get("no_victory_desc"), "ZSHUDFontSmall", COLOR_WHITE)
 	end
 	heading:SetPos(wid * 0.5 - heading:GetWide() * 0.5, y)
 	y = y + heading:GetTall() + 4

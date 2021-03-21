@@ -39,7 +39,7 @@ SWEP.NoPickupNotification = true
 
 SWEP.HoldType = "slam"
 SWEP.IsConsumable = true
-
+SWEP.AdditionalSigilInfo = true
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetDeploySpeed(10)
@@ -105,36 +105,4 @@ if not CLIENT then return end
 
 function SWEP:DrawWeaponSelection(...)
 	return self:BaseDrawWeaponSelection(...)
-end
-
-function SWEP:DrawHUD()
-	if self:GetDTBool(0) then
-	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
-		local teamcolor = nil
-		if ent:GetSigilTeam() ~= nil then 
-			teamcolor = team.GetColor(ent:GetSigilTeam())
-		end
-		
-		self:DrawTarget(ent,32,0,teamcolor)
-	end
-	end
-	if self.BaseClass.DrawHUD then
-		self.BaseClass.DrawHUD(self)
-	end
-end
-
-local texScope = Material("vgui/hud/autoaim")
-function SWEP:DrawTarget(tgt, size, offset, color)
-	local scrpos = tgt:GetPos():ToScreen()
-	scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
-	scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
-	--surface.SetMaterial(texScope)
-	--surface.DrawTexturedRect( scrpos.x - size, scrpos.y - size, size * 2, size * 2 )
-	--surface.DrawCircle(scrpos.x - size, scrpos.y - size, size * 2,255,0,0,150)
-	draw.RoundedBox( 10,scrpos.x - size, scrpos.y - size, size * 2, size * 2, color ~= nil and color or COLOR_GREY )
-	local text = math.ceil(self.Owner:GetPos():Distance(tgt:GetPos()))
-	local w, h = surface.GetTextSize(text)
-	--surface.SetFont("ZSHUDFontSmall")
-	--surface.DrawText(text)
-	draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size+ (offset * size) - h/2)
 end

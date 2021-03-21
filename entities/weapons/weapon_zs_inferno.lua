@@ -24,7 +24,7 @@ SWEP.WorldModel = "models/weapons/w_rif_aug.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_AUG.Single")
-SWEP.Primary.Damage = 19
+SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.095
 

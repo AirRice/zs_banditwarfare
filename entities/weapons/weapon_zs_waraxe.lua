@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-SWEP.Base = "weapon_zs_battleaxe"
-
 if CLIENT then
 	SWEP.TranslateName = "weapon_waraxe_name"
 	SWEP.TranslateDesc = "weapon_waraxe_desc"
@@ -19,21 +17,42 @@ if CLIENT then
 		["base+"] = { type = "Model", model = "models/props_junk/cinderblock01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base", pos = Vector(0.5, 3, 0), angle = Angle(0, 90, 90), size = Vector(0.119, 0.119, 0.119), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["base++"] = { type = "Model", model = "models/props_c17/canister02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "base+", pos = Vector(-1.201, 0, 0.699), angle = Angle(90, 0, 0), size = Vector(0.129, 0.129, 0.059), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}
+	SWEP.Slot = 1
+	SWEP.SlotPos = 0
+
+	SWEP.ViewModelFlip = false
+	SWEP.ViewModelFOV = 60
+
+	SWEP.HUD3DPos = Vector(-0.95, 0, 1)
+	SWEP.HUD3DAng = Angle(0, 0, 0)
+	SWEP.HUD3DBone = "v_weapon.USP_Slide"
 end
 
-SWEP.Primary.Damage = 7
-SWEP.Primary.NumShots = 4
-SWEP.Primary.Delay = 0.27
+SWEP.Base = "weapon_zs_base"
 
-SWEP.Primary.ClipSize = 9
+SWEP.HoldType = "pistol"
+
+SWEP.ViewModel = "models/weapons/cstrike/c_pist_usp.mdl"
+SWEP.WorldModel = "models/weapons/w_pist_usp.mdl"
+SWEP.UseHands = true
+
+SWEP.Primary.Sound = Sound("Weapon_USP.Single")
+SWEP.Primary.Damage = 10
+SWEP.Primary.NumShots = 4
+SWEP.Primary.Delay = 0.45
+
+SWEP.Primary.ClipSize = 12
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.1
+SWEP.IronSightsPos = Vector(-5.9, 12, 2.3)
+
+SWEP.ConeMax = 0.015
 SWEP.ConeMin = 0.02
 SWEP.Recoil = 0.8
+GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 80, 75)
-	print(self.BaseClass.WorldModel)
+	self:EmitSound("weapons/ar2/npc_ar2_altfire.wav", 55, 150,1,CHAN_VOICE)
 end

@@ -5,8 +5,6 @@ SWEP.TranslateDesc = "weapon_carphammer_desc"
 SWEP.ViewModelFOV = 75
 
 function SWEP:DrawHUD()
-	if GetGlobalBool("classicmode") then return end
-
 	surface.SetFont("ZSHUDFontSmall")
 	local text = translate.Get("right_click_to_hammer_nail")
 	local nails = self:GetPrimaryAmmoCount()

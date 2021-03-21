@@ -79,7 +79,7 @@ function ENT:Think()
 end
 
 function ENT:StartTouch(ent)
-	if self.DieTime ~= 0 and ent:IsPlayer() and ent:Alive() and (ent:Team() == TEAM_BANDIT or ent:Team() == TEAM_HUMAN) and ent:GetActiveWeapon().Primary.Ammo == "alyxgun" then
+	if self.DieTime ~= 0 and ent:IsPlayer() and ent:Alive() and (ent:Team() == TEAM_BANDIT or ent:Team() == TEAM_HUMAN) and ent:GetActiveWeapon().Primary and ent:GetActiveWeapon().Primary.Ammo == "alyxgun" then
 		self.DieTime = 0
 		ent:GiveAmmo( 2, "alyxgun", false )
 		self:EmitSound("physics/flesh/flesh_bloody_break.wav")

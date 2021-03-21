@@ -77,6 +77,10 @@ function GM:SigilCommsThink()
 end
 function GM:SamplesThink()
 	if not self.SamplesEnd then 
+		if self.NextNestSpawn and self.NextNestSpawn <= CurTime() then
+			gamemode.Call("CreateZombieNest")
+			self.NextNestSpawn = CurTime() + 45
+		end
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
 		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
 			self.SamplesEnd = true
@@ -108,11 +112,11 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 			self:AddSamples(0,togive)
 		end
 	end
-	player:AddPoints(togive)
+	player:AddPoints(1)
 	net.Start("zs_commission")
 		net.WriteEntity(ent)
 		net.WriteEntity(player)
-		net.WriteUInt(togive, 16)
+		net.WriteUInt(1, 16)
 	net.Send(player)
 end
 
@@ -128,14 +132,7 @@ local function SortDistFromLast(a, b)
 	end
 end
 
-function GM:CreateZombieNests()
-	--print ("creating sigils")
-	if #self.ProfilerNodes < self.MaxSigils then
-		self:SetClassicMode(true)
-		return
-	end
-
-	-- Copy
+function GM:CreateZombieNest()
 	local nodes = {}
 	for _, node in pairs(self.ProfilerNodes) do
 		local vec = Vector()
@@ -143,96 +140,35 @@ function GM:CreateZombieNests()
 		nodes[#nodes + 1] = {v = vec}
 	end
 
-	local bspawns = {}
-	local hspawns = {}
-	table.Add(bspawns,team.GetValidSpawnPoint(TEAM_BANDIT))
-	table.Add(hspawns,team.GetValidSpawnPoint(TEAM_HUMAN))
-	for _, n in pairs(nodes) do
-		n.hd = 999999
-		n.bd = 999999
-		n.diff = 999999
-		for __, spawn in pairs(hspawns) do
-			n.hd = math.min(n.hd, n.v:Distance(spawn:GetPos()))
-		end
-		for __, spawn in pairs(bspawns) do
-			n.bd = math.min(n.bd, n.v:Distance(spawn:GetPos()))
-		end
-		n.diff = math.abs(n.bd-n.hd)
-			
-		if n.diff > 3000 then 
-			table.remove(nodes, _)
-		end
-	end
-	local bspawns = {}
-	bspawns = team.GetValidSpawnPoint(TEAM_BANDIT)
-	local hspawns = {}
-	hspawns = team.GetValidSpawnPoint(TEAM_HUMAN)
-	if not (#bspawns > 0 and #hspawns > 0) then return end
-	local bspawn = bspawns[ math.random(#bspawns) ]
-	local hspawn = hspawns[ math.random(#bspawns) ]
-	if bspawn and bspawn:IsValid() then
-		local ent = ents.Create("prop_sampledepositterminal")
-		if ent:IsValid() then
-			ent:SetPos(bspawn:GetPos() + Vector(0, 0, 8))
-			ent:Spawn()
-			ent:DropToFloor()
-			ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-			ent:SetOwnerTeam(TEAM_BANDIT)
-		end
-		local ent2 = ents.Create("prop_sampledepositterminal")
-		if ent2:IsValid() then
-			ent2:SetPos(hspawn:GetPos() + Vector(0, 0, 8))
-			ent2:Spawn()
-			ent2:DropToFloor()
-			ent2:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
-			ent2:SetOwnerTeam(TEAM_HUMAN)
-		end
-	end
-	table.sort(nodes, SortDistFromLast)
-	for i=1, self.MaxSigils do
-		local id
-		local sigs = ents.FindByClass("prop_obj_nest")
-		local flag = false
-		for __, sig in pairs(sigs) do
-			for _, n in pairs(nodes) do
-				if n.v:Distance(sig.NodePos) <= 800 then
-					table.remove(nodes, _)
-				end
+	local id = 1
+	local chosen = false
+	while !chosen do
+		id = math.random(1,#nodes)
+		local avoid = player.GetAllActive()
+		table.Merge(sigs,ents.FindByClass("prop_obj_nest"))
+		table.Merge(sigs,ents.FindByClass("prop_sampledepositterminal"))
+		local playerswithin = false
+		for _, pl in pairs(avoid) do
+			if pl:GetPos():Distance(nodes[id].v) < 128 then
+				playerswithin = true
+				break
 			end
 		end
-		
-		-- Sort the nodes by their distances.
-		-- Select node with algorithm that randomly selects while selecting closer ids more
-		local id = 1
-		if #nodes >=self.MaxSigils*3 then
-			if math.random(1,4) == 1 then
-				id = math.random(math.floor(#nodes/3),math.floor(#nodes/3)*2)
-			elseif math.random(1,4) == 4 then
-				id = math.random(4,math.floor(#nodes/3))
-			else
-				id = math.random(1,3)
-			end
-		else
-			id = math.random(1,#nodes)
-		end
-
-		-- Remove the chosen point from the temp table and make the sigil.
-		local point = nodes[id].v
-		table.remove(nodes, id)
-		local ent = ents.Create("prop_obj_nest")
-
-		if ent:IsValid() then
-			ent:SetPos(point)
-			ent:Spawn()
-			ent.NodePos = point
-		end
+		chosen = !playerswithin
+	end
+	-- Remove the chosen point from the temp table and make the sigil.
+	local point = nodes[id].v
+	local ent = ents.Create("prop_obj_nest")
+	if ent:IsValid() then
+		ent:SetPos(point)
+		ent:Spawn()
+		ent.NodePos = point
+		gamemode.Call("OnNestSpawned")
 	end
 end
 
-function GM:CreateSigils()
-	--print ("creating sigils")
+function GM:CreateObjectives(entname,nocollide)
 	if #self.ProfilerNodes < self.MaxSigils then
-		self:SetClassicMode(false)
 		return
 	end
 
@@ -267,11 +203,11 @@ function GM:CreateSigils()
 	table.sort(nodes, SortDistFromLast)
 	for i=1, self.MaxSigils do
 		local id
-		local sigs = ents.FindByClass("prop_obj_sigil")
+		local sigs = ents.FindByClass(entname)
 		local flag = false
 		for __, sig in pairs(sigs) do
 			for _, n in pairs(nodes) do
-				if n.v:Distance(sig.NodePos) <= 800 then
+				if n.v:Distance(sig.NodePos) <= 800 or (math.random(2) == 1 and WorldVisible(n.v,sig.NodePos)) then
 					table.remove(nodes, _)
 				end
 			end
@@ -280,13 +216,12 @@ function GM:CreateSigils()
 		-- Sort the nodes by their distances.
 		-- Select node with algorithm that randomly selects while selecting closer ids more
 		local id = 1
-		if #nodes >=self.MaxSigils*3 then
-			if math.random(1,4) == 1 then
-				id = math.random(math.floor(#nodes/3),math.floor(#nodes/3)*2)
-			elseif math.random(1,4) == 4 then
-				id = math.random(4,math.floor(#nodes/3))
+		if #nodes >=self.MaxSigils*2 then
+			local decider = math.random(1,5)
+			if decider > 2 then
+				id = math.random(1,self.MaxSigils)
 			else
-				id = math.random(1,3)
+				id = math.random(self.MaxSigils+1,#nodes)
 			end
 		else
 			id = math.random(1,#nodes)
@@ -295,11 +230,13 @@ function GM:CreateSigils()
 		-- Remove the chosen point from the temp table and make the sigil.
 		local point = nodes[id].v
 		table.remove(nodes, id)
-		local ent = ents.Create("prop_obj_sigil")
-
+		local ent = ents.Create(entname)
 		if ent:IsValid() then
 			ent:SetPos(point)
 			ent:Spawn()
+			if nocollide then
+				ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
+			end
 			ent.NodePos = point
 		end
 	end

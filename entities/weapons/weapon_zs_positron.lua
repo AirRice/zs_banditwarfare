@@ -47,9 +47,9 @@ SWEP.ShowWorldModel = true
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
-SWEP.Primary.Damage = 12
+SWEP.Primary.Damage = 18
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.04
+SWEP.Primary.Delay = 0.045
 
 SWEP.Primary.ClipSize = 0
 SWEP.Primary.DefaultClip = 250
@@ -142,17 +142,18 @@ function SWEP:Think()
 		self:SetLastHurtDmg(0)
     end
     if self.Owner:KeyDown(IN_ATTACK) then
-		if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then 
+		if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) or self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then 
 			self:SetFiringLaser( false )
 			self:StopSound( "Loop_Lepton_Fire" )
 			self:StopSound( "Loop_Lepton_Fire2" )
+			self:SetLastHurtTarget(nil)
+			self:SetLastHurtDmg(0)
 		return end
         if not self:GetFiringLaser() then
-            self:EmitSound( "Loop_Lepton_Fire" )
-			self:EmitSound( "Loop_Lepton_Fire2" )
 			self:SetFiringLaser(true)
         end
-		
+		self:EmitSound( "Loop_Lepton_Fire" )
+		self:EmitSound( "Loop_Lepton_Fire2" )
 		local td = {}
 	
 		td.start = self.Owner:EyePos()
@@ -178,9 +179,9 @@ function SWEP:Think()
 					util.Decal( "FadingScorch", tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
 				end
 				if ent:IsValid() then
-					local dmg = 1
+					local dmg = 2
 					if self:GetLastHurtTarget() == ent then
-						dmg = math.min(self:GetLastHurtDmg()+1,self.Primary.Damage*3)
+						dmg = math.min(self:GetLastHurtDmg()+2,self.Primary.Damage*3)
 					else
 						self:SetLastHurtTarget(ent)
 					end
@@ -188,11 +189,11 @@ function SWEP:Think()
 					local owner = self:GetOwner()
 					if ent:IsPlayer() then
 						if ent:Team() == owner:Team() then return end
-						ent:TakeSpecialDamage(dmg/3, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self)
 					elseif (ent.IsBarricadeObject or ent:IsNailed()) and not ent:IsSameTeam(owner)  then
 						ent:TakeSpecialDamage(dmg, DMG_DISSOLVE, owner, self)
 					else
-						ent:TakeSpecialDamage(dmg/3, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self)
 					end
 					self.NextHurt = CurTime()+self.Primary.Delay
 				end
@@ -243,6 +244,11 @@ function SWEP:ShootEffects()
 end
 
 if(CLIENT)then
+function SWEP:CalcViewModelView(vm, oldpos, oldang, pos, ang)
+	pos, ang = self.BaseClass.CalcViewModelView(self, vm, oldpos, oldang, pos, ang)
+	return pos + (self:GetFiringLaser() and VectorRand(-0.25,0.25) or Vector(0,0,0)),ang
+end
+
 function SWEP:ViewModelDrawn()
 	self:Anim_ViewModelDrawn()
 	if self:GetFiringLaser() then

@@ -45,15 +45,15 @@ SWEP.WorldModel = "models/weapons/w_snip_scout.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Scout.Single")
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 45
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.75
+SWEP.Primary.Delay = 0.6
 SWEP.ReloadDelay = SWEP.Primary.Delay
 
 SWEP.Primary.ClipSize = 5
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "alyxgun"
-SWEP.Primary.DefaultClip = 15
+SWEP.Primary.DefaultClip = 20
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
