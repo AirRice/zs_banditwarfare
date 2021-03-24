@@ -650,7 +650,7 @@ function GM:Think()
 				gamemode.Call("SamplesThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
-			if self:GetWave() == 0 and not self.CurrentRound > 1 and self:GetWaveStart() - time <= self.WaveZeroLength - self.WaveIntermissionLength then
+			if self:GetWave() == 0 and not (self.CurrentRound > 1) and self:GetWaveStart() - time <= self.WaveZeroLength - self.WaveIntermissionLength then
 				if !self.ShuffledPlayersThisRound then
 					if self:AllPlayersLoaded() then
 						self.ShuffledPlayersThisRound = true

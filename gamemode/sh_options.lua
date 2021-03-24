@@ -65,7 +65,7 @@ GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 20, "weapon_zs_nailgun").NoClas
 GM:AddPointShopWeapon(1,"bioshotgun", ITEMCAT_GUNS, 55, "weapon_zs_bioticshotgun")
 GM:AddPointShopWeapon(1,"deagle", ITEMCAT_GUNS, 65, "weapon_zs_deagle")
 GM:AddPointShopWeapon(1,"shredder", ITEMCAT_GUNS, 60, "weapon_zs_smg")
-GM:AddPointShopWeapon(1,"annabelle", ITEMCAT_GUNS, 65, "weapon_zs_annabelle")
+GM:AddPointShopWeapon(1,"annabelle", ITEMCAT_GUNS, 75, "weapon_zs_annabelle")
 GM:AddPointShopWeapon(1,"kalash", ITEMCAT_GUNS, 75, "weapon_zs_kalash")
 GM:AddPointShopWeapon(1,"sweeper", ITEMCAT_GUNS, 70, "weapon_zs_sweepershotgun")
 GM:AddPointShopWeapon(1,"neutrino", ITEMCAT_GUNS, 70, "weapon_zs_neutrino")
@@ -230,6 +230,7 @@ GM.MapWhitelist = {
 	"zm_tx_highschoolbeta7_d_vh",
 	"zm_stab_aroundtown_v3c",
 	"zsb_minecraft_ricetown_b2",
+	"zsb_streetwar01a",
 	"zsb_hallways",
 	--"zsb_ravenholm_pre_b1", map is too one way to ever allow for fun gameplay. Might need a remake.
 	"zs_barren",
@@ -315,11 +316,7 @@ function GM:SetupAimDefaults(tab,primtab)
 	tab.AimExpandStayDuration = tab.Primary.Delay*0.75
 end
 	
-GM.MaxSigils = CreateConVar("zsb_maxsigils", "3", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How many sigils to spawn. 0 for none."):GetInt()
-cvars.AddChangeCallback("zsb_maxsigils", function(cvar, oldvalue, newvalue)
-	GAMEMODE.MaxSigils = math.Clamp(tonumber(newvalue) or 0, 0, 10)
-end)
-
+GM.MaxSigils = 3
 GM.NumberOfWaves = CreateConVar("zsb_numberofwaves", "9", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Number of waves in a game."):GetInt()
 cvars.AddChangeCallback("zsb_numberofwaves", function(cvar, oldvalue, newvalue)
 	GAMEMODE.NumberOfWaves = tonumber(newvalue) or 1

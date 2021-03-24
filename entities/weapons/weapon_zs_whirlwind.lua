@@ -74,6 +74,7 @@ end
 --[[function SWEP:SecondaryAttack()
 end]]
 
+local steeringratio = 0.8
 function SWEP:Attack(proj)
 	if (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) and proj:IsValid() then
 		self.Owner:EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
@@ -97,10 +98,20 @@ function SWEP:Attack(proj)
 		self.Owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		if SERVER then
+			local aimvec = owner:GetAimVector()
+			local td = {}
+				td.start = self.Owner:EyePos()
+				td.mask = MASK_SHOT
+				td.filter = {}
+				table.Add(td.filter, team.GetPlayers( self.Owner:Team()))
+				td.endpos = td.start + self.Weapon.Owner:EyeAngles():Forward()*10000
+				table.Add(td.filter, {self})
+				local tr = util.TraceLine(td)
+			if tr.Hit then aimvec = (tr.HitPos - fireorigin):Normalize() end
 			local phys = proj:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:SetVelocity(phys:GetVelocity()*0.25)
-				local dir = (owner:GetAimVector()+firevec)/2
+				local dir = (aimvec*steeringratio+firevec*(1-steeringratio))
 				phys:AddVelocity(dir*2200)
 				proj:SetOwner(self.Owner)
 			else
@@ -121,8 +132,7 @@ function SWEP:Think()
 	if (self.LastAttack + self.Primary.Delay*10 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
-			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then				
-				print(ent:GetClass())
+			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)

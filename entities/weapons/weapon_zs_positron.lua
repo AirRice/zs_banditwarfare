@@ -47,7 +47,7 @@ SWEP.ShowWorldModel = true
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
-SWEP.Primary.Damage = 18
+SWEP.Primary.Damage = 20
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.045
 
@@ -179,11 +179,12 @@ function SWEP:Think()
 					util.Decal( "FadingScorch", tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
 				end
 				if ent:IsValid() then
-					local dmg = 2
+					local dmg = 3
 					if self:GetLastHurtTarget() == ent then
-						dmg = math.min(self:GetLastHurtDmg()+2,self.Primary.Damage*3)
+						dmg = math.min(self:GetLastHurtDmg()+3,self.Primary.Damage*3)
 					else
 						self:SetLastHurtTarget(ent)
+						dmg = math.max(self:GetLastHurtDmg()-12,3)
 					end
 					self:SetLastHurtDmg(dmg)
 					local owner = self:GetOwner()
