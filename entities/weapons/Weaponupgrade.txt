@@ -6,6 +6,7 @@
 --Upgrade from owens
 --GM:AddPointShopItem(1,"glock3", "'크로스파이어' 글록-3", nil, ITEMCAT_GUNS, 60, "weapon_zs_glock3")
 --GM:AddPointShopItem(2,"waraxe", "'워액스' 권총", nil, ITEMCAT_GUNS, 95, "weapon_zs_waraxe")
+-- Redeemer
 
 --Upgrade from battleaxe
 --GM:AddPointShopItem(1,"deagle", "'좀비 드릴' 데저트 이글", nil, ITEMCAT_GUNS, 65, "weapon_zs_deagle")
@@ -53,4 +54,5 @@
 
 --Upgrade from Neutrino (Sidegrade)
 --GM:AddPointShopItem(4,"positron", "'포지트론' 양전자포", nil, ITEMCAT_GUNS, 265, "weapon_zs_positron")
+
 --GM:AddPointShopItem(2,"grenadelauncher", "유탄발사기", nil, ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")

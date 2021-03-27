@@ -54,11 +54,18 @@ function SWEP:PrimaryAttack()
 
 	self:TakePrimaryAmmo(1)
 	self.NextDeploy = CurTime() + 1
-
 	if SERVER then
+		local eyeang = owner:EyeAngles()
+		local eyeforward = eyeang:Forward()
+		local eyeright = eyeang:Right()
+		local throworigin = owner:EyePos() + eyeforward * 18 + eyeright * 8;
+
+		local tossvel = owner:GetVelocity()
+		tossvel = tossvel + owner:GetAimVector() * 1300;
+
 		local ent = ents.Create("projectile_zsgrenade")
 		if ent:IsValid() then
-			ent:SetPos(owner:GetShootPos())
+			ent:SetPos(throworigin)
 			ent:SetOwner(owner)
 			ent:Spawn()
 			ent.GrenadeDamage = self.GrenadeDamage
@@ -67,8 +74,8 @@ function SWEP:PrimaryAttack()
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:AddAngleVelocity(VectorRand() * 5)
-				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 1000)
+				phys:AddAngleVelocity(Vector(600,math.random(-1200,1200),0))
+				phys:SetVelocityInstantaneous(tossvel)
 			end
 		end
 	end

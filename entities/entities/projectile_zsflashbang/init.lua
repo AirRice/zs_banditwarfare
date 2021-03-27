@@ -13,8 +13,6 @@ function ENT:Initialize()
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:Wake()
-		phys:SetMass(30)
-		phys:SetMaterial("metal")
 	end
 end
 
@@ -48,7 +46,6 @@ function ENT:Explode()
 					if not TrueVisible(eyepos, pos) then
 						power = power * 0.66
 					end
-					print(power)
 					if power > 0.5 then
 						pl:PlayEyePoisonedSound()
 						if math.random(4) == 1 then

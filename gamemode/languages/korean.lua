@@ -219,6 +219,8 @@ LANGUAGE.weapon_combinesniper_name					= "'블록다운' 소총"
 LANGUAGE.weapon_combinesniper_desc					= "콤바인 저격수가 애용하는 소총. 내장된 축전지를 충전시킨 후 한번에 방출해 많은 피해를 입히는 강력한 한 발을 발사한다.\n주 공격 키를 누르고 있으면 충전을 시작하며 키에서 손을 떼면 발사한다.\n충전이 100% 완료된 상태에서 계속 과충전할 시 폭발해 사용자가 피해를 입을 수 있으므로 주의를 요한다."
 LANGUAGE.weapon_rupture_name					= "'럽쳐' 석궁"
 LANGUAGE.weapon_rupture_desc					= "이 석궁은 특수한 폭발성 화살을 발사한다. 이 화살은 적을 직접 피격할 시 큰 피해를 입히지 않지만, 벽 등에 박힌 후 2초 후 폭발해 큰 폭발 피해를 입힌다."
+LANGUAGE.weapon_bioticsmg_name					= "'머로우' 생체 SMG"
+LANGUAGE.weapon_bioticsmg_desc					= "압축된 좀비 살점을 빠른 속도로 발사하는 특수한 기관단총이다. \n독에 맞으면 체력이 감소했다가 빠르게 다시 회복되지만, 독에 의해 죽은 적은 생체 폐기물을 남긴다. \n이 생체 폐기물을 주으면 이 무기의 탄약을 보충 가능하다."
 
 LANGUAGE.shopitem_bodyarmor_name					= "방탄복"
 LANGUAGE.shopitem_bodyarmor_desc					= "구매 시 내구도 100짜리의 방탄복을 입으며 이동속도는 25 하락한다. 이미 방탄복을 입은 경우 사용할 수 없다.\n이 방탄복은 폭발 피해를 50%, 총알과 근접 무기 피해를 60% 줄여준다.\n단 머리는 보호하지 못하며, 독 등에 의해 받는 피해는 줄이지 못한다.\n방탄복의 영향을 받는 피해를 입을 경우 방탄복의 내구도가 조금씩 깎인다."
@@ -229,7 +231,7 @@ LANGUAGE.shopitem_adrenaline_desc					= "구매 시 최대 체력이 10 하락�
 LANGUAGE.shopitem_adrenaline_toomuch				= "아드레날린을 더 사용하는 것은 자살행위다."
 
 LANGUAGE.shopitem_ammo_name							= "추가 탄약"
-LANGUAGE.shopitem_ammo_desc							= "구매 시 현재 무기의 탄약을 지급한다. 무기 당 탄약 지급량이 다르며, 처음 무기를 구매할 때 주어진 양과 동일하다."
+LANGUAGE.shopitem_ammo_desc							= "구매 시 현재 무기의 탄약을 지급한다. 무기 당 탄약 지급량이 다르며, 처음 무기를 구매할 때 주어진 양과 동일하다. 일부 무기는 탄약 보충이 불가능하다."
 LANGUAGE.shopitem_ammo_invalid						= "이 무기의 탄약은 추가적으로 구매할 수 없다."
 
 LANGUAGE.statusname_invuln							= "무적 상태"

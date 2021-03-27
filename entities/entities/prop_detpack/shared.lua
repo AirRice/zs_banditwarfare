@@ -8,7 +8,7 @@ ENT.NoNails = true
 
 ENT.NoPropDamageDuringWave0 = true
 
-ENT.ExplosionDelay = 1
+ENT.ExplosionDelay = 0.5
 
 function ENT:SetExplodeTime(time)
 	self:SetDTFloat(0, time)

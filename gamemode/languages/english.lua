@@ -225,7 +225,8 @@ LANGUAGE.weapon_combinesniper_name					= "'Blockdown' Rifle"
 LANGUAGE.weapon_combinesniper_desc					= "This Combine-issued rifle uses an internal mechanism to charge its shots for impressive damage.\nPress and hold the attack button to charge up a shot, and release to fire.\nKeeping the weapon charged up for too long can lead to the mechanism backfiring and damaging the user."
 LANGUAGE.weapon_rupture_name					= "'Rupture' Crossbow"
 LANGUAGE.weapon_rupture_desc					= "This crossbow shoots specialised explosive bolts that explode after embedding into a surface.\n The bolts do not do much damage when hitting an enemy outright, but the bolts will explode after 2 seconds otherwise."
-
+LANGUAGE.weapon_bioticsmg_name					    = "'Marrow' Biotic SMG"
+LANGUAGE.weapon_bioticsmg_desc					= "This modified SMG fires pellets of concentrated zombie flesh rapidly. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
 
 
 LANGUAGE.shopitem_bodyarmor_name					= "Body Armor"

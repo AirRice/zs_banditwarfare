@@ -65,7 +65,7 @@ function ENT:Explode()
 		local pos = self:GetPos()
 
 		util.BlastDamage2(self, owner, pos, 256, 400)
-
+		self:EmitSound("c4.explode")
 		local effectdata = EffectData()
 			effectdata:SetOrigin(pos)
 		util.Effect("Explosion", effectdata)
@@ -82,7 +82,7 @@ function ENT:Think()
 		if CurTime() >= self:GetExplodeTime() then
 			self:Explode()
 		elseif self.NextBlip <= CurTime() then
-			self.NextBlip = CurTime() + 0.4
+			self.NextBlip = CurTime() + 0.2
 			self:EmitSound("weapons/c4/c4_beep1.wav")
 		end
 	end

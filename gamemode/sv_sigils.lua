@@ -145,8 +145,8 @@ function GM:CreateZombieNest()
 	while !chosen do
 		id = math.random(1,#nodes)
 		local avoid = player.GetAllActive()
-		table.Merge(sigs,ents.FindByClass("prop_obj_nest"))
-		table.Merge(sigs,ents.FindByClass("prop_sampledepositterminal"))
+		table.Merge(avoid,ents.FindByClass("prop_obj_nest"))
+		table.Merge(avoid,ents.FindByClass("prop_sampledepositterminal"))
 		local playerswithin = false
 		for _, pl in pairs(avoid) do
 			if pl:GetPos():Distance(nodes[id].v) < 128 then

@@ -3,7 +3,6 @@ include("shared.lua")
 ENT.NextEmit = 0
 
 function ENT:Initialize()
-	self:SetModelScale(2.5, 0)
 	self:SetMaterial("models/flesh")
 end
 
@@ -21,7 +20,7 @@ function ENT:Draw()
 		particle:SetDieTime(1)
 		particle:SetStartAlpha(230)
 		particle:SetEndAlpha(230)
-		particle:SetStartSize(4)
+		particle:SetStartSize(2)
 		particle:SetEndSize(0)
 		particle:SetRoll(math.Rand(0, 360))
 		particle:SetRollDelta(math.Rand(-25, 25))

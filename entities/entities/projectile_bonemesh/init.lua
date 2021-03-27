@@ -3,11 +3,11 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.LifeTime = 3
+ENT.LifeTime = 0.75
 
 function ENT:Initialize()
 	self:SetModel("models/Gibs/HGIBS.mdl")
-	self:PhysicsInitSphere(13)
+	self:PhysicsInitSphere(7)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
 	self:SetModelScale(2.5, 0)
