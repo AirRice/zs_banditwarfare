@@ -355,7 +355,7 @@ GM.SurvivalClips = 3
 -- End of round music
 GM.SuddenDeathSound = Sound("music/bandit/lasthuman.ogg")
 GM.AllLoseSound = Sound("music/bandit/music_lose.ogg")
-GM.HumanWinSound = Sound("music/bandit/music_humanwin.ogg")
-GM.BanditWinSound = Sound("music/bandit/music_banditwin.ogg")
+GM.HumanWinSound = Sound("music/bandit/music_humanwin_vrts.ogg")
+GM.BanditWinSound = Sound("music/bandit/music_banditwin_vrts.ogg")
 -- Sound played to a person when they die as a human.
 GM.DeathSound = Sound("music/stingers/HL1_stinger_song28.mp3")

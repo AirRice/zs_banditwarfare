@@ -31,6 +31,9 @@ end)
 GM.BeatsVolume = math.Clamp(CreateClientConVar("zs_beatsvolume", 80, true, false):GetInt(), 0, 100) / 100
 cvars.AddChangeCallback("zs_beatsvolume", function(cvar, oldvalue, newvalue)
 	GAMEMODE.BeatsVolume = math.Clamp(tonumber(newvalue) or 0, 0, 100) / 100
+	if (GAMEMODE.BeatsSoundChannel and GAMEMODE.BeatsSoundChannel:IsValid()) then
+		GAMEMODE.BeatsSoundChannel:SetVolume(GAMEMODE.BeatsVolume)
+	end
 end)
 
 GM.AlwaysShowNails = CreateClientConVar("zs_alwaysshownails", "0", true, false):GetBool()

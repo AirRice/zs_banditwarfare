@@ -223,8 +223,8 @@ function GM:AddResources()
 	resource.AddFile("materials/noxctf/sprite_bloodspray8.vmt")
 
 	resource.AddFile("sound/music/bandit/lasthuman.ogg")
-	resource.AddFile("sound/music/bandit/music_humanwin.ogg")
-	resource.AddFile("sound/music/bandit/music_banditwin.ogg")
+	resource.AddFile("sound/music/bandit/music_humanwin_vrts.ogg")
+	resource.AddFile("sound/music/bandit/music_banditwin_vrts.ogg")
 	resource.AddFile("sound/music/bandit/music_lose.ogg")
 end
 
@@ -897,20 +897,6 @@ function GM:RestartLua()
 		pl.AmmoPickups = nil
 		pl.WeaponPickups = nil
 	end
-	
-	self.OverrideEndSlomo = nil
-	if type(GetGlobalBool("endcamera", 1)) ~= "number" then
-		SetGlobalBool("endcamera", nil)
-	end
-	if GetGlobalString("winmusic", "-") ~= "-" then
-		SetGlobalString("winmusic", nil)
-	end
-	if GetGlobalString("losemusic", "-") ~= "-" then
-		SetGlobalString("losemusic", nil)
-	end
-	if type(GetGlobalVector("endcamerapos", 1)) ~= "number" then
-		SetGlobalVector("endcamerapos", nil)
-	end
 
 	self.CappedInfliction = 0
 	
@@ -921,7 +907,6 @@ function GM:RestartLua()
 	ROUNDWINNER = nil
 
 	hook.Remove("PlayerShouldTakeDamage", "EndRoundShouldTakeDamage")
-	hook.Remove("PlayerCanHearPlayersVoice", "EndRoundCanHearPlayersVoice")
 end
 
 -- I don't know.
@@ -1044,16 +1029,10 @@ function GM:EndRound(winner)
 	self.RoundEndedTime = CurTime()
 	ROUNDWINNER = winner
 
-	if self.OverrideEndSlomo == nil or self.OverrideEndSlomo then
-		game.SetTimeScale(0.25)
-		timer.Simple(2, function() game.SetTimeScale(1) end)
-	end
+	game.SetTimeScale(0.25)
+	timer.Simple(2, function() game.SetTimeScale(1) end)
 
-	hook.Add("PlayerCanHearPlayersVoice", "EndRoundCanHearPlayersVoice", function() return true end)
-
-	if self.OverrideEndCamera == nil or self.OverrideEndCamera then
-		hook.Add("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility", EndRoundSetupPlayerVisibility)
-	end
+	hook.Add("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility", EndRoundSetupPlayerVisibility)
 
 	local mapname = string.lower(game.GetMapNext())
 

@@ -55,7 +55,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity)
 	if math.random(2) == 2 then
 		local ent = ents.CreateLimited("prop_playergib")
 		if ent:IsValid() then
-			ent:SetPos(vHitPos + VectorRand() * 4)
+			ent:SetPos(vHitPos + vHitNormal * 4)
 			ent:SetAngles(VectorRand():Angle())
 			ent:SetGibType(math.random(3, #GAMEMODE.HumanGibs))
 			ent:Spawn()
@@ -63,7 +63,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity)
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocityInstantaneous(VectorRand():GetNormalized() * math.Rand(60, 220))
+				phys:SetVelocityInstantaneous((vHitNormal + VectorRand():GetNormalized()) * math.Rand(60, 220))
 				phys:AddAngleVelocity(VectorRand() * 360)
 			end
 		end

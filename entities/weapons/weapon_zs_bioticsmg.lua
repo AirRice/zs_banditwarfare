@@ -71,9 +71,9 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_SMG1.Reload")
 SWEP.Primary.Sound = Sound("Weapon_AR2.NPC_Single")
-SWEP.Primary.Damage = 18
+SWEP.Primary.Damage = 15
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.1
+SWEP.Primary.Delay = 0.13
 
 SWEP.Primary.ClipSize = 40
 SWEP.Primary.Automatic = true
@@ -118,7 +118,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 			eyeang:RotateAroundAxis(eyeang:Forward(),util_SharedRandom("rotate"..self:EntIndex(), 0, 360))
 			eyeang:RotateAroundAxis(eyeang:Up(),util_SharedRandom("bulletangle"..self:EntIndex(), -cone, cone))
 			phys:Wake()
-			phys:SetVelocityInstantaneous(eyeang:Forward() * 2100)
+			phys:SetVelocityInstantaneous(eyeang:Forward() * 1700)
 			phys:EnableGravity(false)
 		end
 	end

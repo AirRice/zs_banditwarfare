@@ -395,29 +395,36 @@ end
 
 
 local cv_ShouldPlayMusic = CreateClientConVar("zsb_playmusic", 1, true, false)
-local NextBeat = 0
-local LastBeatLevel = 0
-
+GM.NextBeat = 0
+GM.BeatsSoundChannel = nil
 function GM:PlayBeats()
-
-	if RealTime() <= NextBeat or not gamemode.Call("ShouldPlayBeats") or not cv_ShouldPlayMusic:GetBool() then return end
-	
-	if self.IsInSuddenDeath then
-		MySelf:EmitSound(self.SuddenDeathSound, 0, 100, self.BeatsVolume)
-		NextBeat = RealTime() + SoundDuration(self.SuddenDeathSound) - 0.025
-		return
-	end
-	
-	local snd = self.Beats[math.random(1,#self.Beats)]
-	if snd then
-		MySelf:EmitSound(snd, 0, 100, self.BeatsVolume)
-		NextBeat = RealTime() + (self.SoundDuration[snd] or SoundDuration(snd))
+	if not gamemode.Call("ShouldPlayBeats") or not cv_ShouldPlayMusic:GetBool() then return end
+	if (RealTime() >= self.NextBeat) then
+		local snd = nil
+		if self.IsInSuddenDeath then
+			snd = self.SuddenDeathSound
+		else
+			snd = self.Beats[math.random(1,#self.Beats)]
+		end
+		
+		if snd and not IsPlayingSong then
+			sound.PlayFile("sound/"..snd,"noplay",function(channel, errId, errName)
+				if (!errId and IsValid(channel)) then
+					self.BeatsSoundChannel = channel
+					self.BeatsSoundChannel:SetVolume(self.BeatsVolume)
+					self.BeatsSoundChannel:Play()
+				end
+			end)
+			self.NextBeat = RealTime() + (self.SoundDuration[snd] or SoundDuration(snd))
+		end
 	end
 end
 
 function GM:RestartBeats()
-	RunConsoleCommand("stopsound")
-	timer.Simple(0.5, function() NextBeat = 0; end)
+	if (self.BeatsSoundChannel and self.BeatsSoundChannel:IsValid()) then
+		self.BeatsSoundChannel:Stop()
+	end
+	timer.Simple(0.5, function() self.NextBeat = 0; end)
 end
 
 local colPackUp = Color(20, 255, 20, 220)
@@ -482,7 +489,7 @@ function GM:HumanHUD(screenscale)
 	end
 	
 	if self.IsInSuddenDeath then 
-		draw_SimpleTextBlurry("SUDDEN DEATH", "ZSHUDFont", w * 0.5, 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Format("sudden_death"), "ZSHUDFont", w * 0.5, 128, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	end
 	if self.LifeStatsEndTime and CurTime() < self.LifeStatsEndTime and (self.LifeStatsBarricadeDamage > 0 or self.LifeStatsEnemyDamage > 0 or self.LifeStatsEnemyKilled > 0) then
 		colLifeStats.a = math.Clamp((self.LifeStatsEndTime - CurTime()) / (self.LifeStatsLifeTime * 0.33), 0, 1) * 255
@@ -1135,10 +1142,6 @@ end
 local function EndRoundCalcView(pl, origin, angles, fov, znear, zfar)
 	if GAMEMODE.EndTime and CurTime() < GAMEMODE.EndTime + 5 then
 		local endposition = GAMEMODE.LastHumanPosition
-		local override = GetGlobalVector("endcamerapos", 1)
-		if type(override) ~= "number" then
-			endposition = override
-		end
 		if endposition then
 			local delta = math.Clamp((CurTime() - GAMEMODE.EndTime) * 2, 0, 1)
  
@@ -1169,40 +1172,36 @@ function GM:EndRound(winner, nextmap)
 	ROUNDWINNER = winner
 
 	self.EndTime = CurTime()
-
+	
 	RunConsoleCommand("stopsound")
-
+	gamemode.Call("RestartBeats")
+	
 	FindMetaTable("Player").GetMeleeFilter = EndRoundGetMeleeFilter
 
 	self.HUDPaint = self.HUDPaintEndRound
 	self.HUDPaintBackground = self.HUDPaintBackgroundEndRound
 
-	if GetGlobalBool("endcamera", true) then
-		hook.Add("CalcView", "EndRoundCalcView", EndRoundCalcView)
-		hook.Add("ShouldDrawLocalPlayer", "EndRoundShouldDrawLocalPlayer", EndRoundShouldDrawLocalPlayer)
-	end
+	hook.Add("CalcView", "EndRoundCalcView", EndRoundCalcView)
+	hook.Add("ShouldDrawLocalPlayer", "EndRoundShouldDrawLocalPlayer", EndRoundShouldDrawLocalPlayer)
 
-	local dvar 
-	local winmusicstring
+	local snd = nil
 	if winner == TEAM_BANDIT then
-		dvar = self.BanditWinSound 
-		winmusicstring = "bwinmusic"
+		snd = "sound/music/bandit/music_banditwin_vrts.ogg"
 	elseif winner == TEAM_HUMANS then
-		dvar = self.HumanWinSound
-		winmusicstring = "hwinmusic"
+		snd = "sound/music/bandit/music_humanwin_vrts.ogg"
 	else
-		dvar = self.AllLoseSound
-		winmusicstring = "losemusic"
-	end
-		
-	local snd = GetGlobalString(winmusicstring, dvar)
-	if snd == "default" then
-		snd = dvar
-	elseif snd == "none" then
-		snd = nil
+		snd = "sound/music/bandit/music_lose.ogg"
 	end
 	if snd then
-		timer.Simple(0.5, function() surface_PlaySound(snd) end)
+		timer.Simple(0.5, function()
+ 			sound.PlayFile(snd,"noplay",function(channel, errId, errName)
+ 				if (!errId and IsValid(channel)) then
+ 					GAMEMODE.BeatsSoundChannel = channel
+ 					GAMEMODE.BeatsSoundChannel:SetVolume(GAMEMODE.BeatsVolume)
+ 					GAMEMODE.BeatsSoundChannel:Play()
+ 				end
+			end)
+		end)
 	end
 
 	timer.Simple(5, function()
@@ -1444,7 +1443,7 @@ end)
 net.Receive("zs_suddendeath", function(length)
 	local check = net.ReadBool()
 	if check then
-		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Format("sudden_death"), {killicon = "default"})
+		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Format("sudden_death_start"), {killicon = "default"})
 		GAMEMODE.IsInSuddenDeath = true
 		gamemode.Call("RestartBeats")
 		timer.Simple(0.1, function() surface_PlaySound("ambient/energy/whiteflash.wav")end)

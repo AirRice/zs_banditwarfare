@@ -95,19 +95,19 @@ function SWEP:Attack(proj)
 			ed:SetMagnitude(1)
 			ed:SetScale(1)
 		util.Effect("MetalSpark", ed)
-		self.Owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
+		owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		if SERVER then
 			local aimvec = owner:GetAimVector()
 			local td = {}
-				td.start = self.Owner:EyePos()
+				td.start = owner:EyePos()
 				td.mask = MASK_SHOT
 				td.filter = {}
-				table.Add(td.filter, team.GetPlayers( self.Owner:Team()))
-				td.endpos = td.start + self.Weapon.Owner:EyeAngles():Forward()*10000
+				table.Add(td.filter, team.GetPlayers( owner:Team()))
+				td.endpos = td.start + owner:EyeAngles():Forward()*10000
 				table.Add(td.filter, {self})
 				local tr = util.TraceLine(td)
-			if tr.Hit then aimvec = (tr.HitPos - fireorigin):Normalize() end
+			if tr.Hit then aimvec = (tr.HitPos - fireorigin):GetNormalized() end
 			local phys = proj:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:SetVelocity(phys:GetVelocity()*0.25)
@@ -129,7 +129,7 @@ function SWEP:Think()
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
 	self.BaseClass.Think(self)	
-	if (self.LastAttack + self.Primary.Delay*10 <= curTime ) and self:Clip1() > 0 then
+	if (self.LastAttack + self.Primary.Delay*2 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
 			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
