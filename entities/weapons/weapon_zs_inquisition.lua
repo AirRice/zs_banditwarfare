@@ -44,9 +44,9 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
 SWEP.Primary.Damage = 25
 SWEP.Primary.NumShots = 3
-SWEP.Primary.Delay = 1
+SWEP.Primary.Delay = 0.75
 
-SWEP.Primary.ClipSize = 2
+SWEP.Primary.ClipSize = 3
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "XBowBolt"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
@@ -63,7 +63,7 @@ function SWEP:PrimaryAttack()
 	self:TakeAmmo()
 	self:SendWeaponAnimation()
 	for i = 0, self.Primary.NumShots-1 do
-		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, math.min((self.Primary.Delay-0.6)/self.Primary.NumShots,0.12) * i, 1, function()
+		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, math.min((self.Primary.Delay-0.5)/self.Primary.NumShots,0.1) * i, 1, function()
 			if (self:IsValid() and self.Owner:Alive()) then
 				self:EmitFireSound()	
 				self.Owner:DoAttackEvent()

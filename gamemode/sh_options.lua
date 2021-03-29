@@ -203,7 +203,7 @@ GM.RestrictedModels = {
 }
 GM.MapWhitelist = {
 	--"cs_assault", Assault is way more fun in classic mode.
-	"cs_compound",
+	--"cs_compound",
 	"cs_galleria",
 	--"cs_havana", Because of how this map is laid out it can become impossible to get to transmitters
 	"cs_italy",

@@ -53,7 +53,7 @@ SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 10
 
-SWEP.ConeMax = 0.11
+SWEP.ConeMax = 0.19
 SWEP.ConeMin = 0.076
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 

@@ -26,16 +26,16 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_P228.Single")
 SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.08
+SWEP.Primary.Delay = 0.07
 
 SWEP.Primary.ClipSize = 18
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
-SWEP.Recoil = 0.27
-SWEP.ConeMax = 0.04
-SWEP.ConeMin = 0.011
-SWEP.MovingConeOffset = 0.05
+SWEP.Recoil = 0.23
+SWEP.ConeMax = 0.028
+SWEP.ConeMin = 0.007
+SWEP.MovingConeOffset = 0.04
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

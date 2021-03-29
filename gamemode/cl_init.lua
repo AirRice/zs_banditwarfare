@@ -1141,7 +1141,7 @@ end
 
 local function EndRoundCalcView(pl, origin, angles, fov, znear, zfar)
 	if GAMEMODE.EndTime and CurTime() < GAMEMODE.EndTime + 5 then
-		local endposition = GAMEMODE.LastHumanPosition
+		local endposition = GAMEMODE.RoundEndCamPosition
 		if endposition then
 			local delta = math.Clamp((CurTime() - GAMEMODE.EndTime) * 2, 0, 1)
  
@@ -1421,7 +1421,7 @@ net.Receive("zs_wavestart", function(length)
 
 	gamemode.Call("SetWave", wave)
 	gamemode.Call("SetWaveEnd", time)
-	GAMEMODE.LastHumanPosition = nil
+	GAMEMODE.RoundEndCamPosition = nil
 	if wave == GAMEMODE:GetNumberOfWaves() then
 		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Get("final_wave"), {killicon = "default"})
 		GAMEMODE:CenterNotify(translate.Get("final_wave_sub"))
@@ -1505,8 +1505,8 @@ net.Receive("zs_gamemodecall", function(length)
 	gamemode.Call(net.ReadString())
 end)
 
-net.Receive("zs_lasthumanpos", function(length)
-	GAMEMODE.LastHumanPosition = net.ReadVector()
+net.Receive("zs_roundendcampos", function(length)
+	GAMEMODE.RoundEndCamPosition = net.ReadVector()
 end)
 
 net.Receive("zs_endround", function(length)

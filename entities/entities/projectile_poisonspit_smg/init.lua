@@ -7,9 +7,10 @@ function ENT:Initialize()
 	self.DeathTime = CurTime() + 30
 
 	self:SetModel("models/props/cs_italy/orange.mdl")
-	self:PhysicsInitSphere(1)
+	self:PhysicsInitSphere(0.5)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
+	self:SetModelScale(0.5, 0)
 	self:SetCustomCollisionCheck(true)
 
 	local phys = self:GetPhysicsObject()

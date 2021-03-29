@@ -1,5 +1,5 @@
 
-function GM:OnSigilTaken(ent, justtakenby)
+function GM:OnSigilTaken(sigilent, justtakenby)
 	local sigils = {}
 	local sigilteams = {}
 
@@ -23,6 +23,14 @@ function GM:OnSigilTaken(ent, justtakenby)
 		end
 		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "one_sigil_taken_by_x",translatestring))
 	end
+	
+	if self:IsTransmissionMode() then
+		self.RoundEndCamPos = sigilent:WorldSpaceCenter()
+		net.Start("zs_roundendcampos")
+			net.WriteVector(self.RoundEndCamPos)
+		net.Broadcast()
+	end
+	
 	--[[if self.SuddenDeath then 
 		for _, pl in pairs(player.GetAll()) do
 			if justtakenby == TEAM_BANDIT then
@@ -118,6 +126,12 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 		net.WriteEntity(player)
 		net.WriteUInt(1, 16)
 	net.Send(player)
+	if self:IsSampleCollectMode() then
+		self.RoundEndCamPos = ent:WorldSpaceCenter()
+		net.Start("zs_roundendcampos")
+			net.WriteVector(self.RoundEndCamPos)
+		net.Broadcast()
+	end
 end
 
 local function SortDistFromLast(a, b)

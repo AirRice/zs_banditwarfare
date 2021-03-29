@@ -37,17 +37,18 @@ SWEP.ViewModel = "models/weapons/cstrike/c_pist_fiveseven.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("weapons/fiveseven/fiveseven-1.wav")
-SWEP.Primary.Damage = 18
+SWEP.Primary.Damage = 19
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.1
-SWEP.Recoil = 1.16
-SWEP.Primary.ClipSize = 3
+SWEP.Recoil = 0.76
+SWEP.Primary.ClipSize = 6
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.DefaultClip = 24
 
-SWEP.ConeMax = 0.03
+SWEP.ConeMax = 0.018
 SWEP.ConeMin = 0.003
+SWEP.MovingConeOffset = 0.04
 SWEP.IronSightsPos = Vector(-6.2, 0, 2.5)
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
@@ -57,7 +58,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 		if tr.HitGroup == HITGROUP_HEAD then
 			local wep = attacker:GetActiveWeapon()
 			local current = wep:Clip1()
-			local totake = math.min(spare, 3 - current)
+			local totake = math.min(spare, 6 - current)
 			wep:SetClip1(current + totake)
 			if SERVER then
 				attacker:RemoveAmmo(totake, "pistol")

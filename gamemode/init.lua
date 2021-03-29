@@ -254,7 +254,7 @@ function GM:AddNetworkStrings()
 
 	util.AddNetworkString("zs_lasthuman")
 	util.AddNetworkString("zs_gamemodecall")
-	util.AddNetworkString("zs_lasthumanpos")
+	util.AddNetworkString("zs_roundendcampos")
 	util.AddNetworkString("zs_endround")
 	util.AddNetworkString("zs_wavewonby")
 	util.AddNetworkString("zs_centernotify")
@@ -678,6 +678,7 @@ function GM:Think()
 				end
 				if numoutsidespawns >= #teamspawns then
 					pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+					pl:SetAbsVelocity(Vector(0,0,0))
 					pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "before_wave_cant_go_outside_spawn"))
 				end
 			end
@@ -1016,8 +1017,8 @@ end
 local function EndRoundPlayerCanSuicide(pl) return true end
 
 local function EndRoundSetupPlayerVisibility(pl)
-	if GAMEMODE.LastHumanPosition and GAMEMODE.RoundEnded then
-		AddOriginToPVS(GAMEMODE.LastHumanPosition)
+	if GAMEMODE.RoundEndCamPos and GAMEMODE.RoundEnded then
+		AddOriginToPVS(GAMEMODE.RoundEndCamPos)
 	else
 		hook.Remove("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility")
 	end
@@ -1672,6 +1673,7 @@ function GM:PlayerDeathThink(pl)
 		local teamspawns = {}
 		teamspawns = team.GetValidSpawnPoint(pl:Team())
 		pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+		pl:SetAbsVelocity(Vector(0,0,0))
 		pl:UnSpectateAndSpawn()
 		pl.m_PreRespawn = nil
 		pl.SpawnedTime = CurTime()
@@ -2197,10 +2199,12 @@ function GM:PlayerDeath(pl, inflictor, attacker)
 end
 
 function GM:PostPlayerDeath(pl)
-	self.LastHumanPosition = pl:WorldSpaceCenter()
-	net.Start("zs_lasthumanpos")
-		net.WriteVector(self.LastHumanPosition)
-	net.Broadcast()
+	if self:IsClassicMode() then
+		self.RoundEndCamPos = pl:WorldSpaceCenter()
+		net.Start("zs_roundendcampos")
+			net.WriteVector(self.RoundEndCamPos)
+		net.Broadcast()
+	end
 	local banditcount = 0
 	local humancount = 0
 	for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
@@ -2643,6 +2647,7 @@ function GM:WaveStateChanged(newstate)
 				local teamspawns = {}
 				teamspawns = team.GetValidSpawnPoint(pl:Team())
 				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+				pl:SetAbsVelocity(Vector(0,0,0))
 				pl:UnSpectateAndSpawn()
 				pl.m_PreRespawn = nil
 				pl.SpawnedTime = CurTime()
@@ -2653,7 +2658,7 @@ function GM:WaveStateChanged(newstate)
 				net.Broadcast()	
 			end
 		end
-		self.LastHumanPosition = nil
+		self.RoundEndCamPos = nil
 			
 		local prevwave = self:GetWave()
 
@@ -2773,6 +2778,7 @@ function GM:WaveStateChanged(newstate)
 				pl.LifeEnemyDamage = 0
 				pl.LifeEnemyKills = 0
 				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+				pl:SetAbsVelocity(Vector(0,0,0))
 			else
 				pl:UnSpectateAndSpawn()	
 			end
