@@ -168,7 +168,7 @@ LANGUAGE.weapon_positron_desc						= "Fires a beam of charged positrons. The bea
 LANGUAGE.weapon_owenspistol_name					= "'Owens' Pistol"
 LANGUAGE.weapon_owenspistol_desc					= "This pistol will fire rounds that split into two upon leaving the barrel.\nRelatively inaccurate for a pistol, it is most effective at close ranges."
 LANGUAGE.weapon_peashooterpistol_name				= "'Peashooter' Pistol"
-LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol with a high rate of fire. The rounds have a small caliber but the pistol can sustain a constant stream of fire."
+LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol set to fire at 3-round bursts. The rounds have a small caliber but the pistol can sustain a constant stream of fire."
 LANGUAGE.weapon_leadpipe_name						= "Lead Pipe"
 LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off."
 LANGUAGE.weapon_plankmelee_name						= "Plank"
@@ -230,7 +230,7 @@ LANGUAGE.weapon_bioticsmg_desc					= "This modified SMG fires pellets of concent
 
 
 LANGUAGE.shopitem_bodyarmor_name					= "Body Armor"
-LANGUAGE.shopitem_bodyarmor_desc					= "On purchase, wear additional military grade body armor with a durability of 100 that lowers movement speed by 25.\n This body armor will block 50% of explosion damage and 60% of bullet and melee damage.\nHowever, it does not protect the head or prevent damage from armor-ignoring sources, such as poison.\nTaking damage that is reduced by the protection will slowly wear down the armor's durability."
+LANGUAGE.shopitem_bodyarmor_desc					= "On purchase, wear additional military grade body armor with a durability of 100 that lowers movement speed by 25.\n This body armor will block 75% of explosion damage and 60% of bullet and melee damage.\nHowever, it does not protect the head or prevent damage from armor-ignoring sources, such as poison.\nTaking damage that is reduced by the protection will slowly wear down the armor's durability."
 LANGUAGE.shopitem_bodyarmor_alreadyhave				= "You are already wearing body armor"
 
 LANGUAGE.shopitem_adrenaline_name					= "Adrenaline"
@@ -315,6 +315,7 @@ LANGUAGE.press_rmb_to_cycle_targets					= "Right Mouse Button to change spectate
 LANGUAGE.press_duck_to_toggle_eyecam				= "Press DUCK to toggle between third/first person view"
 LANGUAGE.press_lmb_to_spawn							= "Left Mouse Button to respawn"
 LANGUAGE.you_respawned								= "You respawned."
+LANGUAGE.x_respawned								= "respawned"
 
 LANGUAGE.respawn_after_x_seconds					= "%d seconds before respawning..."
 LANGUAGE.observing_x								= "Spectating: %s (%d)"

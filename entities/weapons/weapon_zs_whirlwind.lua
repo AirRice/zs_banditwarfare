@@ -44,7 +44,7 @@ SWEP.WorldModel = "models/weapons/w_smg1.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_Alyx_Gun.Reload")
 SWEP.Primary.Sound = Sound("weapons/smg1/smg1_fire1.wav")
-SWEP.Primary.Damage = 4
+SWEP.Primary.Damage = 6
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.07
 
@@ -132,7 +132,7 @@ function SWEP:Think()
 	if (self.LastAttack + self.Primary.Delay*2 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
-			if (ent ~= self and ent:IsProjectile() and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
+			if (ent ~= self and ent:IsProjectile() and not ent:GetMoveType() == MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)

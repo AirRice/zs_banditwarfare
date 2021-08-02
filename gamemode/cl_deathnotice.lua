@@ -240,7 +240,7 @@ net.Receive("zs_pls_kill_pl", function(length)
 		print(attackername.." and "..assistername.." killed "..victimname.." with "..inflictor..".")
 
 		--gamemode.Call("AddDeathNotice", attackername.." and "..assistername, attackerteam, inflictor, victimname, victimteam, headshot)
-		GAMEMODE:TopNotify(attacker, " and ", assister, " ", {killicon = inflictor, headshot = headshot}, " ", victim)
+		GAMEMODE:TopNotify(attacker, "/", assister, " ", {killicon = inflictor, headshot = headshot}, " ", victim)
 	end
 end)
 
@@ -255,7 +255,7 @@ net.Receive("zs_pl_kill_self", function(length)
 
 		local victimname = victim:Name()
 
-		print(victimname.." 는 자살함.")
+		print(victimname.." died mysteriously")
 		--gamemode.Call("AddDeathNotice", nil, 0, "suicide", victimname, victimteam)
 		GAMEMODE:TopNotify({killicon = "suicide"}, " ", victim)
 	end
@@ -268,7 +268,7 @@ net.Receive("zs_playerredeemed", function(length)
 	--gamemode.Call("AddDeathNotice", nil, 0, "redeem", name, TEAM_HUMAN)
 
 	if pl:IsValid() then
-		GAMEMODE:TopNotify(pl, " 부활", {killicon = "redeem"})
+		GAMEMODE:TopNotify(pl, " "..translate.Get("x_respawned"), {killicon = "redeem"})
 
 		if pl == MySelf then
 			GAMEMODE:CenterNotify(COLOR_CYAN, translate.Get("you_respawned"))

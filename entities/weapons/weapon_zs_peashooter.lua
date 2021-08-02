@@ -26,16 +26,33 @@ SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("Weapon_P228.Single")
 SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.07
+SWEP.Primary.Delay = 0.08
 
 SWEP.Primary.ClipSize = 18
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
-SWEP.Recoil = 0.23
+SWEP.Recoil = 0.36
 SWEP.ConeMax = 0.028
 SWEP.ConeMin = 0.007
 SWEP.MovingConeOffset = 0.04
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end 
+	local shots = math.min(self:Clip1(),3)
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*(shots + 1.5))
+	for i = 0, shots-1 do
+		timer.Simple(self.Primary.Delay * i, function()
+			if (self:IsValid() and self.Owner:Alive()) then
+				self:EmitFireSound()
+				self:TakeAmmo()
+				self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+			end
+		end)
+		
+	end
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
+end

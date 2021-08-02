@@ -108,19 +108,19 @@ GM:AddPointShopWeapon(4,"positron", ITEMCAT_GUNS, 310, "weapon_zs_positron")
 --GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 
 GM:AddPointShopWeapon(nil,"crphmr", ITEMCAT_MELEE, 20, "weapon_zs_hammer").NoClassicMode = true
-GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 25, "weapon_zs_axe")
+--GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 25, "weapon_zs_axe")
 GM:AddPointShopWeapon(nil,"crowbar", ITEMCAT_MELEE, 22, "weapon_zs_crowbar")
 GM:AddPointShopWeapon(nil,"stunbaton", ITEMCAT_MELEE, 23, "weapon_zs_stunbaton")
 GM:AddPointShopWeapon(nil,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
-GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 50, "weapon_zs_sledgehammer")
+GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 30, "weapon_zs_sledgehammer")
 GM:AddPointShopWeapon(nil,"zpplnk", ITEMCAT_MELEE, 15, "weapon_zs_plank")
 --GM:AddPointShopWeapon(nil,"shovel", ITEMCAT_MELEE, 45, "weapon_zs_shovel")
 --GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
 --GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 32, "weapon_zs_pot")
 GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 35, "weapon_zs_butcherknife")
-GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
+--GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
 GM:AddPointShopWeapon(nil,"hook", ITEMCAT_MELEE, 23, "weapon_zs_hook")
-GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 40, "weapon_zs_energysword")
+--GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 40, "weapon_zs_energysword")
 
 local item = GM:AddPointShopWeapon(nil,"empgun", ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
 item.NoClassicMode = true

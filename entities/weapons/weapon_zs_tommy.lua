@@ -42,7 +42,7 @@ SWEP.ShowViewModel = false
 SWEP.Primary.Sound = Sound("Weapon_M249.Single")
 SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.055
+SWEP.Primary.Delay = 0.047
 
 SWEP.Primary.ClipSize = 75
 SWEP.Primary.Automatic = true
@@ -53,28 +53,10 @@ SWEP.ConeMax = 0.065
 SWEP.ConeMin = 0.007
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-SWEP.Recoil = 0.45
+SWEP.Recoil = 0.38
 
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)
 	self:EmitSound("weapons/ak47/ak47-1.wav", 55, 110,1,CHAN_VOICE)
-end
-function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
-
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-	
-	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.6)
-		self.IdleAnimation = CurTime() + self:SequenceDuration()*5/4+0.3
-		self:SetNextPrimaryFire(self.IdleAnimation)
-		self:SetNextReload(self.IdleAnimation)
-		self.Owner:DoReloadEvent()
-		if self.ReloadSound then
-			self:EmitSound(self.ReloadSound)
-		end
-	end
 end

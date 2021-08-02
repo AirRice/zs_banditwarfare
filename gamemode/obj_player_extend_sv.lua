@@ -89,11 +89,11 @@ function meta:ProcessDamage(dmginfo)
 		if self:GetBodyArmor() and self:GetBodyArmor() > 0 then
 			local ratio = 0.75
 			if dmginfo:IsDamageType(DMG_BLAST) then
-				ratio = ratio * 0.5
-				dmginfo:ScaleDamage(0.5)
+				ratio = ratio * 0.75
+				dmginfo:ScaleDamage(0.25)
 			elseif (dmginfo:IsDamageType(DMG_BULLET) or dmginfo:IsDamageType(DMG_CLUB) or dmginfo:IsDamageType(DMG_SLASH)) 
 			and not (attackweapon and attackweapon.IgnoreDamageScaling) and not (lasthitgroup == HITGROUP_HEAD) then
-				ratio = ratio * 0.4
+				ratio = ratio * 0.6
 				dmginfo:ScaleDamage(0.4)
 			end
 			self:AddBodyArmor(dmginfo:GetDamage()*-ratio)

@@ -54,7 +54,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.ConeMax = 0.009
 SWEP.ConeMin = 0.0085
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-SWEP.Recoil = 1.8
+SWEP.Recoil = 0.8
 
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 
@@ -63,7 +63,7 @@ function SWEP:PrimaryAttack()
 	self:TakeAmmo()
 	self:SendWeaponAnimation()
 	for i = 0, self.Primary.NumShots-1 do
-		timer.Create("inquisition" .. self:EntIndex() .. CurTime() .. i, math.min((self.Primary.Delay-0.5)/self.Primary.NumShots,0.1) * i, 1, function()
+		timer.Simple(math.min((self.Primary.Delay-0.4)/self.Primary.NumShots,0.1) * i, function()
 			if (self:IsValid() and self.Owner:Alive()) then
 				self:EmitFireSound()	
 				self.Owner:DoAttackEvent()
