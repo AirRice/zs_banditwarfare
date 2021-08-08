@@ -75,7 +75,7 @@ SWEP.AimSubtractUnit = 0.03
 SWEP.AimReleaseUnit = 0.2
 SWEP.AimExpandStayDuration = 0.1
 
-SWEP.Recoil = 2.76
+SWEP.Recoil = 0.96
 SWEP.WalkSpeed = SPEED_SLOWER
 
 function SWEP:Initialize()

@@ -31,7 +31,7 @@ local function WeaponIconFill(class,parent,islarge)
 		label:SetTextColor(col)
 		label:SizeToContents()
 		label:SetContentAlignment(8)
-		label:DockMargin(0, label:GetTall() * 0.05, 0, 0)
+		label:DockMargin(0, label:GetTall() * 0.1, 0, 0)
 		label:Dock(FILL)
 	elseif ki then
 		local img = vgui.Create("DImage", parent)
@@ -45,6 +45,7 @@ end
 
 function PANEL:Init()
 	self:SetFont("DefaultFontLarge")
+	self:Dock(BOTTOM)
 end
 
 function PANEL:Think()
@@ -162,7 +163,7 @@ end
 
 function PANEL:Init()
 	self:SetText("")
-
+	self:DockMargin(0, 0, 0, 2)
 	self:DockPadding(4, 4, 4, 4)
 	self:SetTall(60)
 
@@ -555,6 +556,7 @@ function GM:OpenPointsShop(weaponslot)
 	frame.RefusePurchaseLabel = refusesellpanel
 	local sweptable = nil
 	frame.CurrentID = nil
+	
 	for catid, catname in ipairs(GAMEMODE.ItemCategories) do
 		local hasitems = false
 		for i, tab in ipairs(GAMEMODE.Items) do
@@ -563,18 +565,18 @@ function GM:OpenPointsShop(weaponslot)
 				break
 			end
 		end
-
+		local currentweppanel = nil
 		if hasitems and 
 		((weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) and catid == ITEMCAT_GUNS 
 		or weaponslot == WEAPONLOADOUT_MELEE and catid == ITEMCAT_MELEE 
 		or weaponslot == WEAPONLOADOUT_TOOLS and catid == ITEMCAT_TOOLS
 		or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) and (GAMEMODE:IsClassicMode() or (catid ~= ITEMCAT_MELEE and catid ~= ITEMCAT_GUNS and catid ~= ITEMCAT_TOOLS))) then
-			local list = vgui.Create("DPanelList", propertysheet)
+			local list = vgui.Create("DScrollPanel", propertysheet)
 			list:SetPaintBackground(false)
-			propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
-			list:EnableVerticalScrollbar(true)
-			list:SetWide(propertysheet:GetWide() - 16)
-			list:SetSpacing(2)
+			--list:EnableVerticalScrollbar(true)
+			list:SetSize( 500, 500 )
+			--list:SetWide(propertysheet:GetWide() - 16)
+			--list:SetSpacing(2)
 			list:SetPadding(2)
 			local currenttier = -1
 			for i, tab in ipairs(GAMEMODE.Items) do
@@ -586,6 +588,7 @@ function GM:OpenPointsShop(weaponslot)
 					if tab.Category == ITEMCAT_GUNS and weptab and tab.Tier ~= nil and (currenttier == nil  or currenttier < tab.Tier) then
 						local tierheading = vgui.Create("DPanel")
 						tierheading:SetSize(list:GetWide(), 40)
+						tierheading:Dock(TOP)
 						list:AddItem(tierheading)
 						local namelab = EasyLabel(tierheading,translate.Format("tier_x",1+tab.Tier), "ZSHUDFontSmall", COLOR_WHITE)
 						namelab:SetPos(tierheading:GetWide() * 0.5- namelab:GetWide() * 0.5, tierheading:GetTall() * 0.5 - namelab:GetTall() * 0.5)
@@ -593,16 +596,23 @@ function GM:OpenPointsShop(weaponslot)
 					end
 					local itembut = vgui.Create("ShopItemButton")
 					itembut:SetupItemButton(i,weaponslot)
+					itembut:Dock(TOP)
+					list:AddItem(itembut)
 					if tab.SWEP == wep then 
 						frame.CurrentID = i
 						SetWeaponViewerSWEP(tab.SWEP)
+						currentweppanel = itembut
 					end
-					list:AddItem(itembut)
 				end
 				end
 			end
+			propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
+			if currentweppanel then
+				timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
+			end
 		end
 	end
+	
 	local left = 0
 	for i, tab in ipairs(GAMEMODE.Items) do
 		if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 

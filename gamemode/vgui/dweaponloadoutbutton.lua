@@ -43,7 +43,7 @@ function PANEL:RefreshSize()
 	for k, item in pairs(self.WeaponButtons) do
 		if item and item:Valid() then
 			item:SetWide(self:GetWide() - 16)
-			item:SetTall(screenscale * 210)
+			item:SetTall(screenscale * 180)
 		end
 	end
 end
@@ -58,6 +58,7 @@ end
 
 function PANEL:CloseMenu()
 	self:SetVisible(false)
+	--self:Remove()
 end
 
 local texRightEdge = surface.GetTextureID("gui/gradient")
@@ -89,8 +90,8 @@ PANEL.RefreshTime = 1
 
 
 local function WeaponButtonDoClick(self)
-	if self:GetParent().m_WeaponSlot == WEAPONLOADOUT_NULL then return end
-	GAMEMODE:OpenPointsShop(self:GetParent().m_WeaponSlot)
+	if self.m_WeaponSlot == WEAPONLOADOUT_NULL then return end
+	GAMEMODE:OpenPointsShop(self.m_WeaponSlot)
 	surface.PlaySound("buttons/button15.wav")
 end
 
@@ -113,38 +114,57 @@ function PANEL:Think()
 end
 
 function PANEL:Init()
-	self.m_WeaponModelButton = vgui.Create("DModelPanel", self)
-	self.m_WeaponModelButton:DockPadding(0, 8, 0, 0)
-	self.m_WeaponModelButton:Dock(FILL)
-	self.m_WeaponModelButton:SetModel("error.mdl")
-	self.m_WeaponModelButton:SetZPos(1000)
-	self.m_WeaponModelButton.DoClick = WeaponButtonDoClick
-	function self.m_WeaponModelButton:LayoutEntity( Entity ) return end 
+	self:DockPadding(0, 8, 0, 0)
+	self.DoClick = WeaponButtonDoClick	
+	
+	--[[self.m_WeaponButton = vgui.Create("DLabel", self)
+	self.m_WeaponButton:SetText("")
+	self.m_WeaponButton:Dock(FILL)
+	self.m_WeaponButton:SetZPos(1000)
+	function self.m_WeaponButton:LayoutEntity( Entity ) return end ]]
 	
 	self.m_WeaponNameLabel = EasyLabel(self, "", "ZSHUDFontSmallest", COLOR_WHITE)
 	self.m_WeaponNameLabel:SetContentAlignment(8)
 	self.m_WeaponNameLabel:Dock(TOP)
-	self.m_WeaponModelButton:SetZPos(1100)
+	self.m_WeaponNameLabel:DockPadding(0, 8, 0, 0)
+	self.m_WeaponNameLabel:SetZPos(1100)
 	
 	self.m_WeaponSlot = WEAPONLOADOUT_NULL
 end
 
 function PANEL:Paint()
-	local colBG = team.GetColor(MySelf:Team())
 	local outlinecol
-	--self:SetBackgroundColor(colBG)
-	local tall = self:GetTall()
-	local wide = self:GetWide()
-	if self.m_WeaponModelButton:IsHovered() then
+	if self:IsHovered() then
 		outlinecol = COLOR_DARKGREEN
 	else
 		outlinecol = COLOR_DARKGRAY
 	end
-	draw.RoundedBox(8, 0, 0, wide, tall, outlinecol)
-	draw.RoundedBox(8, 8,32, wide-16, tall-40, colBG)
+	draw.RoundedBox(8, 0, 0, self:GetWide(), self:GetTall(), outlinecol)
 	return true
 end
- 
+
+function PANEL:PaintOver()
+	local tall = self:GetTall()
+	local wide = self:GetWide()
+	local colBG = team.GetColor(MySelf:Team())
+	colBG.a = 110
+	draw.RoundedBox(8, 8,32, wide-16, tall-40, colBG)
+	if self.m_Weapon then
+		local ki = killicon.Get(self:GetWeapon())
+		local cols = ki and ki[#ki] or ""
+
+		if ki and #ki == 3 then
+			draw.SimpleText(ki[2], ki[1] .. "ws", wide * 0.5, tall * 0.5 + 40 * BetterScreenScale(), Color(cols.r, cols.g, cols.b, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		elseif ki then
+			local material = Material(ki[1])
+			local wid, hei = material:Width(), material:Height()
+			surface.SetMaterial(material)
+			surface.SetDrawColor(cols.r, cols.g, cols.b, alpha )
+			surface.DrawTexturedRect(wide * 0.5 - wid * 0.5, tall * 0.5 - hei * 0.5 + 10 * BetterScreenScale(), wid, hei)
+		end
+	end
+end
+
 function PANEL:SetWeaponSlot(wepslot)
 	if not wepslot or wepslot < 1 or wepslot > 4 then return end
 	local wep = ""
@@ -162,28 +182,9 @@ function PANEL:SetWeaponSlot(wepslot)
 	local sweptable = weapons.GetStored(wep)
 	if not sweptable then return end
 	self.m_Weapon = wep
-	local wepmodel = "error.mdl"
-	if not sweptable.WorldModel and sweptable.Base and (sweptable.Base ~= "weapon_zs_base" and sweptable.Base ~= "weapon_zs_basemelee") then
-		local basesweptable = weapons.GetStored(sweptable.Base)
-		if basesweptable.WorldModel then wepmodel = basesweptable.WorldModel end
-	else
-		wepmodel = sweptable.WorldModel
-	end
-	self.m_WeaponModelButton:SetModel(wepmodel)
-	local wepent = self.m_WeaponModelButton.Entity
-	if IsValid(wepent) then
-		local mins, maxs = wepent:GetRenderBounds()
-		local campos = mins:Distance(maxs) * Vector(0.75, 0.75, 1)
-		local lookat = (mins + maxs) / 2
-		local ang = (lookat - campos):Angle()
-		self.m_WeaponModelButton:SetCamPos(campos)
-		self.m_WeaponModelButton:SetLookAt((mins + maxs) / 2)
-		self.m_WeaponModelButton:SetLookAng(ang)
-		self.m_WeaponModelButton.LayoutEntity = function(ent) return end
-	end
+
 	self.m_WeaponNameLabel:SetText(sweptable.TranslateName and translate.Get(sweptable.TranslateName) or wep)
 	self.m_WeaponNameLabel:SizeToContents()
-
 	self:Refresh()
 end
 
@@ -191,4 +192,4 @@ function PANEL:GetWeapon()
 	return self.m_Weapon
 end
 
-vgui.Register("DWeaponLoadoutPanel", PANEL, "DPanel")
+vgui.Register("DWeaponLoadoutPanel", PANEL, "DButton")

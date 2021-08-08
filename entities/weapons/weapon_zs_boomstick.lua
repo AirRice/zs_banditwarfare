@@ -60,7 +60,7 @@ function SWEP:PrimaryAttack()
 			self.Owner:KnockDown(kotime) 
 		end
 		self.Owner:SetGroundEntity(NULL)
-		self.Owner:SetVelocity(-160 * clip * self.Owner:GetAimVector())
+		self.Owner:SetVelocity(-190 * clip * self.Owner:GetAimVector())
 
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	end

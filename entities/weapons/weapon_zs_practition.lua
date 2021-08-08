@@ -11,7 +11,7 @@ if CLIENT then
 	SWEP.ViewModelFOV = 45
 	SWEP.VElements = {
 		["medvial"] = { type = "Model", model = "models/healthvial.mdl", bone = "v_weapon.AK47_Clip", rel = "", pos = Vector(0, 0.082, 1.297), angle = Angle(-116.181, -93.926, -4.924), size = Vector(0.99, 0.99, 0.99), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["Stock"] = { type = "Model", model = "models/props_combine/breenlight.mdl", bone = "v_weapon.AK47_Parent", rel = "", pos = Vector(0, -3.207, 6.977), angle = Angle(0, 90, 0), size = Vector(0.741, 0.552, 0.731), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["Stock"] = { type = "Model", model = "models/props_combine/breenlight.mdl", bone = "v_weapon.AK47_Parent", rel = "", pos = Vector(0, -3.207, 6.977), angle = Angle(0, 90, 0), size = Vector(0.741, 0.552, 0.731), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/props_combine/metal_combinebridge001", skin = 0, bodygroup = {} },
 		["Nozzle"] = { type = "Model", model = "models/props_pipes/valve002.mdl", bone = "v_weapon.AK47_Bolt", rel = "", pos = Vector(0, 1.032, -3.503), angle = Angle(-180, -90, 0), size = Vector(0.221, 0.221, 0.221), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["Nozzle+"] = { type = "Model", model = "models/healthvial.mdl", bone = "v_weapon.AK47_Bolt", rel = "", pos = Vector(-1.599, 1.032, -8.228), angle = Angle(89.334, 0, 0), size = Vector(0.549, 0.549, 0.372), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["GunBody"] = { type = "Model", model = "models/props_combine/combinetrain01a.mdl", bone = "v_weapon.AK47_Parent", rel = "", pos = Vector(0.075, -2.062, -2.416), angle = Angle(-90, 0, -90), size = Vector(0.016, 0.019, 0.016), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
@@ -21,7 +21,7 @@ if CLIENT then
 	}
 	SWEP.WElements = {
 		["medvial"] = { type = "Model", model = "models/healthvial.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(19.25, 1.802, -6.107), angle = Angle(-90, 90, -180), size = Vector(0.412, 0.412, 0.412), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["Stock"] = { type = "Model", model = "models/props_combine/breenlight.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(-1.787, 0.829, -1.714), angle = Angle(-77.25, -180, 0), size = Vector(0.741, 0.552, 0.731), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["Stock"] = { type = "Model", model = "models/props_combine/breenlight.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(-1.787, 0.829, -1.714), angle = Angle(-77.25, -180, 0), size = Vector(0.741, 0.552, 0.731), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/props_combine/metal_combinebridge001", skin = 0, bodygroup = {} },
 		["Nozzle"] = { type = "Model", model = "models/props_pipes/valve002.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(14.409, 0.717, -5.237), angle = Angle(-99.195, 0, 0), size = Vector(0.157, 0.157, 0.216), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["medvial+"] = { type = "Model", model = "models/healthvial.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(9.27, 0.612, -4.487), angle = Angle(-32.586, 0, 0), size = Vector(1.12, 1.12, 1.12), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["GunBody"] = { type = "Model", model = "models/props_combine/combinetrain01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(9.612, 0.462, -2.099), angle = Angle(-11.101, 0, 180), size = Vector(0.019, 0.019, 0.014), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
@@ -47,11 +47,12 @@ SWEP.ReloadSound = Sound("Weapon_AK47.Clipout")
 SWEP.Primary.Sound = Sound("weapons/grenade_launcher1.wav", 70, math.random(90,120))
 SWEP.Primary.Damage = 4
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.14
-SWEP.Primary.ClipSize = 30
+SWEP.Primary.Delay = 0.13
+SWEP.Primary.ClipSize = 120
+SWEP.RequiredClip = 4
 SWEP.Primary.Ammo = "Battery"
 SWEP.Primary.Automatic = true
-SWEP.Primary.DefaultClip = 150
+SWEP.Primary.DefaultClip = 240
 SWEP.TracerName = "HelicopterTracer"
 
 SWEP.ConeMax = 0.07
@@ -62,8 +63,8 @@ SWEP.NoAmmo = false
 SWEP.Recoil = 0.26
 SWEP.ToxicDamage = 2
 SWEP.ToxicTick = 0.25
-SWEP.ToxDuration = 1.5
-SWEP.Heal = 2
+SWEP.ToxDuration = 1
+SWEP.Heal = 4
 SWEP.WalkSpeed = SPEED_SLOW
 
 SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)

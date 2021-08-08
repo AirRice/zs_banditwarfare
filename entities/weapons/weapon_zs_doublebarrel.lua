@@ -52,7 +52,7 @@ SWEP.Primary.ClipSize = 2
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 10
-
+SWEP.SelfKnockBackForce = 100
 SWEP.ConeMax = 0.265
 SWEP.ConeMin = 0.076
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
@@ -84,6 +84,7 @@ function SWEP:SecondaryAttack()
 	self:EmitSound("weapons/shotgun/shotgun_dbl_fire.wav")
 	local clip = self:Clip1()
 	self:ShootBullets(self.Primary.Damage, math.floor(self.Primary.NumShots * 2), self:GetCone())
+	self:DoSelfKnockBack(2)
 	if owner and owner:IsValid() and owner:IsPlayer() and SERVER then
 		owner.ShotsFired = owner.ShotsFired + math.floor(self.Primary.NumShots * 2)
 		owner.LastShotWeapon = self:GetClass()

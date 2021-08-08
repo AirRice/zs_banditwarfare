@@ -37,12 +37,12 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
-SWEP.Primary.Delay = 0.15
+SWEP.Primary.Delay = 0.2
 
-SWEP.Primary.ClipSize = 120
-SWEP.Primary.DefaultClip = 240
+SWEP.Primary.ClipSize = 60
+SWEP.Primary.DefaultClip = 180
 SWEP.Primary.Ammo = "Battery"
-SWEP.RequiredClip = 30
+SWEP.RequiredClip = 5
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
@@ -70,7 +70,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		ent:SetOwner(owner)
 		ent:Spawn()
 
-		ent.Heal = math.ceil(ent.Heal * (owner.HumanHealMultiplier or 1))
+		ent.Heal = math.ceil(self.RequiredClip * (owner.HumanHealMultiplier or 1))
 
 		local phys = ent:GetPhysicsObject()
 		if phys:IsValid() then

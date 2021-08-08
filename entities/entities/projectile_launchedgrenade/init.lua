@@ -39,10 +39,10 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity)
 	local owner = self:GetOwner()
 	if owner:IsValid() and owner:IsPlayer() then
 		local pos = self:GetPos()
-		util.BlastDamage2(self, owner, pos, 75, self.Damage or 64)
 		local effectdata = EffectData()
 			effectdata:SetOrigin(pos)
 		util.Effect("Explosion", effectdata)
+		util.BlastDamageShredding(self, owner, pos, 75, self.Damage or 10)
 	end
 end
 

@@ -25,9 +25,9 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_SG550.Single")
-SWEP.Primary.Damage = 33
+SWEP.Primary.Damage = 45
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.24
+SWEP.Primary.Delay = 0.3
 SWEP.Recoil = 0.79
 SWEP.DefaultRecoil = 0.89
 SWEP.Primary.ClipSize = 20

@@ -28,23 +28,22 @@ SWEP.ReloadDelay = 0.45
 
 SWEP.Primary.Sound = Sound("Weapon_M3.Single")
 SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 8
-SWEP.Primary.Delay = 0.7
+SWEP.Primary.NumShots = 9
+SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
 SWEP.Primary.ClipSize = 6
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-
-SWEP.ConeMax = 0.093
-SWEP.ConeMin = 0.059
+SWEP.ConeMax = 0.086
+SWEP.ConeMin = 0.045
 SWEP.MovingConeOffset = 0.07
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.AimExpandStayDuration = 0.002
 SWEP.Recoil = 2.89
 SWEP.WalkSpeed = SPEED_SLOWER
-
+SWEP.SelfKnockBackForce = 140
 SWEP.nextreloadfinish = 0
 
 function SWEP:SetupDataTables()

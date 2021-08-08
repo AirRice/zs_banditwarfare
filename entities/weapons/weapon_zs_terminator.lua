@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_terminator_name"
 	SWEP.TranslateDesc = "weapon_terminator_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 2
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
@@ -37,7 +37,7 @@ SWEP.ViewModel = "models/weapons/cstrike/c_pist_fiveseven.mdl"
 SWEP.WorldModel = "models/weapons/w_pist_fiveseven.mdl"
 SWEP.UseHands = true
 SWEP.Primary.Sound = Sound("weapons/fiveseven/fiveseven-1.wav")
-SWEP.Primary.Damage = 19
+SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.1
 SWEP.Recoil = 0.76

@@ -934,19 +934,16 @@ function GM:_CalcView(pl, origin, angles, fov, znear, zfar)
 		pl.Confusion:CalcView(pl, origin, angles, fov, znear, zfar)
 	end
 
-	if pl.Revive and pl.Revive:IsValid() and pl.Revive.GetRagdollEyes then
-		local rpos, rang = pl.Revive:GetRagdollEyes(pl)
-		if rpos then
-			origin = rpos
-			angles = rang
+	if pl.KnockedDown and pl.KnockedDown:IsValid() then	
+		if self.DontDoRagdollEyes then
+			origin = pl:GetThirdPersonCameraPos(origin, angles)
+		else
+			local rpos, rang = self:GetRagdollEyes(pl)
+			if rpos then
+				origin = rpos
+				angles = rang
+			end
 		end
-	elseif pl.KnockedDown and pl.KnockedDown:IsValid() then
-		origin = pl:GetThirdPersonCameraPos(origin, angles)
-		--[[local rpos, rang = self:GetRagdollEyes(pl)
-		if rpos then
-			origin = rpos
-			angles = rang
-		end]]
 	elseif pl:ShouldDrawLocalPlayer() and pl:OldAlive() then
 		origin = pl:GetThirdPersonCameraPos(origin, angles)
 	end

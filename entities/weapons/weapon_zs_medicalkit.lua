@@ -23,7 +23,7 @@ SWEP.Primary.Delay = 3
 SWEP.Primary.Heal = 20
 SWEP.Primary.Automatic = true
 
-SWEP.Primary.ClipSize = 40
+SWEP.Primary.ClipSize = 0
 SWEP.Primary.DefaultClip = 160
 SWEP.Primary.Ammo = "Battery"
 
@@ -68,7 +68,7 @@ function SWEP:PrimaryAttack()
 
 	if ent and ent:IsValid() and ent:IsPlayer() and ent:Team() == owner:Team() and ent:Alive() and gamemode.Call("PlayerCanBeHealed", ent) then
 		local health, maxhealth = ent:Health(), ent:GetMaxHealth()
-		local multiplier = owner.HumanHealMultiplier or 1.2
+		local multiplier = owner.HumanHealMultiplier or 1
 		local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Primary.Heal * multiplier, maxhealth - health)))
 		local totake = math.ceil(toheal / multiplier)
 		if toheal > 0 then
@@ -200,13 +200,30 @@ function SWEP:DrawWeaponSelection(...)
 	return self:BaseDrawWeaponSelection(...)
 end
 
+local colBG = Color(16, 16, 16, 90)
+local colRed = Color(220, 0, 0, 230)
+local colYellow = Color(220, 220, 0, 230)
+local colWhite = Color(220, 220, 220, 230)
+local colAmmo = Color(255, 255, 255, 230)
+local function GetAmmoColor(clip, maxclip)
+	if clip == 0 then
+		colAmmo.r = 255 colAmmo.g = 0 colAmmo.b = 0
+	else
+		local sat = clip / maxclip
+		colAmmo.r = 255
+		colAmmo.g = sat ^ 0.3 * 255
+		colAmmo.b = sat * 255
+	end
+end
+
 local texGradDown = surface.GetTextureID("VGUI/gradient_down")
 function SWEP:DrawHUD()
 	local screenscale = BetterScreenScale()
-	local wid, hei = 256, 16
-	local x, y = ScrW() - wid - 32, ScrH() - hei - 72
-	local texty = y - 4 - draw.GetFontHeight("ZSHUDFontSmall")
-
+	local scrW = ScrW()
+	local scrH = ScrH()
+	local wid = 200
+	local hei = 30
+	local x, y = (ScrW()- wid)*0.5 , (ScrH() - hei)*0.75
 	local timeleft = self:GetNextCharge() - CurTime()
 	if 0 < timeleft then
 		surface.SetDrawColor(5, 5, 5, 180)
@@ -220,15 +237,20 @@ function SWEP:DrawHUD()
 		surface.DrawOutlinedRect(x, y, wid, hei)
 	end
 
-	draw.SimpleText("메디킷 에너지", "ZSHUDFontSmall", x, texty, COLOR_GREEN, TEXT_ALIGN_LEFT)
+	local wid, hei = 180 * screenscale, 64 * screenscale
+	local x, y = ScrW() - wid - screenscale * 128, ScrH() - hei - screenscale * 72
+	local clip = self.Owner:GetAmmoCount(self:GetPrimaryAmmoType())
 
-	local charges = self:GetPrimaryAmmoCount()
-	if charges > 0 then
-		draw.SimpleText(charges, "ZSHUDFontSmall", x + wid, texty, COLOR_GREEN, TEXT_ALIGN_RIGHT)
-	else
-		draw.SimpleText(charges, "ZSHUDFontSmall", x + wid, texty, COLOR_DARKRED, TEXT_ALIGN_RIGHT)
+	draw.RoundedBox(16, x, y, wid, hei, colBG)
+	local font = "ZSHUDFontBig"
+	if clip >= 1000 then
+		font = "ZSHUDFontSmall"
+	elseif clip >= 100 then
+		font = "ZSHUDFont"
 	end
-
+	GetAmmoColor(clip, 160)
+	draw.SimpleTextBlurry(clip, font, x + wid * 0.5, y + hei * 0.5, colAmmo, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+	
 	if GetConVarNumber("crosshair") == 1 then
 		self:DrawCrosshairDot()
 	end

@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_ricochet_name"
 	SWEP.TranslateDesc = "weapon_ricochet_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 2
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60

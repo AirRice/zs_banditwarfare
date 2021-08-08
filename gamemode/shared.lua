@@ -5,15 +5,15 @@ GM.Website	=	""
 
 -- No, adding a gun doesn't make your name worth being here.
 GM.Credits = {
-	{"William \"JetBoom\" Moodhe", "williammoodhe@gmail.com (www.noxiousnet.com)", "Original Mod Creator / Programmer"},
 	{"Jooho 'air rice' Lee", "", "Bandit Warfare Programmer"},
-	{"11k", "tjd113@gmail.com", "Zombie view models"},
-	{"Eisiger", "k2deseve@gmail.com", "Zombie kill icons"},
-	{"Austin \"Little Nemo\" Killey", "austin_odyssey@yahoo.com", "Ambient music"},
+	{"William \"JetBoom\" Moodhe", "williammoodhe@gmail.com (www.noxiousnet.com)", "Zombie Survival Creator / Programmer"},
 	{"Zombie Panic: Source", "http://www.zombiepanic.org/", "Melee weapon sounds"},
 	{"Samuel", "samuel_games@hotmail.com", "Board Kit model"},
-	{"Typhon", "lukas-tinel@hotmail.com", "HUD textures"},
-	{"honsal", "", "Korean translation"}
+
+	{"honsal", "", "Original ZS Korean translation"},
+
+	{"Benjy, The Darker One, Raox, Scott", "", "Code contributions"},
+	{"Various other GitHub ZS contributors", "", "Various contributions"}
 }
 
 include("nixthelag.lua")

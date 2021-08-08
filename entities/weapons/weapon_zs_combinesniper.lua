@@ -78,6 +78,7 @@ SWEP.ConeMax = 0.001
 SWEP.ConeMin = 0
 SWEP.MovingConeOffset = 0.04
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
+SWEP.ReloadSpeed = 0.75
 
 SWEP.IronSightsPos = Vector(-5, -40, 3)
 SWEP.IronSightsAng = Vector(0, 0, 0)
@@ -155,7 +156,7 @@ function SWEP:Think()
 					self:SetIsCharging(false)
 					self.IdleAnimation = CurTime() + self:SequenceDuration()
 					self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-					self.Owner:TakeSpecialDamage(45, DMG_DISSOLVE, self.Owner, self)
+					self.Owner:TakeSpecialDamage(60, DMG_DISSOLVE, self.Owner, self)
 					local effectdata = EffectData()
 						effectdata:SetOrigin(self:GetPos())
 					util.Effect("Explosion", effectdata, true, true)
@@ -174,29 +175,6 @@ end
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
-end
-
-function SWEP:SendWeaponAnimation()
-	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-end
-
-function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
-
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-
-	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.8)
-		self.IdleAnimation = CurTime() + self:SequenceDuration()/4*5+0.3
-		self:SetNextPrimaryFire(self.IdleAnimation)
-		self:SetNextReload(self.IdleAnimation)
-		self.Owner:DoReloadEvent()
-		if self.ReloadSound then
-			self:EmitSound(self.ReloadSound)
-		end
-	end
 end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)

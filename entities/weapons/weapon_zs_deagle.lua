@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_deagle_name"
 	SWEP.TranslateDesc = "weapon_deagle_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 1
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 55

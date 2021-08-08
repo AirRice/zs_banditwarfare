@@ -6,9 +6,15 @@ include("shared.lua")
 
 function SWEP:Think()
 	local curTime = CurTime();
-	if self.IdleAnimation and self.IdleAnimation <= curTime then
+	if self:GetReloadFinish() > 0 then
+		if CurTime() >= self:GetReloadFinish() then
+			self:FinishReload()
+		end
+
+		return
+	elseif self.IdleAnimation and self.IdleAnimation <= CurTime() then
 		self.IdleAnimation = nil
-		self:SendWeaponAnim(ACT_VM_IDLE)
+		self:SendWeaponAnim(self.IdleActivity)
 	end
 	
 	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
@@ -21,4 +27,5 @@ function SWEP:Think()
 			self.Owner:EmitSound("buttons/button16.wav")
 		end
 	end
+	
 end

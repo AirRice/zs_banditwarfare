@@ -24,10 +24,10 @@ SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
-SWEP.Primary.Damage = 45
+SWEP.Primary.Damage = 35
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.75
-SWEP.ReloadDelay = 0.35
+SWEP.Primary.Delay = 0.85
+SWEP.ReloadDelay = 0.55
 SWEP.Recoil = 2.24
 
 SWEP.Primary.ClipSize = 4
@@ -142,7 +142,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			for _, ent in pairs(ents.FindInSphere(hitpos, 64)) do
 				if ent and ent:IsValid() then
 					local nearest = ent:NearestPoint(hitpos)
-					if TrueVisibleFilters(hitpos, nearest, dmginfo:GetInflictor(), ent) then
+					if TrueVisibleFilters(hitpos, nearest, dmginfo:GetInflictor(), ent) && ent != attacker then
 						ent:TakeSpecialDamage(dmginfo:GetDamage()/1.5, DMG_BULLET, attacker, dmginfo:GetInflictor(), nearest)
 					end
 				end

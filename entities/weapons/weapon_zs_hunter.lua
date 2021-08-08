@@ -35,7 +35,7 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Hunter.Single")
-SWEP.Primary.Damage = 75
+SWEP.Primary.Damage = 60
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 1.5
 SWEP.ReloadDelay = SWEP.Primary.Delay
@@ -58,8 +58,10 @@ SWEP.IronSightsPos = Vector(5.015, -8, 2.52)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
 SWEP.WalkSpeed = SPEED_SLOWER
-
+SWEP.ReloadSpeed = 0.8
 SWEP.TracerName = "AR2Tracer"
+SWEP.ReloadSpeed = 1.2
+SWEP.FireAnimSpeed = 1.3
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
@@ -68,29 +70,6 @@ end
 --[[function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 85, 80)
 end]]
-
-function SWEP:SendWeaponAnimation()
-	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-end
-
-function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
-
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-
-	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.8)
-		self.IdleAnimation = CurTime() + self:SequenceDuration()/4*5+0.3
-		self:SetNextPrimaryFire(self.IdleAnimation)
-		self:SetNextReload(self.IdleAnimation)
-		self.Owner:DoReloadEvent()
-		if self.ReloadSound then
-			self:EmitSound(self.ReloadSound)
-		end
-	end
-end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local effectdata = EffectData()

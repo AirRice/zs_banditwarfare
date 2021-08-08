@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_redeemer_name"
 	SWEP.TranslateDesc = "weapon_redeemer_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 3
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 50
@@ -23,17 +23,17 @@ SWEP.WorldModel = "models/weapons/w_pist_elite.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_ELITE.Single")
-SWEP.Primary.Damage = 5
-SWEP.Primary.NumShots = 6
-SWEP.Primary.Delay = 0.29
+SWEP.Primary.Damage = 15
+SWEP.Primary.NumShots = 1
+SWEP.Primary.Delay = 0.1
 
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.Automatic = true
+SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.DefaultClip = 90
 
-SWEP.ConeMax = 0.32
-SWEP.ConeMin = 0.04
+SWEP.ConeMax = 0.03
+SWEP.ConeMin = 0.005
 SWEP.Recoil = 0.75
 function SWEP:SecondaryAttack()
 end

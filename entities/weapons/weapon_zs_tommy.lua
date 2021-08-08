@@ -40,20 +40,21 @@ SWEP.UseHands = true
 SWEP.ShowViewModel = false
 
 SWEP.Primary.Sound = Sound("Weapon_M249.Single")
-SWEP.Primary.Damage = 11
+SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.047
+SWEP.Primary.Delay = 0.072
 
 SWEP.Primary.ClipSize = 75
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "smg1"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
-	
-SWEP.ConeMax = 0.065
-SWEP.ConeMin = 0.007
+SWEP.ReloadSpeed = 0.7
+
+SWEP.ConeMax = 0.115
+SWEP.ConeMin = 0.017
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-SWEP.Recoil = 0.38
+SWEP.Recoil = 0.58
 
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()

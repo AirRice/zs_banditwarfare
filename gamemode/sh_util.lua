@@ -153,6 +153,26 @@ function util.BlastDamage2(inflictor, attacker, epicenter, radius, damage)
 	util.BlastDamageEx(inflictor, attacker, epicenter, radius, damage, DMG_BLAST)
 end
 
+function util.BlastDamageShredding(inflictor, attacker, epicenter, radius, damage)
+	local filter = inflictor
+	for _, ent in pairs(ents.FindInSphere(epicenter, radius)) do
+		if ent and ent:IsValid() then
+			local nearest = ent:NearestPoint(epicenter)
+			local ratio = 1
+			if ent:GetClass() == "prop_drone" or ent:GetClass() == "prop_manhack" or (ent:IsNailed() and not ent:IsSameTeam(self.Owner)) or (ent.IsBarricadeObject and not ent:IsSameTeam(self.Owner)) then
+				ratio = ratio * 10
+			end
+			if nearest:Distance(epicenter) > radius/2 then
+				ratio = 0.5+0.5*math.Clamp((nearest:Distance(epicenter)-radius/2)/radius*2 ,0,1)
+			end
+			if TrueVisibleFilters(epicenter, nearest, inflictor, ent) then
+				ent:TakeSpecialDamage(ratio * damage, DMG_BLAST, attacker, inflictor, nearest)
+			end
+		end
+	end
+end
+
+
 function util.FindValidInSphere(pos, radius)
 	local ret = {}
 	

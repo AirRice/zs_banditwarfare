@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_immortal_name"
 	SWEP.TranslateDesc = "weapon_immortal_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 3
 
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
@@ -48,7 +48,7 @@ SWEP.WorldModel = "models/weapons/w_357.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Immortal.Single")
-SWEP.Primary.Damage = 27
+SWEP.Primary.Damage = 30
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
@@ -58,17 +58,17 @@ SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.TracerName = "AirboatGunHeavyTracer"
 SWEP.ConeMax = 0.003
-SWEP.ConeMin = 0.001
+SWEP.ConeMin = 0.0005
 SWEP.MovingConeOffset = 0.08
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-
+SWEP.ReloadSpeed = 1.3
 SWEP.IronSightsPos = Vector(-4.6, 0, -0.12)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
+	self:SetNextReload(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
 	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())

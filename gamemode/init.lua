@@ -885,19 +885,6 @@ function GM:RestartLua()
 	net.Broadcast()
 	self.CurrentSigilTable = {}
 	self:SetCurrentWaveWinner(nil)
-	-- logic_pickups
-	self.MaxWeaponPickups = nil
-	self.MaxAmmoPickups = nil
-	for _, ent in pairs(ents.FindByClass("logic_pickups")) do
-		ent:Input("setmaxweaponpickups",5)
-		ent:Input("setmaxammopickups",10)
-	end
-	self.MaxFlashlightPickups = nil
-	self.WeaponRequiredForAmmo = nil
-	for _, pl in pairs(player.GetAll()) do
-		pl.AmmoPickups = nil
-		pl.WeaponPickups = nil
-	end
 
 	self.CappedInfliction = 0
 	
@@ -1157,13 +1144,12 @@ local primaryguns = {
 	"weapon_zs_tosser",
 	"weapon_zs_crackler",
 	"weapon_zs_doublebarrel",
-	"weapon_zs_stubber"
+	"weapon_zs_stubber",
+	"weapon_zs_z9000"
 }
 local secondaryguns = {
 	"weapon_zs_peashooter",
-	"weapon_zs_owens",
-	"weapon_zs_battleaxe",
-	"weapon_zs_z9000"
+	"weapon_zs_battleaxe"
 }
 
 function GM:PlayerInitialSpawnRound(pl)
@@ -1653,7 +1639,7 @@ function GM:SpectatorThink(pl)
 end
 
 function GM:PlayerDeathThink(pl)
-	if self.RoundEnded or pl.Revive then return end
+	if self.RoundEnded then return end
 
 	if pl:GetObserverMode() == OBS_MODE_CHASE or pl:GetObserverMode() == OBS_MODE_IN_EYE then
 		local target = pl:GetObserverTarget()
@@ -2327,8 +2313,6 @@ end
 
 function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	pl:PurgeStatusEffects()
-	pl.AmmoPickups = nil
-	pl.WeaponPickups = nil
 	local inflictor = dmginfo:GetInflictor()
 	local plteam = pl:Team()
 	local ct = CurTime()

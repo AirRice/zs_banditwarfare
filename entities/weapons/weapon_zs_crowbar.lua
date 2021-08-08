@@ -52,5 +52,5 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			end
 		end
 	end
-	hitent:SetLocalVelocity( hitent:GetVelocity() + tr.Normal*500)
+	hitent:SetLocalVelocity( hitent:GetVelocity() + tr.Normal*200)
 end

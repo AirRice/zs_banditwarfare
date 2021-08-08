@@ -3,10 +3,10 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.Heal = 35
-ENT.ToxicDamage = 3
-ENT.ToxicTick = 0.1
-ENT.ToxDuration = 0.8
+ENT.Heal = 5
+ENT.ToxicDamage = 2
+ENT.ToxicTick = 0.3
+ENT.ToxDuration = 1.5
 
 function ENT:Initialize()
 	self:SetModel("models/Items/CrossbowRounds.mdl")

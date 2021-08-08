@@ -110,7 +110,14 @@ function MakepOptions()
 	check:SetConVar("zs_drawpainflash")
 	check:SizeToContents()
 	list:AddItem(check)
-
+	
+	local check = vgui.Create("DCheckBoxLabel", Window)
+	check:SetText(translate.Get("option_show_ragdoll_eye_view"))
+	check:SetFont("ZSHUDFontSmallerNS")
+	check:SetConVar("zsb_ragdolleyes")
+	check:SizeToContents()
+	list:AddItem(check)
+	
 	local check = vgui.Create("DCheckBoxLabel", Window)
 	check:SetText(translate.Get("option_show_damage_indicators"))
 	check:SetFont("ZSHUDFontSmallerNS")

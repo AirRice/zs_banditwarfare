@@ -34,9 +34,9 @@ SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Zeus.Single")
-SWEP.Primary.Damage = 30
+SWEP.Primary.Damage = 40
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.4
+SWEP.Primary.Delay = 0.35
 SWEP.ReloadDelay = SWEP.Primary.Delay
 
 SWEP.Primary.ClipSize = 10
@@ -47,9 +47,9 @@ SWEP.Primary.KnockbackScale = 0.1
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
-
-SWEP.ConeMax = 0.01
-SWEP.ConeMin = 0.002
+SWEP.ReloadSpeed = 1.15
+SWEP.ConeMax = 0.004
+SWEP.ConeMin = 0.0005
 SWEP.Recoil = 1.33
 SWEP.DefaultRecoil = 2.23
 SWEP.MovingConeOffset = 0.14
@@ -76,10 +76,6 @@ end
 --[[function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 85, 80)
 end]]
-
-function SWEP:SendWeaponAnimation()
-	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 

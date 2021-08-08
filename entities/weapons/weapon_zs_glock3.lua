@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_crossfire_name"
 	SWEP.TranslateDesc = "weapon_crossfire_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 2
 
 	SWEP.ViewModelFOV = 50
 	SWEP.ViewModelFlip = false
@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Glock.Single")
-SWEP.Primary.Damage = 9
+SWEP.Primary.Damage = 11
 SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 0.3
 SWEP.Recoil = 0.96

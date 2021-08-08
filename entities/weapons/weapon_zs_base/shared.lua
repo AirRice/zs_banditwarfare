@@ -31,12 +31,17 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_NORMAL
-
+SWEP.ReloadSpeed = 1
 SWEP.HoldType = "pistol"
 SWEP.IronSightsHoldType = "ar2"
 
+SWEP.IdleActivity = ACT_VM_IDLE
+
 SWEP.IronSightsPos = Vector(0, 0, 0)
 SWEP.LastAttemptedShot = 0
+SWEP.SelfKnockBackForce = 0
+SWEP.FireAnimSpeed = 1.0
+
 SWEP.AngleAdded = {
 	Pitch = 0,
 	Yaw = 0,
@@ -49,7 +54,11 @@ SWEP.AngleAdded = {
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 31, "ConeAdder")
 	self:NetworkVar("Float", 30, "NextAutoReload")
+	self:NetworkVar("Float", 29, "ReloadFinish")
+	self:NetworkVar("Float", 28, "ReloadStart")
 end
+
+
 
 function SWEP:Initialize()
 	if not self:IsValid() then return end --???
@@ -119,11 +128,117 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
+	self:SetNextReload(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
 	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
+end
+
+function SWEP:SecondaryAttack()
+	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() then
+		self:SetIronsights(true)
+	end
+end
+
+function SWEP:EmitReloadSound()
+	if self.ReloadSound and IsFirstTimePredicted() then
+		self:EmitSound(self.ReloadSound, 75, 100, 1, CHAN_WEAPON + 21)
+	end
+end
+
+function SWEP:EmitReloadFinishSound()
+	if self.ReloadFinishSound and IsFirstTimePredicted() then
+		self:EmitSound(self.ReloadFinishSound, 75, 100, 1, CHAN_WEAPON + 21)
+	end
+end
+
+function SWEP:CanReload()
+	local hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) > 0)
+	if self.RequiredClip > 1 then
+		hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) >= self.RequiredClip)
+	end
+
+	return self:GetNextReload() <= CurTime() and self:GetReloadFinish() == 0 and
+		(
+			hasclip1 or self:GetMaxClip2() > 0 and self:Clip1() < self:GetMaxClip2() and self:ValidSecondaryAmmo() and self:GetOwner():GetAmmoCount(self:GetSecondaryAmmoType()) > 0
+		)
+end
+
+function SWEP:Reload()
+	if self.Owner:IsHolding() then return end
+
+	if self:GetIronsights() then
+		self:SetIronsights(false)
+	end
+
+	-- Custom reload function that does not use c++ hardcoded DefaultReload, Taken from newer version ZS.
+	if self:CanReload() then
+		self.IdleAnimation = CurTime() + self:SequenceDuration()
+		self:SetNextReload(self.IdleAnimation)
+		self:SetReloadStart(CurTime())
+
+		self:SendReloadAnimation()
+		self:ProcessReloadEndTime()
+
+		self.Owner:DoReloadEvent()
+
+		self:EmitReloadSound()
+	end
+end
+
+function SWEP:FinishReload()
+	self:SendWeaponAnim(ACT_VM_IDLE)
+	self:SetNextReload(0)
+	self:SetReloadStart(0)
+	self:SetReloadFinish(0)
+	self:EmitReloadFinishSound()
+
+	local owner = self:GetOwner()
+	if not owner:IsValid() then return end
+
+	local max1 = self:GetMaxClip1()
+	local max2 = self:GetMaxClip2()
+
+	if max1 > 0 then
+		local ammotype = self:GetPrimaryAmmoType()
+		local spare = owner:GetAmmoCount(ammotype)
+		local current = self:Clip1()
+		local needed = max1 - current
+
+		needed = math.min(spare, needed)
+
+		self:SetClip1(current + needed)
+		if SERVER then
+			owner:RemoveAmmo(needed, ammotype)
+		end
+	end
+
+	if max2 > 0 then
+		local ammotype = self:GetSecondaryAmmoType()
+		local spare = owner:GetAmmoCount(ammotype)
+		local current = self:Clip2()
+		local needed = max2 - current
+
+		needed = math.min(spare, needed)
+
+		self:SetClip2(current + needed)
+		if SERVER then
+			owner:RemoveAmmo(needed, ammotype)
+		end
+	end
+end
+
+function SWEP:SendReloadAnimation()
+	self:SendWeaponAnim(ACT_VM_RELOAD)
+end
+
+function SWEP:ProcessReloadEndTime()
+	local reloadspeed = self.ReloadSpeed
+	self:SetReloadFinish(CurTime() + self:SequenceDuration() / reloadspeed)
+	if not self.DontScaleReloadSpeed then
+		self:GetOwner():GetViewModel():SetPlaybackRate(reloadspeed)
+	end
 end
 
 function SWEP:GetWalkSpeed()
@@ -155,6 +270,7 @@ end
 function SWEP:Deploy()
 	self:SetNextReload(0)
 	self:SetNextAutoReload(0)
+	self:SetReloadFinish(0)
 	self.LastAttemptedShot = CurTime()
 	gamemode.Call("WeaponDeployed", self.Owner, self)
 	self:SetIronsights(false)
@@ -204,23 +320,6 @@ function SWEP:TakeAmmo()
 	self:TakePrimaryAmmo(self.RequiredClip)
 end
 
-function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
-
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-
-	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.IdleAnimation = CurTime() + self:SequenceDuration()
-		self:SetNextReload(self.IdleAnimation)
-		self.Owner:DoReloadEvent()
-		if self.ReloadSound then
-			self:EmitSound(self.ReloadSound)
-		end
-	end
-end
-
 function SWEP:GetIronsights()
 	return self:GetDTBool(0)
 end
@@ -235,12 +334,6 @@ function SWEP:CanPrimaryAttack()
 	end
 
 	return self:GetNextPrimaryFire() <= CurTime()
-end
-
-function SWEP:SecondaryAttack()
-	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() then
-		self:SetIronsights(true)
-	end
 end
 
 function SWEP:OnRestore()
@@ -285,7 +378,9 @@ end
 
 function SWEP:SendWeaponAnimation()
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	self:GetOwner():GetViewModel():SetPlaybackRate(self.FireAnimSpeed)
 end
+
 function SWEP:SetConeAndFire()
 	self.AimStartTime = CurTime()
 	hook.Add("Think", self, function(s)
@@ -322,13 +417,26 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	
+	self:DoSelfKnockBack(1)
 	self:StartBulletKnockback()
 	if IsFirstTimePredicted() then
 		owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
 	end
 	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
 	self:EndBulletKnockback()
+end
+
+function SWEP:DoSelfKnockBack(scale)
+	local owner = self.Owner
+	scale = scale or 1
+	if owner and owner:IsValid() and owner:IsPlayer() then
+		if self.SelfKnockBackForce > 0 then
+			if owner:Alive() then
+				owner:SetGroundEntity(NULL)
+				owner:SetVelocity(-1 * owner:GetAimVector() * self.SelfKnockBackForce * scale)
+			end
+		end
+	end
 end
 
 local ActIndex = {

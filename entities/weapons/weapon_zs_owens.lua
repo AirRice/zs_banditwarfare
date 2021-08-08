@@ -4,7 +4,7 @@ if CLIENT then
 	SWEP.TranslateName = "weapon_owenspistol_name"
 	SWEP.TranslateDesc = "weapon_owenspistol_desc"
 	SWEP.Slot = 1
-	SWEP.SlotPos = 0
+	SWEP.SlotPos = 1
 	
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
@@ -26,9 +26,9 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 SWEP.Primary.Sound = Sound("Weapon_Pistol.NPC_Single")
-SWEP.Primary.Damage = 7
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 2
-SWEP.Primary.Delay = 0.21
+SWEP.Primary.Delay = 0.25
 
 SWEP.Primary.ClipSize = 12
 SWEP.Primary.Automatic = false
