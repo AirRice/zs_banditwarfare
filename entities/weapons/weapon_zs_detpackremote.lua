@@ -27,7 +27,6 @@ SWEP.Secondary.Ammo = "none"
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
-SWEP.NoMagazine = true
 SWEP.Undroppable = true
 SWEP.NoPickupNotification = true
 

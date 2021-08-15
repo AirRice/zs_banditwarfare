@@ -48,6 +48,7 @@ end
 function SWEP:PrimaryAttack()
 	if self:CanPrimaryAttack() then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+		self:SetNextReload(CurTime() + self.Primary.Delay)
 		self:EmitSound(self.Primary.Sound)
 
 		local clip = self:Clip1()

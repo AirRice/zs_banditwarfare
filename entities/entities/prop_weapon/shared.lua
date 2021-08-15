@@ -12,11 +12,6 @@ function ENT:SetWeaponType(class)
 	if weptab then
 		if weptab.WorldModel then
 			self:SetModel(weptab.WorldModel)
-		elseif weptab.Base then
-			local weptabb = weapons.GetStored(weptab.Base)
-			if weptabb and weptabb.WorldModel then
-				self:SetModel(weptabb.WorldModel)
-			end
 		end
 
 		if SERVER and weptab.BoxPhysicsMax then

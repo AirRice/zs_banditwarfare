@@ -27,17 +27,19 @@ SWEP.CSMuzzleFlashes = false
 SWEP.Primary.Sound = Sound("Weapon_Crossbow.Single")
 SWEP.Primary.Damage = 100
 SWEP.Primary.NumShots = 1
-SWEP.Primary.ClipSize = 1
+SWEP.Primary.ClipSize = -1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "XBowBolt"
-SWEP.Primary.Delay = 2.0
-SWEP.Primary.DefaultClip = 4
+SWEP.Primary.Delay = 1.6
+SWEP.Primary.DefaultClip = 7
 
 SWEP.ConeMax = 0.009
 SWEP.ConeMin = 0.0085
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 1.25
 SWEP.WalkSpeed = SPEED_SLOW
+SWEP.HasNoClip = true
+SWEP.LowAmmoThreshold = 2
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
@@ -52,8 +54,26 @@ function SWEP:Think()
 	end
 end
 
-SWEP.BulletCallback = GenericBulletCallback
 function SWEP:ShootBullets(dmg, numbul, cone)	
+end
+
+function SWEP:CanPrimaryAttack()
+	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then
+		self:EmitSound("Weapon_Pistol.Empty")
+		self:SetNextPrimaryFire(CurTime() + 0.5)
+		return false
+	end
+
+	return self:GetNextPrimaryFire() <= CurTime()
+end
+
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end 
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	self:EmitFireSound()
+	self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
+	local dmg = self.Primary.Damage
 	self:SetConeAndFire()
 	self:DoRecoil()
 
@@ -72,23 +92,35 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocityInstantaneous(owner:GetAimVector() * 2200)
+				phys:SetVelocityInstantaneous(owner:GetAimVector() * 2800)
 			end
 		end
 	end
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
+	if self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 then
+		local bow = self
+		timer.Simple( 0.3, function() 
+			if (not IsValid(bow:GetOwner())) or (not bow:GetOwner():Alive()) then return end
+			bow:SendReloadAnimation()
+			self:GetOwner():GetViewModel():SetPlaybackRate(1.3)
+			bow:EmitReloadSound()
+			bow.IdleAnimation = CurTime() + bow:SequenceDuration()
+		end)
+		timer.Simple( 0.9, function() 
+			if (not IsValid(bow:GetOwner())) or (not bow:GetOwner():Alive()) then return end
+			bow:EmitSound("Weapon_Crossbow.BoltElectrify")
+		end)
+	end
 end
 
-function SWEP:Reload()
-	if self:GetNextReload() <= CurTime() and self:Clip1() == 0 and 0 < self.Owner:GetAmmoCount("XBowBolt") then
-		self:EmitSound("Weapon_Crossbow.Reload")
-		self:DefaultReload(ACT_VM_RELOAD)
-		self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_CROSSBOW)
-		self:SetNextReload(CurTime() + self:SequenceDuration())
-		timer.Simple(0.8, function() 
-			if (self:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive()) then
-				self:EmitSound("Weapon_Crossbow.BoltElectrify")
-			end
-		end)
+
+util.PrecacheSound("weapons/crossbow/bolt_load1.wav")
+util.PrecacheSound("weapons/crossbow/bolt_load2.wav")
+
+function SWEP:EmitReloadSound()
+	if IsFirstTimePredicted() then
+		--self:EmitSound("weapons/crossbow/bolt_load"..math.random(2)..".wav", 65, 100, 0.9, CHAN_WEAPON + 21)
+		self:EmitSound("weapons/crossbow/reload1.wav", 65, 100, 0.9, CHAN_WEAPON + 22)
 	end
 end
 

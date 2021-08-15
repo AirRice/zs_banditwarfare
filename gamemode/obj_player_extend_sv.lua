@@ -196,7 +196,7 @@ function meta:GiveEmptyWeapon(weptype)
 	if not self:HasWeapon(weptype) then
 		local wep = self:Give(weptype)
 		if wep and wep:IsValid() and wep:IsWeapon() then
-			wep:EmptyAll()
+			wep:EmptyAll(true)
 		end
 
 		return wep
@@ -429,7 +429,21 @@ function meta:DropActiveWeapon()
 	local currentwep = self:GetActiveWeapon()
 	if currentwep:IsValid() then
 		local shoptab = FindItembyClass(currentwep:GetClass())
-		if GAMEMODE:IsClassicMode() or (shoptab and not (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS)) then
+		local shoulddrop = true
+		if GAMEMODE:IsClassicMode() then 
+			for _, insuredwep in pairs(self.ClassicModeInsuredWeps) do
+				if insuredwep == currentwep:GetClass() then
+					shoulddrop = false
+					break
+				end
+			end
+		else
+			local shoptab = FindItembyClass(currentwep:GetClass())
+			if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) then
+				shoulddrop = false
+			end
+		end
+		if shoulddrop then
 			local ent = self:DropWeaponByType(currentwep:GetClass())
 			if ent and ent:IsValid() then
 				self:EmitSound("weapons/slam/throw.wav", 65, math.random(95, 105))
@@ -437,7 +451,7 @@ function meta:DropActiveWeapon()
 				ent:SetAngles(VectorRand():Angle())
 				local phys = ent:GetPhysicsObject()
 				if IsValid(phys) then
-					phys:ApplyForceCenter(vAng:Forward() * 300)
+					phys:ApplyForceCenter(vAng:Forward() * 400)
 				end
 			end
 		end

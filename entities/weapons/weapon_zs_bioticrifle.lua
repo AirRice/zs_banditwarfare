@@ -45,15 +45,15 @@ SWEP.WorldModel = "models/weapons/w_snip_scout.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_Scout.Single")
-SWEP.Primary.Damage = 45
+SWEP.Primary.Damage = 65
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.6
+SWEP.Primary.Delay = 0.75
 SWEP.ReloadDelay = SWEP.Primary.Delay
 
 SWEP.Primary.ClipSize = 5
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "alyxgun"
-SWEP.Primary.DefaultClip = 20
+SWEP.Primary.DefaultClip = 25
 
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_CROSSBOW
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN
@@ -65,17 +65,6 @@ SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
 SWEP.IronSightsAng = Vector(0, -1, 0)
 
 SWEP.WalkSpeed = SPEED_SLOWER
-SWEP.NextPuke = 0
-SWEP.PukeLeft = 0
-function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
-	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
-	self:EmitFireSound()
-	self:TakeAmmo()
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
-	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
-end
 
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self.Owner

@@ -908,7 +908,10 @@ function GM:HumanMenu()
 end
 function GM:OnContextMenuOpen()
 	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and MySelf:Alive() then
-		gamemode.Call("MakeWeaponInfo",MySelf:GetActiveWeapon():GetClass() or nil)
+		local activewep = MySelf:GetActiveWeapon()
+		if activewep and activewep:IsValid() then
+			gamemode.Call("MakeWeaponInfo",activewep:GetClass() or nil)
+		end
 	end
 end
 function GM:OnContextMenuClose()
@@ -1228,7 +1231,7 @@ function GM:OnSpawnMenuOpen()
 		if not self:IsClassicMode() then
 			gamemode.Call("HumanMenu")
 		elseif MySelf:Alive() then
-			self:OpenPointsShop()
+			self:OpenPointsShop(WEAPONLOADOUT_NULL)
 		end
 	end
 end

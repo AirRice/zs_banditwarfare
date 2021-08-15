@@ -3,14 +3,23 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.m_Health = 100
+local function RefreshCrateOwners(pl)
+	for _, ent in pairs(ents.FindByClass("prop_ffemitter")) do
+		if ent:IsValid() and ent:GetObjectOwner() == pl then
+			ent:SetObjectOwner(NULL)
+		end
+	end
+end
+hook.Add("PlayerDisconnected", "FFemitter.PlayerDisconnected", RefreshCrateOwners)
+hook.Add("OnPlayerChangedTeam", "FFemitter.OnPlayerChangedTeam", RefreshCrateOwners)
 
 function ENT:Initialize()
 	self:SetModel("models/props_lab/lab_flourescentlight002b.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
 	self:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
-
+	self:SetMaxObjectHealth(100)
+	self:SetObjectHealth(self:GetMaxObjectHealth())
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)
@@ -39,17 +48,8 @@ function ENT:OnTakeDamage(dmginfo)
 	if not self.Destroyed then
 		local attacker = dmginfo:GetAttacker()
 		if not (attacker:IsValid() and attacker:IsPlayer() and self:GetObjectOwner():IsPlayer() and attacker:Team() == self:GetObjectOwner():Team()) then
-			if attacker.LifeBarricadeDamage ~= nil then
-				attacker:AddLifeBarricadeDamage(dmginfo:GetDamage())
-			end
-
-			self.m_Health = self.m_Health - dmginfo:GetDamage()
-			if self.m_Health <= 0 then
-				self.Destroyed = true
-				local effectdata = EffectData()
-					effectdata:SetOrigin(self:LocalToWorld(self:OBBCenter()))
-				util.Effect("Explosion", effectdata, true, true)
-			end
+			self:ResetLastBarricadeAttacker(attacker, dmginfo)
+			self:SetObjectHealth(self:GetObjectHealth() - dmginfo:GetDamage())
 		end
 	end
 end
@@ -62,7 +62,7 @@ function ENT:OnPackedUp(pl)
 	pl:GiveEmptyWeapon("weapon_zs_ffemitter")
 	pl:GiveAmmo(1, "slam")
 
-	pl:PushPackedItem(self:GetClass(), self.m_Health)
+	pl:PushPackedItem(self:GetClass(), self:GetObjectHealth())
 
 	self:Remove()
 end

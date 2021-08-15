@@ -32,15 +32,9 @@ cvars.AddChangeCallback("zs_nopropdamagefromhumanmelee", function(cvar, oldvalue
 	GAMEMODE.NoPropDamageFromHumanMelee = tonumber(newvalue) == 1
 end)
 
-GM.MedkitPointsPerHealth = CreateConVar("zs_medkitpointsperhealth", "5", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Specifies the amount of healing for players to be given a point. For use with the medkit and such."):GetInt()
-cvars.AddChangeCallback("zs_medkitpointsperhealth", function(cvar, oldvalue, newvalue)
-	GAMEMODE.MedkitPointsPerHealth = tonumber(newvalue) or 1
-end)
+GM.MedkitPointsPerHealth = 5
 
-GM.RepairPointsPerHealth = CreateConVar("zs_repairpointsperhealth", "30", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Specifies the amount of repairing for players to be given a point. For use with nails and such."):GetInt()
-cvars.AddChangeCallback("zs_repairpointsperhealth", function(cvar, oldvalue, newvalue)
-	GAMEMODE.RepairPointsPerHealth = tonumber(newvalue) or 1
-end)
+GM.RepairPointsPerHealth = 40
 
 local function GetMostKey(key, top)
 	if toppl and top > 0 then

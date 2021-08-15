@@ -6,7 +6,7 @@ meta.GetNextSecondaryAttack = meta.GetNextSecondaryFire
 meta.SetNextPrimaryAttack = meta.SetNextPrimaryFire
 meta.SetNextSecondaryAttack = meta.SetNextSecondaryFire
 
-function meta:EmptyAllButClip()
+function meta:EmptyAll(emptyclip)
 	if self.Primary and string.lower(self.Primary.Ammo or "") ~= "none" then
 		local owner = self:GetOwner()
 		if owner:IsValid() then
@@ -14,6 +14,9 @@ function meta:EmptyAllButClip()
 				owner:GiveAmmo(self:Clip1(), self.Primary.Ammo, true)
 			end
 			owner:RemoveAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
+		end
+		if emptyclip then
+			self:SetClip1(0)
 		end
 	end
 	if self.Secondary and string.lower(self.Secondary.Ammo or "") ~= "none" then
@@ -24,42 +27,22 @@ function meta:EmptyAllButClip()
 			end
 			owner:RemoveAmmo(self.Secondary.DefaultClip, self.Secondary.Ammo)
 		end
-	end
-end
-
-function meta:EmptyAll()
-	if self.Primary and string.lower(self.Primary.Ammo or "") ~= "none" then
-		local owner = self:GetOwner()
-		if owner:IsValid() then
-			if self:Clip1() >= 1 then
-				owner:GiveAmmo(self:Clip1(), self.Primary.Ammo, true)
-			end
-			owner:RemoveAmmo(self.Primary.DefaultClip, self.Primary.Ammo)
+		if emptyclip then
+			self:SetClip2(0)
 		end
-		self:SetClip1(0)
-	end
-	if self.Secondary and string.lower(self.Secondary.Ammo or "") ~= "none" then
-		local owner = self:GetOwner()
-		if owner:IsValid() then
-			if self:Clip2() >= 1 then
-				owner:GiveAmmo(self:Clip2(), self.Secondary.Ammo, true)
-			end
-			owner:RemoveAmmo(self.Secondary.DefaultClip, self.Secondary.Ammo)
-		end
-		self:SetClip2(0)
 	end
 end
 
 function meta:ValidPrimaryAmmo()
 	local ammotype = self:GetPrimaryAmmoTypeString()
-	if ammotype and ammotype ~= "none" then
+	if ammotype and ammotype ~= "none" and ammotype ~= "autocharging" and ammotype~= "dummy" then
 		return ammotype
 	end
 end
 
 function meta:ValidSecondaryAmmo()
 	local ammotype = self:GetSecondaryAmmoTypeString()
-	if ammotype and ammotype ~= "none" then
+	if ammotype and ammotype ~= "none" and ammotype ~= "autocharging" and ammotype~= "dummy" then
 		return ammotype
 	end
 end

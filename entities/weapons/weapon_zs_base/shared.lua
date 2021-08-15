@@ -128,7 +128,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self:SetNextReload(CurTime() + self.Primary.Delay)
+	--self:SetNextReload(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
 	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
@@ -136,7 +136,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() then
+	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() and not (self:GetReloadFinish() > 0) then
 		self:SetIronsights(true)
 	end
 end
@@ -168,21 +168,19 @@ end
 function SWEP:Reload()
 	if self.Owner:IsHolding() then return end
 
-	if self:GetIronsights() then
-		self:SetIronsights(false)
-	end
-
 	-- Custom reload function that does not use c++ hardcoded DefaultReload, Taken from newer version ZS.
-	if self:CanReload() then
-		self.IdleAnimation = CurTime() + self:SequenceDuration()
-		self:SetNextReload(self.IdleAnimation)
+	if self:CanReload() then	
+		if self:GetIronsights() then
+			self:SetIronsights(false)
+		end
 		self:SetReloadStart(CurTime())
 
 		self:SendReloadAnimation()
 		self:ProcessReloadEndTime()
 
 		self.Owner:DoReloadEvent()
-
+		self.IdleAnimation = CurTime() + self:SequenceDuration()
+		self:SetNextReload(self.IdleAnimation)
 		self:EmitReloadSound()
 	end
 end
@@ -325,7 +323,7 @@ function SWEP:GetIronsights()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self:GetReloadFinish() > 0 then return false end
 	self.LastAttemptedShot = CurTime()
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")

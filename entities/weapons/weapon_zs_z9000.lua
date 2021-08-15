@@ -32,9 +32,9 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("weapons/357/357_reload3.wav")
 SWEP.Primary.Sound = Sound("weapons/alyx_gun/alyx_gun_fire4.wav")
-SWEP.Primary.Damage = 9
+SWEP.Primary.Damage = 13
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.21
+SWEP.Primary.Delay = 0.20
 
 SWEP.Primary.ClipSize = 20
 SWEP.Primary.Automatic = true

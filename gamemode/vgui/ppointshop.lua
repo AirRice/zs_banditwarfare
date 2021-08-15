@@ -145,7 +145,7 @@ local function SetViewer(tab)
 	weaponviewer:AlignRight(0)
 	frame.m_WeaponViewer = weaponviewer
 	
-	local title = EasyLabel(weaponviewer, tab.TranslateName and translate.Get(tab.TranslateName) or "", "ZSHUDFontSmaller", COLOR_GRAY)
+	local title = EasyLabel(weaponviewer, tab.TranslateName and translate.Get(tab.TranslateName) or "", "ZSHUDFontSmallest", COLOR_GRAY)
 	title:SetContentAlignment(8)
 	title:Dock(TOP)
 	local text = ""
@@ -245,7 +245,7 @@ function PANEL:SetupItemButton(id,slot)
 		WeaponIconFill(tab.SWEP,self.IconFrame)
 		local sweptable = weapons.GetStored(tab.SWEP)
 		if sweptable then 
-			nametext = sweptable.TranslateName and translate.Get(sweptable.TranslateName) or ""
+			nametext = sweptable.TranslateName and translate.Get(sweptable.TranslateName) or tab.SWEP
 			--[[if sweptable.Primary and sweptable.Base == "weapon_zs_base" and sweptable.Primary.Damage then
 				nametext = " DPS: "..math.floor(sweptable.Primary.Damage*(sweptable.Primary.NumShots or 1)/sweptable.Primary.Delay)
 			end]]
@@ -470,7 +470,10 @@ function GM:OpenPointsShop(weaponslot)
 	
 	local title = EasyLabel(topspace, translate.Get("pointshop_title"), "ZSHUDFontSmall", COLOR_WHITE)
 	local wep = nil
-	if weaponslot == WEAPONLOADOUT_SLOT1 then
+	if self:IsClassicMode() and (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
+		local activewep = MySelf:GetActiveWeapon()
+		if activewep and activewep:IsValid() then wep = activewep:GetClass() end
+	elseif weaponslot == WEAPONLOADOUT_SLOT1 then
 		title:SetText(translate.Get("pointshop_title_guns1"))
 		wep = MySelf:GetWeapon1()
 	elseif weaponslot == WEAPONLOADOUT_SLOT2 then
@@ -566,6 +569,7 @@ function GM:OpenPointsShop(weaponslot)
 			end
 		end
 		local currentweppanel = nil
+		local currentwepcatname = nil
 		if hasitems and 
 		((weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) and catid == ITEMCAT_GUNS 
 		or weaponslot == WEAPONLOADOUT_MELEE and catid == ITEMCAT_MELEE 
@@ -573,10 +577,6 @@ function GM:OpenPointsShop(weaponslot)
 		or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) and (GAMEMODE:IsClassicMode() or (catid ~= ITEMCAT_MELEE and catid ~= ITEMCAT_GUNS and catid ~= ITEMCAT_TOOLS))) then
 			local list = vgui.Create("DScrollPanel", propertysheet)
 			list:SetPaintBackground(false)
-			--list:EnableVerticalScrollbar(true)
-			list:SetSize( 500, 500 )
-			--list:SetWide(propertysheet:GetWide() - 16)
-			--list:SetSpacing(2)
 			list:SetPadding(2)
 			local currenttier = -1
 			for i, tab in ipairs(GAMEMODE.Items) do
@@ -591,7 +591,8 @@ function GM:OpenPointsShop(weaponslot)
 						tierheading:Dock(TOP)
 						list:AddItem(tierheading)
 						local namelab = EasyLabel(tierheading,translate.Format("tier_x",1+tab.Tier), "ZSHUDFontSmall", COLOR_WHITE)
-						namelab:SetPos(tierheading:GetWide() * 0.5- namelab:GetWide() * 0.5, tierheading:GetTall() * 0.5 - namelab:GetTall() * 0.5)
+						namelab:Dock(FILL)
+						namelab:SetContentAlignment(5)
 						currenttier = currenttier + 1
 					end
 					local itembut = vgui.Create("ShopItemButton")
@@ -602,12 +603,14 @@ function GM:OpenPointsShop(weaponslot)
 						frame.CurrentID = i
 						SetWeaponViewerSWEP(tab.SWEP)
 						currentweppanel = itembut
+						currentwepcatname = catname
 					end
 				end
 				end
 			end
 			propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
 			if currentweppanel then
+				propertysheet:SwitchToName(translate.Get(currentwepcatname))
 				timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
 			end
 		end

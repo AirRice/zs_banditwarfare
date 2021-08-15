@@ -61,11 +61,11 @@ SWEP.Base = "weapon_zs_base"
 SWEP.HoldType = "ar2"
 
 SWEP.ViewModel = "models/weapons/cstrike/c_rif_galil.mdl"
-SWEP.WorldModel = "models/weapons/w_pistol.mdl"
+SWEP.WorldModel = "models/weapons/w_rif_galil.mdl"
 SWEP.UseHands = true
 
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
-SWEP.Primary.Damage = 38
+SWEP.Primary.Damage = 35
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.3
 SWEP.ReloadDelay = SWEP.Primary.Delay

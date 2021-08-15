@@ -18,11 +18,16 @@ function ENT:OnRemove()
 	self.AmbientSound:Stop()
 end
 
-local matGlow = Material("models/props_combine/stasisshield_sheet")
---Material("models/props_combine/com_shield001a")
---Material("Models/props_combine/combine_fenceglow")
+local matGlow = Material("models/spawn_effect2")
 function ENT:DrawTranslucent()
+
+	render.SuppressEngineLighting(true)
 	render.ModelMaterialOverride(matGlow)
+	render.SetColorModulation(0.5, 0.6, 1)
+	render.SetBlend(0.05 + math.abs(math.cos(CurTime()*1.5)) ^ 10 * 0.3)
 	self:DrawModel()
+	render.SetBlend(1)
+	render.SetColorModulation(1, 1, 1)
 	render.ModelMaterialOverride(0)
+	render.SuppressEngineLighting(false)
 end

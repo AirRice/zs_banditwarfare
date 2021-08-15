@@ -7,6 +7,7 @@ include("shared.lua")
 ENT.CleanupPriority = 1
 
 function ENT:Initialize()
+	self:DrawShadow(false)
 	local weptab = weapons.GetStored(self:GetWeaponType())
 	if weptab and not weptab.BoxPhysicsMax then
 		self:PhysicsInit(SOLID_VPHYSICS)

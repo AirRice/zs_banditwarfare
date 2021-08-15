@@ -80,7 +80,6 @@ killicon.AddFont("weapon_zs_grenade", "zsdeathnotice", "4", color_white)
 killicon.AddFont("weapon_zs_stubber", "zsdeathnoticecs", "n", color_white)
 killicon.AddFont("weapon_zs_hunter", "zsdeathnoticecs", "r", color_white)
 killicon.AddFont("weapon_zs_tosser", "zsdeathnotice", "/", color_white)
-killicon.AddFont("weapon_zs_whirlwind", "zsdeathnotice", "/", color_white)
 killicon.AddFont("weapon_zs_owens", "zsdeathnotice", "-", color_white)
 
 killicon.AddFont("weapon_zs_battleaxe", "zsdeathnoticecs", "c", color_white)
@@ -125,12 +124,20 @@ killicon.AddFont("weapon_zs_flashbang", "zsdeathnoticecs", "P", color_white)
 killicon.AddFont("weapon_zs_smokegrenade", "zsdeathnoticecs", "Q", color_white)
 
 -- PNG KILLICONS
+killicon.Add("status_tox", "killicon/status_bleed", COLOR_LIMEGREEN)
+killicon.Add("status_bleed", "killicon/status_bleed", COLOR_RED)
+
+killicon.Add("weapon_zs_arbalest", "killicon/weapon_zs_arbalest", color_white)
+killicon.Add("projectile_bouncebolt", "killicon/weapon_zs_arbalest", color_white)
+
 killicon.Add("weapon_zs_albatross", "killicon/weapon_zs_albatross", color_white)
 killicon.Add("weapon_zs_ammokit", "killicon/weapon_zs_ammobox", color_white)
 killicon.Add("weapon_zs_annabelle", "killicon/weapon_zs_annabelle2", color_white)
 killicon.Add("weapon_zs_bioticrifle", "killicon/weapon_zs_bioticrifle", color_white)
 killicon.Add("weapon_zs_bioticshotgun", "killicon/weapon_zs_bioticshotgun", color_white)
 killicon.Add("weapon_zs_bioticsmg", "killicon/weapon_zs_bioticsmg", color_white)
+killicon.Add("weapon_zs_blightcaster", "killicon/weapon_zs_blightcaster", color_white)
+killicon.Add("projectile_bonemesh", "killicon/weapon_zs_blightcaster", color_white)
 killicon.Add("weapon_zs_combinesniper", "killicon/weapon_zs_combinesniper", color_white)
 
 killicon.Add("prop_detpack", "killicon/weapon_zs_detpack2", color_white)
@@ -147,6 +154,9 @@ killicon.Add("weapon_zs_empgun", "killicon/weapon_zs_empgun", color_white)
 killicon.Add("weapon_zs_ffemitter", "killicon/weapon_zs_ffemitter", color_white)
 killicon.Add("prop_ffemitter", "killicon/weapon_zs_ffemitter", color_white)
 killicon.Add("prop_ffemitterfield", "killicon/weapon_zs_ffemitter", color_white)
+
+killicon.Add("weapon_zs_spotlamp", "killicon/weapon_zs_spotlamp", color_white)
+killicon.Add("prop_spotlamp", "killicon/weapon_zs_spotlamp", color_white)
 
 killicon.Add("weapon_zs_fusilier", "killicon/weapon_zs_fusilier", color_white)
 killicon.Add("weapon_zs_grenadelauncher", "killicon/weapon_zs_grenadelauncher", color_white)
@@ -166,14 +176,19 @@ killicon.Add("prop_manhack_saw", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("weapon_zs_manhackcontrol_saw", "killicon/weapon_zs_manhack", color_white)
 
 killicon.Add("weapon_zs_medicgun", "killicon/weapon_zs_medicgun2", color_white)
+killicon.Add("weapon_zs_medicrifle", "killicon/weapon_zs_medicrifle", color_white)
 killicon.Add("weapon_zs_medicalkit", "killicon/weapon_zs_medkit", color_white)
 
 killicon.Add("weapon_zs_nailgun", "killicon/weapon_zs_nailgun", color_white)
 killicon.Add("weapon_zs_neutrino", "killicon/weapon_zs_neutrino", color_white)
 
+killicon.Add("weapon_zs_palliator", "killicon/weapon_zs_palliator", color_white)
+
+killicon.Add("weapon_zs_podvodny", "killicon/weapon_zs_podvodny", color_white)
+killicon.Add("projectile_bleedbolt", "killicon/weapon_zs_podvodny", color_white)
+
 killicon.Add("weapon_zs_positron", "killicon/weapon_zs_positron", color_white)
 killicon.Add("weapon_zs_practition", "killicon/weapon_zs_practition", color_white)
-killicon.Add("status_tox", "killicon/weapon_zs_medical", color_white)
 
 killicon.Add("weapon_zs_renegade", "killicon/weapon_zs_renegade", color_white)
 killicon.Add("prop_electricfield", "killicon/weapon_zs_renegade", color_white)
@@ -181,11 +196,16 @@ killicon.Add("prop_electricfield", "killicon/weapon_zs_renegade", color_white)
 killicon.Add("weapon_zs_rupture", "killicon/weapon_zs_rupture", color_white)
 killicon.Add("projectile_flechettearrow", "killicon/weapon_zs_rupture", color_white)
 
+killicon.Add("weapon_zs_slinger", "killicon/weapon_zs_slinger", color_white)
+killicon.Add("projectile_slingerbolt", "killicon/weapon_zs_slinger", color_white)
+
 killicon.Add("weapon_zs_severance", "killicon/weapon_zs_severance", color_white)
 killicon.Add("weapon_zs_terminator", "killicon/weapon_zs_terminator", color_white)
 killicon.Add("weapon_zs_tommy", "killicon/weapon_zs_tommy", color_white)
 killicon.Add("weapon_zs_trenchshotgun", "killicon/weapon_zs_trenchshotgun", color_white)
+killicon.Add("weapon_zs_ventilator", "killicon/weapon_zs_ventilator", color_white)
 killicon.Add("weapon_zs_waraxe", "killicon/weapon_zs_waraxe", color_white)
+killicon.Add("weapon_zs_whirlwind", "killicon/weapon_zs_whirlwind", color_white)
 killicon.Add("weapon_zs_z9000", "killicon/weapon_zs_z9000", color_white)
 
 killicon.Add("weapon_zs_backdoor", "killicon/weapon_zs_detpack2", color_white)

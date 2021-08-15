@@ -19,7 +19,6 @@ SWEP.ViewModelFOV = 52
 
 SWEP.AutoSwitchFrom = true
 
-SWEP.NoMagazine = true
 SWEP.Undroppable = true
 SWEP.NoPickupNotification = true
 

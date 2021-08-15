@@ -35,6 +35,7 @@ end
 -- The amount is the ammo to give them.
 -- If the player isn't holding a weapon that uses one of these then they will get smg1 ammo.
 GM.AmmoResupply = {}
+--GM.AmmoResupply["alyxgun"] = 40
 GM.AmmoResupply["ar2"] = 20
 GM.AmmoResupply["pistol"] = 12
 GM.AmmoResupply["smg1"] = 20
@@ -43,6 +44,7 @@ GM.AmmoResupply["xbowbolt"] = 2
 GM.AmmoResupply["buckshot"] = 8
 GM.AmmoResupply["battery"] = 30
 GM.AmmoResupply["pulse"] = 30
+GM.AmmoResupply["gaussenergy"] = 3
 --GM.AmmoResupply["gravity"] = 1 -- EMP Charge.
 GM.AmmoResupply["sniperround"] = 1
 --GM.AmmoResupply["grenlauncher"] = 1
@@ -52,48 +54,46 @@ GM.AmmoResupply["sniperround"] = 1
 ------------
 GM:AddPointShopWeapon(0,"btlax", ITEMCAT_GUNS, 10, "weapon_zs_battleaxe")
 GM:AddPointShopWeapon(0,"pshtr", ITEMCAT_GUNS, 10, "weapon_zs_peashooter")
-
-GM:AddPointShopWeapon(0,"z9000", ITEMCAT_GUNS, 10, "weapon_zs_z9000")
 GM:AddPointShopWeapon(0,"doublebarrel", ITEMCAT_GUNS, 15, "weapon_zs_doublebarrel")
 GM:AddPointShopWeapon(0,"tossr", ITEMCAT_GUNS, 15, "weapon_zs_tosser")
 GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber")
 GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler")
-
+GM:AddPointShopWeapon(0,"slngr", ITEMCAT_GUNS, 15, "weapon_zs_slinger")
 
 
 GM:AddPointShopWeapon(1,"deagle", ITEMCAT_GUNS, 65, "weapon_zs_deagle")
-GM:AddPointShopWeapon(1,"owens", ITEMCAT_GUNS, 55, "weapon_zs_owens")
-GM:AddPointShopWeapon(1,"eraser", ITEMCAT_GUNS, 55, "weapon_zs_eraser")
-GM:AddPointShopWeapon(1,"whirlwind", ITEMCAT_GUNS, 40, "weapon_zs_whirlwind")
+GM:AddPointShopWeapon(1,"owens", ITEMCAT_GUNS, 65, "weapon_zs_owens")
+GM:AddPointShopWeapon(1,"eraser", ITEMCAT_GUNS, 65, "weapon_zs_eraser")
 GM:AddPointShopWeapon(1,"medgun", ITEMCAT_GUNS, 45, "weapon_zs_medicgun")
 GM:AddPointShopWeapon(1,"shredder", ITEMCAT_GUNS, 60, "weapon_zs_smg")
 GM:AddPointShopWeapon(1,"annabelle", ITEMCAT_GUNS, 75, "weapon_zs_annabelle")
 GM:AddPointShopWeapon(1,"kalash", ITEMCAT_GUNS, 75, "weapon_zs_kalash")
 GM:AddPointShopWeapon(1,"trench", ITEMCAT_GUNS, 70, "weapon_zs_trenchshotgun")
-GM:AddPointShopWeapon(1,"neutrino", ITEMCAT_GUNS, 70, "weapon_zs_neutrino")
-GM:AddPointShopWeapon(1,"rupture", ITEMCAT_GUNS, 70, "weapon_zs_rupture")
+GM:AddPointShopWeapon(1,"inquisition", ITEMCAT_GUNS, 70, "weapon_zs_inquisition")
 GM:AddPointShopWeapon(1,"bioshotgun", ITEMCAT_GUNS, 65, "weapon_zs_bioticshotgun")
-
+GM:AddPointShopWeapon(1,"z9000", ITEMCAT_GUNS, 70, "weapon_zs_z9000")
 
 GM:AddPointShopWeapon(2,"magnum", ITEMCAT_GUNS, 120, "weapon_zs_magnum")
 GM:AddPointShopWeapon(2,"glock3", ITEMCAT_GUNS, 115, "weapon_zs_glock3")
 GM:AddPointShopWeapon(2,"terminator", ITEMCAT_GUNS, 115, "weapon_zs_terminator")
 
 GM:AddPointShopWeapon(2,"biosmg", ITEMCAT_GUNS, 120, "weapon_zs_bioticsmg")
+GM:AddPointShopWeapon(2,"neutrino", ITEMCAT_GUNS, 120, "weapon_zs_neutrino")
 GM:AddPointShopWeapon(2,"ioncannon", ITEMCAT_GUNS, 125, "weapon_zs_ioncannon")
+GM:AddPointShopWeapon(2,"rupture", ITEMCAT_GUNS, 110, "weapon_zs_rupture")
 GM:AddPointShopWeapon(2,"hunter", ITEMCAT_GUNS, 115, "weapon_zs_hunter")
 GM:AddPointShopWeapon(2,"fusilier", ITEMCAT_GUNS, 135, "weapon_zs_fusilier")
 GM:AddPointShopWeapon(2,"sprayer", ITEMCAT_GUNS, 125, "weapon_zs_sprayersmg")
 GM:AddPointShopWeapon(2,"stalker", ITEMCAT_GUNS, 130, "weapon_zs_m4")
-GM:AddPointShopWeapon(2,"inquisition", ITEMCAT_GUNS, 130, "weapon_zs_inquisition")
 GM:AddPointShopWeapon(2,"practition", ITEMCAT_GUNS, 125, "weapon_zs_practition")
 GM:AddPointShopWeapon(2,"sweeper", ITEMCAT_GUNS, 125, "weapon_zs_sweepershotgun")
+GM:AddPointShopWeapon(2,"podvodny", ITEMCAT_GUNS, 125, "weapon_zs_podvodny")
 
 GM:AddPointShopWeapon(3,"immortal", ITEMCAT_GUNS, 190, "weapon_zs_immortal")
 GM:AddPointShopWeapon(3,"waraxe", ITEMCAT_GUNS, 190, "weapon_zs_waraxe")
 GM:AddPointShopWeapon(3,"redeemer", ITEMCAT_GUNS, 190, "weapon_zs_redeemers")
 
-GM:AddPointShopWeapon(2,"biorifle", ITEMCAT_GUNS, 185, "weapon_zs_bioticrifle")
+GM:AddPointShopWeapon(3,"biorifle", ITEMCAT_GUNS, 185, "weapon_zs_bioticrifle")
 GM:AddPointShopWeapon(3,"bulletstorm", ITEMCAT_GUNS, 195, "weapon_zs_bulletstorm")
 GM:AddPointShopWeapon(3,"reaper", ITEMCAT_GUNS, 190, "weapon_zs_reaper")
 GM:AddPointShopWeapon(3,"zeus", ITEMCAT_GUNS, 185, "weapon_zs_zeus")
@@ -101,12 +101,15 @@ GM:AddPointShopWeapon(3,"blockdown", ITEMCAT_GUNS, 200, "weapon_zs_combinesniper
 GM:AddPointShopWeapon(3,"renegade", ITEMCAT_GUNS, 200, "weapon_zs_renegade")
 GM:AddPointShopWeapon(3,"inferno", ITEMCAT_GUNS, 185, "weapon_zs_inferno")
 GM:AddPointShopWeapon(3,"albatross",  ITEMCAT_GUNS, 185, "weapon_zs_albatross")
+GM:AddPointShopWeapon(3,"arbalest",  ITEMCAT_GUNS, 190, "weapon_zs_arbalest")
 GM:AddPointShopWeapon(3,"pulserifle", ITEMCAT_GUNS, 205, "weapon_zs_pulserifle")
 GM:AddPointShopWeapon(3,"severance", ITEMCAT_GUNS, 190, "weapon_zs_severance")
+GM:AddPointShopWeapon(3,"medicrifle", ITEMCAT_GUNS, 185, "weapon_zs_medicrifle")
 
-GM:AddPointShopWeapon(4,"silencer", ITEMCAT_GUNS, 260, "weapon_zs_silencer")
-
+GM:AddPointShopWeapon(4,"silencer", ITEMCAT_GUNS, 270, "weapon_zs_silencer")
+GM:AddPointShopWeapon(4,"ventilator", ITEMCAT_GUNS, 265, "weapon_zs_ventilator")
 GM:AddPointShopWeapon(4,"tommy", ITEMCAT_GUNS, 265, "weapon_zs_tommy")
+GM:AddPointShopWeapon(4,"palliator", ITEMCAT_GUNS, 270, "weapon_zs_palliator")
 GM:AddPointShopWeapon(4,"m249", ITEMCAT_GUNS, 280, "weapon_zs_m249")
 GM:AddPointShopWeapon(4,"sg550", ITEMCAT_GUNS, 275, "weapon_zs_sg550")
 GM:AddPointShopWeapon(4,"blitz", ITEMCAT_GUNS, 285, "weapon_zs_blitz")
@@ -115,6 +118,7 @@ GM:AddPointShopWeapon(4,"ender",  ITEMCAT_GUNS, 280, "weapon_zs_ender")
 GM:AddPointShopWeapon(4,"slugrifle", ITEMCAT_GUNS, 285, "weapon_zs_slugrifle")
 GM:AddPointShopWeapon(4,"crossbow", ITEMCAT_GUNS, 280, "weapon_zs_crossbow")
 GM:AddPointShopWeapon(4,"positron", ITEMCAT_GUNS, 310, "weapon_zs_positron")
+GM:AddPointShopWeapon(4,"blightcaster", ITEMCAT_GUNS, 280, "weapon_zs_blightcaster")
 
 --GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 
@@ -142,7 +146,7 @@ item.NoSampleCollectMode = true
 
 local item = GM:AddPointShopWeapon(nil,"grenadelauncher", ITEMCAT_TOOLS, 70, "weapon_zs_grenadelauncher")
 item.NoClassicMode = true
-
+GM:AddPointShopWeapon(nil,"whirlwind", ITEMCAT_TOOLS, 70, "weapon_zs_whirlwind")
 local item = GM:AddPointShopWeapon(nil,"backdoor", ITEMCAT_TOOLS, 45, "weapon_zs_backdoor")
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
@@ -168,7 +172,7 @@ item.NoClassicMode = true
 item.NoSampleCollectMode = true
 
 GM:AddPointShopWeapon(nil,"ffemitter", ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
-
+GM:AddPointShopWeapon(nil,"pointdefence", ITEMCAT_TOOLS, 60, "weapon_zs_spotlamp").Countables = "prop_spotlamp"
 GM:AddPointShopWeapon(nil,"enemytracker", ITEMCAT_TOOLS, 15, "weapon_zs_enemyradar")
 GM:AddPointShopWeapon(nil,"medkit", ITEMCAT_TOOLS, 40, "weapon_zs_medicalkit")
 GM:AddPointShopWeapon(nil,"ammokit", ITEMCAT_TOOLS, 30, "weapon_zs_ammokit")
@@ -325,7 +329,7 @@ end
 
 -- Utility function to setup a weapon's DefaultClip.
 function GM:SetupDefaultClip(tab)
-	tab.DefaultClip = math.max(math.ceil(tab.ClipSize * self.SurvivalClips),30)
+	tab.DefaultClip = math.ceil(tab.ClipSize * self.SurvivalClips)
 end
 
 -- Utility function to setup weapon default aim stats.

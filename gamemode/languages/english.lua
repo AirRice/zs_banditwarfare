@@ -73,12 +73,16 @@ LANGUAGE.weapon_detpackremote_name 					= "C4 Detonator"
 LANGUAGE.weapon_detpackremote_desc 					= "A remote that can be used to detonate explosives that have been placed down."
 LANGUAGE.weapon_ffield_name							= "Forcefield Emitter"
 LANGUAGE.weapon_ffield_desc 						= "Upon placement, projects an energy field directly outwards.\nThis forcefield can block bullets, but humans, props and other projectiles can pass through. \nThe forcefield itself is immune to damage; The emitter is still vulnerable."
+LANGUAGE.weapon_spotlamp_name						= "Point Defence Lamp"
+LANGUAGE.weapon_spotlamp_desc						= "This lamp-shaped device is actually a handy tool for defending against projectiles. \nIt will intercept and remove all projectiles within its cone of light. \nHowever, it will intercept both enemy and allies' projectiles, and will take slight damage with every interception requiring constant upkeep."
 LANGUAGE.weapon_hegrenade_name 						= "Grenade"
 LANGUAGE.weapon_hegrenade_desc 						= "Rudimentary fragmentation grenade. Explodes 1.5 seconds after thrown. \nClever usage can heavily damage many enemy targets at once."
 LANGUAGE.weapon_gunturret_name 						= "Automated Turret"
 LANGUAGE.weapon_gunturret_desc						= "This turret will automatically search for targets in front of it to shoot at.\nInvaluable in fortifying strategically important areas.\nContains 150 bullets by default, and can be rearmed by hitting them with a carpenter's hammer."
 LANGUAGE.weapon_carphammer_name						= "Carpenter's Hammer"
 LANGUAGE.weapon_carphammer_desc						= "This otherwise lackluster melee weapon can be used in a stunningly numerous amount of ways.\n It is primarily used to nail in props to build barricades and other structures.\nCan also be used to fix friendly structures such as turrets as well as replenishing their ammo by hitting them.\nCan also be used to counteract EMP effects on transmitters.\nPrimary attack: Repair/attack\nSecondary attack: Nail in prop\nReload: Remove nail"
+LANGUAGE.weapon_arbalest_name						= "'Arbalest' Crossbow"
+LANGUAGE.weapon_arbalest_desc						= "A crossbow firing specialised hard-tipped bolts. These bolts will bounce off any solid surface. \nEvery time the bolt bounces, it will do 1.5 times the original damage when it eventually hits an enemy."
 LANGUAGE.weapon_albatross_name						= "'Albatross' Shotgun"
 LANGUAGE.weapon_albatross_desc						= "A Drum magazine-fed shotgun modified to fire in full auto. Can be extremely useful in close quarters, but the reload speed must be considered."
 LANGUAGE.weapon_ammokit_name 						= "Ammo Box"
@@ -96,8 +100,10 @@ LANGUAGE.weapon_bioticrifle_desc					= "A rifle that fires pellets of refined po
 LANGUAGE.weapon_bioticshotgun_name					= "'Puker' Bioshotgun"
 LANGUAGE.weapon_bioticshotgun_desc					= "This modified shotgun fires a stream of bile akin to those of zombies. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
 LANGUAGE.weapon_bioticsmg_name					    = "'Marrow' Biotic SMG"
-LANGUAGE.weapon_bioticsmg_desc					= "This modified SMG fires pellets of concentrated zombie flesh rapidly. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
-
+LANGUAGE.weapon_bioticsmg_desc						= "This modified SMG fires pellets of concentrated zombie flesh rapidly. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_blightcaster_name					= "Blight Caster"
+LANGUAGE.weapon_blightcaster_desc					= "This living weapon fires a massive rib forwards at high speeds, causing heavy knockback on a target alongside poison damage.\nThe rib will embed in the target, exploding 3 seconds later for wide area poison damage as well. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+	
 LANGUAGE.weapon_blitzrifle_name						= "'Blitz' Assault Rifle"
 LANGUAGE.weapon_blitzrifle_desc						= "An assault rifle with an attached high-magnification scope.\n Fires high caliber bullets that do a great deal of damage at a manageable recoil and spread."
 LANGUAGE.weapon_boomstick_name						= "Boomstick"
@@ -109,7 +115,7 @@ LANGUAGE.weapon_meatcleaver_desc					= "A sharp knife originally used for cuttin
 LANGUAGE.weapon_crackler_name						= "'Crackler' Assault Rifle"
 LANGUAGE.weapon_crackler_desc						= "An accurate assault rifle with low recoil. This is an older model that fires relatively low caliber rounds."
 LANGUAGE.weapon_impalercbow_name					="'Impaler' Crossbow"
-LANGUAGE.weapon_impalercbow_desc					= "Fires superheated nails at a high speed. \nThis nail will pierce through several enemies dealing consecutively less damage as more enemies are pierced.\nFired nails are not recoverable, nor can this weapon be used to nail props down."
+LANGUAGE.weapon_impalercbow_desc					= "Fires superheated crossbow bolts at a high speed. \nThis bolt will pierce through several enemies dealing consecutively less damage as more enemies are pierced."
 LANGUAGE.weapon_crowbar_name						= "Crowbar"
 LANGUAGE.weapon_crowbar_desc						= "A surprisingly useful melee weapon. \nWhen hitting an enemy barricade this weapon has a chance to immediately pull out a single nail."
 LANGUAGE.weapon_deagle_name 						= "'Zombie Drill' Pistol"
@@ -132,6 +138,8 @@ LANGUAGE.weapon_eraser_name							= "'Eraser' Pistol"
 LANGUAGE.weapon_eraser_desc							= "An uniquely built tactical pistol that deals more damage the less rounds are remaining in its magazine.\nThe final bullet in the magazine will deal up to three times its normal damage."
 LANGUAGE.weapon_flashbang_name						= "Flashbang"
 LANGUAGE.weapon_flashbang_desc						= "A flashbang that will explode 1.5 seconds after being thrown. \nPlayers looking at the flashbang when it explodes will be temporarily blinded, with a 25% chance of also being temporarily incapacitated."
+LANGUAGE.weapon_convalescence_name					= "'Convalescence' Medical Rifle"
+LANGUAGE.weapon_convalescence_desc					= "A rifle that fires a bullet that can both heal allies and hurt enemies with continuous toxic damage. Has a scope to help with long range healing.\nHitting friendly targets in their heads will heal more at once."
 LANGUAGE.weapon_crossfire_name						= "'Crossfire' Pistol"
 LANGUAGE.weapon_crossfire_desc						= "Each bullet fired by this pistol will split into three upon leaving the barrel.\nThe pistol has a low capacity, but can prove to be very effective in the hands of a skilled user."
 LANGUAGE.weapon_grenadelauncher_name				= "Grenade Launcher"
@@ -147,7 +155,7 @@ LANGUAGE.weapon_immortal_desc						= "This revolver has been enhanced with combi
 LANGUAGE.weapon_inferno_name						= "'Inferno' Assault Rifle"
 LANGUAGE.weapon_inferno_desc						= "This gun is accurate even compared to other rifles. It is also equipped with a magnifying scope, making it very useful for long range engagements."
 LANGUAGE.weapon_inquisition_name					= "'Inquisition' Crossbow"
-LANGUAGE.weapon_inquisition_desc					= "A pistol-style crossbow modified to fire nails. Each nail is cut into three smaller projectiles and fired consecutively.\nFired nails are irrecoverable and this weapon cannot be used to nail down props."
+LANGUAGE.weapon_inquisition_desc					= "A pistol-style crossbow modified to split a crossbow bolt into three and fire them each consecutively."
 LANGUAGE.weapon_ioncannon_name						= "Ion Cannon"
 LANGUAGE.weapon_ioncannon_desc						= "A futuristic firearm which fires several streams of pulse energy.\nIts accuracy improves as it fires, but due to its low magazine size it is hard to keep accurate for long."
 LANGUAGE.weapon_kalashnikov_name					= "'Kalash' Assault Rifle"
@@ -180,8 +188,12 @@ LANGUAGE.weapon_peashooterpistol_name				= "'Peashooter' Pistol"
 LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol set to fire at 3-round bursts. The rounds have a small caliber but the pistol can sustain a constant stream of fire."
 LANGUAGE.weapon_leadpipe_name						= "Lead Pipe"
 LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off."
+LANGUAGE.weapon_palliator_name						= "'Palliator' Medical Beamer"
+LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy. \nPrimary attack: Lock in target\nSecondary attack: Cancel target"
 LANGUAGE.weapon_plankmelee_name						= "Plank"
 LANGUAGE.weapon_plankmelee_desc						= "A seemingly useless melee weapon.\nIt can be swung faster every time it hits a target."
+LANGUAGE.weapon_podvodny_name						= "'Podvodny' Flechette rifle"
+LANGUAGE.weapon_podvodny_desc						= "A terrifying weapon that fires flechettes that will cause heavy bleeding on the target.\n 75% of its damage is dealt as bleed damage over time."
 LANGUAGE.weapon_practicion_name						= "'Practicion' Medical Rifle"
 LANGUAGE.weapon_practicion_desc						= "A firearm that utilises medical supplies. Causes overdoses that deal continuous toxic damage.\nHitting friendly targets will heal them slightly every hit. Hitting them in the head will heal more at once."
 LANGUAGE.weapon_adonispulse_name					= "'Adonis' Pulse Rifle"
@@ -204,6 +216,8 @@ LANGUAGE.weapon_silencer_name						= "'Silencer' Machine Pistol"
 LANGUAGE.weapon_silencer_desc						= "An automatic pistol with an exceptionally fast rate of fire. \nCan easily dispatch any enemy up close, but individual bullets have a very low caliber. The gun also suffers from low accuracy when continuously being fired."
 LANGUAGE.weapon_sledgehammer_name					= "Sledgehammer"
 LANGUAGE.weapon_sledgehammer_desc					= "A heavy blunt melee weapon that is slow to swing. \nDeals heavy knockback and damage, especially to barricades, to which it deals 3 times the normal damage."
+LANGUAGE.weapon_slinger_name						= "'Slinger' Bolt Pistol"
+LANGUAGE.weapon_slinger_desc						= "A modified pistol that launches a single crossbow bolt. \nMust reload after every shot, but the bolt does deal considerable damage."
 LANGUAGE.weapon_tinyslug_name						= "'Tiny' Slug Rifle"
 LANGUAGE.weapon_tinyslug_desc						= "This heavily modified firearm is a formidable sniper rifle. \nEquipped with a very large caliber, its stopping power is unrivaled."
 
@@ -232,6 +246,8 @@ LANGUAGE.weapon_trenchgun_name						= "'Trench' Shotgun"
 LANGUAGE.weapon_trenchgun_desc						= "A pump action shotgun holding 4 shells. It has a relatively high rate of fire for a pump shotgun, but deals less overall damage as well."
 LANGUAGE.weapon_sprayer_name						= "'Sprayer' SMG"
 LANGUAGE.weapon_sprayer_desc						= "This SMG has a large capacity magazine, but is extremely inaccurate.\nIt is most useful up close and personal."
+LANGUAGE.weapon_ventilator_name						= "'Ventilator' Pistol"
+LANGUAGE.weapon_ventilator_desc						= "This pistol has been extensively modified to fire very high caliber rounds. In addition, it can vent its entire clip forward like a shotgun dealing massive damage, albeit with a large spread, if the need arises.\n This causes the reload speed of the pistol to suffer heavy penalties, and must be used sparingly. \nPrimary Attack: Fire\nSecondary Attack:Vent clip"
 LANGUAGE.weapon_waraxe_name							= "'Waraxe' Pistol"
 LANGUAGE.weapon_waraxe_desc							= "A pistol firing rounds that split into four upon leaving the barrel.\nIt is more accurate than most shotguns making it viable at longer ranges as well."
 LANGUAGE.weapon_pulsepistol_name					= "'Z9000' Pulse Pistol"
@@ -242,8 +258,8 @@ LANGUAGE.weapon_whirlwind_name						= "'Whirlwind' Interceptor"
 LANGUAGE.weapon_whirlwind_desc						= "This gun charges its internal capacity automatically over time. \nIt will fire upon enemy projectiles located in front of the user automatically, reflecting them towards roughly where it is aimed at.\nLeaves a lot to be desired as a firearm, but its interception capabilities fill a valuable strategic niche."
 LANGUAGE.weapon_combinesniper_name					= "'Blockdown' Rifle"
 LANGUAGE.weapon_combinesniper_desc					= "This Combine-issued rifle uses an internal mechanism to charge its shots for impressive damage.\nPress and hold the attack button to charge up a shot, and release to fire.\nKeeping the weapon charged up for too long can lead to the mechanism backfiring and damaging the user."
-LANGUAGE.weapon_rupture_name					= "'Rupture' Crossbow"
-LANGUAGE.weapon_rupture_desc					= "This crossbow shoots specialised explosive bolts that explode after embedding into a surface.\n The bolts do not do much damage when hitting an enemy outright, but the bolts will explode after 2 seconds otherwise."
+LANGUAGE.weapon_rupture_name						= "'Rupture' Pulse Crossbow"
+LANGUAGE.weapon_rupture_desc						= "This crossbow shoots specialised electrified bolts.\n The bolts do not do much damage when hitting an enemy outright, but the bolts will explode after a short delay after embedding into a surface.\nThe bolts will not explode if directly hitting an enemy."
 
 
 
@@ -411,16 +427,16 @@ LANGUAGE.help_cat_barricading						= "Barricading"
 LANGUAGE.help_cat_upgrades							= "Upgrades"
 
 LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between antagonistic bandits and hardened survivors after the zombie apocalypse.</p><br>
-<h1>Who will survive?</h1> <br>
+<b>Who will survive?</b> <br>
 <p><h3>There are three game modes in Bandit Warfare.</h3></p>
 <hr>
 <h2>Transmission</h2> <br>
 <p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for reinforcements before the other team.</p>
 <p>Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
-<p>Once a wave begins, three transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5%% of the overall transmission progress every second while they are controlled.</p>
-<p>Remember that the transmitters are the most important thing in this mode! Even if you kill members of the opposite team you cannot win if you do not control them. Several tools can help you locate them by showing where they are and how far you are from each.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the original slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn.</p>
+<p>Once a wave begins, three transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5% of the overall transmission progress every second while they are controlled.</p>
+<p>Remember that the transmitters are the most important thing in this mode! You cannot win if you do not control them, even if you kill members of the opposite team. Conversely, you will lose if the enemy controls transmitters for too long, even if you kill them all! There are several tools available to aid you in capturing them or preventing enemy control.</p>
 <p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely.</p>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>
 <p>Points are obtained by doing various activities including killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
 <hr>
 
@@ -434,9 +450,9 @@ LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between ant
 <hr>
 
 <h2>Deathmatch</h2> <br>
-<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one large shop. Here, purchasing weapons and other tools will give them to you directly.</p>
+<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one simplified shop. Here, purchasing weapons and other tools will give them to you directly.</p>
 <p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 25% cheaper!</p>
-<p>There is also a chance you will drop your weapon for enemies to use upon dying, but there are specific circumstances:</p>
+<p>You will also drop your weapons on death for the enemy to collect at their leisure, although there are specific circumstances:</p>
 <ul><li>Weapons that show up as blue are <strong>"Insured"</strong>: You will not lose them upon death.</li> 
 <li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>
 <li>Consumables such as grenades or flashbangs, and tools such as forcefields that you place into the world, will never be insured. You will lose these every time.</li>

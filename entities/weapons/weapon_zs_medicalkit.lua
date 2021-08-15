@@ -36,8 +36,6 @@ SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
-SWEP.NoMagazine = true
-
 SWEP.HoldType = "slam"
 
 function SWEP:Initialize()

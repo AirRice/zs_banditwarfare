@@ -64,8 +64,8 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			return
 		end
 		local didrepair = false
+		local healstrength = GAMEMODE.NailHealthPerRepair * (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength
 		if hitent:IsNailed() and hitent:IsSameTeam(self.Owner) then
-			local healstrength = GAMEMODE.NailHealthPerRepair * (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength
 			local oldhealth = hitent:GetBarricadeHealth()
 			if oldhealth <= 0 or oldhealth >= hitent:GetMaxBarricadeHealth() or hitent:GetBarricadeRepairs() <= 0 then return end
 
@@ -84,18 +84,13 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() or 
 		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self.Owner:Team()) then
 			local oldhealth = hitent:GetObjectHealth()
-			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 4 then return end
-
-			local healstrength = (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength * (hitent.WrenchRepairMultiplier or 1)
-
-			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength))
+			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 1 then return end
+			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength/2))
 			local healed = hitent:GetObjectHealth() - oldhealth
 			self:PlayRepairSound(hitent)
 			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed / 2, self)
-
 			didrepair = true
 		elseif hitent:GetClass() == "prop_obj_sigil" and hitent:GetSigilTeam() == self.Owner:Team() and not hitent:GetCanCommunicate() then
-			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, 20, self)
 			hitent:SetSigilNextRestart(hitent:GetSigilNextRestart() - 3)
 			didrepair = true
 		end

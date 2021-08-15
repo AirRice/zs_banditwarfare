@@ -3,8 +3,19 @@ include("shared.lua")
 ENT.NextEmit = 0
 
 function ENT:Initialize()
-	self:SetModelScale(2.5, 0)
-	self:SetMaterial("models/flesh")
+	self.AmbientSound = CreateSound(self, "npc/strider/strider_skewer1.wav")
+	self.Created = CurTime()
+end
+
+function ENT:Think()
+	self.AmbientSound:PlayEx(1, 50 + math.min(1, CurTime() - self.Created) * 30)
+
+	self:NextThink(CurTime())
+	return true
+end
+
+function ENT:OnRemove()
+	self.AmbientSound:Stop()
 end
 
 function ENT:Draw()

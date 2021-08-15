@@ -131,7 +131,7 @@ function SWEP:Think()
 	self.BaseClass.Think(self)	
 	if (self.LastAttack + self.Primary.Delay*2 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
-		for _, ent in pairs(ents.FindInSphere(center, self.SearchRadius)) do
+		for _, ent in ipairs(ents.FindInSphere(center, self.SearchRadius)) do
 			if (ent ~= self and ent:IsProjectile() and not ent:GetMoveType() == MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then

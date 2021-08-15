@@ -50,7 +50,7 @@ SWEP.Base = "weapon_zs_base"
 SWEP.HoldType = "shotgun"
 
 SWEP.ViewModel = "models/weapons/cstrike/c_shot_m3super90.mdl"
-SWEP.WorldModel = "models/weapons/w_pist_glock18.mdl"
+SWEP.WorldModel = "models/weapons/w_shot_m3super90.mdl"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
 SWEP.ShowWorldModel = false

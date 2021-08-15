@@ -78,43 +78,10 @@ function ENT:PhysicsUpdate(phys)
 	end
 end
 
-function ENT:Think()
-	-- Do this out of the physics collide hook.
-
-	if self.Done and not self.NoColl then
-		if self.ParentEnt then
-			self:SetParent(self.ParentEnt)
-		end
-		self.NoColl = true
-	end
-
-	self:NextThink(CurTime())
-
-	local owner = self:GetOwner()
-	if not owner:IsValid() then owner = self end
-
-	for ent, tr in pairs(self.Touched) do
-		if not self.Damaged[ent] then
-			local damage = (self.Damage or 100)
-			ent:TakeDamage(math.max(damage-table.Count(self.Damaged)*25,1), owner, self)
-			self.Damaged[ent] = true
-			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
-			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
-
-		end
-	end
-	return true
-end
-
-function ENT:PhysicsCollide(data, phys)
+function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 	if self.Done then return end
-	self.PhysicsData = data
 	local owner = self:GetOwner()
 	if not owner:IsValid() then owner = self end
-	local vHitPos = self.PhysicsData.HitPos
-	local vHitNormal = self.PhysicsData.HitNormal
-	local eHitEntity = self.PhysicsData.HitEntity
-	local vOldVelocity = self.PhysicsData.OurOldVelocity
 	if eHitEntity:GetClass() == "func_breakable_surf" then 
 		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 		self:SetAngles(vOldVelocity:Angle())
@@ -145,4 +112,42 @@ function ENT:PhysicsCollide(data, phys)
 		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 		self:Fire("kill", "", 0)
 	end
+end
+
+function ENT:Think()
+	-- Do this out of the physics collide hook.
+
+	if self.Done and not self.NoColl then
+		if self.ParentEnt then
+			self:SetParent(self.ParentEnt)
+		end
+		self.NoColl = true
+	end
+	if self.PhysicsData then
+		self:Hit(self.PhysicsData.HitPos, self.PhysicsData.HitNormal, self.PhysicsData.HitEntity, self.PhysicsData.OurOldVelocity)
+	end
+	self:NextThink(CurTime())
+
+	local owner = self:GetOwner()
+	if not owner:IsValid() then owner = self end
+
+	for ent, tr in pairs(self.Touched) do
+		if not self.Damaged[ent] then
+			local damage = (self.Damage or 100)
+			ent:TakeDamage(math.max(damage-table.Count(self.Damaged)*25,1), owner, self)
+			self.Damaged[ent] = true
+			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
+			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
+
+		end
+	end
+	return true
+end
+function ENT:PhysicsCollide(data, phys)
+	if self.Done then return end
+	if not self:HitFence(data, phys) then
+		self.PhysicsData = data
+	end
+
+	self:NextThink(CurTime())
 end

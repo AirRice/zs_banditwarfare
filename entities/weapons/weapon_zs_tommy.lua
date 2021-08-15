@@ -38,7 +38,7 @@ SWEP.ViewModel = "models/weapons/cstrike/c_rif_galil.mdl"
 SWEP.WorldModel = "models/weapons/w_rif_galil.mdl"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
-
+SWEP.ShowWorldModel = true
 SWEP.Primary.Sound = Sound("Weapon_M249.Single")
 SWEP.Primary.Damage = 14
 SWEP.Primary.NumShots = 1

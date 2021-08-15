@@ -1,5 +1,5 @@
-EFFECT.LifeTime = 0.1
-EFFECT.Size = 32
+EFFECT.LifeTime = 0.3
+EFFECT.Size = 42
 
 function EFFECT:Init(data)
 	self.DieTime = CurTime() + self.LifeTime
@@ -12,6 +12,21 @@ function EFFECT:Init(data)
 	self.Pos = pos
 	self.Normal = normal
 	self.Magnitude = mag
+	local emitter = ParticleEmitter(pos)
+	emitter:SetNearClip(32, 48)
+	for i=1, 2 do
+		local particle = emitter:Add("sprites/glow04_noz", pos)
+		particle:SetDieTime(1)
+		particle:SetColor(255, 208, 255)
+		particle:SetStartAlpha(255)
+		particle:SetEndAlpha(0)
+		particle:SetStartSize(4)
+		particle:SetEndSize(0)
+		particle:SetVelocity(VectorRand():GetNormal() * 350)
+		particle:SetGravity(Vector(0,0,-600))
+		particle:SetCollide(true)
+		particle:SetBounce(0.5)
+	end
 end
 
 function EFFECT:Think()

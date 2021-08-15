@@ -1,7 +1,7 @@
 ENT.Type = "anim"
 ENT.Base = "status__base"
 
-ENT.PackUpOverride = 4
+ENT.PackUpOverride = 2.5
 
 function ENT:GetTimeRemaining()
 	return math.max(0, self:GetEndTime() - CurTime())

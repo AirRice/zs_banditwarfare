@@ -53,22 +53,6 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity)
 	util.Effect("smg_poisonspitexplode", effectdata)
 	util.Blood(vHitPos, 16, Vector(0, 0, 1), 300, true)
 	util.Decal("Blood", vHitPos + vHitNormal, vHitPos - vHitNormal)
-	if math.random(2) == 2 then
-		local ent = ents.CreateLimited("prop_playergib")
-		if ent:IsValid() then
-			ent:SetPos(vHitPos + vHitNormal * 4)
-			ent:SetAngles(VectorRand():Angle())
-			ent:SetGibType(math.random(3, #GAMEMODE.HumanGibs))
-			ent:Spawn()
-
-			local phys = ent:GetPhysicsObject()
-			if phys:IsValid() then
-				phys:Wake()
-				phys:SetVelocityInstantaneous((vHitNormal + VectorRand():GetNormalized()) * math.Rand(60, 220))
-				phys:AddAngleVelocity(VectorRand() * 360)
-			end
-		end
-	end
 end
 
 function ENT:PhysicsCollide(data, phys)

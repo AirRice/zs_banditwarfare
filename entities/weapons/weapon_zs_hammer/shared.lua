@@ -10,7 +10,7 @@ SWEP.UseHands = true
 
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = "XBowBolt"
+SWEP.Primary.Ammo = "GaussEnergy"
 SWEP.Primary.Delay = 1
 SWEP.Primary.DefaultClip = 3
 

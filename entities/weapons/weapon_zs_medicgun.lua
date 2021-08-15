@@ -46,8 +46,6 @@ SWEP.RequiredClip = 5
 
 SWEP.WalkSpeed = SPEED_NORMAL
 
-SWEP.NoMagazine = true
-
 SWEP.ConeMax = 0.005
 SWEP.ConeMin = 0.005
 

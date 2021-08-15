@@ -80,19 +80,25 @@ end
 
 MASK_SHOT_OPAQUE = bit.bor(MASK_SHOT, CONTENTS_OPAQUE)
 -- Literally if photon particles can reach point b from point a.
+local LightVisibleTrace = {mask = MASK_SHOT_OPAQUE}
 function LightVisible(posa, posb, ...)
-	local filter = {}
+	local filter
 	if ... ~= nil then
-		for k, v in pairs({...}) do
-			filter[#filter + 1] = v
-		end
+		filter = {...}
 	end
 
-	return not util.TraceLine({start = posa, endpos = posb, mask = MASK_SHOT_OPAQUE, filter = filter}).Hit
+	LightVisibleTrace.start = posa
+	LightVisibleTrace.endpos = posb
+	LightVisibleTrace.filter = filter
+
+	return not util.TraceLine(LightVisibleTrace).Hit
 end
 
+local WorldVisibleTrace = {mask = MASK_SOLID_BRUSHONLY}
 function WorldVisible(posa, posb)
-	return not util.TraceLine({start = posa, endpos = posb, mask = MASK_SOLID_BRUSHONLY}).Hit
+	WorldVisibleTrace.start = posa
+	WorldVisibleTrace.endpos = posb
+	return not util.TraceLine(WorldVisibleTrace).Hit
 end
 
 function ValidFunction(ent, funcname, ...)

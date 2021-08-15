@@ -24,7 +24,7 @@ function ENT:Initialize()
 	self:Fire("kill", "", 30)
 end
 
-
+ENT.LastEmit = 0
 function ENT:Think()
 	if self.Exploded then
 		self:Remove()
@@ -41,11 +41,12 @@ function ENT:Think()
 		self:Remove()
 	end
 	
-	if self.Armed then
+	if self.Armed and self.LastEmit <= CurTime() then
 		local effectdata = EffectData()
 			effectdata:SetOrigin(self:GetPos() + self:GetAngles():Forward()*-3)
 			effectdata:SetNormal(self:GetAngles():Forward())
 		util.Effect("flechette_charge", effectdata)
+		self.LastEmit = CurTime() + 0.2
 	end
 end
 
@@ -107,6 +108,7 @@ function ENT:Explode()
 		local effectdata = EffectData()
 			effectdata:SetOrigin(pos)
 		util.Effect("Explosion", effectdata)
+		self:EmitSound("npc/roller/mine/rmine_explode_shock1.wav",75,120,1,CHAN_VOICE)
 	end
 end
 

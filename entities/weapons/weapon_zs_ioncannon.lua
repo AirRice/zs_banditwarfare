@@ -45,7 +45,7 @@ SWEP.ViewModel = "models/weapons/c_crossbow.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
-
+SWEP.ShowWorldModel = false
 sound.Add(
 {
 	name = "Weapon_pulseboom.Single",

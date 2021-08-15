@@ -6,7 +6,7 @@ include("shared.lua")
 function ENT:Think()
 	local owner = self:GetOwner()
 
-	if self:GetDamage() <= 0 then
+	if self:GetDamage() <= 0 or not (owner:IsPlayer() and owner:Alive()) then
 		self:Remove()
 		return
 	end
@@ -20,6 +20,6 @@ function ENT:Think()
 	dir:Normalize()
 	util.Blood(owner:WorldSpaceCenter(), 6, dir, 64)
 
-	self:NextThink(CurTime() + 0.7)
+	self:NextThink(CurTime() + 0.45)
 	return true
 end

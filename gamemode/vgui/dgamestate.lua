@@ -1,6 +1,7 @@
 local PANEL = {}
 
 function PANEL:Init()
+	self:SetWide(ScrW()*0.6)
 	self.m_HumanCount = vgui.Create("DTeamCounter", self)
 	self.m_HumanCount:SetTeam(TEAM_HUMAN)
 

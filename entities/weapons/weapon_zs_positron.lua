@@ -42,7 +42,7 @@ SWEP.ViewModel = Model( "models/weapons/c_physcannon.mdl" )
 SWEP.WorldModel = Model( "models/weapons/w_physics.mdl" )
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
-SWEP.ShowWorldModel = true
+SWEP.ShowWorldModel = false
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
@@ -103,7 +103,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Owner:RemoveAmmo(math.Rand(2,3), self.Primary.Ammo, false)
+	self.Owner:RemoveAmmo((self:GetLastHurtDmg() >= 15 and 2 or 1), self.Primary.Ammo, false)
 	if (!IsValid(self.Owner)) then
 		return
 	end
@@ -209,9 +209,7 @@ function SWEP:Deploy()
     self:SetFiringLaser(false)
 	self:SetLastHurtTarget(nil)
 	self:SetLastHurtDmg(0)
-    if self.BaseClass.Deploy then
-		self.BaseClass.Deploy(self)
-	end
+    return self.BaseClass.Deploy(self)
 end
 
 function SWEP:SecondaryAttack()
@@ -230,12 +228,7 @@ function SWEP:Holster()
 	if self:ValidSecondaryAmmo() then
 		self.PreHolsterClip2 = self:Clip2()
 	end
-
-	if CLIENT then
-		self:Anim_Holster()
-	end
-
-	return true
+	return self.BaseClass.Holster(self)
 end
 
 function SWEP:ShootEffects()

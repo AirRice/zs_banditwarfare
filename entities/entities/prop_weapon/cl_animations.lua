@@ -1,4 +1,4 @@
-function ENT:RenderModels()
+function ENT:RenderModels(ble, cmod)
 	if not self.WElements then return end
 		
 	if not self.wRenderOrder then
@@ -12,7 +12,7 @@ function ENT:RenderModels()
 		end
 	end
 		
-	for k, name in pairs( self.wRenderOrder ) do
+	for k, name in ipairs( self.wRenderOrder ) do
 		local v = self.WElements[name]
 		if (!v) then self.wRenderOrder = nil break end
 		if (v.hide) then continue end
@@ -37,9 +37,10 @@ function ENT:RenderModels()
 			ang:RotateAroundAxis(ang:Forward(), v.angle.r)
 
 			model:SetAngles(ang)
-			//model:SetModelScale(v.size)
+			--model:SetModelScale(v.size)
 			local matrix = Matrix()
-			matrix:Scale(v.size)
+			local multi = cmod and 1.02 or 1
+			matrix:Scale(v.size * multi)
 			model:EnableMatrix( "RenderMultiply", matrix )
 				
 			if (v.material == "") then
@@ -53,7 +54,7 @@ function ENT:RenderModels()
 			end
 				
 			if (v.bodygroup) then
-				for k, v in pairs( v.bodygroup ) do
+				for k, v in ipairs( v.bodygroup ) do
 					if (model:GetBodygroup(k) != v) then
 						model:SetBodygroup(k, v)
 					end
@@ -63,9 +64,17 @@ function ENT:RenderModels()
 			if (v.surpresslightning) then
 				render.SuppressEngineLighting(true)
 			end
-				
-			render.SetColorModulation(v.color.r/255, v.color.g/255, v.color.b/255)
-			render.SetBlend(v.color.a/255)
+			
+			if not cmod then
+				render.SetColorModulation(v.color.r/255, v.color.g/255, v.color.b/255)
+			else
+				render.SetColorModulation(unpack(cmod))
+			end			
+			if not ble then
+				render.SetBlend(v.color.a/255)
+			else
+				render.SetBlend(ble)
+			end
 			model:DrawModel()
 			render.SetBlend(1)
 			render.SetColorModulation(1, 1, 1)
@@ -73,22 +82,22 @@ function ENT:RenderModels()
 			if (v.surpresslightning) then
 				render.SuppressEngineLighting(false)
 			end
-			elseif (v.type == "Sprite" and sprite) then
-				local drawpos = pos + ang:Forward() * v.pos.x + ang:Right() * v.pos.y + ang:Up() * v.pos.z
-				render.SetMaterial(sprite)
-				render.DrawSprite(drawpos, v.size.x, v.size.y, v.color)
-			elseif (v.type == "Quad" and v.draw_func) then	
-				local drawpos = pos + ang:Forward() * v.pos.x + ang:Right() * v.pos.y + ang:Up() * v.pos.z
-				ang:RotateAroundAxis(ang:Up(), v.angle.y)
-				ang:RotateAroundAxis(ang:Right(), v.angle.p)
-				ang:RotateAroundAxis(ang:Forward(), v.angle.r)
+		elseif (v.type == "Sprite" and sprite) then
+			local drawpos = pos + ang:Forward() * v.pos.x + ang:Right() * v.pos.y + ang:Up() * v.pos.z
+			render.SetMaterial(sprite)
+			render.DrawSprite(drawpos, v.size.x, v.size.y, v.color)
+		elseif (v.type == "Quad" and v.draw_func) then	
+			local drawpos = pos + ang:Forward() * v.pos.x + ang:Right() * v.pos.y + ang:Up() * v.pos.z
+			ang:RotateAroundAxis(ang:Up(), v.angle.y)
+			ang:RotateAroundAxis(ang:Right(), v.angle.p)
+			ang:RotateAroundAxis(ang:Forward(), v.angle.r)
 
-				cam.Start3D2D(drawpos, ang, v.size)
-					v.draw_func( self )
-				cam.End3D2D()
-			end
+			cam.Start3D2D(drawpos, ang, v.size)
+				v.draw_func( self )
+			cam.End3D2D()
 		end
 	end
+end
 
 function ENT:GetBoneOrientation( basetab, tab, bone_override )
 	local bone, pos, ang
@@ -98,8 +107,8 @@ function ENT:GetBoneOrientation( basetab, tab, bone_override )
 			
 		if (!v) then return end
 		
-		// Technically, if there exists an element with the same name as a bone
-		// you can get in an infinite loop. Let's just hope nobody's that stupid.
+		-- Technically, if there exists an element with the same name as a bone
+		-- you can get in an infinite loop. Let's just hope nobody's that stupid.
 		pos, ang = self:GetBoneOrientation( basetab, v )
 			
 		if (!pos) then return end
@@ -147,7 +156,7 @@ function ENT:CreateModels( tab )
 				
 			local name = v.sprite.."-"
 			local params = { ["$basetexture"] = v.sprite }
-			// make sure we create a unique name based on the selected options
+			-- make sure we create a unique name based on the selected options
 			local tocheck = { "nocull", "additive", "vertexalpha", "vertexcolor", "ignorez" }
 			for i, j in pairs( tocheck ) do
 				if (v[j]) then

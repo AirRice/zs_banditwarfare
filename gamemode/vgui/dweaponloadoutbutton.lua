@@ -4,35 +4,39 @@ PANEL.Spacing = 8
 
 function PANEL:Init()
 	self:SetPos(ScrW() - 1, 0)
-	self.WeaponButtons = {}
-	local wep1button = vgui.Create("DWeaponLoadoutPanel", self)
-	wep1button:SetWeaponSlot(WEAPONLOADOUT_SLOT1)
-	wep1button:SetParent(self)
-	table.insert(self.WeaponButtons, wep1button)
-	local wep2button = vgui.Create("DWeaponLoadoutPanel", self)
-	wep2button:SetWeaponSlot(WEAPONLOADOUT_SLOT2)
-	wep2button:SetParent(self)
-	table.insert(self.WeaponButtons, wep2button)
-	local wepmeleebutton = vgui.Create("DWeaponLoadoutPanel", self)
-	wepmeleebutton:SetWeaponSlot(WEAPONLOADOUT_MELEE)
-	wepmeleebutton:SetParent(self)
-	table.insert(self.WeaponButtons, wepmeleebutton)
-	local weptoolbutton = vgui.Create("DWeaponLoadoutPanel", self)
-	weptoolbutton:SetWeaponSlot(WEAPONLOADOUT_TOOLS)
-	weptoolbutton:SetParent(self)
-	table.insert(self.WeaponButtons, weptoolbutton)
 	local but = EasyButton(self, translate.Get("consumables_purchase_button"), 0, 0)
 	but:SetFont("ZSHUDFontSmall")
 	but:SetContentAlignment(5)
 	but:SetTall(64)
-	but:DockMargin(0,32,0,16)	
+	but:DockMargin(0,8,0,8)	
 	but:Dock(TOP)
-	but:SetZPos(1100)
+	--but:SetZPos(1100)
 	but.DoClick = 
 	function() 
 		GAMEMODE:OpenPointsShop(WEAPONLOADOUT_NULL)
 		surface.PlaySound("buttons/button15.wav") 
 	end
+	self.WeaponButtons = {}
+	local wep1button = vgui.Create("DWeaponLoadoutButton", self)
+	wep1button:SetWeaponSlot(WEAPONLOADOUT_SLOT1)
+	wep1button:SetParent(self)
+	wep1button:Dock(TOP)
+	table.insert(self.WeaponButtons, wep1button)
+	local wep2button = vgui.Create("DWeaponLoadoutButton", self)
+	wep2button:SetWeaponSlot(WEAPONLOADOUT_SLOT2)
+	wep2button:SetParent(self)
+	wep2button:Dock(TOP)
+	table.insert(self.WeaponButtons, wep2button)
+	local wepmeleebutton = vgui.Create("DWeaponLoadoutButton", self)
+	wepmeleebutton:SetWeaponSlot(WEAPONLOADOUT_MELEE)
+	wepmeleebutton:SetParent(self)
+	wepmeleebutton:Dock(TOP)
+	table.insert(self.WeaponButtons, wepmeleebutton)
+	local weptoolbutton = vgui.Create("DWeaponLoadoutButton", self)
+	weptoolbutton:SetWeaponSlot(WEAPONLOADOUT_TOOLS)
+	weptoolbutton:SetParent(self)
+	weptoolbutton:Dock(TOP)
+	table.insert(self.WeaponButtons, weptoolbutton)
 	self:RefreshSize()
 end
 
@@ -43,7 +47,7 @@ function PANEL:RefreshSize()
 	for k, item in pairs(self.WeaponButtons) do
 		if item and item:Valid() then
 			item:SetWide(self:GetWide() - 16)
-			item:SetTall(screenscale * 180)
+			item:SetTall(screenscale * 140)
 		end
 	end
 end
@@ -57,8 +61,8 @@ function PANEL:OpenMenu()
 end
 
 function PANEL:CloseMenu()
-	self:SetVisible(false)
-	--self:Remove()
+	--self:SetVisible(false)
+	self:Remove()
 end
 
 local texRightEdge = surface.GetTextureID("gui/gradient")
@@ -115,14 +119,9 @@ end
 
 function PANEL:Init()
 	self:DockPadding(0, 8, 0, 0)
+	self:DockMargin(0,8,0,0)
 	self.DoClick = WeaponButtonDoClick	
-	
-	--[[self.m_WeaponButton = vgui.Create("DLabel", self)
-	self.m_WeaponButton:SetText("")
-	self.m_WeaponButton:Dock(FILL)
-	self.m_WeaponButton:SetZPos(1000)
-	function self.m_WeaponButton:LayoutEntity( Entity ) return end ]]
-	
+
 	self.m_WeaponNameLabel = EasyLabel(self, "", "ZSHUDFontSmallest", COLOR_WHITE)
 	self.m_WeaponNameLabel:SetContentAlignment(8)
 	self.m_WeaponNameLabel:Dock(TOP)
@@ -192,4 +191,4 @@ function PANEL:GetWeapon()
 	return self.m_Weapon
 end
 
-vgui.Register("DWeaponLoadoutPanel", PANEL, "DButton")
+vgui.Register("DWeaponLoadoutButton", PANEL, "DButton")

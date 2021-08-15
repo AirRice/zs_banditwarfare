@@ -8,6 +8,12 @@ ENT.CanPackUp = true
 
 ENT.IsBarricadeObject = true
 ENT.AlwaysGhostable = true
+ENT.LastAttack = 0
+ENT.AttackDelay = 0.1
+ENT.LastAttackPosition = nil
+function ENT:ShouldNotCollide(ent)
+	return ent:IsPlayer() and self:GetObjectOwner():IsPlayer() and ent:Team() == self:GetObjectOwner():Team()
+end
 
 function ENT:SetObjectHealth(health)
 	self:SetDTFloat(0, health)

@@ -46,7 +46,7 @@ SWEP.Recoil = 1.96
 SWEP.Primary.ClipSize = 8
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "alyxgun"
-SWEP.Primary.DefaultClip = 32
+SWEP.Primary.DefaultClip = 40
 
 SWEP.ConeMax = 0.06
 SWEP.ConeMin = 0.045
@@ -64,7 +64,6 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-
 	self:EmitFireSound()
 	self:TakeAmmo()
 	self:SetConeAndFire()

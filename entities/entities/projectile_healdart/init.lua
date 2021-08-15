@@ -77,7 +77,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 				eHitEntity:GiveStatus("healdartboost").DieTime = CurTime() + 10
 				local tox = eHitEntity:GetStatus("tox")
 				if (tox and tox:IsValid()) then
-					tox:SetTime(1)
+					tox:SetTime(0)
 				end
 				local bleed = eHitEntity:GetStatus("bleed")
 				if (bleed and bleed:IsValid()) then

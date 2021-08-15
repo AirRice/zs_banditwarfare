@@ -30,25 +30,24 @@ if CLIENT then
 		["scope++"] = { type = "Model", model = "models/props_combine/combine_mine01.mdl", bone = "v_weapon.awm_parent", rel = "barrel", pos = Vector(-3.751, 0, 7.376), angle = Angle(0, 0, 0), size = Vector(0.107, 0.107, 0.409), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["base1++"] = { type = "Model", model = "models/props_trainstation/pole_448connection002b.mdl", bone = "v_weapon.awm_parent", rel = "handle", pos = Vector(-5.058, 9.092, 0), angle = Angle(0, -180, -90), size = Vector(0.061, 0.061, 0.041), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}
-
-
+	SWEP.WElements = {
+		["handle+"] = { type = "Model", model = "models/props_combine/combine_barricade_bracket01b.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(1.516, -3.763, 0), angle = Angle(0, -39.431, 0), size = Vector(0.15, 0.229, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["handle"] = { type = "Model", model = "models/props_combine/combine_barricade_bracket01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(4.045, 0.924, -1.936), angle = Angle(80.535, 0, 90), size = Vector(0.15, 0.229, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["scope+"] = { type = "Model", model = "models/props_combine/combine_mine01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.559, 0, 18.972), angle = Angle(0, -33.43, 180), size = Vector(0.116, 0.116, 0.574), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["base1+"] = { type = "Model", model = "models/props_combine/combinebutton.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-4.509, 19.67, -0.601), angle = Angle(0, -90, 0), size = Vector(0.177, 0.3, 0.3), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["base1"] = { type = "Model", model = "models/items/combine_rifle_cartridge01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-1.305, 2.473, 0), angle = Angle(0, 48.029, 90), size = Vector(0.815, 0.815, 0.815), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["base1+++++"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.561, 14.227, 0), angle = Angle(0, 0, -90), size = Vector(0.612, 0.612, 1.268), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["scope"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.576, 0, 9.317), angle = Angle(0, -180, 0), size = Vector(0.035, 0.035, 0.085), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["base1++++"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.401, 10.829, 0), angle = Angle(0, 0, 90), size = Vector(0.612, 0.612, 0.899), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["barrel"] = { type = "Model", model = "models/props_trainstation/trainstation_column001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-2.866, -5.452, 0), angle = Angle(0, 0, 90), size = Vector(0.093, 0.093, 0.165), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["base1++"] = { type = "Model", model = "models/props_trainstation/pole_448connection002b.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-5.058, 9.092, 0), angle = Angle(0, -180, -90), size = Vector(0.061, 0.061, 0.041), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["scope++"] = { type = "Model", model = "models/props_combine/combine_mine01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.751, 0, 7.376), angle = Angle(0, 0, 0), size = Vector(0.107, 0.107, 0.409), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["butt+"] = { type = "Model", model = "models/props_combine/combine_generator01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.705, -9.558, -0.658), angle = Angle(-90, 90, 0), size = Vector(0.076, 0.123, 0.067), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["sideplate"] = { type = "Model", model = "models/props_combine/eli_pod.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(0.751, 0, 7.131), angle = Angle(0, 0, -180), size = Vector(0.128, 0.128, 0.098), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	}
 end
 
-SWEP.WElements = {
-	["handle+"] = { type = "Model", model = "models/props_combine/combine_barricade_bracket01b.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(1.516, -3.763, 0), angle = Angle(0, -39.431, 0), size = Vector(0.15, 0.229, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["handle"] = { type = "Model", model = "models/props_combine/combine_barricade_bracket01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(4.045, 0.924, -1.936), angle = Angle(80.535, 0, 90), size = Vector(0.15, 0.229, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["scope+"] = { type = "Model", model = "models/props_combine/combine_mine01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.559, 0, 18.972), angle = Angle(0, -33.43, 180), size = Vector(0.116, 0.116, 0.574), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["base1+"] = { type = "Model", model = "models/props_combine/combinebutton.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-4.509, 19.67, -0.601), angle = Angle(0, -90, 0), size = Vector(0.177, 0.3, 0.3), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["base1"] = { type = "Model", model = "models/items/combine_rifle_cartridge01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-1.305, 2.473, 0), angle = Angle(0, 48.029, 90), size = Vector(0.815, 0.815, 0.815), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["base1+++++"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.561, 14.227, 0), angle = Angle(0, 0, -90), size = Vector(0.612, 0.612, 1.268), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["scope"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.576, 0, 9.317), angle = Angle(0, -180, 0), size = Vector(0.035, 0.035, 0.085), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["base1++++"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.401, 10.829, 0), angle = Angle(0, 0, 90), size = Vector(0.612, 0.612, 0.899), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["barrel"] = { type = "Model", model = "models/props_trainstation/trainstation_column001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-2.866, -5.452, 0), angle = Angle(0, 0, 90), size = Vector(0.093, 0.093, 0.165), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["base1++"] = { type = "Model", model = "models/props_trainstation/pole_448connection002b.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-5.058, 9.092, 0), angle = Angle(0, -180, -90), size = Vector(0.061, 0.061, 0.041), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["scope++"] = { type = "Model", model = "models/props_combine/combine_mine01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(-3.751, 0, 7.376), angle = Angle(0, 0, 0), size = Vector(0.107, 0.107, 0.409), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["butt+"] = { type = "Model", model = "models/props_combine/combine_generator01.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "handle", pos = Vector(-0.705, -9.558, -0.658), angle = Angle(-90, 90, 0), size = Vector(0.076, 0.123, 0.067), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["sideplate"] = { type = "Model", model = "models/props_combine/eli_pod.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "barrel", pos = Vector(0.751, 0, 7.131), angle = Angle(0, 0, -180), size = Vector(0.128, 0.128, 0.098), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
-}
+
 SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "ar2"
@@ -103,9 +102,7 @@ function SWEP:Deploy()
 	self:SetChargePerc(0)
 	self:SetIsCharging(false)
 	self:SetHasOverCharged(false)
-	if self.BaseClass.Deploy then
-		return self.BaseClass.Deploy(self)
-	end
+	return self.BaseClass.Deploy(self)
 end
 
 

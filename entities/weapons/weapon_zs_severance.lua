@@ -57,7 +57,7 @@ SWEP.ShowViewModel = false
 SWEP.ShowWorldModel = false
 
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
-SWEP.Primary.Damage = 7
+SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 9
 SWEP.Primary.Delay = 0.95
 SWEP.ReloadDelay = 0.4

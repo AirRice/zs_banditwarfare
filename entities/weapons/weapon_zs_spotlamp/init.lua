@@ -55,9 +55,9 @@ function SWEP:PrimaryAttack()
 	if ent:IsValid() then
 		ent:SetPos(pos)
 		ent:SetAngles(ang)
+		ent:SetObjectOwner(owner)		
 		ent:Spawn()
 
-		ent:SetObjectOwner(owner)
 
 		ent:EmitSound("npc/dog/dog_servo12.wav")
 

@@ -1,7 +1,7 @@
 ENT.Type = "anim"
 
 ENT.CanPackUp = true
-ENT.PackUpTime = 4
+ENT.PackUpTime = 1
 
 ENT.m_NoNailUnfreeze = true
 ENT.NoNails = true

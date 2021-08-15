@@ -41,8 +41,9 @@ SWEP.ReloadSpeed = 1.2
 SWEP.Primary.Gesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_SMG1
 SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
-SWEP.ConeMax = 0.12
+SWEP.ConeMax = 0.06
 SWEP.ConeMin = 0.02
+SWEP.MovingConeOffset = 0.13
 SWEP.WalkSpeed = SPEED_SLOWEST
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

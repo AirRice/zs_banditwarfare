@@ -32,22 +32,20 @@ if CLIENT then
 		["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -15.318, 7.374), angle = Angle(-90, 90, 0), size = Vector(0.207, 0.207, 0.172), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "Base", rel = "backcover+", pos = Vector(0, -15.254, 7.098), angle = Angle(180, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}
+	SWEP.WElements = {
+		["backcover+"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.947, 2.385, 1.735), angle = Angle(164.147, -74.767, 0), size = Vector(0.275, 0.261, 0.202), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover+++"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -25.903, 7.265), angle = Angle(90, 90, 0), size = Vector(0.115, 0.115, 0.115), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-0.461, -9.105, 7.098), angle = Angle(9.607, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(5, -13, 3.5), angle = Angle(-120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -13, 12), angle = Angle(0, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["train1++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-5, -13, 3.5), angle = Angle(120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -6.968, 4.618), angle = Angle(2.783, -90, 0), size = Vector(0.104, 0.052, 0.104), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["backcover++"] = { type = "Model", model = "models/props_lab/labpart.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0.097, -3.138, 5.784), angle = Angle(180, -90, 0), size = Vector(0.975, 0.975, 0.975), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.318, 7.374), angle = Angle(-90, 90, 0), size = Vector(0.207, 0.207, 0.172), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.254, 7.098), angle = Angle(180, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+	}
 	SWEP.ViewModelFlip = false
 end
-SWEP.WElements = {
-	["backcover+"] = { type = "Model", model = "models/props_combine/breenconsole.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.947, 2.385, 1.735), angle = Angle(164.147, -74.767, 0), size = Vector(0.275, 0.261, 0.202), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["backcover+++"] = { type = "Model", model = "models/props_combine/combine_teleportplatform.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -25.903, 7.265), angle = Angle(90, 90, 0), size = Vector(0.115, 0.115, 0.115), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["ring1+"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-0.461, -9.105, 7.098), angle = Angle(9.607, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["train1+"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(5, -13, 3.5), angle = Angle(-120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["train1"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -13, 12), angle = Angle(0, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["train1++"] = { type = "Model", model = "models/props_combine/combine_train02a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(-5, -13, 3.5), angle = Angle(120, 0, 0), size = Vector(0.07, 0.039, 0.029), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["backcover"] = { type = "Model", model = "models/props_combine/combine_booth_short01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -6.968, 4.618), angle = Angle(2.783, -90, 0), size = Vector(0.104, 0.052, 0.104), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["backcover++"] = { type = "Model", model = "models/props_lab/labpart.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0.097, -3.138, 5.784), angle = Angle(180, -90, 0), size = Vector(0.975, 0.975, 0.975), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["Nozzle"] = { type = "Model", model = "models/props_citizen_tech/firetrap_propanecanister01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.318, 7.374), angle = Angle(-90, 90, 0), size = Vector(0.207, 0.207, 0.172), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-	["ring1"] = { type = "Model", model = "models/props_lab/teleportring.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "backcover+", pos = Vector(0, -15.254, 7.098), angle = Angle(180, 0, -90), size = Vector(0.219, 0.219, 0.219), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
-}
-
-
 
 SWEP.Base = "weapon_zs_base"
 
@@ -85,9 +83,9 @@ sound.Add( {
 SWEP.ReloadSound = Sound("weapons/ar2/ar2_reload_push.wav")
 SWEP.Primary.Sound = Sound("Loop_Neutrino_Firing")
 SWEP.Recoil = 0.2
-SWEP.Primary.Damage = 7
+SWEP.Primary.Damage = 8
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.16
+SWEP.Primary.Delay = 0.17
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.Automatic = true
@@ -126,14 +124,13 @@ function SWEP:PrimaryAttack()
 		return end
 		self:EmitSound(self.Primary.Sound)
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
-		self.Owner:RemoveAmmo( self.Primary.NumShots*((self:GetDTInt(4) >= 90) and 2 or 1), self.Weapon:GetPrimaryAmmoType() )
+		self.Owner:RemoveAmmo(1, self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
 		self:SetNextPrimaryFire(CurTime() + math.max(0.035, self.Primary.Delay * (1 - combo / 50)))
 		self:SetDTInt(4, combo + 1)
 	end
 end
-
 function SWEP:Think()
 	local owner = self.Owner
 	if owner:KeyDown(IN_ATTACK) and self:CanPrimaryAttack() then 

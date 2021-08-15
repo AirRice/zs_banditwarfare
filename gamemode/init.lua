@@ -77,13 +77,13 @@ if file.Exists(GM.FolderName.."/gamemode/maps/"..game.GetMap()..".lua", "LUA") t
 end
 
 function BroadcastLua(code)
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in ipairs(player.GetAll()) do
 		pl:SendLua(code)
 	end
 end
 
 player.GetByUniqueID = player.GetByUniqueID or function(uid)
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in ipairs(player.GetAll()) do
 		if pl:UniqueID() == uid then return pl end
 	end
 end
@@ -115,10 +115,10 @@ function GM:CreateGibs(pos, headoffset)
 		end
 	end
 
-	for i=1, 4 do
+	for i = 1, 5 do
 		local ent = ents.CreateLimited("prop_playergib")
 		if ent:IsValid() then
-			ent:SetPos(pos + VectorRand() * 12)
+			ent:SetPos(pos + VectorRand():GetNormalized() * math.Rand(1, 12))
 			ent:SetAngles(VectorRand():Angle())
 			ent:SetGibType(math.random(3, #GAMEMODE.HumanGibs))
 			ent:Spawn()
@@ -314,13 +314,14 @@ end
 
 function GM:ShowTeam(pl)
 	if pl:Alive() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
-		pl:SendLua("GAMEMODE:OpenPointsShop()")
+		pl:SendLua("GAMEMODE:OpenPointsShop("..WEAPONLOADOUT_NULL..")")
 	end
 end
 
 function GM:ShowSpare1(pl)
 	if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
-		--pl:SendLua("MakepWeapons()")
+		if not (pl:IsValid() and pl:IsConnected() and pl:Alive()) then return end
+		pl:DropActiveWeapon()
 	end
 end
 
@@ -686,7 +687,7 @@ function GM:Think()
 	end
 	
 	local allplayers = player.GetAll()
-	for _, pl in pairs(allplayers) do
+	for _, pl in ipairs(allplayers) do
 		if pl:GetLegDamage() > 0 and pl.LastLegDamageThink + self.LegDamageDecayTime <= time then
 			pl:SetLegDamage(math.max(0,pl:GetLegDamage()-self.LegDamageDecay))
 			pl.LastLegDamageThink = time
@@ -707,7 +708,7 @@ function GM:Think()
 
 		local doafk = not self:GetWaveActive() and wave == 0
 
-		for _, pl in pairs(allplayers) do
+		for _, pl in ipairs(allplayers) do
 			if pl:Alive() then
 
 				if pl:WaterLevel() >= 3 and not (pl.status_drown and pl.status_drown:IsValid()) then
@@ -837,7 +838,7 @@ function GM:LoadNextMap()
 end
 
 function GM:PreRestartRound()
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in ipairs(player.GetAll()) do
 		pl:StripWeapons()
 		pl:Spectate(OBS_MODE_ROAMING)
 		pl:GodDisable()
@@ -899,7 +900,7 @@ end
 
 -- I don't know.
 local function CheckBroken()
-	for _, pl in pairs(player.GetAll()) do
+	for _, pl in ipairs(player.GetAll()) do
 		if pl:Alive() and (pl:Health() <= 0 or pl:GetObserverMode() ~= OBS_MODE_NONE or pl:OBBMaxs().x ~= 16) then
 			pl:SetObserverMode(OBS_MODE_NONE)
 			pl:UnSpectateAndSpawn()
@@ -1145,7 +1146,7 @@ local primaryguns = {
 	"weapon_zs_crackler",
 	"weapon_zs_doublebarrel",
 	"weapon_zs_stubber",
-	"weapon_zs_z9000"
+	"weapon_zs_slinger"
 }
 local secondaryguns = {
 	"weapon_zs_peashooter",
@@ -1371,42 +1372,169 @@ function GM:OnNailCreated(ent1, ent2, nail)
 	end
 end
 
-function GM:RemoveDuplicateAmmo(pl)
+function GM:RemoveUnusedAmmo(pl)
 	local AmmoCounts = {}
-	local WepAmmos = {}
-	for _, wep in pairs(pl:GetWeapons()) do
+
+	for _, wep in ipairs(pl:GetWeapons()) do
 		if wep.Primary then
 			local ammotype = wep:ValidPrimaryAmmo()
 			if ammotype and wep.Primary.DefaultClip > 0 then
 				AmmoCounts[ammotype] = (AmmoCounts[ammotype] or 0) + 1
-				WepAmmos[wep] = wep.Primary.DefaultClip - wep.Primary.ClipSize
 			end
 			local ammotype2 = wep:ValidSecondaryAmmo()
 			if ammotype2 and wep.Secondary.DefaultClip > 0 then
 				AmmoCounts[ammotype2] = (AmmoCounts[ammotype2] or 0) + 1
-				WepAmmos[wep] = wep.Secondary.DefaultClip - wep.Secondary.ClipSize
 			end
 		end
 	end
-	for ammotype, count in pairs(AmmoCounts) do
-		if count > 1 then
-			local highest = 0
-			local highestwep
-			for wep, extraammo in pairs(WepAmmos) do
-				if wep.Primary.Ammo == ammotype then
-					highest = math.max(highest, extraammo)
-					highestwep = wep
-				end
+	for _, ammo in ipairs(game.GetAmmoTypes()) do
+		local ammotype = ammo.name
+		if not (AmmoCounts[ammotype] and AmmoCounts[ammotype]:IsValid()) and pl:GetAmmoCount(ammotype) > 0 then
+			pl:RemoveAmmo(pl:GetAmmoCount(ammotype), ammotype)
+		end
+	end
+end
+
+function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
+if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end
+	local points = pl:GetPoints()
+	local cost = itemtab.Worth
+	cost = math.floor(cost * ((self:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
+	
+	if points < cost then
+		pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "dont_have_enough_points"))
+		pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+		return
+	end
+	if not self:IsClassicMode() then
+		if (itemtab.NoSampleCollectMode and self:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not self:IsSampleCollectMode()) then 
+			if pl:Alive() then
+				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_purchase_in_this_mode"))
+				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+				return
 			end
-			if highestwep then
-				for wep, extraammo in pairs(WepAmmos) do
-					if wep ~= highestwep and wep.Primary.Ammo == ammotype then
-						pl:RemoveAmmo(extraammo, ammotype)
+		end
+		if slot == WEAPONLOADOUT_NULL or not slot then
+			if not pl:Alive() or (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP)) then
+				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_purchase_right_now"))
+				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+				return
+			end
+			if itemtab.Category == ITEMCAT_GUNS or itemtab.Category == ITEMCAT_MELEE or itemtab.Category == ITEMCAT_TOOLS then return end
+			if itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(pl) then
+				local translatedstring = itemtab.FailTranslateString and translate.ClientGet(pl, itemtab.FailTranslateString) or translate.ClientGet(pl, "cant_purchase_right_now")
+				pl:CenterNotify(COLOR_RED, translatedstring)
+				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+				return
+			end
+			if itemtab.Callback then
+				itemtab.Callback(pl)
+			elseif itemtab.SWEP then
+				if pl:HasWeapon(itemtab.SWEP) then
+					pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
+					pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+					return
+				else
+					pl:Give(itemtab.SWEP)
+				end
+			else
+				return
+			end		
+		else
+			if itemtab.SWEP then
+				if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
+				 -- can't do callback style shops anymore.
+					if pl:HasWeapon(itemtab.SWEP) or pl:GetWeapon1() == itemtab.SWEP or pl:GetWeapon2() == itemtab.SWEP or pl:GetWeaponToolslot() == itemtab.SWEP or pl:GetWeaponMelee() == itemtab.SWEP then
+						pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
+						pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+						return	
+					elseif not self:GetWaveActive() and pl:Alive() then
+						local newweptab = weapons.GetStored(itemtab.SWEP)
+						if newweptab and newweptab.Primary then
+							local oldwep
+							if slot == WEAPONLOADOUT_SLOT1 then 
+								oldwep = pl:GetWeapon1()
+							elseif slot == WEAPONLOADOUT_SLOT2 then 
+								oldwep = pl:GetWeapon2() 
+							elseif slot == WEAPONLOADOUT_TOOLS then
+								oldwep = pl:GetWeaponToolslot()
+							elseif slot == WEAPONLOADOUT_MELEE then
+								oldwep = pl:GetWeaponMelee()
+							end
+							local oldweptab = pl:GetWeapon(oldwep)
+							local givenwep = pl:Give(itemtab.SWEP)
+							if oldweptab and oldweptab.Primary then
+								if oldweptab.Primary.DefaultClip > 0 then
+									local oldAmmoType = oldweptab:ValidPrimaryAmmo()
+									local oldAmmoAmount = pl:GetAmmoCount(oldAmmoType)
+									local newAmmoType = newweptab:ValidPrimaryAmmo()
+									local newAmmoAmount = newweptab.Primary.DefaultClip - newweptab:GetMaxClip1()
+									if oldAmmoType and oldAmmoAmount and newAmmoType and newAmmoAmount and newAmmoType == oldAmmoType and oldAmmoAmount < newAmmoAmount then
+										pl:RemoveAmmo(oldAmmoAmount, oldAmmoType)
+									else
+										if givenwep and givenwep:IsValid() and givenwep:IsWeapon() then
+											givenwep:EmptyAll(false)
+										end
+									end
+								end
+								pl:StripWeapon(oldwep)
+							end
+							pl:SelectWeapon(itemtab.SWEP)
+							self:RemoveUnusedAmmo(pl)
+						end
+					else
+						pl:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
+					end
+				end
+				if slot == WEAPONLOADOUT_SLOT1 then 
+					pl:SetWeapon1(itemtab.SWEP)
+				elseif slot == WEAPONLOADOUT_SLOT2 then 
+					pl:SetWeapon2(itemtab.SWEP)
+				elseif slot == WEAPONLOADOUT_TOOLS then
+					pl:SetWeaponToolslot(itemtab.SWEP)			
+				elseif slot == WEAPONLOADOUT_MELEE then
+					pl:SetWeaponMelee(itemtab.SWEP)
+				end
+			elseif itemtab.Callback then
+				itemtab.Callback(pl)
+			end
+		end
+	else
+		if itemtab.NoClassicMode then
+			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_use_in_classic_mode"))
+			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+			return
+		end
+		if itemtab.ControllerWep and pl:HasWeapon(itemtab.ControllerWep) then
+			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
+			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+			return
+		end
+		if itemtab.SWEP then
+			if pl:HasWeapon(itemtab.SWEP) then
+				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
+				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+				return	
+			else
+				local wep = pl:Give(itemtab.SWEP)
+				if wep and wep:IsValid() then
+					pl:SelectWeapon(itemtab.SWEP)
+					if not (wep.IsConsumable or wep.AmmoIfHas) then
+						table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
 					end
 				end
 			end
+		elseif itemtab.Callback then
+			itemtab.Callback(pl)
+		else
+			return
 		end
 	end
+
+	pl:TakePoints(cost)
+	pl.PointsSpent = pl.PointsSpent + cost
+	pl:PrintTranslatedMessage(HUD_PRINTTALK, "purchased_for_x_points", cost)
+	pl:SendLua("surface.PlaySound(\"ambient/levels/labs/coinslot1.wav\")")
 end
 
 local function TimedOut(pl)
@@ -1437,184 +1565,7 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 			end
 		end
 	end
-
-	if not itemtab or not (sender:Team() == TEAM_HUMAN or sender:Team() == TEAM_BANDIT) then return end
-	local points = sender:GetPoints()
-	local cost = itemtab.Worth
-	cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
-	
-	if points < cost then
-		sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "dont_have_enough_points"))
-		sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-		return
-	end
-	if not GAMEMODE:IsClassicMode() then
-		if (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then 
-			if sender:Alive() then
-				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_in_this_mode"))
-				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return
-			end
-		end
-		if slot == WEAPONLOADOUT_NULL or not slot then
-			if not sender:Alive() or (itemtab.SWEP and sender:HasWeapon(itemtab.SWEP)) then
-				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_purchase_right_now"))
-				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return
-			end
-			if itemtab.Category == ITEMCAT_GUNS or itemtab.Category == ITEMCAT_MELEE or itemtab.Category == ITEMCAT_TOOLS then return end
-			if itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(sender) then
-				local translatedstring = itemtab.FailTranslateString and translate.ClientGet(sender, itemtab.FailTranslateString) or translate.ClientGet(sender, "cant_purchase_right_now")
-				sender:CenterNotify(COLOR_RED, translatedstring)
-				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return
-			end
-			if itemtab.Callback then
-				itemtab.Callback(sender)
-			elseif itemtab.SWEP then
-				if sender:HasWeapon(itemtab.SWEP) then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-					return
-				else
-					sender:Give(itemtab.SWEP)
-				end
-			else
-				return
-			end		
-		else
-			if itemtab.Category == ITEMCAT_GUNS and itemtab.SWEP then
-				if slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2 then	
-				 -- can't do callback style shops anymore.
-					if sender:HasWeapon(itemtab.SWEP) or sender:GetWeapon1() == itemtab.SWEP or sender:GetWeapon2() == itemtab.SWEP then
-						sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-						sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-						return	
-					elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
-						local newwep = weapons.GetStored(itemtab.SWEP)
-						local newAmmoAmount = newwep.Primary.DefaultClip - newwep.Primary.ClipSize
-						local newAmmoType = newwep.Primary.Ammo
-						local oldwep
-						if slot == WEAPONLOADOUT_SLOT1 then 
-							oldwep = sender:GetWeapon1()
-							sender:SetWeapon1(itemtab.SWEP)
-						elseif slot == WEAPONLOADOUT_SLOT2 then 
-							oldwep = sender:GetWeapon2() 
-							sender:SetWeapon2(itemtab.SWEP)
-						end
-						if not (oldwep and weapons.GetStored(oldwep)) then return end
-						if sender:HasWeapon(oldwep) then
-							local oldAmmoType = weapons.GetStored(oldwep).Primary.Ammo
-							local oldAmmoAmount = weapons.GetStored(oldwep).Primary.DefaultClip - weapons.GetStored(oldwep).Primary.ClipSize
-							if oldAmmoType and newAmmoType and newAmmoAmount and oldAmmoAmount then
-								if oldAmmoType == newAmmoType then
-									if sender:GetAmmoCount(newAmmoType) <= newAmmoAmount then
-										sender:SetAmmo( newAmmoAmount, newAmmoType, true )
-									end
-								else
-									sender:RemoveAmmo(math.min(oldAmmoAmount,sender:GetAmmoCount(oldAmmoType)), oldAmmoType)
-									sender:SetAmmo( newAmmoAmount, newAmmoType, true )
-								end
-							end
-							local wep = sender:Give(itemtab.SWEP)
-							wep:EmptyAllButClip()
-							--sender:StripAmmoByType(oldammotype)
-							sender:StripWeapon(oldwep)
-						end
-					else
-						if slot == WEAPONLOADOUT_SLOT1 then 
-							sender:SetWeapon1(itemtab.SWEP)
-						elseif slot == WEAPONLOADOUT_SLOT2 then 
-							sender:SetWeapon2(itemtab.SWEP)
-						end
-						sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
-					end
-				end
-			elseif slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE and itemtab.SWEP then
-				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponMelee() == itemtab.SWEP then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-					return	
-				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
-					local wep = sender:Give(itemtab.SWEP)
-					local oldwep = sender:GetWeaponMelee()
-					if sender:HasWeapon(oldwep) then
-						sender:StripWeapon(oldwep)
-					end
-					sender:SetWeaponMelee(itemtab.SWEP)
-				else
-					sender:SetWeaponMelee(itemtab.SWEP)
-					sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
-				end
-			elseif slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS and itemtab.SWEP then
-				if sender:HasWeapon(itemtab.SWEP) or sender:GetWeaponToolslot() == itemtab.SWEP then
-					sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-					sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-					return	
-				elseif not GAMEMODE:GetWaveActive() and sender:Alive() then
-					local newwep = weapons.GetStored(itemtab.SWEP)
-					local newAmmoAmount = newwep.Primary.DefaultClip - newwep.Primary.ClipSize
-					local newAmmoType = newwep.Primary.Ammo
-					local oldwep = sender:GetWeaponToolslot()
-					if sender:HasWeapon(oldwep) then
-						local oldAmmoType = weapons.GetStored(oldwep).Primary.Ammo
-						local oldAmmoAmount = weapons.GetStored(oldwep).Primary.DefaultClip - weapons.GetStored(oldwep).Primary.ClipSize
-						if oldAmmoType and newAmmoType and newAmmoAmount and oldAmmoAmount then
-							if oldAmmoType == newAmmoType then
-								if sender:GetAmmoCount(newAmmoType) <= newAmmoAmount then
-									sender:SetAmmo( newAmmoAmount, newAmmoType, true )
-								end
-							else
-								sender:RemoveAmmo(math.min(oldAmmoAmount,sender:GetAmmoCount(oldAmmoType)), oldAmmoType)
-								sender:SetAmmo( newAmmoAmount, newAmmoType, true )
-							end
-						end
-						local wep = sender:Give(itemtab.SWEP)
-						wep:EmptyAllButClip()
-						sender:StripWeapon(oldwep)
-					else
-						sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
-					end
-					sender:SetWeaponToolslot(itemtab.SWEP)
-				else
-					sender:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
-					sender:SetWeaponToolslot(itemtab.SWEP)
-				end
-			end
-		end
-	else
-		if itemtab.NoClassicMode then
-			sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "cant_use_in_classic_mode"))
-			sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-			return
-		end
-		if itemtab.ControllerWep and sender:HasWeapon(itemtab.ControllerWep) then
-			sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-			sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-			return
-		end
-		if itemtab.SWEP then
-			if sender:HasWeapon(itemtab.SWEP) then
-				sender:CenterNotify(COLOR_RED, translate.ClientGet(sender, "already_have_weapon"))
-				sender:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return	
-			else
-				local wep = sender:Give(itemtab.SWEP)
-				if wep and not (wep.IsConsumable or wep.AmmoIfHas) then
-					table.insert(sender.ClassicModeNextInsureWeps,itemtab.SWEP)
-				end
-			end
-		elseif itemtab.Callback then
-			itemtab.Callback(sender)
-		else
-			return
-		end
-	end
-
-	sender:TakePoints(cost)
-	sender.PointsSpent = sender.PointsSpent + cost
-	sender:PrintTranslatedMessage(HUD_PRINTTALK, "purchased_for_x_points", cost)
-	sender:SendLua("surface.PlaySound(\"ambient/levels/labs/coinslot1.wav\")")
+	gamemode.Call("PlayerPurchasePointshopItem",sender,itemtab,slot)
 end)
 
 function GM:SpectatorThink(pl)
@@ -2732,7 +2683,7 @@ function GM:WaveStateChanged(newstate)
 		self.SamplesEnd = false
 		--self.SuddenDeath = false
 		gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
-		for _, pl in pairs(player.GetAll()) do
+		for _, pl in ipairs(player.GetAll()) do
 			if self.SuddenDeath or self:IsClassicMode() then
 				pl:RemoveStatus("spawnbuff", false, true)
 			end
@@ -2746,7 +2697,7 @@ function GM:WaveStateChanged(newstate)
 				if not self:IsClassicMode() then
 					pl:UpdateWeaponLoadouts()
 				else
-					for _,wep in pairs(pl.ClassicModeNextInsureWeps) do
+					for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
 						if pl:HasWeapon(wep) then
 							table.insert(pl.ClassicModeInsuredWeps,wep)
 							net.Start("zs_insure_weapon")
@@ -2754,7 +2705,7 @@ function GM:WaveStateChanged(newstate)
 								net.WriteBool(true)
 							net.Send(pl)
 						end
-						table.remove(pl.ClassicModeNextInsureWeps,_)
+						--table.remove(pl.ClassicModeNextInsureWeps,_)
 					end
 					pl.ClassicModeNextInsureWeps = {}
 				end

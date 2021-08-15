@@ -58,7 +58,7 @@ SWEP.Base = "weapon_zs_base"
 SWEP.HoldType = "shotgun"
 
 SWEP.ViewModel = "models/weapons/cstrike/c_rif_ak47.mdl"
-SWEP.WorldModel = "models/weapons/w_pist_elite_single.mdl"
+SWEP.WorldModel = "models/weapons/w_rif_ak47.mdl"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
 SWEP.ShowWorldModel = false
