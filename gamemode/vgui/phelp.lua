@@ -146,7 +146,7 @@ function MakepHelp()
 
 	local button = EasyButton(Window, "Credits", 8, 4)
 	button:SetPos(wide - button:GetWide() - 12, tall - button:GetTall() - 12)
-	button:SetText("제작진")
+	button:SetText(translate.Get("credits_button"))
 	button.DoClick = function(btn) MakepCredits() end
 
 	gamemode.Call("BuildHelpMenu", Window, propertysheet)
