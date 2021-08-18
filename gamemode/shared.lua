@@ -5,15 +5,15 @@ GM.Website	=	""
 
 -- No, adding a gun doesn't make your name worth being here.
 GM.Credits = {
-	{"Jooho 'air rice' Lee", "", "Bandit Warfare Programmer"},
-	{"William \"JetBoom\" Moodhe", "williammoodhe@gmail.com (www.noxiousnet.com)", "Zombie Survival Creator / Programmer"},
-	{"Zombie Panic: Source", "http://www.zombiepanic.org/", "Melee weapon sounds"},
-	{"Samuel", "samuel_games@hotmail.com", "Board Kit model"},
+	{"credit_airrice", "", "credit_airrice_desc"},
+	{"credit_jetboom", "williammoodhe@gmail.com (www.noxiousnet.com)", "credit_jetboom_desc"},
+	{"credit_zombiepanicsource", "http://www.zombiepanic.org/", "credit_zombiepanicsource_desc"},
+	{"credit_samuel", "samuel_games@hotmail.com", "credit_samuel_desc"},
 
-	{"honsal", "", "Original ZS Korean translation"},
+	{"credit_honsal", "", "credit_honsal_desc"},
 
-	{"Benjy, The Darker One, Raox, Scott", "", "Code contributions"},
-	{"Various other GitHub ZS contributors", "", "Various contributions"}
+	{"credit_sunrust_community", "", "credit_sunrust_community_desc"},
+	{"credit_github", "", "credit_github_desc"}
 }
 
 include("nixthelag.lua")
@@ -382,19 +382,19 @@ function GM:IsSpecialPerson(pl, image)
 
 	if pl:SteamID() == "STEAM_0:1:3307510" then
 		img = "VGUI/steam/games/icon_sourcesdk"
-		tooltip = "JetBoom\nCreator of Zombie Survival!"
+		tooltip = "scoreboard_tag_jetboom"
 	elseif pl:SteamID() == "STEAM_0:1:41282672" then
 		img = "VGUI/steam/games/icon_dedicated"
-		tooltip = "air rice\n밴딧 워페어 개발자"
+		tooltip = "scoreboard_tag_airrice"
 	elseif pl:IsAdmin() then
 		img = "VGUI/servers/icon_robotron"
-		tooltip = "Admin"
+		tooltip = "scoreboard_tag_admin"
 	end
 
 	if img then
 		if CLIENT then
 			image:SetImage(img)
-			image:SetTooltip(tooltip)
+			image:SetTooltip(translate.Get(tooltip))
 		end
 
 		return true

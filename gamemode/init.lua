@@ -151,8 +151,8 @@ function GM:TryHumanPickup(pl, entity)
 end
 
 function GM:AddResources()
-	resource.AddFile("resource/fonts/typenoksidi.ttf")
-	resource.AddFile("resource/fonts/hidden.ttf")
+	resource.AddFile("resource/fonts/typenoksidi_v2.ttf")
+	resource.AddFile("resource/fonts/hidden_v2.ttf")
 
 	for _, filename in pairs(file.Find("materials/zombiesurvival/*.vmt", "GAME")) do
 		resource.AddFile("materials/zombiesurvival/"..filename)
