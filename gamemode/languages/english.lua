@@ -15,6 +15,8 @@ LANGUAGE.sample_collect_mode						= "COLLECTION"
 LANGUAGE.transmission_mode							= "TRANSMISSION"
 LANGUAGE.win										= "%s Win"
 LANGUAGE.draw										= "Draw"
+LANGUAGE.x_kills_x_deaths                           = "%sK/%dD"
+LANGUAGE.x_kills_x_deaths_x_points                  = "%sK/%dD | %s"
 
 LANGUAGE.itemcategory_guns							= "Guns"
 LANGUAGE.itemcategory_ammo							= "Ammo"
@@ -418,6 +420,34 @@ LANGUAGE.resupply_box								= "Resupply"
 LANGUAGE.integrity_x								= "Health: %d%%"
 LANGUAGE.empty										= "EMPTY"
 LANGUAGE.manual_control								= "MANUAL OVERRIDE"
+
+LANGUAGE.credits_window_title                       = "ZS Credits"
+LANGUAGE.credit_airrice                             = "Jooho 'air rice' Lee"
+LANGUAGE.credit_airrice_desc                        = "Bandit Warfare Programmer"
+LANGUAGE.credit_jetboom                             = "William \"JetBoom\" Moodhe"
+LANGUAGE.credit_jetboom_desc                        = "Zombie Survival Creator / Programmer"
+LANGUAGE.credit_zombiepanicsource                   = "Zombie Panic: Source"
+LANGUAGE.credit_zombiepanicsource_desc              = "Melee weapon sounds"
+LANGUAGE.credit_samuel                              = "Samuel"
+LANGUAGE.credit_samuel_desc                         = "Board Kit model"
+LANGUAGE.credit_honsal                              = "honsal"
+LANGUAGE.credit_honsal_desc                         = "Original ZS Korean translation"
+LANGUAGE.credit_sunrust_community                   = "Benjy, The Darker One, Raox, Scott"
+LANGUAGE.credit_sunrust_community_desc              = "Code contributions"
+LANGUAGE.credit_github                              = "Various other GitHub ZS contributors"
+LANGUAGE.credit_github_desc                         = "Various contributions"
+
+LANGUAGE.scoreboard_gamemode_author                 = "by %s (%s)"
+
+LANGUAGE.scoreboard_tag_jetboom                     = "JetBoom\nCreator of Zombie Survival!"
+LANGUAGE.scoreboard_tag_airrice                     = "air rice\n밴딧 워페어 개발자"
+LANGUAGE.scoreboard_tag_admin                       = "Admin"
+
+LANGUAGE.pointfloater_x_assisted                    = "%s (assisted)"
+LANGUAGE.pointfloater_x_assist                      = "%s (assist)"
+
+LANGUAGE.pointfloater_x_kills                       = "%s KILLS"
+LANGUAGE.pointfloater_kill_killed                   = "KILLED"
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Zombie Survival: Bandit Warfare"

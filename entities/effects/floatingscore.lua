@@ -11,9 +11,9 @@ function EFFECT:Init(data)
 	self.Pos = pos
 	local flag = math.Round(data:GetScale()) or 0
 	if flag == FM_LOCALKILLOTHERASSIST then
-		self.Amount = amount.." (assisted)"
+		self.Amount = translate.ClientFormat(self, "pointfloater_x_assisted", amount)
 	elseif flag == FM_LOCALASSISTOTHERKILL then
-		self.Amount = amount.." (assist)"
+		self.Amount = translate.ClientFormat(self, "pointfloater_x_assist", amount)
 	else
 		self.Amount = amount
 	end

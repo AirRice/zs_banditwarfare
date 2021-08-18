@@ -29,15 +29,15 @@ function MakepCredits()
 	frame:SetTitle(" ")
 	frame:SetKeyboardInputEnabled(false)
 
-	local label = EasyLabel(frame, "ZS Credits", "ZSHUDFontNS", color_white)
+	local label = EasyLabel(frame, translate.Get("credits_window_title"), "ZSHUDFontNS", color_white)
 	label:AlignTop(y)
 	label:CenterHorizontal()
 	y = y + label:GetTall() + 8
 
 	for authorindex, authortab in ipairs(GAMEMODE.Credits) do
-		local lineleft = EasyLabel(frame, string.Replace(authortab[1], "@", "(at)"), "ZSHUDFontSmallestNS", color_white)
+		local lineleft = EasyLabel(frame, string.Replace(translate.Get(authortab[1]), "@", "(at)"), "ZSHUDFontSmallestNS", color_white)
 		local linemid = EasyLabel(frame, "-", "ZSHUDFontSmallestNS", color_white)
-		local lineright = EasyLabel(frame, authortab[3], "ZSHUDFontSmallestNS", color_white)
+		local lineright = EasyLabel(frame, translate.Get(authortab[3]), "ZSHUDFontSmallestNS", color_white)
 		local linesub
 		if authortab[2] then
 			linesub = EasyLabel(frame, authortab[2], "DefaultFont", color_white)
