@@ -60,7 +60,7 @@ function PANEL:Init()
 	self.m_ServerNameLabel:NoClipping(true)
 	self.m_ServerNameLabel.Paint = BlurPaint
 
-	self.m_AuthorLabel = EasyLabel(self, "by "..GAMEMODE.Author.." ("..GAMEMODE.Email..")", "DefaultFontSmall", COLOR_GRAY)
+	self.m_AuthorLabel = EasyLabel(self, translate.ClientFormat(self, "scoreboard_gamemode_author", GAMEMODE.Author, GAMEMODE.Email), "DefaultFontSmall", COLOR_GRAY)
 	self.m_ContactLabel = EasyLabel(self, GAMEMODE.Website, "DefaultFontSmall", COLOR_GRAY)
 
 	self.m_HumanHeading = vgui.Create("DTeamHeading", self)
@@ -315,9 +315,9 @@ function PANEL:Refresh()
 	end
 	self.m_PlayerLabel:SetText(name)
 	if GAMEMODE.SimpleScoreBoard or pl:Team() ~= LocalPlayer():Team() then
-		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D")
+		self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths", pl:Frags(), pl:Deaths()))
 	else
-		self.m_ScoreLabel:SetText(pl:Frags().."K/"..pl:Deaths().."D | "..pl:GetPoints())
+		self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths_x_points", pl:Frags(), pl:Deaths(), pl:GetPoints()))
 	end
 	
 	if pl == LocalPlayer() then

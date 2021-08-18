@@ -1,4 +1,4 @@
-local messages = {"KILLED",
+local messages = {"pointfloater_kill_killed",
 }
 
 EFFECT.LifeTime = 3
@@ -13,9 +13,9 @@ function EFFECT:Init(data)
 
 	self.Pos = pos
 	if amount > 1 then
-		self.Message = amount.." KILLS"
+		self.Message = translate.ClientFormat(self, "pointfloater_x_kills", amount)
 	else
-		self.Message = messages[math.random(#messages)]
+		self.Message = translate.ClientGet(self, messages[math.random(#messages)])
 	end
 
 	self.DeathTime = CurTime() + self.LifeTime
