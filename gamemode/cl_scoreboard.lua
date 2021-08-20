@@ -164,7 +164,7 @@ function PANEL:Refresh()
 		table.insert (SpectatorNames,pl:Name())					
 	end
 	
-	self.SpectatorsLabel:SetText("관전자:"..table.concat(SpectatorNames, ", "))
+	self.SpectatorsLabel:SetText(translate.ClientGet(MySelf, "teamname_spectator")..":"..table.concat(SpectatorNames, ", "))
 	
 	if self.PlayerPanels == nil then self.PlayerPanels = {} end
 

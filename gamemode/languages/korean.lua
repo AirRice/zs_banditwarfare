@@ -4,6 +4,7 @@ translate.AddLanguage("ko", "Korean")
 
 LANGUAGE.teamname_bandit							= "밴딧"
 LANGUAGE.teamname_human								= "생존자"
+LANGUAGE.teamname_spectator							= "관전자"
 LANGUAGE.deathmatch_mode							= "섬멸전"
 LANGUAGE.sample_collect_mode						= "샘플 수집전"
 LANGUAGE.transmission_mode							= "점령전"

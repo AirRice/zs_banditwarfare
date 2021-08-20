@@ -10,6 +10,7 @@ translate.AddLanguage("en", "English")
 
 LANGUAGE.teamname_bandit							= "Bandits"
 LANGUAGE.teamname_human								= "Survivors"
+LANGUAGE.teamname_spectator							= "Spectators"
 LANGUAGE.deathmatch_mode							= "DEATHMATCH"
 LANGUAGE.sample_collect_mode						= "COLLECTION"
 LANGUAGE.transmission_mode							= "TRANSMISSION"
