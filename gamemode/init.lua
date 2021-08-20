@@ -744,19 +744,22 @@ function GM:PlayerHealedTeamMember(pl, other, health, wep)
 	pl.HealedThisRound = pl.HealedThisRound + health
 	pl.CarryOverHealth = (pl.CarryOverHealth or 0) + health
 	
-	local hpperpoint = self.MedkitPointsPerHealth
+	local hpperpoint = self.MedkitHealPerPoint
 	if hpperpoint <= 0 then return end
 
 	local points = math.floor(pl.CarryOverHealth / hpperpoint)
-
+	local mult = 1
+	if self:IsClassicMode() then
+		mult = 2
+	end
 	if 1 <= points then
-		pl:AddPoints(points)
+		pl:AddPoints(points * mult)
 
 		pl.CarryOverHealth = pl.CarryOverHealth - points * hpperpoint
 
 		net.Start("zs_healother")
 			net.WriteEntity(other)
-			net.WriteUInt(points, 16)
+			net.WriteUInt(points*mult, 16)
 		net.Send(pl)
 	end
 end
@@ -770,19 +773,22 @@ function GM:PlayerRepairedObject(pl, other, health, wep)
 	pl.RepairedThisRound = pl.RepairedThisRound + health
 	pl.CarryOverRepair = (pl.CarryOverRepair or 0) + health
 
-	local hpperpoint = self.RepairPointsPerHealth
+	local hpperpoint = self.RepairHealthPerPoint
 	if hpperpoint <= 0 then return end
 
 	local points = math.floor(pl.CarryOverRepair / hpperpoint)
-
+	local mult = 1
+	if self:IsClassicMode() then
+		mult = 2
+	end
 	if 1 <= points then
-		pl:AddPoints(points)
+		pl:AddPoints(points * mult)
 
 		pl.CarryOverRepair = pl.CarryOverRepair - points * hpperpoint
 
 		net.Start("zs_repairobject")
 			net.WriteEntity(other)
-			net.WriteUInt(points, 16)
+			net.WriteUInt(points * mult, 16)
 		net.Send(pl)
 	end
 end

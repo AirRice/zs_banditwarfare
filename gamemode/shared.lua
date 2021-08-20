@@ -1,4 +1,4 @@
-GM.Name		=	"Bandit Warfare"
+GM.Name		=	"Zombie Survival:Bandit Warfare"
 GM.Author	=	"Jooho \"air rice\" Lee"
 GM.Email	=	""
 GM.Website	=	""

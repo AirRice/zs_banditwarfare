@@ -440,7 +440,7 @@ LANGUAGE.credit_github_desc                         = "Various contributions"
 LANGUAGE.scoreboard_gamemode_author                 = "by %s (%s)"
 
 LANGUAGE.scoreboard_tag_jetboom                     = "JetBoom\nCreator of Zombie Survival!"
-LANGUAGE.scoreboard_tag_airrice                     = "air rice\n밴딧 워페어 개발자"
+LANGUAGE.scoreboard_tag_airrice                     = "air rice\nBandit Warfare Programmer"
 LANGUAGE.scoreboard_tag_admin                       = "Admin"
 
 LANGUAGE.pointfloater_x_assisted                    = "%s (assisted)"

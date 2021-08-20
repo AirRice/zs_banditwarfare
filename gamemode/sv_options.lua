@@ -7,34 +7,34 @@ cvars.AddChangeCallback("zsb_roundgamemode", function(cvar, oldvalue, newvalue)
 	end
 end)
 
-GM.GibLifeTime = CreateConVar("zs_giblifetime", "25", FCVAR_ARCHIVE, "Specifies how many seconds player gibs will stay in the world if not eaten or destroyed."):GetFloat()
-cvars.AddChangeCallback("zs_giblifetime", function(cvar, oldvalue, newvalue)
+GM.GibLifeTime = CreateConVar("zsb_giblifetime", "25", FCVAR_ARCHIVE, "Specifies how many seconds player gibs will stay in the world if not eaten or destroyed."):GetFloat()
+cvars.AddChangeCallback("zsb_giblifetime", function(cvar, oldvalue, newvalue)
 	GAMEMODE.GibLifeTime = tonumber(newvalue) or 1
 end)
 
-GM.MaxPropsInBarricade = CreateConVar("zs_maxpropsinbarricade", "8", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Limits the amount of props that can be in one 'contraption' of nails."):GetInt()
-cvars.AddChangeCallback("zs_maxpropsinbarricade", function(cvar, oldvalue, newvalue)
+GM.MaxPropsInBarricade = CreateConVar("zsb_maxpropsinbarricade", "8", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Limits the amount of props that can be in one 'contraption' of nails."):GetInt()
+cvars.AddChangeCallback("zsb_maxpropsinbarricade", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MaxPropsInBarricade = tonumber(newvalue) or 8
 end)
 
-GM.MaxDroppedItems = CreateConVar("zs_maxdroppeditems", "128", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Maximum amount of dropped items. Prevents spam or lag when lots of people die."):GetInt()
-cvars.AddChangeCallback("zs_maxdroppeditems", function(cvar, oldvalue, newvalue)
+GM.MaxDroppedItems = CreateConVar("zsb_maxdroppeditems", "128", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Maximum amount of dropped items. Prevents spam or lag when lots of people die."):GetInt()
+cvars.AddChangeCallback("zsb_maxdroppeditems", function(cvar, oldvalue, newvalue)
 	GAMEMODE.MaxDroppedItems = tonumber(newvalue) or 128
 end)
 
-GM.NailHealthPerRepair = CreateConVar("zs_nailhealthperrepair", "40", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How much health a nail gets when being repaired."):GetInt()
-cvars.AddChangeCallback("zs_nailhealthperrepair", function(cvar, oldvalue, newvalue)
+GM.NailHealthPerRepair = CreateConVar("zsb_nailhealthperrepair", "50", FCVAR_ARCHIVE + FCVAR_NOTIFY, "How much health a nail gets when being repaired."):GetInt()
+cvars.AddChangeCallback("zsb_nailhealthperrepair", function(cvar, oldvalue, newvalue)
 	GAMEMODE.NailHealthPerRepair = tonumber(newvalue) or 1
 end)
 
-GM.NoPropDamageFromHumanMelee = CreateConVar("zs_nopropdamagefromhumanmelee", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Melee from humans doesn't damage props."):GetBool()
-cvars.AddChangeCallback("zs_nopropdamagefromhumanmelee", function(cvar, oldvalue, newvalue)
+GM.NoPropDamageFromHumanMelee = CreateConVar("zsb_nopropdamagefromhumanmelee", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Melee from humans doesn't damage props."):GetBool()
+cvars.AddChangeCallback("zsb_nopropdamagefromhumanmelee", function(cvar, oldvalue, newvalue)
 	GAMEMODE.NoPropDamageFromHumanMelee = tonumber(newvalue) == 1
 end)
 
-GM.MedkitPointsPerHealth = 5
+GM.MedkitHealPerPoint = 20
 
-GM.RepairPointsPerHealth = 40
+GM.RepairHealthPerPoint = 100
 
 local function GetMostKey(key, top)
 	if toppl and top > 0 then

@@ -907,6 +907,77 @@ function GM:HumanMenu()
 
 	panel:OpenMenu()
 end
+
+local function CreateVoiceVGUI()
+	g_VoicePanelList = vgui.Create( "DPanel" )
+	g_VoicePanelList:ParentToHUD()
+	g_VoicePanelList:SetPos( ScrW() - 300, 100 )
+	g_VoicePanelList:SetSize( 250, ScrH() - 300 )
+	g_VoicePanelList:SetPaintBackground( false )
+end
+hook.Add( "InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI )
+
+
+local function VoiceNotifyThink(pnl)
+	pnl.TeamCol = COLOR_DARKGRAY
+	if (pnl.ply:Team() == TEAM_BANDIT or pnl.ply:Team() == TEAM_HUMAN) then
+		pnl.TeamCol = team.GetColor(pnl.ply:Team())
+	end
+	pnl.TeamCol = ColorAlpha( pnl.TeamCol, 190)
+end
+
+local PlayerVoicePanels = {}
+function GM:PlayerStartVoice( ply )
+	if not IsValid(g_VoicePanelList) then return end
+
+	-- There'd be an extra one if voice_loopback is on, so remove it.
+	GAMEMODE:PlayerEndVoice(ply, true)
+
+	if ( IsValid( PlayerVoicePanels[ ply ] ) ) then
+
+	if ( PlayerVoicePanels[ ply ].fadeAnim ) then
+		PlayerVoicePanels[ ply ].fadeAnim:Stop()
+		PlayerVoicePanels[ ply ].fadeAnim = nil
+	end
+
+	PlayerVoicePanels[ ply ]:SetAlpha( 255 )
+
+	return
+
+	end
+
+	if not IsValid(ply) then return end
+
+	local pnl = g_VoicePanelList:Add("VoiceNotify")
+	pnl:Setup(ply)
+	local oldThink = pnl.Think
+	pnl.Think = function( self )
+		oldThink( self )
+		VoiceNotifyThink( self )
+	end
+	pnl.Paint = function(pnlself, w, h)
+		if not IsValid(pnlself.ply) then return end
+		draw.RoundedBox(4, 0, 0, w, h, pnlself.TeamCol)
+		draw.RoundedBox( 4, 2, 2, w-4, h-4, Color( 0, pnlself.ply:VoiceVolume() * 255, 0, 240 ) )
+	end
+
+
+	PlayerVoicePanels[ ply ] = pnl 
+end
+
+function GM:PlayerEndVoice( ply )
+
+	if ( IsValid( PlayerVoicePanels[ ply ] ) ) then
+
+		if ( PlayerVoicePanels[ ply ].fadeAnim ) then return end
+
+		PlayerVoicePanels[ ply ].fadeAnim = Derma_Anim( "FadeOut", PlayerVoicePanels[ ply ], PlayerVoicePanels[ ply ].FadeOut )
+		PlayerVoicePanels[ ply ].fadeAnim:Start( 0.5 )
+
+	end
+
+end
+
 function GM:OnContextMenuOpen()
 	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and MySelf:Alive() then
 		local activewep = MySelf:GetActiveWeapon()
