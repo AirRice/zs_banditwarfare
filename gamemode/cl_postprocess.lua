@@ -1,40 +1,40 @@
 function GM:RenderScreenspaceEffects()
 end
 
-GM.ColorModEnabled = CreateClientConVar("zs_colormod", "1", true, false):GetBool()
-cvars.AddChangeCallback("zs_colormod", function(cvar, oldvalue, newvalue)
+GM.ColorModEnabled = CreateClientConVar("zsb_colormod", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_colormod", function(cvar, oldvalue, newvalue)
 	GAMEMODE.ColorModEnabled = tonumber(newvalue) == 1
 end)
 
-GM.Auras = CreateClientConVar("zs_auras", 1, true, false):GetBool()
-cvars.AddChangeCallback("zs_auras", function(cvar, oldvalue, newvalue)
+GM.Auras = CreateClientConVar("zsb_auras", 1, true, false):GetBool()
+cvars.AddChangeCallback("zsb_auras", function(cvar, oldvalue, newvalue)
 	GAMEMODE.Auras = tonumber(newvalue) == 1
 end)
 
-GM.AuraColorEmpty = Color(CreateClientConVar("zs_auracolor_empty_r", 255, true, false):GetInt(), CreateClientConVar("zs_auracolor_empty_g", 0, true, false):GetInt(), CreateClientConVar("zs_auracolor_empty_b", 0, true, false):GetInt(), 255)
-GM.AuraColorFull = Color(CreateClientConVar("zs_auracolor_full_r", 20, true, false):GetInt(), CreateClientConVar("zs_auracolor_full_g", 255, true, false):GetInt(), CreateClientConVar("zs_auracolor_full_b", 20, true, false):GetInt(), 255)
+GM.AuraColorEmpty = Color(CreateClientConVar("zsb_auracolor_empty_r", 255, true, false):GetInt(), CreateClientConVar("zsb_auracolor_empty_g", 0, true, false):GetInt(), CreateClientConVar("zsb_auracolor_empty_b", 0, true, false):GetInt(), 255)
+GM.AuraColorFull = Color(CreateClientConVar("zsb_auracolor_full_r", 20, true, false):GetInt(), CreateClientConVar("zsb_auracolor_full_g", 255, true, false):GetInt(), CreateClientConVar("zsb_auracolor_full_b", 20, true, false):GetInt(), 255)
 
-cvars.AddChangeCallback("zs_auracolor_empty_r", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_empty_r", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorEmpty.r = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 
-cvars.AddChangeCallback("zs_auracolor_empty_g", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_empty_g", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorEmpty.g = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 
-cvars.AddChangeCallback("zs_auracolor_empty_b", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_empty_b", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorEmpty.b = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 
-cvars.AddChangeCallback("zs_auracolor_full_r", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_full_r", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorFull.r = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 
-cvars.AddChangeCallback("zs_auracolor_full_g", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_full_g", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorFull.g = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 
-cvars.AddChangeCallback("zs_auracolor_full_b", function(cvar, oldvalue, newvalue)
+cvars.AddChangeCallback("zsb_auracolor_full_b", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AuraColorFull.b = math.Clamp(math.ceil(tonumber(newvalue) or 0), 0, 255)
 end)
 

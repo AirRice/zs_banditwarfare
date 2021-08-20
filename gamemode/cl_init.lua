@@ -1385,8 +1385,8 @@ function PlayMenuCloseSound()
 	LocalPlayer():EmitSound("buttons/lightswitch2.wav", 100, 20)
 end
 
-local DamageFloaters = CreateClientConVar("zs_damagefloaters", "1", true, false):GetBool()
-cvars.AddChangeCallback("zs_damagefloaters", function(cvar, oldvalue, newvalue)
+local DamageFloaters = CreateClientConVar("zsb_damagefloaters", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_damagefloaters", function(cvar, oldvalue, newvalue)
 	DamageFloaters = newvalue ~= "0"
 end)
 
