@@ -18,13 +18,13 @@ Content = "help_cont_upgrades"}
 
 function MakepCredits()
 	PlayMenuOpenSound()
-
-	local wid = math.min(ScrW(), 600)
+	local screenscale = BetterScreenScale()
+	local wid = math.min(ScrW(), 800) * screenscale
 
 	local y = 8
 
 	local frame = vgui.Create("DEXRoundedFrame")
-	frame:SetColorAlpha(230)
+	frame:SetColorAlpha(250)
 	frame:SetWide(wid)
 	frame:SetTitle(" ")
 	frame:SetKeyboardInputEnabled(false)

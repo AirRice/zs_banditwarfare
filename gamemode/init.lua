@@ -59,7 +59,6 @@ AddCSLuaFile("vgui/phelp.lua")
 AddCSLuaFile("vgui/pweapons.lua")
 AddCSLuaFile("vgui/pendboard.lua")
 AddCSLuaFile("vgui/psigils.lua")
-AddCSLuaFile("vgui/dtooltip.lua")
 AddCSLuaFile("vgui/ppointshop.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 
@@ -252,7 +251,6 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_waveend")
 	util.AddNetworkString("zs_suddendeath")
 
-	util.AddNetworkString("zs_lasthuman")
 	util.AddNetworkString("zs_gamemodecall")
 	util.AddNetworkString("zs_roundendcampos")
 	util.AddNetworkString("zs_endround")
@@ -268,7 +266,7 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_lifestats")
 	util.AddNetworkString("zs_lifestatsbd")
 	util.AddNetworkString("zs_lifestatshd")
-	util.AddNetworkString("zs_lifestatsbe")
+	util.AddNetworkString("zs_lifestatskills")
 	util.AddNetworkString("zs_commission")
 	util.AddNetworkString("zs_capture")
 	
@@ -722,22 +720,6 @@ end
 function GM:OnNPCKilled(ent, attacker, inflictor)
 end
 
-function GM:LastHuman(pl)
-	if not LASTHUMAN then
-		net.Start("zs_lasthuman")
-			net.WriteEntity(pl or NULL)
-		net.Broadcast()
-
-		for _, ent in pairs(ents.FindByClass("logic_infliction")) do
-			ent:Input("onlasthuman", pl, pl, pl and pl:IsValid() and pl:EntIndex() or -1)
-		end
-
-		LASTHUMAN = true
-	end
-
-	self.TheLastHuman = pl
-end
-
 function GM:PlayerHealedTeamMember(pl, other, health, wep)
 	if self:GetWave() == 0 then return end
 
@@ -879,7 +861,6 @@ GM.CurrentWaveWinner = nil
 GM.NextNestSpawn = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
-	self.TheLastHuman = nil
 	self.UseSigils = nil
 	self:SetComms(0,0)
 	self:SetSamples(0,0)

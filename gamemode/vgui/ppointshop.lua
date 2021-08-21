@@ -97,68 +97,24 @@ local function ItemButtonThink(self)
 	end
 end
 
-local function SetWeaponViewerSWEP(swep)
-	local sweptable = weapons.GetStored(swep)
-	if not sweptable then return end
-	local frame = GAMEMODE.m_PointsShop
-	if frame.m_WeaponViewer and frame.m_WeaponViewer:Valid() then
-		frame.m_WeaponViewer:Remove()
-	end
-	local wid, hei = frame:GetWide(), frame:GetTall()
-	local weaponviewer = vgui.Create("DPanel", frame)
-	weaponviewer:SetSize(wid*0.5, hei*0.6)
-	weaponviewer:DockPadding(8, 0, 8, 0)
-	if frame.m_TopSpace then
-		weaponviewer:MoveBelow(frame.m_TopSpace, 4)
-	end
-	weaponviewer:AlignRight(0)
-	frame.m_WeaponViewer = weaponviewer
-	
-	local title = EasyLabel(weaponviewer, sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swep, "ZSHUDFontSmaller", COLOR_GRAY)
-	title:SetContentAlignment(8)
-	title:Dock(TOP)
-	local text = ""
-
-	if sweptable.TranslateDesc then
-		text = text..translate.Get(sweptable.TranslateDesc)
-	end
-
-	local desc = EasyLabel(weaponviewer, text, "ZSHUDFontSmallest", COLOR_GRAY)
-	desc:SetMultiline(true)
-	desc:SetContentAlignment(7)
-	desc:SetWrap(true)
-	desc:Dock(FILL)
-end
-
 local function SetViewer(tab)
 	local frame = GAMEMODE.m_PointsShop
-	if frame.m_WeaponViewer and frame.m_WeaponViewer:Valid() then
-		frame.m_WeaponViewer:Remove()
-	end
-	local wid, hei = frame:GetWide(), frame:GetTall()
-	local weaponviewer = vgui.Create("DPanel", frame)
-	weaponviewer:SetSize(wid*0.5, hei*0.6)
-	weaponviewer:DockPadding(8, 0, 8, 0)
-	if frame.m_TopSpace then
-		weaponviewer:MoveBelow(frame.m_TopSpace, 4)
-	end
-	weaponviewer:AlignRight(0)
-	frame.m_WeaponViewer = weaponviewer
-	
-	local title = EasyLabel(weaponviewer, tab.TranslateName and translate.Get(tab.TranslateName) or "", "ZSHUDFontSmallest", COLOR_GRAY)
-	title:SetContentAlignment(8)
-	title:Dock(TOP)
-	local text = ""
-
-	if tab.TranslateDesc then
-		text = text..translate.Get(tab.TranslateDesc)
+	if not (frame.m_WeaponDescLabel and frame.m_WeaponDescLabel:Valid()) or not (frame.m_WeaponNameLabel and frame.m_WeaponNameLabel:Valid()) then return end
+	local swepname = tab.SWEP
+	local nametext = ""
+	local desctext = ""
+	if (swepname) then
+		local sweptable = weapons.GetStored(swepname)
+		if not sweptable then return end
+		nametext = sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swepname
+		desctext = sweptable.TranslateDesc and translate.Get(sweptable.TranslateDesc) or ""
+	else
+		nametext = tab.TranslateName and translate.Get(tab.TranslateName) or ""
+		desctext = tab.TranslateDesc and translate.Get(tab.TranslateDesc) or ""
 	end
 
-	local desc = EasyLabel(weaponviewer, text, "ZSHUDFontSmallest", COLOR_GRAY)
-	desc:SetMultiline(true)
-	desc:SetContentAlignment(7)
-	desc:SetWrap(true)
-	desc:Dock(FILL)
+	frame.m_WeaponDescLabel:SetText(desctext)
+	frame.m_WeaponNameLabel:SetText(nametext)
 end
 
 function PANEL:Init()
@@ -197,11 +153,7 @@ function PANEL:DoClick()
 	local tab = FindItem(id)
 	if not tab then return end
 	if !GAMEMODE.m_PointsShop or !GAMEMODE.m_PointsShop:Valid() then return end
-	if tab.SWEP then 
-		SetWeaponViewerSWEP(tab.SWEP)
-	else
-		SetViewer(tab)
-	end
+	SetViewer(tab)
 	surface.PlaySound("buttons/button17.wav")
 	
 	GAMEMODE.m_PointsShop.CurrentID = id
@@ -344,7 +296,7 @@ function PANEL:Init()
 	self:DockPadding(4, 4, 4, 4)
 	self:SetTall(60)
 
-	self.BuyLabel = EasyLabel(self, translate.Get("purchase_item"), "ZSHUDFont")
+	self.BuyLabel = EasyLabel(self, translate.Get("purchase_item"), "ZSHUDFontSmall")
 	self.BuyLabel:SetContentAlignment(5)
 	self.BuyLabel:Dock(FILL)
 
@@ -442,6 +394,29 @@ local function PointsShopOnClose()
 	end
 end
 
+function GM:ConfigureMenuTabs(tabs, tabhei, callback)
+	local screenscale = BetterScreenScale()
+
+	for _, tab in pairs(tabs) do
+		tab:DockMargin(2,0,2,0)
+		tab:SetFont(screenscale > 0.85 and "ZSIconFont" or "DefaultFontAA")
+		tab.GetTabHeight = function()
+			return tabhei + 2
+		end
+		tab.PerformLayout = function(me)
+			me:ApplySchemeSettings()
+			if not me.Image then return end
+			me.Image:SetPos(7, me:GetTabHeight()/2 - me.Image:GetTall()/2 + 3)
+			me.Image:SetImageColor(Color(255, 255, 255, not me:IsActive() and 125 or 255))
+		end
+		tab.DoClick = function(me)
+			me:GetPropertySheet():SetActiveTab(me)
+
+			if callback then callback(tab) end
+		end
+	end
+end
+
 function GM:OpenPointsShop(weaponslot)
 	if self.m_PointsShop and self.m_PointsShop:Valid() then
 		self.m_PointsShop:Close()
@@ -449,8 +424,10 @@ function GM:OpenPointsShop(weaponslot)
 			gamemode.Call("HumanMenu")
 		end
 	end
-
-	local wid, hei = math.min(ScrW(), 900), ScrH() * 0.7
+	
+	local screenscale = BetterScreenScale()
+	local wid, hei = math.min(ScrW(), 1000) * screenscale, math.min(ScrH(), 800) * screenscale
+	local tabhei = 26 * screenscale	
 	
 	local frame = vgui.Create("DFrame")
 	frame:SetSize(wid, hei)
@@ -491,24 +468,16 @@ function GM:OpenPointsShop(weaponslot)
 
 	local _, y = title:GetPos()
 	topspace:SetTall(y + title:GetTall() +16)
-	topspace:AlignTop(8)
+	topspace:Dock(TOP)
 	topspace:CenterHorizontal()
 	
 	local pointslabel = EasyLabel(topspace, translate.Get("points"), "ZSHUDFontSmall", COLOR_WHITE)
+	pointslabel:AlignLeft(32)
+	pointslabel:SetContentAlignment(6)
 	local pointscounter = EasyLabel(topspace, "0", "ZSHUDFontSmall", COLOR_GREEN)
+	pointscounter:MoveRightOf(pointslabel,4)
+	pointscounter:SetContentAlignment(4)
 	pointscounter.Think = pointscounterThink
-	
-	local div = vgui.Create( "DHorizontalDivider", topspace )
-	div:SetLeft( pointslabel )
-	div:SetRight( pointscounter )
-	div:SetDividerWidth( 2 )
-	div:SizeToContents()
-	div:SetRightMin( 20 )
-	div:SetLeftWidth( 100 )
-	div:AlignTop(4)
-	div:SetTall(40)
-	div:SetWide(256)
-	div:AlignLeft(4)
 	
 	local closebutton = EasyButton(topspace, translate.Get("close_button"))
 	closebutton:SetTall(topspace:GetTall())
@@ -526,37 +495,54 @@ function GM:OpenPointsShop(weaponslot)
 	help:MoveLeftOf(closebutton, 8 )
 	help.DoClick = helpDoClick
 
-
-	
 	local bottomspace = vgui.Create("DPanel", frame)
-	bottomspace:SetWide(topspace:GetWide())
 	bottomspace:SetTall(60)
-	bottomspace:AlignBottom(4)
+	bottomspace:Dock(BOTTOM)
 	bottomspace:CenterHorizontal()
 	frame.m_BottomSpace = bottomspace
 
-	local topx, topy = topspace:GetPos()
-	local botx, boty = bottomspace:GetPos()
-
+	local sidemargin = 4
+	
 	local propertysheet = vgui.Create("DPropertySheet", frame)
-	propertysheet:SetSize(wid*0.5, boty - topy - 8 - topspace:GetTall())
-	propertysheet:MoveBelow(topspace, 4)
-	propertysheet:AlignLeft(0)
+	propertysheet:SetWide(wid*0.5 - sidemargin*2)
+	propertysheet:DockMargin(sidemargin, 4, sidemargin, 4)
+	propertysheet:Dock(LEFT)
+	propertysheet:SetPadding(2)
 	
-	local purchasebutton = vgui.Create("BuySelectedButton", frame)
-	purchasebutton:SetWide(wid*0.3)
-	purchasebutton:AlignRight(wid*0.1)
-	purchasebutton:MoveAbove(bottomspace,10)
+	local rightinfopanel = vgui.Create("DPanel",frame)
+	rightinfopanel:SetWide(wid*0.5 - sidemargin*2)
+	rightinfopanel:SetTall(propertysheet:GetTall())
+	rightinfopanel:DockMargin(sidemargin, 4, sidemargin, 4)
+	rightinfopanel:DockPadding(8,0,8,0)
+	rightinfopanel:Dock(RIGHT)
+
+
+	local wepname = EasyLabel(rightinfopanel, "", "ZSHUDFontSmaller", COLOR_GRAY)
+	wepname:SetContentAlignment(8)
+	wepname:Dock(TOP)
+	local wepdesc = EasyLabel(rightinfopanel, "", "ZSHUDFontSmallest", COLOR_GRAY)
+	wepdesc:SetMultiline(true)
+	wepdesc:SetContentAlignment(7)
+	wepdesc:SetWrap(true)
+	wepdesc:Dock(FILL)
+	frame.m_WeaponDescLabel = wepdesc
+	frame.m_WeaponNameLabel = wepname
 	
-	local refusesellpanel = EasyLabel(frame, "", "ZSHUDFontSmaller", COLOR_RED)
-	refusesellpanel:SetWide(wid*0.5)
-	refusesellpanel:SetTall(hei*0.1)
-	refusesellpanel:AlignRight(0)
-	refusesellpanel:MoveAbove(purchasebutton,10)
+	local refusesellpanel = EasyLabel(rightinfopanel, "", "ZSHUDFontSmaller", COLOR_RED)
+	refusesellpanel:Dock(BOTTOM)
 	refusesellpanel:SetMultiline(true)
 	refusesellpanel:SetContentAlignment(8)
 	refusesellpanel:SetWrap(true)
+	refusesellpanel:MoveBelow(wepdesc, 5)
 	frame.RefusePurchaseLabel = refusesellpanel
+	
+	
+	local purchasebutton = vgui.Create("BuySelectedButton", rightinfopanel)
+	purchasebutton:SetWide(256)
+	purchasebutton:Dock(BOTTOM)
+	purchasebutton:SetZPos(-1)
+	purchasebutton:MoveAbove(bottomspace, 5)
+	
 	local sweptable = nil
 	frame.CurrentID = nil
 	
@@ -601,21 +587,26 @@ function GM:OpenPointsShop(weaponslot)
 					list:AddItem(itembut)
 					if tab.SWEP == wep then 
 						frame.CurrentID = i
-						SetWeaponViewerSWEP(tab.SWEP)
+						SetViewer(tab)
 						currentweppanel = itembut
 						currentwepcatname = catname
 					end
 				end
 				end
 			end
-			propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
+			local sheet = propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
+			sheet.Panel:SetPos(0, tabhei + 2)
 			if currentweppanel then
 				propertysheet:SwitchToName(translate.Get(currentwepcatname))
 				timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
 			end
+			local scroller = propertysheet:GetChildren()[1]
+			local dragbase = scroller:GetChildren()[1]
+			local tabs = dragbase:GetChildren()
+
+			self:ConfigureMenuTabs(tabs, tabhei)
 		end
 	end
-	
 	local left = 0
 	for i, tab in ipairs(GAMEMODE.Items) do
 		if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 

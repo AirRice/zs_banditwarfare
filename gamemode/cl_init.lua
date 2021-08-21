@@ -39,7 +39,6 @@ include("vgui/pendboard.lua")
 include("vgui/psigils.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
-include("vgui/dtooltip.lua")
 include("vgui/zshealtharea.lua")
 
 include("cl_dermaskin.lua")
@@ -628,9 +627,7 @@ function GM:_PostDrawTranslucentRenderables()
 end
 
 function GM:RestartRound()
-	self.TheLastHuman = nil
 	self.RoundEnded = nil
-	LASTHUMAN = nil
 
 	if pEndBoard and pEndBoard:Valid() then
 		pEndBoard:Remove()
@@ -806,29 +803,6 @@ local function FirstOfGoodType(a)
 end
 
 function GM:PlayerDeath(pl, attacker)
-end
-
-function GM:LastHuman(pl)
-	if not IsValid(pl) then pl = nil end
-
-	self.TheLastHuman = pl
-
-	if not LASTHUMAN then
-		LASTHUMAN = true
-		timer.Simple(0.5, function() GAMEMODE:LastHumanMessage() end)
-	end
-end
-
-function GM:LastHumanMessage()
-	if self.RoundEnded or not MySelf:IsValid() then return end
-
-	local icon = self.PantsMode and "weapon_zs_legs" or "default"
-	if MySelf:Team() == TEAM_BANDIT or not MySelf:Alive() then
-		self:CenterNotify({killicon = icon}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Get(self.PantsMode and "kick_the_last_human" or "kill_the_last_human"), {killicon = icon})
-	else
-		self:CenterNotify({font = "ZSHUDFont"}, " ", COLOR_RED, translate.Get("you_are_the_last_human"))
-		self:CenterNotify({killicon = icon}, " ", COLOR_RED, translate.Format(self.PantsMode and "x_pants_out_to_get_you" or "x_zombies_out_to_get_you", team.NumPlayers(TEAM_BANDIT)), {killicon = icon})
-	end
 end
 
 function GM:PlayerShouldTakeDamage(pl, attacker)
@@ -1465,11 +1439,11 @@ net.Receive("zs_lifestatshd", function(length)
 	GAMEMODE.LifeStatsEnemyDamage = humandamage
 end)
 
-net.Receive("zs_lifestatsbe", function(length)
-	local brainseaten = net.ReadUInt(16)
+net.Receive("zs_lifestatskills", function(length)
+	local kills = net.ReadUInt(16)
 
 	GAMEMODE.LifeStatsEndTime = CurTime() + GAMEMODE.LifeStatsLifeTime
-	GAMEMODE.LifeStatsEnemyKilled = brainseaten
+	GAMEMODE.LifeStatsEnemyKilled = kills
 end)
 
 net.Receive("zs_honmention", function(length)
@@ -1565,12 +1539,6 @@ net.Receive("zs_topnotify", function(length)
 	local tab = net.ReadTable()
 
 	GAMEMODE:TopNotify(unpack(tab))
-end)
-
-net.Receive("zs_lasthuman", function(length)
-	local pl = net.ReadEntity()
-
-	gamemode.Call("LastHuman", pl)
 end)
 
 net.Receive("zs_gamemodecall", function(length)

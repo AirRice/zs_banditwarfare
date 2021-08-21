@@ -35,12 +35,13 @@ SKIN.colTextEntryText = Color(200, 200, 200)
 SKIN.colTextEntryTextHighlight = Color(30, 255, 0)
 SKIN.colTextEntryTextBorder = Color(70, 90, 70, 255)
 
-SKIN.colPropertySheet = Color(30, 30, 30, 255)
+SKIN.colPropertySheet = Color(40, 40, 40, 255)
 SKIN.colTab = SKIN.colPropertySheet
-SKIN.colTabInactive = Color(25, 25, 25, 155)
-SKIN.colTabShadow = Color(20, 30, 20, 255)
+SKIN.colTabInactive = Color(10, 10, 10, 145)
+SKIN.colTabHover = Color(0, 150, 0, 120)
+--SKIN.colTabShadow = Color(20, 30, 20, 255)
 SKIN.colTabText	= Color(240, 255, 240, 255)
-SKIN.colTabTextInactive	= Color(240, 255, 240, 120)
+SKIN.colTabTextInactive	= Color(240, 255, 240, 110)
 
 --[[SKIN.colTextEntryBG	= Color( 240, 240, 240, 255 )
 SKIN.colTextEntryBorder	= Color( 20, 20, 20, 255 )
@@ -49,23 +50,22 @@ SKIN.colTextEntryTextHighlight = Color( 20, 200, 250, 255 )
 SKIN.colTextEntryTextCursor	= Color( 0, 0, 100, 255 )]]
 
 function SKIN:PaintPropertySheet(panel, w, h)
-	local ActiveTab = panel:GetActiveTab()
-	local Offset = 0
-	if ActiveTab then Offset = ActiveTab:GetTall() - 8 end
-
 	draw.RoundedBox(8, 0, 0, w, h, self.colTab)
 end
 
 function SKIN:PaintTab(panel, w, h)
+	if panel:IsHovered() then
+		draw.RoundedBox(4, 3, 3, w-6, h-2, self.colTabHover)
+	end
 	if panel:GetPropertySheet():GetActiveTab() == panel then
 		return self:PaintActiveTab(panel, w, h)
 	end
-
-	draw.RoundedBox(8, 0, 0, w, h, self.colTabInactive)
+	
+	draw.RoundedBox(4, 4, 4, w-8, h-3, self.colTabInactive)
 end
 
 function SKIN:PaintActiveTab(panel, w, h)
-	draw.RoundedBox(8, 0, 0, w, h, self.colTab)
+	draw.RoundedBox(4, 4, 4, w-8, h-3, self.colTab)
 end
 
 function PaintGenericFrame(panel, x, y, wid, hei, edgesize)

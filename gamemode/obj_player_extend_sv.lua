@@ -128,7 +128,7 @@ function meta:AddLifeEnemyKills(amount)
 	self.LifeEnemyKills = self.LifeEnemyKills + amount
 
 	if not self:Alive() then
-		net.Start("zs_lifestatsbe")
+		net.Start("zs_lifestatskills")
 			net.WriteUInt(self.LifeEnemyKills, 16)
 		net.Send(self)
 	end
