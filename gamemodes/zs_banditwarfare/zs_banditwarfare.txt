@@ -14,7 +14,7 @@
 		1
 		{
 			"name"		"zsb_roundlimit"
-			"text"		"Round Limit"
+			"text"		"zsb_round_limit"
 			"help"		"Number of rounds to play on each map before changing the map"
 			"type"		"Numeric"
 			"default"	"2"
@@ -22,7 +22,7 @@
 		2
 		{
 			"name"		"zsb_numberofwaves"
-			"text"		"Wave Limit"
+			"text"		"zsb_wave_limit"
 			"help"		"Number of 'waves' (rounds within the larger per-map rounds) to play for each larger round"
 			"type"		"Numeric"
 			"default"	"9"
