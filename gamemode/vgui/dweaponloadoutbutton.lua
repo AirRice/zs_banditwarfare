@@ -61,8 +61,8 @@ function PANEL:OpenMenu()
 end
 
 function PANEL:CloseMenu()
-	--self:SetVisible(false)
-	self:Remove()
+	self:SetVisible(false)
+	--self:Remove()
 end
 
 local texRightEdge = surface.GetTextureID("gui/gradient")

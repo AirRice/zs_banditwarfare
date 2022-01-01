@@ -1374,9 +1374,10 @@ function GM:RemoveUnusedAmmo(pl)
 			end
 		end
 	end
-	for _, ammo in ipairs(game.GetAmmoTypes()) do
-		local ammotype = ammo.name
-		if not (AmmoCounts[ammotype] and AmmoCounts[ammotype]:IsValid()) and pl:GetAmmoCount(ammotype) > 0 then
+	PrintTable(AmmoCounts)
+	for _, ammotype in ipairs(game.GetAmmoTypes()) do
+		ammotype = string.lower(ammotype)
+		if not (AmmoCounts[ammotype] and AmmoCounts[ammotype] > 0) and pl:GetAmmoCount(ammotype) > 0 then
 			pl:RemoveAmmo(pl:GetAmmoCount(ammotype), ammotype)
 		end
 	end
@@ -1451,16 +1452,16 @@ if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 							local oldweptab = pl:GetWeapon(oldwep)
 							local givenwep = pl:Give(itemtab.SWEP)
 							if oldweptab and oldweptab.Primary then
-								if oldweptab.Primary.DefaultClip > 0 then
+								if oldweptab.Primary.DefaultClip > 0 and givenwep and givenwep:IsValid() and givenwep:IsWeapon() then
 									local oldAmmoType = oldweptab:ValidPrimaryAmmo()
-									local oldAmmoAmount = pl:GetAmmoCount(oldAmmoType)
-									local newAmmoType = newweptab:ValidPrimaryAmmo()
-									local newAmmoAmount = newweptab.Primary.DefaultClip - newweptab:GetMaxClip1()
-									if oldAmmoType and oldAmmoAmount and newAmmoType and newAmmoAmount and newAmmoType == oldAmmoType and oldAmmoAmount < newAmmoAmount then
-										pl:RemoveAmmo(oldAmmoAmount, oldAmmoType)
-									else
-										if givenwep and givenwep:IsValid() and givenwep:IsWeapon() then
-											givenwep:EmptyAll(false)
+									local oldAmmoAmount = math.min(oldweptab.Primary.DefaultClip - oldweptab:GetMaxClip1(),pl:GetAmmoCount(oldAmmoType))
+									local newAmmoType = givenwep:ValidPrimaryAmmo()
+									local newAmmoAmount = givenwep.Primary.DefaultClip - givenwep:GetMaxClip1()
+									if oldAmmoType and oldAmmoAmount and newAmmoType and newAmmoAmount and newAmmoType == oldAmmoType then
+										if oldAmmoAmount < newAmmoAmount then
+											pl:RemoveAmmo(oldAmmoAmount, oldAmmoType)
+										else
+											pl:RemoveAmmo(newAmmoAmount, oldAmmoType)
 										end
 									end
 								end

@@ -6,16 +6,6 @@ ITEMCAT_CONS = 4
 ITEMCAT_OTHER = 5
 --ITEMCAT_RETURNS = 7
 
-
-GM.ItemCategories = {
-	[ITEMCAT_GUNS] = "itemcategory_guns",
-	[ITEMCAT_MELEE] = "itemcategory_melee",
-	[ITEMCAT_TOOLS] = "itemcategory_tools",
-	[ITEMCAT_CONS] = "itemcategory_etc"
-	--[ITEMCAT_CONS] = "사용물품",
-	--[ITEMCAT_RETURNS] = "환불",	
-}
-
 GM.Items = {}
 function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, canbuy, failtobuystr)
 	local prereqs = {}
@@ -67,7 +57,7 @@ GM:AddPointShopWeapon(0,"tossr", ITEMCAT_GUNS, 15, "weapon_zs_tosser")
 GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber")
 GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler")
 GM:AddPointShopWeapon(0,"slngr", ITEMCAT_GUNS, 15, "weapon_zs_slinger")
-
+GM:AddPointShopWeapon(0,"jabbr", ITEMCAT_GUNS, 20, "weapon_zs_injector")
 
 
 local item = GM:AddPointShopWeapon(1,"deagle", ITEMCAT_GUNS, 65, "weapon_zs_deagle")
@@ -82,7 +72,8 @@ GM:AddWeaponPrerequisite(item,"pshtr")
 local item = GM:AddPointShopWeapon(1,"z9000", ITEMCAT_GUNS, 70, "weapon_zs_z9000")
 GM:AddWeaponPrerequisite(item,"pshtr")
 
-local item = GM:AddPointShopWeapon(1,"medgun", ITEMCAT_GUNS, 45, "weapon_zs_medicgun")
+local item = GM:AddPointShopWeapon(1,"medgun", ITEMCAT_GUNS, 60, "weapon_zs_medicgun")
+GM:AddWeaponPrerequisite(item,"jabbr")
 
 local item = GM:AddPointShopWeapon(1,"bioshotgun", ITEMCAT_GUNS, 65, "weapon_zs_bioticshotgun")
 GM:AddWeaponPrerequisite(item,"doublebarrel")
@@ -100,8 +91,6 @@ GM:AddWeaponPrerequisite(item,"crklr")
 
 local item = GM:AddPointShopWeapon(1,"inquisition", ITEMCAT_GUNS, 70, "weapon_zs_inquisition")
 GM:AddWeaponPrerequisite(item,"slngr")
-
-
 
 local item = GM:AddPointShopWeapon(2,"magnum", ITEMCAT_GUNS, 120, "weapon_zs_magnum")
 GM:AddWeaponPrerequisite(item,"deagle")
