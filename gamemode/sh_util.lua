@@ -56,6 +56,67 @@ function FindItem(id)
 	return t
 end
 
+function FindWeaponConsequents(id)
+	if not id then return end
+	local num = tonumber(id)
+	if num then
+		id = GAMEMODE.Items[num].Signature
+	end
+	print(id)
+	local consequents = {}
+	for _, tab in ipairs(GAMEMODE.Items) do
+		if tab.Prerequisites and istable(tab.Prerequisites) then
+			for _, prereqsig in ipairs(tab.Prerequisites) do
+				if prereqsig == id then
+					table.insert(consequents, tab)
+					break
+				end
+			end
+		end
+	end
+	PrintTable(consequents)
+	return consequents
+end
+
+function PlayerCanPurchasePointshopItem(pl,itemtab,slot)
+	if not (pl and pl:IsPlayer()) then return end
+	if not itemtab then return end
+	
+	local cost = itemtab.Worth
+	cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
+	local enoughcost = pl:GetPoints() >= cost
+	local notduplicate = true
+	if not GAMEMODE:IsClassicMode() and not (slot == WEAPONLOADOUT_NULL or not slot) then 
+		notduplicate = not (itemtab.SWEP and pl:GetWeapon1() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeapon2() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeaponMelee() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeaponToolslot() == itemtab.SWEP)
+	else
+		notduplicate = not (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP))
+		and not (itemtab.ControllerWep and pl:HasWeapon(itemtab.ControllerWep))
+	end
+	
+	local fitformode = not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
+	not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+	not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())
+	
+	local auxreason = not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(pl))
+	
+	local finalresult = enoughcost and notduplicate and fitformode and auxreason
+
+	local refusepurchasereasons = ""
+	if !auxreason then
+		refusepurchasereasons = itemtab.FailTranslateString and translate.ClientGet(pl,itemtab.FailTranslateString) or translate.ClientGet(pl,"cant_purchase_right_now")
+	elseif !fitformode then
+		refusepurchasereasons = translate.ClientGet(pl,"cant_purchase_in_this_mode")
+	elseif !notduplicate then 
+		refusepurchasereasons = translate.ClientGet(pl,"already_have_weapon")
+	elseif !enoughcost then 
+		refusepurchasereasons = translate.ClientGet(pl,"dont_have_enough_points")
+	end
+	return finalresult, refusepurchasereasons
+end
+
 function TrueVisible(posa, posb, filter)
 	local filt = ents.FindByClass("projectile_*")
 	filt = table.Add(filt, player.GetAll())

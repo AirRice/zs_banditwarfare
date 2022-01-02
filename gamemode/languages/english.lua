@@ -280,7 +280,7 @@ LANGUAGE.shopitem_adrenaline_toomuch				= "Further adrenaline usage is fatal"
 
 LANGUAGE.shopitem_ammo_name							= "Ammunition"
 LANGUAGE.shopitem_ammo_desc							= "On purchase, obtain ammunition for the currently held weapon.\nAmount obtained differs by weapon, and is how much ammunition was given during the first purchase."
-LANGUAGE.shopitem_ammo_invalid						= "The ammunition of this weapon cannot be refilled"
+LANGUAGE.shopitem_ammo_invalid						= "This weapon cannot be refilled"
 
 LANGUAGE.statusname_invuln							= "INVULNERABLE"
 LANGUAGE.statusname_bodyarmor						= "BODY ARMOR"

@@ -76,22 +76,14 @@ PANEL = {}
 local function ItemButtonThink(self)
 	local itemtab = FindItem(self.ID)
 	if itemtab then 
+		local slot = GAMEMODE.m_PointsShop.m_WepSlot
+		local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot)
 		local newcost = math.floor(itemtab.Worth * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
 		if newcost ~= self.m_LastPrice then
 			self.PriceLabel:SetText(tostring(math.ceil(newcost)).." Pts")	
 			self.m_LastPrice = newcost
 		end
-		local newstate = (MySelf:GetPoints() >= self.m_LastPrice
-		and not (itemtab.SWEP and MySelf:HasWeapon(itemtab.SWEP))
-		and not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(MySelf))
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon1() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponToolslot() == itemtab.SWEP)
-		and not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
-		not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-		not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()))
-		if newstate ~= self.m_LastAbleToBuy then
+		if canpurchase ~= self.m_LastAbleToBuy then
 			self.m_LastAbleToBuy = newstate
 		end
 	end
@@ -151,6 +143,7 @@ end
 function PANEL:DoClick()
 	local id = self.ID
 	local tab = FindItem(id)
+	local consequents = FindWeaponConsequents(id)
 	if not tab then return end
 	if !GAMEMODE.m_PointsShop or !GAMEMODE.m_PointsShop:Valid() then return end
 	SetViewer(tab)
@@ -247,43 +240,19 @@ PANEL = {}
 local function PurchaseButtonThink(self)
 	local id = GAMEMODE.m_PointsShop.CurrentID
 	local refusesellpanel = GAMEMODE.m_PointsShop.RefusePurchaseLabel
+	local slot = GAMEMODE.m_PointsShop.m_WepSlot
 	local itemtab = FindItem(id)
 	if itemtab then 
-		local newcost = math.floor(itemtab.Worth * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
-		if newcost ~= self.m_LastPrice then
-			self.m_LastPrice = newcost
-		end
-		local enoughcost = MySelf:GetPoints() >= self.m_LastPrice
-		local notduplicate = not (itemtab.SWEP and MySelf:HasWeapon(itemtab.SWEP))
-		and not (itemtab.ControllerWep and MySelf:HasWeapon(itemtab.ControllerWep))
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon1() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeapon2() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponMelee() == itemtab.SWEP)
-		and not (not GAMEMODE:IsClassicMode() and itemtab.SWEP and MySelf:GetWeaponToolslot() == itemtab.SWEP)
-		local fitformode = not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
-		not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-		not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())
-		local auxreason = not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(MySelf))
-		local newstate = enoughcost and notduplicate and fitformode and auxreason
-		if newstate ~= self.m_LastAbleToBuy then
-			self.m_LastAbleToBuy = newstate
-			if newstate then
+		local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot)
+		if canpurchase ~= self.m_LastAbleToBuy then
+			self.m_LastAbleToBuy = canpurchase
+			if canpurchase then
 				self:AlphaTo(255, 0.5, 0)
 			else
 				self:AlphaTo(75, 0.5, 0)
 			end
 		end
-		local refusepurchasereasons = ""
-		if !auxreason then
-			refusepurchasereasons = itemtab.FailTranslateString and translate.Get(itemtab.FailTranslateString) or translate.Get("cant_purchase_right_now")
-		elseif !fitformode then
-			refusepurchasereasons = translate.Get("cant_purchase_in_this_mode")
-		elseif !notduplicate then 
-			refusepurchasereasons = translate.Get("already_have_weapon")
-		elseif !enoughcost then 
-			refusepurchasereasons = translate.Get("dont_have_enough_points") .."\n".."("..translate.Format("require_x_more_points",self.m_LastPrice-MySelf:GetPoints())..")"
-		end
-		refusesellpanel:SetText(refusepurchasereasons)
+		refusesellpanel:SetText(reasons)
 	else
 		self.m_LastAbleToBuy = false
 		self:AlphaTo(75, 0.1, 0)
@@ -341,12 +310,31 @@ end
 
 vgui.Register("BuySelectedButton", PANEL, "DButton")
 
+PANEL = {}
+
+vgui.Register("UpgradeButton", PANEL, "DButton")
+
 local function pointscounterThink(self)
 	local points = MySelf:GetPoints()
 	if self.m_LastPoints ~= points then
 		self.m_LastPoints = points
 		self:SetText(points)
 		self:SizeToContents()
+		GAMEMODE.m_PointsShop.m_TopSpace.m_CostCounter:MoveRightOf(self,8)
+	end
+end
+
+local function costcounterThink(self)
+	local id = GAMEMODE.m_PointsShop.CurrentID
+	local itemtab = FindItem(id)
+	if itemtab then
+		local cost = itemtab.Worth
+		cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
+		if self.m_LastCost ~= cost then
+			self.m_LastCost = cost
+			self:SetText("-"..cost)
+			self:SizeToContents()
+		end
 	end
 end
 
@@ -377,6 +365,7 @@ local function PointsShopThink(self)
 		timer.Simple(2, function() surface.PlaySound("vo/npc/Barney/ba_hurryup.wav") end)
 	end
 end
+
 local function helpDoClick()
 	MakepHelp()
 end
@@ -417,6 +406,13 @@ function GM:ConfigureMenuTabs(tabs, tabhei, callback)
 	end
 end
 
+GM.ItemCategories = {
+	[ITEMCAT_GUNS] = "itemcategory_guns",
+	[ITEMCAT_MELEE] = "itemcategory_melee",
+	[ITEMCAT_TOOLS] = "itemcategory_tools",
+	[ITEMCAT_CONS] = "itemcategory_etc"
+}
+
 function GM:OpenPointsShop(weaponslot)
 	if self.m_PointsShop and self.m_PointsShop:Valid() then
 		self.m_PointsShop:Close()
@@ -440,11 +436,12 @@ function GM:OpenPointsShop(weaponslot)
 	if frame.btnMaxim and frame.btnMaxim:Valid() then frame.btnMaxim:SetVisible(false) end
 	frame.Think = PointsShopThink
 	frame.OnClose = PointsShopOnClose
-	self.m_PointsShop = frame
+	
+	frame.m_WepSlot = weaponslot
+	
 	local topspace = vgui.Create("DPanel", frame)
 	topspace:SetWide(wid - 16)
-	frame.m_TopSpace = topspace
-	
+	self.m_PointsShop = frame
 	local title = EasyLabel(topspace, translate.Get("pointshop_title"), "ZSHUDFontSmall", COLOR_WHITE)
 	local wep = nil
 	if self:IsClassicMode() and (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
@@ -475,10 +472,14 @@ function GM:OpenPointsShop(weaponslot)
 	pointslabel:AlignLeft(32)
 	pointslabel:SetContentAlignment(6)
 	local pointscounter = EasyLabel(topspace, "0", "ZSHUDFontSmall", COLOR_GREEN)
-	pointscounter:MoveRightOf(pointslabel,4)
+	pointscounter:MoveRightOf(pointslabel,2)
 	pointscounter:SetContentAlignment(4)
 	pointscounter.Think = pointscounterThink
-	
+	topspace.m_PointsCounter = pointscounter
+	local costcounter = EasyLabel(topspace, "", "ZSHUDFontSmall", COLOR_RED)
+	costcounter:SetContentAlignment(6)
+	costcounter.Think = costcounterThink
+	topspace.m_CostCounter = costcounter
 	local closebutton = EasyButton(topspace, translate.Get("close_button"))
 	closebutton:SetTall(topspace:GetTall())
 	closebutton:SetWide(128)
@@ -494,11 +495,16 @@ function GM:OpenPointsShop(weaponslot)
 	help:SetContentAlignment(5)
 	help:MoveLeftOf(closebutton, 8 )
 	help.DoClick = helpDoClick
-
-	local bottomspace = vgui.Create("DPanel", frame)
+	
+	frame.m_TopSpace = topspace
+	
+	local bottomspace = vgui.Create("DHorizontalScroller", frame)
 	bottomspace:SetTall(60)
 	bottomspace:Dock(BOTTOM)
 	bottomspace:CenterHorizontal()
+	bottomspace:SetOverlap(-8)
+	bottomspace:DockMargin(4,0,4,0)
+	
 	frame.m_BottomSpace = bottomspace
 
 	local sidemargin = 4
@@ -520,11 +526,13 @@ function GM:OpenPointsShop(weaponslot)
 	local wepname = EasyLabel(rightinfopanel, "", "ZSHUDFontSmaller", COLOR_GRAY)
 	wepname:SetContentAlignment(8)
 	wepname:Dock(TOP)
+	wepname:SetBGColor(255,255,255,255)
 	local wepdesc = EasyLabel(rightinfopanel, "", "ZSHUDFontSmallest", COLOR_GRAY)
 	wepdesc:SetMultiline(true)
 	wepdesc:SetContentAlignment(7)
 	wepdesc:SetWrap(true)
 	wepdesc:Dock(FILL)
+	wepdesc:SetBGColor(255,255,255,255)
 	frame.m_WeaponDescLabel = wepdesc
 	frame.m_WeaponNameLabel = wepname
 	
@@ -538,7 +546,8 @@ function GM:OpenPointsShop(weaponslot)
 	
 	
 	local purchasebutton = vgui.Create("BuySelectedButton", rightinfopanel)
-	purchasebutton:SetWide(256)
+	local pchsbtnmargin = math.min(wid*0.1,(wid*0.25 - sidemargin)-128)
+	purchasebutton:DockMargin(pchsbtnmargin,0,pchsbtnmargin,0)
 	purchasebutton:Dock(BOTTOM)
 	purchasebutton:SetZPos(-1)
 	purchasebutton:MoveAbove(bottomspace, 5)
@@ -546,7 +555,61 @@ function GM:OpenPointsShop(weaponslot)
 	local sweptable = nil
 	frame.CurrentID = nil
 	
-	for catid, catname in ipairs(GAMEMODE.ItemCategories) do
+	if GAMEMODE:IsClassicMode() then
+		for catid, catname in ipairs(GAMEMODE.ItemCategories) do
+			local hasitems = false
+			for i, tab in ipairs(GAMEMODE.Items) do
+				if tab.Category == catid then
+					hasitems = true
+					break
+				end
+			end
+			local currentweppanel = nil
+			local currentwepcatname = nil
+			if hasitems then
+				local list = vgui.Create("DScrollPanel", propertysheet)
+				list:SetPaintBackground(false)
+				list:SetPadding(2)
+				for i, tab in ipairs(GAMEMODE.Items) do
+					if not (tab.NoClassicMode) then--and (!tab.Prerequisites) then 
+						local weptab = weapons.GetStored(tab.SWEP) or tab
+						if tab.Category == catid then
+							local itembut = vgui.Create("ShopItemButton")
+							itembut:SetupItemButton(i,weaponslot)
+							itembut:Dock(TOP)
+							list:AddItem(itembut)
+							if tab.SWEP == wep then 
+								frame.CurrentID = i
+								SetViewer(tab)
+								currentweppanel = itembut
+								currentwepcatname = catname
+							end
+						end
+					end
+				end
+				local sheet = propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
+				sheet.Panel:SetPos(0, tabhei + 2)
+				if currentweppanel then
+					propertysheet:SwitchToName(translate.Get(currentwepcatname))
+					timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
+				end
+				local scroller = propertysheet:GetChildren()[1]
+				local dragbase = scroller:GetChildren()[1]
+				local tabs = dragbase:GetChildren()
+				self:ConfigureMenuTabs(tabs, tabhei)
+			end
+		end
+	else
+		local catid = nil
+		if (weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) then
+			catid = ITEMCAT_GUNS 
+		elseif weaponslot == WEAPONLOADOUT_MELEE then
+			catid = ITEMCAT_MELEE 
+		elseif weaponslot == WEAPONLOADOUT_TOOLS then
+			catid = ITEMCAT_TOOLS
+		elseif (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
+			catid = ITEMCAT_CONS
+		end
 		local hasitems = false
 		for i, tab in ipairs(GAMEMODE.Items) do
 			if tab.Category == catid then
@@ -554,33 +617,16 @@ function GM:OpenPointsShop(weaponslot)
 				break
 			end
 		end
+		if not hasitems then return end
 		local currentweppanel = nil
-		local currentwepcatname = nil
-		if hasitems and 
-		((weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) and catid == ITEMCAT_GUNS 
-		or weaponslot == WEAPONLOADOUT_MELEE and catid == ITEMCAT_MELEE 
-		or weaponslot == WEAPONLOADOUT_TOOLS and catid == ITEMCAT_TOOLS
-		or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) and (GAMEMODE:IsClassicMode() or (catid ~= ITEMCAT_MELEE and catid ~= ITEMCAT_GUNS and catid ~= ITEMCAT_TOOLS))) then
-			local list = vgui.Create("DScrollPanel", propertysheet)
-			list:SetPaintBackground(false)
-			list:SetPadding(2)
-			local currenttier = -1
-			for i, tab in ipairs(GAMEMODE.Items) do
-				if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 
-				not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())then 
+		local list = vgui.Create("DScrollPanel", propertysheet)
+		list:SetPaintBackground(false)
+		list:SetPadding(2)
+		for i, tab in ipairs(GAMEMODE.Items) do
+			if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+			not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then--and (!tab.Prerequisites) then 
 				local weptab = weapons.GetStored(tab.SWEP) or tab
 				if tab.Category == catid then
-					if tab.Category == ITEMCAT_GUNS and weptab and tab.Tier ~= nil and (currenttier == nil  or currenttier < tab.Tier) then
-						local tierheading = vgui.Create("DPanel")
-						tierheading:SetSize(list:GetWide(), 40)
-						tierheading:Dock(TOP)
-						list:AddItem(tierheading)
-						local namelab = EasyLabel(tierheading,translate.Format("tier_x",1+tab.Tier), "ZSHUDFontSmall", COLOR_WHITE)
-						namelab:Dock(FILL)
-						namelab:SetContentAlignment(5)
-						currenttier = currenttier + 1
-					end
 					local itembut = vgui.Create("ShopItemButton")
 					itembut:SetupItemButton(i,weaponslot)
 					itembut:Dock(TOP)
@@ -589,35 +635,30 @@ function GM:OpenPointsShop(weaponslot)
 						frame.CurrentID = i
 						SetViewer(tab)
 						currentweppanel = itembut
-						currentwepcatname = catname
 					end
 				end
-				end
 			end
-			local sheet = propertysheet:AddSheet(translate.Get(catname), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
-			sheet.Panel:SetPos(0, tabhei + 2)
-			if currentweppanel then
-				propertysheet:SwitchToName(translate.Get(currentwepcatname))
-				timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
-			end
-			local scroller = propertysheet:GetChildren()[1]
-			local dragbase = scroller:GetChildren()[1]
-			local tabs = dragbase:GetChildren()
-
-			self:ConfigureMenuTabs(tabs, tabhei)
 		end
+		local sheet = propertysheet:AddSheet(translate.Get(GAMEMODE.ItemCategories[catid]), list, GAMEMODE.ItemCategoryIcons[catid], false, false)
+		sheet.Panel:SetPos(0, tabhei + 2)
+		if currentweppanel then
+			timer.Simple( 0.02, function() list:ScrollToChild(currentweppanel) end)
+		end
+		local scroller = propertysheet:GetChildren()[1]
+		local dragbase = scroller:GetChildren()[1]
+		local tabs = dragbase:GetChildren()
+		self:ConfigureMenuTabs(tabs, tabhei)
 	end
-	local left = 0
+
 	for i, tab in ipairs(GAMEMODE.Items) do
-		if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 
-		not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-		not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())then 
-			if tab.Category == ITEMCAT_OTHER then
+		if tab.Category == ITEMCAT_OTHER then
+			if not (GAMEMODE:IsClassicMode() and tab.NoClassicMode) and 
+			not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+			not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())then 
 				local itembut = vgui.Create("ShopItemButton",bottomspace)
 				itembut:SetupItemButton(i,WEAPONLOADOUT_NULL)
-				itembut:AlignLeft(left)
 				itembut:SetWide(156)
-				left = left + itembut:GetWide() + 8
+				bottomspace:AddPanel(itembut)
 			end
 		end
 	end	

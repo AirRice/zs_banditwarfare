@@ -23,9 +23,9 @@ function GM:AddPointShopWeapon(tier, signature, category, points, swep)
 end
 
 function GM:AddWeaponPrerequisite(wep,prereqsignature)
-	local reqstable = wep.prereqs
-	if (reqstable == nil) then wep.prereqs = {} end
-	table.insert( wep.prereqs, "ps_"..prereqsignature)
+	local reqstable = wep.Prerequisites
+	if (reqstable == nil) then wep.Prerequisites = {} end
+	table.insert( wep.Prerequisites, "ps_"..prereqsignature)
 	--PrintTable(wep.prereqs)
 end
 

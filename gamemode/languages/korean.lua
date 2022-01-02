@@ -265,7 +265,7 @@ LANGUAGE.shopitem_adrenaline_toomuch				= "아드레날린을 더 사용하는 �
 
 LANGUAGE.shopitem_ammo_name							= "추가 탄약"
 LANGUAGE.shopitem_ammo_desc							= "구매 시 현재 무기의 탄약을 지급한다. 무기 당 탄약 지급량이 다르며, 처음 무기를 구매할 때 주어진 양과 동일하다. 일부 무기는 탄약 보충이 불가능하다."
-LANGUAGE.shopitem_ammo_invalid						= "이 무기의 탄약은 추가적으로 구매할 수 없다."
+LANGUAGE.shopitem_ammo_invalid						= "이 무기는 상점에서 보충할 수 없다."
 
 LANGUAGE.statusname_invuln							= "무적 상태"
 LANGUAGE.statusname_bodyarmor						= "방탄복"

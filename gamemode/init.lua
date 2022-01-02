@@ -1374,7 +1374,6 @@ function GM:RemoveUnusedAmmo(pl)
 			end
 		end
 	end
-	PrintTable(AmmoCounts)
 	for _, ammotype in ipairs(game.GetAmmoTypes()) do
 		ammotype = string.lower(ammotype)
 		if not (AmmoCounts[ammotype] and AmmoCounts[ammotype] > 0) and pl:GetAmmoCount(ammotype) > 0 then
@@ -1384,47 +1383,30 @@ function GM:RemoveUnusedAmmo(pl)
 end
 
 function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
-if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end
+	if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end
 	local points = pl:GetPoints()
 	local cost = itemtab.Worth
 	cost = math.floor(cost * ((self:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
 	
-	if points < cost then
-		pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "dont_have_enough_points"))
+	local canpurchase, reasons = PlayerCanPurchasePointshopItem(pl,itemtab,slot)
+	if not canpurchase then
+		pl:CenterNotify(COLOR_RED, reasons)
 		pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 		return
 	end
+	
 	if not self:IsClassicMode() then
-		if (itemtab.NoSampleCollectMode and self:IsSampleCollectMode()) or (itemtab.SampleCollectModeOnly and not self:IsSampleCollectMode()) then 
-			if pl:Alive() then
-				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_purchase_in_this_mode"))
-				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return
-			end
-		end
 		if slot == WEAPONLOADOUT_NULL or not slot then
-			if not pl:Alive() or (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP)) then
+			if not pl:Alive() then
 				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_purchase_right_now"))
 				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 				return
 			end
 			if itemtab.Category == ITEMCAT_GUNS or itemtab.Category == ITEMCAT_MELEE or itemtab.Category == ITEMCAT_TOOLS then return end
-			if itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(pl) then
-				local translatedstring = itemtab.FailTranslateString and translate.ClientGet(pl, itemtab.FailTranslateString) or translate.ClientGet(pl, "cant_purchase_right_now")
-				pl:CenterNotify(COLOR_RED, translatedstring)
-				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return
-			end
 			if itemtab.Callback then
 				itemtab.Callback(pl)
 			elseif itemtab.SWEP then
-				if pl:HasWeapon(itemtab.SWEP) then
-					pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
-					pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-					return
-				else
-					pl:Give(itemtab.SWEP)
-				end
+				pl:Give(itemtab.SWEP)
 			else
 				return
 			end		
@@ -1432,13 +1414,9 @@ if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 			if itemtab.SWEP then
 				if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
 				 -- can't do callback style shops anymore.
-					if pl:HasWeapon(itemtab.SWEP) or pl:GetWeapon1() == itemtab.SWEP or pl:GetWeapon2() == itemtab.SWEP or pl:GetWeaponToolslot() == itemtab.SWEP or pl:GetWeaponMelee() == itemtab.SWEP then
-						pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
-						pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-						return	
-					elseif not self:GetWaveActive() and pl:Alive() then
+					if not self:GetWaveActive() and pl:Alive() then
 						local newweptab = weapons.GetStored(itemtab.SWEP)
-						if newweptab and newweptab.Primary then
+						if newweptab then
 							local oldwep
 							if slot == WEAPONLOADOUT_SLOT1 then 
 								oldwep = pl:GetWeapon1()
@@ -1488,28 +1466,17 @@ if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 			end
 		end
 	else
-		if itemtab.NoClassicMode then
-			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "cant_use_in_classic_mode"))
-			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-			return
-		end
 		if itemtab.ControllerWep and pl:HasWeapon(itemtab.ControllerWep) then
 			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
 			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
 			return
 		end
 		if itemtab.SWEP then
-			if pl:HasWeapon(itemtab.SWEP) then
-				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
-				pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
-				return	
-			else
-				local wep = pl:Give(itemtab.SWEP)
-				if wep and wep:IsValid() then
-					pl:SelectWeapon(itemtab.SWEP)
-					if not (wep.IsConsumable or wep.AmmoIfHas) then
-						table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
-					end
+			local wep = pl:Give(itemtab.SWEP)
+			if wep and wep:IsValid() then
+				pl:SelectWeapon(itemtab.SWEP)
+				if not (wep.IsConsumable or wep.AmmoIfHas) then
+					table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
 				end
 			end
 		elseif itemtab.Callback then
