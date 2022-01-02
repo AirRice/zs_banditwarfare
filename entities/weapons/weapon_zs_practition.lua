@@ -30,9 +30,9 @@ if CLIENT then
 		["pipe"] = { type = "Model", model = "models/props_pipes/pipecluster16d_001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(8.274, -0.724, -3.898), angle = Angle(39.147, -27.515, -69.176), size = Vector(0.037, 0.037, 0.037), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}
 	SWEP.HUD3DBone = "v_weapon.AK47_Parent"
-	SWEP.HUD3DPos = Vector(-3, -4.5, -4)
+	SWEP.HUD3DPos = Vector(-1.85, -5.5, -5)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
-	SWEP.HUD3DScale = 0.015
+	SWEP.HUD3DScale = 0.02
 end
 
 SWEP.Base = "weapon_zs_base"
@@ -67,7 +67,7 @@ SWEP.ToxDuration = 1
 SWEP.Heal = 4
 SWEP.WalkSpeed = SPEED_SLOW
 
-SWEP.IronSightsPos = Vector(-3.6, 20, 3.1)
+SWEP.IronSightsPos = Vector(-6.6, 40, 2.1)
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity

@@ -10,7 +10,7 @@ if CLIENT then
 	SWEP.ViewModelFOV = 50
 
 	SWEP.HUD3DBone = "v_weapon.sg550_Parent"
-	SWEP.HUD3DPos = Vector(-1.558, -5, -2.1)
+	SWEP.HUD3DPos = Vector(-1.6, -5.75, -1.75)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
 	SWEP.HUD3DScale = 0.02
 	
@@ -82,7 +82,7 @@ SWEP.ConeMin = 0.001
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-SWEP.IronSightsPos = Vector(-7.3, 0, 0.3)
+SWEP.IronSightsPos = Vector(-7.4, 20, 1.3)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
 SWEP.WalkSpeed = SPEED_SLOWER

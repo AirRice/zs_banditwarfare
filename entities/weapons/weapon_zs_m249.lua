@@ -20,7 +20,7 @@ SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "crossbow"
 
-SWEP.ViewModel = "models/weapons/v_mach_m249para.mdl"
+SWEP.ViewModel = "models/weapons/cstrike/c_mach_m249para.mdl"
 SWEP.WorldModel = "models/weapons/w_mach_m249para.mdl"
 SWEP.UseHands = true
 
