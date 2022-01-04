@@ -28,6 +28,7 @@ LANGUAGE.colors_button								= "색깔 선택"
 LANGUAGE.options_button								= "옵션"
 LANGUAGE.credits_button								= "제작진"
 LANGUAGE.close_button								= "닫기"
+LANGUAGE.back_button								= "뒤로가기"
 LANGUAGE.consumables_purchase_button				= "소모품 구매"
 
 
@@ -316,6 +317,7 @@ LANGUAGE.nothing_for_this_ammo						= "이 탄약을 이용할 무기를 소유�
 LANGUAGE.purchased_for_x_points						= "%d포인트에 구매했다."
 LANGUAGE.require_x_more_points						= "%d포인트 부족"
 LANGUAGE.purchase_item								= "구매"
+LANGUAGE.upgrade_item								= "업그레이드"
 LANGUAGE.pointshop_title							= "포인트 상점"
 LANGUAGE.pointshop_title_guns1						= "무기 1 구매"
 LANGUAGE.pointshop_title_guns2						= "무기 2 구매"

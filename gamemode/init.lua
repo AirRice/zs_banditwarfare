@@ -1133,11 +1133,11 @@ local primaryguns = {
 	"weapon_zs_crackler",
 	"weapon_zs_doublebarrel",
 	"weapon_zs_stubber",
-	"weapon_zs_slinger"
 }
 local secondaryguns = {
 	"weapon_zs_peashooter",
-	"weapon_zs_battleaxe"
+	"weapon_zs_battleaxe",
+	"weapon_zs_slinger"
 }
 
 function GM:PlayerInitialSpawnRound(pl)

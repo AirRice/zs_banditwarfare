@@ -35,6 +35,7 @@ LANGUAGE.colors_button								= "Player Colors"
 LANGUAGE.options_button								= "Options"
 LANGUAGE.credits_button								= "Credits"
 LANGUAGE.close_button								= "Close"
+LANGUAGE.back_button								= "Back"
 LANGUAGE.consumables_purchase_button				= "Buy Consumables"
 
 
@@ -330,6 +331,7 @@ LANGUAGE.nothing_for_this_ammo						= "You do not own anything that can utilise 
 LANGUAGE.purchased_for_x_points						= "Purchased for %d Points."
 LANGUAGE.require_x_more_points						= "Requires %d more points"
 LANGUAGE.purchase_item								= "Purchase"
+LANGUAGE.upgrade_item								= "Upgrade"
 LANGUAGE.pointshop_title							= "Points Shop"
 LANGUAGE.pointshop_title_guns1						= "Purchase Weapon 1"
 LANGUAGE.pointshop_title_guns2						= "Purchase Weapon 2"
