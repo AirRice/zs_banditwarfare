@@ -910,7 +910,7 @@ function GM:DoRestartGame()
 	self.ShuffledPlayersThisRound = false
 	net.Start("zs_currentsigils")
 		for i=1, self.MaxSigils do
-			net.WriteInt(nil,4)
+			net.WriteInt(0,4)
 		end
 	net.Broadcast()
 	self.CurrentSigilTable = {}
@@ -2838,7 +2838,7 @@ function GM:WaveStateChanged(newstate)
 		net.Broadcast()
 		net.Start("zs_currentsigils")
 			for i=1, self.MaxSigils do
-				net.WriteInt(nil,3)
+				net.WriteInt(0,4)
 			end
 		net.Broadcast()
 		self.CurrentSigilTable = {}
