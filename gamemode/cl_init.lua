@@ -1381,6 +1381,10 @@ net.Receive("zs_insure_weapon", function(length)
 		GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
 	end
 end)
+net.Receive("zs_remove_insured_weapon", function(length)
+	local wep = net.ReadString()
+	GAMEMODE.ClassicModeInsuredWeps[wep] = false
+end)
 
 net.Receive("zs_playerrespawntime", function(length)
 	local respawntime = net.ReadFloat()

@@ -278,6 +278,7 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_floatscore_vec")
 
 	util.AddNetworkString("zs_insure_weapon")
+	util.AddNetworkString("zs_remove_insured_weapon")
 	
 	util.AddNetworkString("zs_dmg")
 	util.AddNetworkString("zs_dmg_prop")
@@ -1238,6 +1239,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	end
 	pl.ClassicModeInsuredWeps = {}
 	pl.ClassicModeNextInsureWeps = {}
+	pl.ClassicModeRemoveInsureWeps = {}
 	pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
 	pl:SetWeapon1(primaryguns[math.random(#primaryguns)])
 	pl:SetWeapon2(secondaryguns[math.random(#secondaryguns)])
@@ -1425,6 +1427,7 @@ function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
 				if tempinsuredindex != nil then
 					table.remove(pl.ClassicModeNextInsureWeps,tempinsuredindex)
 				end
+				table.insert(pl.ClassicModeRemoveInsureWeps,originswep)
 				pl:StripWeapon(originswep)
 			end
 		else
@@ -2395,6 +2398,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	end
 	if self:IsClassicMode() then
 		pl.ClassicModeNextInsureWeps = {}
+		pl.ClassicModeRemoveInsureWeps = {}
 	end
 	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
 		samplestodrop = samplestodrop + pl:GetSamples()	
@@ -2774,7 +2778,7 @@ function GM:WaveStateChanged(newstate)
 					pl:UpdateWeaponLoadouts()
 				else
 					for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
-						if pl:HasWeapon(wep) then
+						if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
 							table.insert(pl.ClassicModeInsuredWeps,wep)
 							net.Start("zs_insure_weapon")
 								net.WriteString(wep)
@@ -2783,7 +2787,17 @@ function GM:WaveStateChanged(newstate)
 						end
 						--table.remove(pl.ClassicModeNextInsureWeps,_)
 					end
+					for i,wep in ipairs(pl.ClassicModeInsuredWeps) do
+						if table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
+							table.remove(pl.ClassicModeInsuredWeps,i)
+							net.Start("zs_remove_insured_weapon")
+								net.WriteString(wep)
+							net.Send(pl)
+						end
+						--table.remove(pl.ClassicModeNextInsureWeps,_)
+					end
 					pl.ClassicModeNextInsureWeps = {}
+					pl.ClassicModeRemoveInsureWeps = {}
 				end
 				pl.LifeBarricadeDamage = 0
 				pl.LifeEnemyDamage = 0
