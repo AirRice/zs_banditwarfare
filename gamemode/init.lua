@@ -1382,13 +1382,136 @@ function GM:RemoveUnusedAmmo(pl)
 	end
 end
 
-function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
-	if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end
-	local points = pl:GetPoints()
-	local cost = itemtab.Worth
-	cost = math.floor(cost * ((self:IsClassicMode() and itemtab.Category ~= ITEMCAT_OTHER) and 0.75 or 1))
+function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
+	if not itemtab or not originaltab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end
+	local canupgrade, reasons = PlayerCanPurchasePointshopUpgradeItem(pl,originaltab,itemtab,slot,revertmode)
+	if not canupgrade then
+		pl:CenterNotify(COLOR_RED, reasons)
+		pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+		return
+	end
+	local originswep = originaltab.SWEP or ""
+	local targetswep = itemtab.SWEP or ""
+	if self:IsClassicMode() then
+		--[[if itemtab.ControllerWep and pl:HasWeapon(itemtab.ControllerWep) then
+			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "already_have_weapon"))
+			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+			return
+		end]]
+		local cangive = false
+		local tempinsuredindex = nil
+		for i,wepname in ipairs(pl.ClassicModeInsuredWeps) do
+			if isstring(wepname) and isstring(originswep) and string.lower(wepname) == string.lower(originswep) then
+				cangive = true
+				break
+			end
+		end
+		for i,wepname in ipairs(pl.ClassicModeNextInsureWeps) do
+			if isstring(wepname) and isstring(originswep) and string.lower(wepname) == string.lower(originswep) then
+				cangive = true
+				tempinsuredindex = i
+				break
+			end
+		end
+		if cangive then
+			local wep = pl:Give(targetswep)
+			if wep and wep:IsValid() then
+				pl:SelectWeapon(targetswep)
+				if not (wep.IsConsumable or wep.AmmoIfHas) then
+					if not table.HasValue(pl.ClassicModeNextInsureWeps,targetswep) then
+						table.insert(pl.ClassicModeNextInsureWeps,targetswep)
+					end
+				end
+				if tempinsuredindex != nil then
+					table.remove(pl.ClassicModeNextInsureWeps,tempinsuredindex)
+				end
+				pl:StripWeapon(originswep)
+			end
+		else
+			pl:CenterNotify(COLOR_RED, translate.ClientGet(pl,"weapon_is_not_owned"))
+			pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+			return
+		end
+	else
+		if itemtab.SWEP then
+			if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) 
+			or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) 
+			or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
+				local oldwep = nil
+				if slot == WEAPONLOADOUT_SLOT1 then 
+					oldwep = pl:GetWeapon1()
+				elseif slot == WEAPONLOADOUT_SLOT2 then 
+					oldwep = pl:GetWeapon2() 
+				elseif slot == WEAPONLOADOUT_TOOLS then
+					oldwep = pl:GetWeaponToolslot()
+				elseif slot == WEAPONLOADOUT_MELEE then
+					oldwep = pl:GetWeaponMelee()
+				end
+				if isstring(oldwep) and isstring(originswep) and string.lower(oldwep) != string.lower(originswep) then
+					return
+				end
+				if slot == WEAPONLOADOUT_SLOT1 then 
+					pl:SetWeapon1(itemtab.SWEP)
+				elseif slot == WEAPONLOADOUT_SLOT2 then 
+					pl:SetWeapon2(itemtab.SWEP)
+				elseif slot == WEAPONLOADOUT_TOOLS then
+					pl:SetWeaponToolslot(itemtab.SWEP)
+				elseif slot == WEAPONLOADOUT_MELEE then
+					pl:SetWeaponMelee(itemtab.SWEP)
+				end
+				if not self:GetWaveActive() and pl:Alive() then
+					local newweptab = weapons.GetStored(itemtab.SWEP)
+					if newweptab then
+						local oldweptab = pl:GetWeapon(oldwep)
+						local givenwep = pl:Give(itemtab.SWEP)
+						if oldweptab and oldweptab.Primary then
+							if oldweptab.Primary.DefaultClip > 0 and givenwep and givenwep:IsValid() and givenwep:IsWeapon() then
+								local oldAmmoType = oldweptab:ValidPrimaryAmmo()
+								local oldAmmoAmount = math.min(oldweptab.Primary.DefaultClip - oldweptab:GetMaxClip1(),pl:GetAmmoCount(oldAmmoType))
+								local newAmmoType = givenwep:ValidPrimaryAmmo()
+								local newAmmoAmount = givenwep.Primary.DefaultClip - givenwep:GetMaxClip1()
+								if oldAmmoType and oldAmmoAmount and newAmmoType and newAmmoAmount and newAmmoType == oldAmmoType then
+									if oldAmmoAmount < newAmmoAmount then
+										pl:RemoveAmmo(oldAmmoAmount, oldAmmoType)
+									else
+										pl:RemoveAmmo(newAmmoAmount, oldAmmoType)
+									end
+								end
+							end
+							pl:StripWeapon(oldwep)
+						end
+						pl:SelectWeapon(itemtab.SWEP)
+						self:RemoveUnusedAmmo(pl)
+					end
+				else
+					pl:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
+				end
+			end
+		elseif itemtab.Callback then
+			itemtab.Callback(pl)
+		end
+	end
 	
-	local canpurchase, reasons = PlayerCanPurchasePointshopItem(pl,itemtab,slot)
+	local cost = GetItemCost(itemtab)
+	if revertmode then
+		cost = math.floor(GetItemCost(originaltab)/2)
+		pl:RefundPoints(cost)
+	else
+		pl:TakePoints(cost)
+		pl.PointsSpent = pl.PointsSpent + cost
+	end
+	pl:PrintTranslatedMessage(HUD_PRINTTALK, revertmode and "refunded_and_given_x_points" or "upgraded_for_x_points", cost)
+	pl:SendLua("surface.PlaySound(\"ambient/levels/labs/coinslot1.wav\")")
+end
+
+function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
+	if not itemtab or not (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then return end	
+	if itemtab.Prerequisites and istable(itemtab.Prerequisites) and !table.IsEmpty(itemtab.Prerequisites) then
+		pl:CenterNotify(COLOR_RED, translate.ClientGet(pl,"cant_purchase_right_now"))
+		pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
+		return
+	end
+	local canpurchase, reasons = PlayerCanPurchasePointshopItem(pl,itemtab,slot,false)
 	if not canpurchase then
 		pl:CenterNotify(COLOR_RED, reasons)
 		pl:SendLua("surface.PlaySound(\"buttons/button10.wav\")")
@@ -1413,20 +1536,23 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 		else
 			if itemtab.SWEP then
 				if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
-				 -- can't do callback style shops anymore.
+					local oldwep = nil
+					if slot == WEAPONLOADOUT_SLOT1 then 
+						oldwep = pl:GetWeapon1()
+						pl:SetWeapon1(itemtab.SWEP)
+					elseif slot == WEAPONLOADOUT_SLOT2 then 
+						oldwep = pl:GetWeapon2() 
+						pl:SetWeapon2(itemtab.SWEP)
+					elseif slot == WEAPONLOADOUT_TOOLS then
+						oldwep = pl:GetWeaponToolslot()
+						pl:SetWeaponToolslot(itemtab.SWEP)
+					elseif slot == WEAPONLOADOUT_MELEE then
+						oldwep = pl:GetWeaponMelee()
+						pl:SetWeaponMelee(itemtab.SWEP)
+					end
 					if not self:GetWaveActive() and pl:Alive() then
 						local newweptab = weapons.GetStored(itemtab.SWEP)
 						if newweptab then
-							local oldwep
-							if slot == WEAPONLOADOUT_SLOT1 then 
-								oldwep = pl:GetWeapon1()
-							elseif slot == WEAPONLOADOUT_SLOT2 then 
-								oldwep = pl:GetWeapon2() 
-							elseif slot == WEAPONLOADOUT_TOOLS then
-								oldwep = pl:GetWeaponToolslot()
-							elseif slot == WEAPONLOADOUT_MELEE then
-								oldwep = pl:GetWeaponMelee()
-							end
 							local oldweptab = pl:GetWeapon(oldwep)
 							local givenwep = pl:Give(itemtab.SWEP)
 							if oldweptab and oldweptab.Primary then
@@ -1452,15 +1578,6 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 						pl:PrintTranslatedMessage(HUD_PRINTTALK, "will_appear_after_respawn")
 					end
 				end
-				if slot == WEAPONLOADOUT_SLOT1 then 
-					pl:SetWeapon1(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_SLOT2 then 
-					pl:SetWeapon2(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_TOOLS then
-					pl:SetWeaponToolslot(itemtab.SWEP)			
-				elseif slot == WEAPONLOADOUT_MELEE then
-					pl:SetWeaponMelee(itemtab.SWEP)
-				end
 			elseif itemtab.Callback then
 				itemtab.Callback(pl)
 			end
@@ -1476,7 +1593,9 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 			if wep and wep:IsValid() then
 				pl:SelectWeapon(itemtab.SWEP)
 				if not (wep.IsConsumable or wep.AmmoIfHas) then
-					table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
+					if not table.HasValue(pl.ClassicModeNextInsureWeps,targetswep) then
+						table.insert(pl.ClassicModeNextInsureWeps,targetswep)
+					end
 				end
 			end
 		elseif itemtab.Callback then
@@ -1485,7 +1604,8 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 			return
 		end
 	end
-
+	
+	local cost = GetItemCost(itemtab)
 	pl:TakePoints(cost)
 	pl.PointsSpent = pl.PointsSpent + cost
 	pl:PrintTranslatedMessage(HUD_PRINTTALK, "purchased_for_x_points", cost)
@@ -1505,22 +1625,23 @@ end)
 
 concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 	if not (sender:IsValid() and sender:IsConnected()) or #arguments == 0 then return end
-
-	local itemtab
+	
 	local id = arguments[1]
 	local slot = tonumber(arguments[2])
-	local num = tonumber(id)
-	if num then
-		itemtab = GAMEMODE.Items[num]
-	else
-		for i, tab in pairs(GAMEMODE.Items) do
-			if tab.Signature == id then
-				itemtab = tab
-				break
-			end
-		end
-	end
+	local itemtab = FindItem(id)
+
 	gamemode.Call("PlayerPurchasePointshopItem",sender,itemtab,slot)
+end)
+
+concommand.Add("zsb_pointsshopupgrade", function(sender, command, arguments)
+	if not (sender:IsValid() and sender:IsConnected()) or #arguments == 0 then return end
+	local prev_id = arguments[1]
+	local toupgrade_id = arguments[2]
+	local revertmode = tobool(tonumber(arguments[3]))
+	local slot = tonumber(arguments[4])
+	local originaltab = FindItem(prev_id)
+	local itemtab = FindItem(toupgrade_id)
+	gamemode.Call("PlayerUpgradePointshopItem",sender,originaltab,itemtab,revertmode,slot)
 end)
 
 function GM:SpectatorThink(pl)

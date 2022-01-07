@@ -637,6 +637,11 @@ function meta:TakePoints(points)
 	self:SetPoints(self:GetPoints() - points)
 end
 
+function meta:RefundPoints(points)
+	self:SetFullPoints(math.max(self:GetPoints() + points,self:GetFullPoints()))
+	self:SetPoints(self:GetPoints() + points)
+end
+
 function meta:CreateAmbience(class)
 	class = "status_"..class
 
