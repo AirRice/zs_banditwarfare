@@ -1461,7 +1461,10 @@ net.Receive("zs_honmention", function(length)
 end)
 
 net.Receive("zs_currentsigils", function(length)
-	local sigilteams = net.ReadTable()
+	local sigilteams = {}
+	for i=1, GAMEMODE.MaxSigils do
+		sigilteams[i] = net.ReadInt(4)
+	end
 	gamemode.Call("UpdateSigilTeamCounter",sigilteams)
 end)
 

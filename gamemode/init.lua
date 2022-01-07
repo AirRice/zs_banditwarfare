@@ -909,7 +909,9 @@ function GM:DoRestartGame()
 	self.CurrentMapLoadedPlayers = 0
 	self.ShuffledPlayersThisRound = false
 	net.Start("zs_currentsigils")
-		net.WriteTable({})
+		for i=1, self.MaxSigils do
+			net.WriteInt(nil,4)
+		end
 	net.Broadcast()
 	self.CurrentSigilTable = {}
 	self:SetWave(0)
@@ -2835,7 +2837,9 @@ function GM:WaveStateChanged(newstate)
 			net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
 		net.Broadcast()
 		net.Start("zs_currentsigils")
-			net.WriteTable({})
+			for i=1, self.MaxSigils do
+				net.WriteInt(nil,3)
+			end
 		net.Broadcast()
 		self.CurrentSigilTable = {}
 		util.RemoveAll("prop_ammo")
