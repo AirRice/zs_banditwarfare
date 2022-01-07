@@ -279,6 +279,7 @@ function GM:AddNetworkStrings()
 
 	util.AddNetworkString("zs_insure_weapon")
 	util.AddNetworkString("zs_remove_insured_weapon")
+	util.AddNetworkString("zs_weapon_toinsure")
 	
 	util.AddNetworkString("zs_dmg")
 	util.AddNetworkString("zs_dmg_prop")
@@ -1243,6 +1244,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.ClassicModeNextInsureWeps = {}
 	pl.ClassicModeRemoveInsureWeps = {}
 	pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+	pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
 	pl:SetWeapon1(primaryguns[math.random(#primaryguns)])
 	pl:SetWeapon2(secondaryguns[math.random(#secondaryguns)])
 	pl:SetWeaponToolslot("weapon_zs_enemyradar")
@@ -1425,6 +1427,9 @@ function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
 					if not table.HasValue(pl.ClassicModeNextInsureWeps,targetswep) then
 						table.insert(pl.ClassicModeNextInsureWeps,targetswep)
 					end
+					net.Start("zs_weapon_toinsure")
+						net.WriteString(targetswep)
+					net.Send(pl)
 				end
 				if tempinsuredindex != nil then
 					table.remove(pl.ClassicModeNextInsureWeps,tempinsuredindex)
@@ -1598,9 +1603,12 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 			if wep and wep:IsValid() then
 				pl:SelectWeapon(itemtab.SWEP)
 				if not (wep.IsConsumable or wep.AmmoIfHas) then
-					if not table.HasValue(pl.ClassicModeNextInsureWeps,targetswep) then
-						table.insert(pl.ClassicModeNextInsureWeps,targetswep)
+					if not table.HasValue(pl.ClassicModeNextInsureWeps,itemtab.SWEP) then
+						table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
 					end
+					net.Start("zs_weapon_toinsure")
+						net.WriteString(itemtab.SWEP)
+					net.Send(pl)
 				end
 			end
 		elseif itemtab.Callback then
@@ -2787,7 +2795,6 @@ function GM:WaveStateChanged(newstate)
 								net.WriteBool(true)
 							net.Send(pl)
 						end
-						--table.remove(pl.ClassicModeNextInsureWeps,_)
 					end
 					for i,wep in ipairs(pl.ClassicModeInsuredWeps) do
 						if table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
@@ -2796,7 +2803,6 @@ function GM:WaveStateChanged(newstate)
 								net.WriteString(wep)
 							net.Send(pl)
 						end
-						--table.remove(pl.ClassicModeNextInsureWeps,_)
 					end
 					pl.ClassicModeNextInsureWeps = {}
 					pl.ClassicModeRemoveInsureWeps = {}

@@ -1372,6 +1372,13 @@ net.Receive("zs_bodyarmor", function(length)
 	LocalPlayer().BodyArmor = net.ReadFloat()
 end)
 GM.ClassicModeInsuredWeps = {}
+GM.ClassicModePurchasedThisWave = {}
+
+net.Receive("zs_weapon_toinsure", function(length)
+	local wep = net.ReadString()
+	GAMEMODE.ClassicModePurchasedThisWave[wep] = true
+end)
+
 net.Receive("zs_insure_weapon", function(length)
 	local wep = net.ReadString()
 	GAMEMODE.ClassicModeInsuredWeps[wep] = true
@@ -1519,7 +1526,7 @@ net.Receive("zs_waveend", function(length)
 		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", COLOR_DARKGRAY, translate.ClientGet(pl, "draw"),{killicon = "default"})
 	end
 	gamemode.Call("SetWaveStart", time)
-	
+	GAMEMODE.ClassicModePurchasedThisWave = {}
 	if wave < GAMEMODE:GetNumberOfWaves() and wave > 0 then
 		GAMEMODE:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Format("wave_x_is_over", wave))
 		timer.Simple(0.1, function() surface_PlaySound("ambient/atmosphere/cave_hit"..math.random(6)..".wav") end)

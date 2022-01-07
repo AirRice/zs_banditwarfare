@@ -86,6 +86,7 @@ local function ItemButtonThink(self)
 			local slot = GAMEMODE.m_PointsShop.m_LoadoutSlot
 			local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot,false)
 			local canupgrade, upgradereasons = PlayerCanUpgradePointshopItem(MySelf,itemtab,slot)
+			canupgrade = canupgrade and (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
 			if canpurchase ~= self.m_LastAbleToBuy then
 				self.m_LastAbleToBuy = canpurchase
 			end
@@ -252,17 +253,27 @@ local function PurchaseButtonThink(self)
 	if itemtab then 
 		local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot,false)
 		local canupgrade, upgradereasons = PlayerCanUpgradePointshopItem(MySelf,itemtab,slot)
+		local ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
+		local canupgrade_combined = canupgrade and ispurchasedweapon
 		if self.m_LastIsUpgradeBtn ~= canupgrade or canpurchase ~= self.m_LastAbleToBuy then
 			self.BuyLabel:SetText(canupgrade and translate.Get("upgrade_item") or translate.Get("purchase_item"))
 			self.m_LastIsUpgradeBtn = canupgrade
 			self.m_LastAbleToBuy = canpurchase
-			if canupgrade or canpurchase then
+			if canupgrade_combined or canpurchase then
 				self:AlphaTo(255, 0.5, 0)
 			else
 				self:AlphaTo(75, 0.5, 0)
 			end
 		end
-		refusesellpanel:SetText(canupgrade and "" or reasons)
+		local refusalreasons = ""
+		if canupgrade then
+			if !ispurchasedweapon then
+				refusalreasons = translate.Get("weapon_is_not_owned")
+			end
+		elseif !canpurchase then
+			refusalreasons = reasons
+		end
+		refusesellpanel:SetText(refusalreasons)
 	else
 		self.m_LastAbleToBuy = false
 		self.m_LastIsUpgradeBtn = false
@@ -292,13 +303,18 @@ function PANEL:DoClick()
 	local tab = FindItem(id)
 	if not tab then return end
 	if self.m_LastIsUpgradeBtn or self.m_LastAbleToBuy then
-		surface.PlaySound("buttons/button17.wav")
 		if self.m_LastIsUpgradeBtn then
-			local shopframe = vgui.Create("DUpgradesShopFrame")
-			shopframe:SetUpUpgradeMenu(id,GAMEMODE.m_PointsShop.m_LoadoutSlot)
-			GAMEMODE.m_PointsShop:SetVisible(false)
+			if (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP]) then
+				surface.PlaySound("buttons/button17.wav")
+				local shopframe = vgui.Create("DUpgradesShopFrame")
+				shopframe:SetUpUpgradeMenu(id,GAMEMODE.m_PointsShop.m_LoadoutSlot)
+				GAMEMODE.m_PointsShop:SetVisible(false)
+			else
+				surface.PlaySound("buttons/button8.wav")
+			end
 			return
 		end
+		surface.PlaySound("buttons/button17.wav")
 		local loadoutslot = GAMEMODE.m_PointsShop.m_LoadoutSlot
 		RunConsoleCommand("zsb_pointsshopbuy", id, loadoutslot)
 		if not GAMEMODE:IsClassicMode() and (loadoutslot == WEAPONLOADOUT_SLOT1 or loadoutslot == WEAPONLOADOUT_SLOT2 or loadoutslot == WEAPONLOADOUT_MELEE or loadoutslot == WEAPONLOADOUT_TOOLS) then
@@ -310,11 +326,15 @@ function PANEL:DoClick()
 end 
 
 function PANEL:Paint(w, h)
+	local id = GAMEMODE.m_PointsShop.CurrentID
+	local tab = FindItem(id)
+	local ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
 	local outline
+	local isupgradeable = self.m_LastIsUpgradeBtn and ispurchasedweapon
 	if self.Hovered then
-		outline = self.m_LastIsUpgradeBtn and COLOR_DARKBLUE or (self.m_LastAbleToBuy and COLOR_DARKGREEN or COLOR_DARKRED)
+		outline = isupgradeable and COLOR_DARKBLUE or (self.m_LastAbleToBuy and COLOR_DARKGREEN or COLOR_DARKRED)
 	else
-		outline = (self.m_LastIsUpgradeBtn and COLOR_GRAY or COLOR_DARKGRAY)
+		outline = (isupgradeable and COLOR_GRAY or COLOR_DARKGRAY)
 	end
 	draw.RoundedBox(8, 0, 0, w, h, outline)
 	draw.RoundedBox(4, 4, 4, w - 8, h - 8, color_black)
