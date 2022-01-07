@@ -431,10 +431,15 @@ function meta:DropActiveWeapon()
 		local shoptab = FindItembyClass(currentwep:GetClass())
 		local shoulddrop = true
 		if GAMEMODE:IsClassicMode() then 
-			for _, insuredwep in pairs(self.ClassicModeInsuredWeps) do
+			for _, insuredwep in ipairs(self.ClassicModeInsuredWeps) do
 				if insuredwep == currentwep:GetClass() then
 					shoulddrop = false
 					break
+				end
+			end
+			for i, insuredwep in ipairs(self.ClassicModeNextInsureWeps) do
+				if insuredwep == currentwep:GetClass() then
+					table.remove(self.ClassicModeNextInsureWeps,i)
 				end
 			end
 		else
