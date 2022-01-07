@@ -24,8 +24,6 @@ LANGUAGE.itemcategory_ammo							= "Ammo"
 LANGUAGE.itemcategory_melee							= "Melee"
 LANGUAGE.itemcategory_tools							= "Tools"
 LANGUAGE.itemcategory_etc							= "Etc"
-LANGUAGE.itemcategory_upgrade						= "Upgrade"
-
 
 LANGUAGE.playermodel_changed_to_x					= "Your playermodel has been set to %s."
 LANGUAGE.select_playermodel							= "Select Playermodel"
@@ -322,21 +320,50 @@ LANGUAGE.hm_killstreaks_desc 						= "%s was able to kill %d enemies in a single
 LANGUAGE.hm_bestaim_name 							= "Sharpshooter"
 LANGUAGE.hm_bestaim_desc 							= "%s shoots away the competition with an accuracy of %d%%."
 
+LANGUAGE.hm_expensive_name 							= "Luxury Goods"
+LANGUAGE.hm_expensive_desc 							= "%s made the most expensive purchase: their %s, at %d points."
+LANGUAGE.hm_mostsamples_name 						= "I'll Be Taking That One"
+LANGUAGE.hm_mostsamples_desc 						= "%s obtained a total of %d biosamples."
+LANGUAGE.hm_nestdestroyer_name 						= "Nest Removal Services"
+LANGUAGE.hm_nestdestroyer_desc 						= "%s destroyed %d zombie nests that were still lingering."
+LANGUAGE.hm_sniperelite_name 						= "Sniper Elite"
+LANGUAGE.hm_sniperelite_desc 						= "%s managed to dispatch an enemy that was %d units away. Nice shot!"
+LANGUAGE.hm_survivor_name 							= "The Last Human"
+LANGUAGE.hm_survivor_desc 							= "%s survived through %d waves of battle. Maybe they thought this was Zombie Survival?"
+
 LANGUAGE.consecutive_kills							= " Kills"
 LANGUAGE.cant_purchase_in_this_mode					= "Cannot be used in this mode."
 LANGUAGE.already_have_weapon						= "You already own this."
 LANGUAGE.cant_use_in_classic_mode					= "Cannot be used in deathmatch mode."
 LANGUAGE.nothing_for_this_ammo						= "You do not own anything that can utilise this ammo type."
+LANGUAGE.dont_own_prerequisite						= "You do not own the requirements for this."
+LANGUAGE.weapon_has_no_upgrades						= "This weapon has no upgrades."
+LANGUAGE.weapon_has_no_prerequisites				= "This weapon has no predecessors."
+LANGUAGE.cant_purchase_right_now					= "You cannot purchase this right now."
+LANGUAGE.dont_have_enough_points					= "Not enough points."
+LANGUAGE.weapon_is_not_owned						= "You may only modify weapons you have purchased."
 
 LANGUAGE.purchased_for_x_points						= "Purchased for %d Points."
+LANGUAGE.refunded_and_given_x_points				= "%d Points have been refunded."
+LANGUAGE.upgraded_for_x_points						= "Upgraded for %d Points."
+
 LANGUAGE.require_x_more_points						= "Requires %d more points"
 LANGUAGE.purchase_item								= "Purchase"
 LANGUAGE.upgrade_item								= "Upgrade"
+LANGUAGE.revert_item								= "Return"
 LANGUAGE.pointshop_title							= "Points Shop"
 LANGUAGE.pointshop_title_guns1						= "Purchase Weapon 1"
 LANGUAGE.pointshop_title_guns2						= "Purchase Weapon 2"
 LANGUAGE.pointshop_title_melee						= "Purchase Melee Weapon"
 LANGUAGE.pointshop_title_tools						= "Purchase Tool"
+
+LANGUAGE.upgrade_to									= "Upgrade To: "
+LANGUAGE.revert_to									= "Revert To: "
+LANGUAGE.upgrading_x								= "Upgrading %s"
+LANGUAGE.reverting_x								= "Reverting %s"
+LANGUAGE.switch_to_upgrade							= "Switch to Upgrade Mode"
+LANGUAGE.switch_to_revert							= "Switch to Return Mode"
+
 
 LANGUAGE.tier_x										= "Tier %d"
 LANGUAGE.button_help								= "HELP"
@@ -345,8 +372,6 @@ LANGUAGE.weapon_insured								= "Weapon Insured"
 
 LANGUAGE.disconnect_killed							= "%s ragequit after being killed by %s."
 LANGUAGE.nail_removed_by							= "%s removed %s's nail."
-LANGUAGE.cant_purchase_right_now					= "You cannot purchase this right now."
-LANGUAGE.dont_have_enough_points					= "Not enough points."
 LANGUAGE.prepare_yourself							= "Prepare for the battle..."
 LANGUAGE.purchased_x_for_y_points					= "Purchased %s for %d points!"
 LANGUAGE.will_appear_after_respawn					= "This will be given to you after respawning."
@@ -456,6 +481,17 @@ LANGUAGE.pointfloater_x_assist                      = "%s (assist)"
 LANGUAGE.pointfloater_x_kills                       = "%s KILLS"
 LANGUAGE.pointfloater_kill_killed                   = "KILLED"
 
+LANGUAGE.stat_walkspeed								= "Walk Speed"
+LANGUAGE.stat_meleedmg 								= "Melee Damage"
+LANGUAGE.stat_meleerange							= "Melee Range"
+
+LANGUAGE.stat_clipsize								= "Clip Size"
+LANGUAGE.stat_defaultgiven							= "Default Ammo Count"
+LANGUAGE.stat_gundmg								= "Damage"
+LANGUAGE.stat_numshots								= "Shots per Fire"
+LANGUAGE.stat_firedelay								= "Attack Delay"
+
+
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Zombie Survival: Bandit Warfare"
 LANGUAGE.help_cat_keys								= "Controls"
@@ -488,7 +524,7 @@ LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between ant
 
 <h2>Deathmatch</h2> <br>
 <p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one simplified shop. Here, purchasing weapons and other tools will give them to you directly.</p>
-<p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 25% cheaper!</p>
+<p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 30% cheaper!</p>
 <p>You will also drop your weapons on death for the enemy to collect at their leisure, although there are specific circumstances:</p>
 <ul><li>Weapons that show up as blue are <strong>"Insured"</strong>: You will not lose them upon death.</li> 
 <li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>

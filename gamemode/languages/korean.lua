@@ -18,7 +18,6 @@ LANGUAGE.itemcategory_ammo							= "탄약"
 LANGUAGE.itemcategory_melee							= "근접 무기"
 LANGUAGE.itemcategory_tools							= "도구"
 LANGUAGE.itemcategory_etc							= "기타"
-LANGUAGE.itemcategory_upgrade						= "업그레이드"
 
 LANGUAGE.playermodel_changed_to_x					= "이제 플레이어모델은 %s입니다."
 LANGUAGE.select_playermodel							= "플레이어모델 선택"
@@ -313,16 +312,33 @@ LANGUAGE.cant_purchase_in_this_mode					= "이 모드에서는 사용할 수 없
 LANGUAGE.already_have_weapon						= "이미 소유하고 있다."
 LANGUAGE.cant_use_in_classic_mode					= "섬멸전에서는 사용할 수 없다."
 LANGUAGE.nothing_for_this_ammo						= "이 탄약을 이용할 무기를 소유하고 있지 않다."
+LANGUAGE.dont_own_prerequisite						= "필요로 하는 무기를 소유하고 있지 않다."
+LANGUAGE.weapon_has_no_upgrades						= "이 무기는 업그레이드가 불가능하다."
+LANGUAGE.weapon_has_no_prerequisites				= "이 무기는 전 단계가 없다."
+LANGUAGE.cant_purchase_right_now					= "지금은 구매할 수 없다."
+LANGUAGE.dont_have_enough_points					= "포인트가 부족하다."
+LANGUAGE.weapon_is_not_owned						= "본인이 구매한 무기만 업그레이드가 가능하다."
 
 LANGUAGE.purchased_for_x_points						= "%d포인트에 구매했다."
+LANGUAGE.refunded_and_given_x_points				= "%d포인트가 환불되었다."
+LANGUAGE.upgraded_for_x_points						= "%d포인트에 업그레이드했다."
+
 LANGUAGE.require_x_more_points						= "%d포인트 부족"
 LANGUAGE.purchase_item								= "구매"
 LANGUAGE.upgrade_item								= "업그레이드"
+LANGUAGE.revert_item								= "환불"
 LANGUAGE.pointshop_title							= "포인트 상점"
 LANGUAGE.pointshop_title_guns1						= "무기 1 구매"
 LANGUAGE.pointshop_title_guns2						= "무기 2 구매"
 LANGUAGE.pointshop_title_melee						= "근접 무기 구매"
 LANGUAGE.pointshop_title_tools						= "도구 구매"
+
+LANGUAGE.upgrade_to									= "업그레이드: "
+LANGUAGE.revert_to									= "다운그레이드: "
+LANGUAGE.upgrading_x								= "%s 업그레이드 중"
+LANGUAGE.reverting_x								= "%s 다운그레이드 중"
+LANGUAGE.switch_to_upgrade							= "업그레이드 모드로 변경"
+LANGUAGE.switch_to_revert							= "다운그레이드 모드로 변경"
 
 LANGUAGE.tier_x										= "%d티어"
 LANGUAGE.button_help								= "도움말"
@@ -332,8 +348,6 @@ LANGUAGE.weapon_insured								= "무기 저장됨"
 
 LANGUAGE.disconnect_killed							= "%s이(가) %s에게 살해당해 빡종해버렸다."
 LANGUAGE.nail_removed_by							= "%s이(가) %s의 못을 뺐다."
-LANGUAGE.cant_purchase_right_now					= "지금은 구매할 수 없다."
-LANGUAGE.dont_have_enough_points					= "포인트가 부족하다."
 LANGUAGE.prepare_yourself							= "전쟁을 대비하자..."
 LANGUAGE.purchased_x_for_y_points					= "%s을(를) %d포인트에 구매했다."
 LANGUAGE.will_appear_after_respawn					= "리스폰 후 지급됩니다."
@@ -443,6 +457,16 @@ LANGUAGE.pointfloater_x_assist                      = "%s (어시스트)"
 LANGUAGE.pointfloater_x_kills                       = "%s 명 사살"
 LANGUAGE.pointfloater_kill_killed                   = "사살"
 
+LANGUAGE.stat_walkspeed								= "이동속도"
+LANGUAGE.stat_meleedmg 								= "대미지"
+LANGUAGE.stat_meleerange							= "근접 무기 리치"
+
+LANGUAGE.stat_clipsize								= "탄창 크기"
+LANGUAGE.stat_defaultgiven							= "기본 지급 탄약"
+LANGUAGE.stat_gundmg								= "대미지"
+LANGUAGE.stat_numshots								= "발사 탄환 수"
+LANGUAGE.stat_firedelay								= "공격 딜레이"
+
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Zombie Survival:밴딧 워페어"
 LANGUAGE.help_cat_keys								= "키 설명"
@@ -473,7 +497,7 @@ LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들
 <hr>
 <h2>섬멸전</h2> <br>
 <p>섬멸전 모드에서는 송신기가 없으며, 유일한 목표는 모든 적을 사살하는 것입니다. 이 모드에서는 로드아웃을 사용할 수 없으며, 기본으로 지급되는 권총과 칼을 제외하면 모든 무기를 상점 (F2) 에서 구매하여 사용해야 합니다.</p>
-<p>게임이 간소화된 만큼 제한 시간도 짧으며 도구 대부분을 사용할 수 없게 됩니다. 대신 모든 상점 아이템을 25% 저렴한 가격에 사용 가능합니다!</p>
+<p>게임이 간소화된 만큼 제한 시간도 짧으며 도구 대부분을 사용할 수 없게 됩니다. 대신 모든 상점 아이템을 30% 저렴한 가격에 사용 가능합니다!</p>
 <p>다른 모드와는 다르게 죽을 때 무기를 잃어버릴 수도 있으니 조심해야 합니다.</p>
 <ul><li>파란색으로 표시되는 무기들은 <strong>저장</strong>됩니다. 이 무기들은 죽어도 떨어뜨리지 않습니다.</li> 
 <li>무기를 사자마자 저장되지는 않습니다. 무기를 사고 난 후 그 라운드에서 무기를 소유한 채 생존할 시 무기가 저장됩니다.</li>
