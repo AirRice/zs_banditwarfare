@@ -176,7 +176,7 @@ function SWEP:GetClosestTarget()
 		local centre = ent:WorldSpaceCenter()
 		local sqrdst = mypos:DistToSqr(centre)
 		if sqrdst > self.HealRangeSqr then continue end
-		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.95 then continue end
+		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.85 then continue end
 		if (minimum == nil or sqrdst < minimum) then
 			minimum = sqrdst
 			selectedTarget = ent

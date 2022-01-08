@@ -175,7 +175,7 @@ function SWEP:CheckValidTarget(tgt)
 	return true
 end
 
-
+SWEP.NextEmit = nil
 function SWEP:Think()
 	local curtgt = self:GetCurrentTarget()
 	local owner = self:GetOwner()
@@ -193,12 +193,15 @@ function SWEP:Think()
 			self:EmitSound("Loop_Palliator_Heal")
 			self:EmitSound("Loop_Palliator_Heal2")
 			local sameteam = curtgt:Team() == owner:Team()
-			local effectdata = EffectData()
-				effectdata:SetOrigin(curtgt:WorldSpaceCenter())
-				effectdata:SetFlags(sameteam and 1 or 0)
-				effectdata:SetEntity(self)
-				effectdata:SetAttachment(1)
-			util.Effect("tracer_healray", effectdata)
+			if self.NextEmit and self.NextEmit <= CurTime() then
+				local effectdata = EffectData()
+					effectdata:SetOrigin(curtgt:WorldSpaceCenter())
+					effectdata:SetFlags(sameteam and 1 or 0)
+					effectdata:SetEntity(self)
+					effectdata:SetAttachment(1)
+				util.Effect("tracer_healray", effectdata)
+				self.NextEmit = CurTime() + 0.1
+			end
 			if self:GetLastHealTime() + self.Primary.Delay <= CurTime() then
 				if SERVER then
 					local magnitude = math.min(self.Primary.Damage,owner:GetAmmoCount(self:GetPrimaryAmmoType()))
