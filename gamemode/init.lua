@@ -1427,6 +1427,11 @@ function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
 					if not table.HasValue(pl.ClassicModeNextInsureWeps,targetswep) then
 						table.insert(pl.ClassicModeNextInsureWeps,targetswep)
 					end
+					for i,wepname in ipairs(pl.ClassicModeRemoveInsureWeps) do
+						if isstring(wepname) and isstring(targetswep) and string.lower(wepname) == string.lower(targetswep) then
+							table.remove(pl.ClassicModeRemoveInsureWeps,i)
+						end
+					end
 					net.Start("zs_weapon_toinsure")
 						net.WriteString(targetswep)
 					net.Send(pl)
@@ -1605,6 +1610,11 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 				if not (wep.IsConsumable or wep.AmmoIfHas) then
 					if not table.HasValue(pl.ClassicModeNextInsureWeps,itemtab.SWEP) then
 						table.insert(pl.ClassicModeNextInsureWeps,itemtab.SWEP)
+					end
+					for i,wepname in ipairs(pl.ClassicModeRemoveInsureWeps) do
+						if isstring(wepname) and isstring(itemtab.SWEP) and string.lower(wepname) == string.lower(itemtab.SWEP) then
+							table.remove(pl.ClassicModeRemoveInsureWeps,i)
+						end
 					end
 					net.Start("zs_weapon_toinsure")
 						net.WriteString(itemtab.SWEP)
@@ -2788,7 +2798,7 @@ function GM:WaveStateChanged(newstate)
 					pl:UpdateWeaponLoadouts()
 				else
 					for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
-						if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
+						if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeInsuredWeps,wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
 							table.insert(pl.ClassicModeInsuredWeps,wep)
 							net.Start("zs_insure_weapon")
 								net.WriteString(wep)
