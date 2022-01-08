@@ -253,7 +253,10 @@ local function PurchaseButtonThink(self)
 	if itemtab then 
 		local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot,false)
 		local canupgrade, upgradereasons = PlayerCanUpgradePointshopItem(MySelf,itemtab,slot)
-		local ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
+		local ispurchasedweapon = true
+		if GAMEMODE:IsClassicMode() then
+			ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
+		end
 		local canupgrade_combined = canupgrade and ispurchasedweapon
 		if self.m_LastIsUpgradeBtn ~= canupgrade or canpurchase ~= self.m_LastAbleToBuy then
 			self.BuyLabel:SetText(canupgrade and translate.Get("upgrade_item") or translate.Get("purchase_item"))
@@ -305,7 +308,11 @@ function PANEL:DoClick()
 	if not tab then return end
 	if self.m_LastIsUpgradeBtn or self.m_LastAbleToBuy then
 		if self.m_LastIsUpgradeBtn then
-			if (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP]) then
+			local ispurchasedweapon = true
+			if GAMEMODE:IsClassicMode() then
+				ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
+			end
+			if ispurchasedweapon then
 				surface.PlaySound("buttons/button17.wav")
 				local shopframe = vgui.Create("DUpgradesShopFrame")
 				shopframe:SetUpUpgradeMenu(id,GAMEMODE.m_PointsShop.m_LoadoutSlot)
@@ -329,7 +336,10 @@ end
 function PANEL:Paint(w, h)
 	local id = GAMEMODE.m_PointsShop.CurrentID
 	local tab = FindItem(id)
-	local ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
+	local ispurchasedweapon = true
+	if GAMEMODE:IsClassicMode() and tab then
+		ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
+	end
 	local outline
 	local isupgradeable = self.m_LastIsUpgradeBtn and ispurchasedweapon
 	if self.Hovered then
