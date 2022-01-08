@@ -1,22 +1,49 @@
 local banditspawns = {
-	Vector(-1800, 700, 217),
-	Vector(-1700, 700, 217),
-	Vector(-1800, 800, 217),
-	Vector(-1700, 800, 217),
-	Vector(-2000, 900, 217),
-	Vector(-1900, 900, 217),
-	Vector(-1800, 900, 217),
-	Vector(-1700, 900, 217)
+	Vector(-2160, 1040, 410),
+	Vector(-2240, 1040, 410),
+	Vector(-2320, 1040, 410),
+	Vector(-2400, 1040, 410),
+	Vector(-2160, 1120, 410),
+	Vector(-2240, 1120, 410),
+	Vector(-2320, 1120, 410),
+	Vector(-2400, 1120, 410),
+	Vector(-2160, 1200, 410),
+	Vector(-2240, 1200, 410),
+	Vector(-2320, 1200, 410),
+	Vector(-2400, 1200, 410)
 }
-
+local humanspawns = {
+	Vector(1240, 1580, 474),
+	Vector(1320, 1580, 474),	
+	Vector(1400, 1580, 474),
+	Vector(1240, 1670, 474),
+	Vector(1320, 1670, 474),	
+	Vector(1400, 1670, 474),
+	Vector(1240, 1760, 474),
+	Vector(1320, 1760, 474),	
+	Vector(1400, 1760, 474),
+	Vector(1240, 1850, 474),
+	Vector(1320, 1850, 474),	
+	Vector(1400, 1850, 474)	
+}
 
 hook.Add("InitPostEntityMap", "Adding", function()
 	
+	for _, ent in pairs(ents.FindByClass("info_player_terrorist")) do
+		ent:Remove()
+	end
 	for _, ent in pairs(ents.FindByClass("info_player_counterterrorist")) do
 		ent:Remove()
 	end
 	for _,vec in pairs(banditspawns) do 
-		local newent = ents.Create("info_player_zombie")
+		local newent = ents.Create("info_player_bandit")
+		if newent:IsValid() then
+			newent:SetPos(vec)
+			newent:Spawn()
+		end
+	end
+	for _,vec in pairs(humanspawns) do 
+		local newent = ents.Create("info_player_human")
 		if newent:IsValid() then
 			newent:SetPos(vec)
 			newent:Spawn()
@@ -32,3 +59,4 @@ hook.Add("InitPostEntityMap", "Adding", function()
 		ent2:Fire("StartFire", "", 0.1)
 	end
 end)
+ 

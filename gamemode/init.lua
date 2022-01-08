@@ -15,7 +15,6 @@ AddCSLuaFile("sh_globals.lua")
 AddCSLuaFile("sh_util.lua")
 AddCSLuaFile("sh_options.lua")
 AddCSLuaFile("sh_animations.lua")
-AddCSLuaFile("sh_channel.lua")
 AddCSLuaFile("sh_voiceset.lua")
 
 AddCSLuaFile("cl_draw.lua")

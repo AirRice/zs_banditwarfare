@@ -3,7 +3,6 @@ GM.Author	=	"Jooho \"air rice\" Lee"
 GM.Email	=	""
 GM.Website	=	""
 
--- No, adding a gun doesn't make your name worth being here.
 GM.Credits = {
 	{"credit_airrice", "", "credit_airrice_desc"},
 	{"credit_jetboom", "williammoodhe@gmail.com (www.noxiousnet.com)", "credit_jetboom_desc"},
@@ -37,9 +36,8 @@ include("sh_globals.lua")
 include("sh_util.lua")
 include("sh_options.lua")
 include("sh_animations.lua")
-include("sh_channel.lua")
 include("sh_voiceset.lua")
-
+ 
 include("obj_vector_extend.lua")
 include("obj_entity_extend.lua")
 include("obj_player_extend.lua")
