@@ -369,9 +369,6 @@ function GM:SetupSpawnPoints()
 	team.SetSpawnPoint(TEAM_BANDIT, btab)
 	team.SetSpawnPoint(TEAM_HUMAN, htab)
 	team.SetSpawnPoint(TEAM_SPECTATOR, htab)
-
-	self.RedeemSpawnPoints = ents.FindByClass("info_player_redeemed")
-	self.BossSpawnPoints = table.Add(ents.FindByClass("info_player_zombie_boss"), ents.FindByClass("info_player_undead_boss"))
 end
 
 function GM:PlayerPointsAdded(pl, amount)
@@ -2722,11 +2719,6 @@ function GM:WaveStateChanged(newstate)
 				ent:Input("onwavestart", ent, ent, curwave)
 			end
 		end
-		for _, ent in pairs(ents.FindByClass("logic_wavestart")) do
-			if ent.Wave == curwave or ent.Wave == -1 then
-				ent:Input("onwavestart", ent, ent, curwave)
-			end
-		end
 	else
 		if not self.SuddenDeath then
 			if self:GetCurrentWaveWinner() == TEAM_HUMAN then
@@ -2759,17 +2751,12 @@ function GM:WaveStateChanged(newstate)
 						net.WriteBool( true )
 					net.Broadcast()
 				end
-				--[[local curwave = self:GetWave()
+				local curwave = self:GetWave()
 				for _, ent in pairs(ents.FindByClass("logic_waves")) do
 					if ent.Wave == curwave or ent.Wave == -1 then
 						ent:Input("onwaveend", ent, ent, curwave)
 					end
 				end
-				for _, ent in pairs(ents.FindByClass("logic_waveend")) do
-					if ent.Wave == curwave or ent.Wave == -1 then
-						ent:Input("onwaveend", ent, ent, curwave)
-					end
-				end]]
 			end
 		else
 			if self:GetCurrentWaveWinner() == nil then

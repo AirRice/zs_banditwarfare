@@ -34,12 +34,6 @@ function ENT:Initialize()
 
 	local object = self:GetObject()
 	if object:IsValid() then
-		for _, ent in pairs(ents.FindByClass("logic_pickupdrop")) do
-			if ent.EntityToWatch == object:GetName() and ent:IsValid() then
-				ent:Input("onpickedup", owner, object, "")
-			end
-		end
-
 		local objectphys = object:GetPhysicsObject()
 		if objectphys:IsValid() then
 			objectphys:AddGameFlag(FVPHYSICS_NO_IMPACT_DMG)
@@ -103,12 +97,6 @@ function ENT:OnRemove()
 
 		object._LastDroppedBy = owner
 		object._LastDropped = CurTime()
-
-		for _, ent in pairs(ents.FindByClass("logic_pickupdrop")) do
-			if ent.EntityToWatch == object:GetName() and ent:IsValid() then
-				ent:Input("ondropped", owner, object, "")
-			end
-		end
 	end
 end
 
