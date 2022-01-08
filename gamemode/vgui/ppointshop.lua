@@ -130,13 +130,13 @@ local function SetViewer(tab)
 	if (features and istable(features) and !table.IsEmpty(features)) then 
 		local prevlabel = frame.m_WeaponDescLabel
 		for _,v in ipairs(features) do
-			local featureline = vgui.Create( "DWeaponStatsLine", frame.m_RightPanel )
+			local featureline = frame.m_RightScroller:Add("DWeaponStatsLine")
 			local screenscale = BetterScreenScale()
-			featureline:SetWide(math.min(ScrW(), 450) * screenscale - 8)
+			featureline:SetWide(math.min(ScrW(), 1000)*0.45 * screenscale - 8) 
 			featureline:MoveBelow(prevlabel,1)
 			featureline:SetValues(translate.Get(v[1]),v[2])
 			prevlabel = featureline
-			featureline:CenterHorizontal()
+			--featureline:CenterHorizontal()
 			frame.m_WeaponFeatureLabels[_] = featureline;
 		end
 		frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
@@ -282,10 +282,11 @@ local function PurchaseButtonThink(self)
 end
 
 function PANEL:Init()
+	local screenscale = BetterScreenScale()
 	self:SetText("")
 
 	self:DockPadding(4, 4, 4, 4)
-	self:SetTall(60)
+	self:SetTall(60*screenscale)
 
 	self.BuyLabel = EasyLabel(self, translate.Get("purchase_item"), "ZSHUDFontSmall")
 	self.BuyLabel:SetContentAlignment(5)
@@ -476,6 +477,7 @@ function PANEL:PerformLayout()
 	self.m_RightPanel:DockMargin(sidemargin, 4, sidemargin, 4)
 	self.m_RightPanel:DockPadding(8,0,8,0)
 	self.m_RightPanel:Dock(RIGHT)
+	self.m_RightScroller:Dock(FILL)
 	
 	self.m_TopSpace.m_PointsLabel:AlignLeft(32*screenscale)
 	self.m_TopSpace.m_PointsLabel:SetContentAlignment(6)
@@ -568,15 +570,22 @@ function PANEL:Init()
 	local rightinfopanel = vgui.Create("DPanel",self)
 	self.m_RightPanel = rightinfopanel
 	
+	local rightinfolist = vgui.Create("DScrollPanel", self.m_RightPanel)
+	rightinfolist:SetPaintBackground(false)
+	self.m_RightScroller = rightinfolist
+	
 	local wepname = EasyLabel(rightinfopanel, "", (screenscale > 0.9 and "ZSHUDFontSmaller" or "ZSHUDFontSmallest"), COLOR_GRAY)
 	local wepdesc = EasyLabel(rightinfopanel, "", (screenscale > 0.9 and "ZSHUDFontSmallest" or "ZSHUDFontTiny"), COLOR_GRAY)
 	wepdesc:SetWrap(true)
 	self.m_WeaponDescLabel = wepdesc
 	self.m_WeaponNameLabel = wepname
+	self.m_RightScroller:AddItem(self.m_WeaponNameLabel)
+	self.m_RightScroller:AddItem(self.m_WeaponDescLabel)
 	
 	local refusesellpanel = EasyLabel(rightinfopanel, "", "ZSHUDFontSmaller", COLOR_RED)
 	refusesellpanel:SetWrap(true)
 	self.RefusePurchaseLabel = refusesellpanel
+	self.m_RightScroller:AddItem(self.RefusePurchaseLabel)
 	
 	local purchasebutton = vgui.Create("BuySelectedButton", rightinfopanel)
 	self.PurchaseSelectedButton = purchasebutton
@@ -802,13 +811,12 @@ local function SetViewer_upgrade(tab)
 		local prevlabel = frame.m_WeaponDescLabel
 		for i,v in ipairs(features) do
 			original_v = original_features[i]
-			local featureline = vgui.Create( "DWeaponStatsLine", frame.m_RightPanel )
+			local featureline = frame.m_RightScroller:Add("DWeaponStatsLine")
 			local screenscale = BetterScreenScale()
-			featureline:SetWide(math.min(ScrW(), 350) * screenscale - 8)
+			featureline:SetWide(math.min(ScrW(), 1000)*0.35 * screenscale - 8)
 			featureline:MoveBelow(prevlabel,1)
 			featureline:SetValues(translate.Get(v[1]),(istable(original_v) and !table.IsEmpty(original_v) and original_swep ~= swepname) and original_v[2].." -> "..v[2] or v[2])
 			prevlabel = featureline
-			featureline:CenterHorizontal()
 			frame.m_WeaponFeatureLabels[i] = featureline;
 		end
 		frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
@@ -1071,10 +1079,12 @@ function PANEL:PerformLayout()
 	self.m_LeftPanel:Dock(LEFT)
 	
 	self.m_RightPanel:SetWide(wid*0.4 - sidemargin*2)
+	self.m_RightPanel:SetTall(self.m_LeftPanel:GetTall())
 	self.m_RightPanel:DockMargin(sidemargin, 4, sidemargin, 4)
 	self.m_RightPanel:DockPadding(8,0,8,0)
 	self.m_RightPanel:Dock(RIGHT)
-
+	self.m_RightScroller:Dock(FILL)
+	
 	self.m_TopSpace.m_PointsLabel:AlignLeft(32*screenscale)
 	self.m_TopSpace.m_PointsLabel:SetContentAlignment(6)
 	
@@ -1183,16 +1193,23 @@ function PANEL:Init()
 	closebutton:SetFont("ZSHUDFontSmaller")
 	closebutton.DoClick = upgradesCloseDoClick
 	self.m_CloseButton = closebutton
-
+	
+	local rightinfolist = vgui.Create("DScrollPanel", self.m_RightPanel)
+	rightinfolist:SetPaintBackground(false)
+	self.m_RightScroller = rightinfolist
+	
 	local wepname = EasyLabel(rightinfopanel, "", (screenscale > 0.9 and "ZSHUDFontSmaller" or "ZSHUDFontSmallest"), COLOR_GRAY)
 	local wepdesc = EasyLabel(rightinfopanel, "", (screenscale > 0.9 and "ZSHUDFontSmallest" or "ZSHUDFontTiny"), COLOR_GRAY)
 	wepdesc:SetWrap(true)
 	self.m_WeaponDescLabel = wepdesc
 	self.m_WeaponNameLabel = wepname
+	self.m_RightScroller:AddItem(self.m_WeaponNameLabel)
+	self.m_RightScroller:AddItem(self.m_WeaponDescLabel)
 	
 	local refusesellpanel = EasyLabel(rightinfopanel, "", "ZSHUDFontSmaller", COLOR_RED)
 	refusesellpanel:SetWrap(true)
 	self.RefusePurchaseLabel = refusesellpanel
+	self.m_RightScroller:AddItem(self.RefusePurchaseLabel)
 	
 	local purchasebutton = vgui.Create("UpgradeSelectedButton", rightinfopanel)
 	self.PurchaseSelectedButton = purchasebutton
@@ -1245,11 +1262,11 @@ function PANEL:SetUpUpgradeMenu(id, weaponslot)
 	self.m_CurrentItemTab = tab
 	self.m_TitleLabel:SetText(translate.Format("upgrading_x",nametext))
 	self.PurchaseSelectedButton.BuyLabel:SetText(self.m_IsRevertMode and translate.Get("revert_item") or translate.Get("upgrade_item"))
-	SetViewer_upgrade(tab)
 	self.m_CurrentItemLabel:SetupItemLabel(tab.Signature)
 	self.m_UpgradesScrollList:SetTall(60*screenscale)
 	self:SetCurrentUpgradeMode(false)
 	self:PopulateUpgradeList(id,weaponslot,true)
+	SetViewer_upgrade(tab)
 end
 
 vgui.Register("DUpgradesShopFrame", PANEL, "DFrame")

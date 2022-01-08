@@ -4,11 +4,11 @@ function PANEL:Init()
 	local screenscale = BetterScreenScale()
 	self:DockPadding(2, 0, 2, 0)
 	
-	self.FeatureLabel = EasyLabel(self, "", (screenscale > 0.9 and "ZSHUDFontTiny" or "DefaultFont"))
+	self.FeatureLabel = EasyLabel(self, "", "ZSHUDFontTiny")
 	self.FeatureLabel:SetContentAlignment(4)
 	self.FeatureLabel:Dock(LEFT)
 	
-	self.ValueLabel = EasyLabel(self, "", (screenscale > 0.9 and "ZSHUDFontTiny" or "DefaultFont"))
+	self.ValueLabel = EasyLabel(self, "", "ZSHUDFontTiny")
 	self.ValueLabel:SetContentAlignment(6)
 	self.ValueLabel:Dock(RIGHT)	
 end
