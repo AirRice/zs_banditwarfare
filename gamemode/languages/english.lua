@@ -357,6 +357,8 @@ LANGUAGE.pointshop_title_guns2						= "Purchase Weapon 2"
 LANGUAGE.pointshop_title_melee						= "Purchase Melee Weapon"
 LANGUAGE.pointshop_title_tools						= "Purchase Tool"
 
+LANGUAGE.x_points_abbreviated						= "%s Pts"
+
 LANGUAGE.upgrade_to									= "Upgrade To: "
 LANGUAGE.revert_to									= "Revert To: "
 LANGUAGE.upgrading_x								= "Upgrading %s"

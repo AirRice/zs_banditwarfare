@@ -333,6 +333,8 @@ LANGUAGE.pointshop_title_guns2						= "무기 2 구매"
 LANGUAGE.pointshop_title_melee						= "근접 무기 구매"
 LANGUAGE.pointshop_title_tools						= "도구 구매"
 
+LANGUAGE.x_points_abbreviated						= "%s포인트"
+
 LANGUAGE.upgrade_to									= "업그레이드: "
 LANGUAGE.revert_to									= "다운그레이드: "
 LANGUAGE.upgrading_x								= "%s 업그레이드 중"

@@ -79,7 +79,7 @@ local function ItemButtonThink(self)
 	if itemtab then 
 		local newcost = GetItemCost(itemtab)
 		if newcost ~= self.m_LastPrice then
-			self.PriceLabel:SetText(tostring(math.ceil(newcost)).." Pts")	
+			self.PriceLabel:SetText(translate.Format("x_points_abbreviated",tostring(math.ceil(newcost))))
 			self.m_LastPrice = newcost
 		end
 		if self:IsHovered() or self.ID == GAMEMODE.m_PointsShop.CurrentID then
@@ -773,7 +773,7 @@ local function UpgradeItemButtonThink(self)
 	if itemtab then 
 		local newcost = GetItemCost(itemtab)
 		if newcost ~= self.m_LastPrice then
-			self.PriceLabel:SetText(tostring(math.ceil(newcost)).." Pts")	
+			self.PriceLabel:SetText(translate.Format("x_points_abbreviated",tostring(math.ceil(newcost))))
 			self.m_LastPrice = newcost
 		end
 		if self:IsHovered() or self.ID == GAMEMODE.m_UpgradesShop.CurrentID then
