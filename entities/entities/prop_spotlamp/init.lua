@@ -106,7 +106,10 @@ function ENT:Attack(proj)
 			ed:SetMagnitude(11)
 			ed:SetScale(5)
 		util.Effect("TeslaHitBoxes", ed)
-		self:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "ToolTracer", Force = 0.1, Damage = 1, Callback = nil})
+			ed:SetFlags( 0x0003 ) --TRACER_FLAG_USEATTACHMENT + TRACER_FLAG_WHIZ
+			ed:SetStart(fireorigin)
+			ed:SetOrigin(proj:GetPos())
+		util.Effect("tracer_interception", ed)
 		proj:Remove()
 		self:TakeDamage(5, self,self)
 	end
@@ -120,7 +123,7 @@ function ENT:Think()
 	if (self.LastAttack + self.AttackDelay <= curTime ) then
 		local center = self:GetSpotLightPos()
 		for _, ent in ipairs(ents.FindInSphere(center, 1000)) do
-			if (ent ~= self and ent:IsProjectile() and ent:GetMoveType() ~= MOVETYPE_NONE ) then
+			if (ent ~= self and ent:IsProjectile() and ent:GetMoveType() != MOVETYPE_NONE ) then
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self:GetSpotLightAngles():Forward())
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent)) then
 					self:Attack(ent)

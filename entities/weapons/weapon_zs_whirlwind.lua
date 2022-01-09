@@ -68,6 +68,7 @@ SWEP.AutoReloadDelay = 1
 SWEP.ShowOnlyClip = true
 SWEP.LowAmmoThreshold = 25
 
+--SWEP.TracerName = "tracer_interception"
 function SWEP:Reload()
 end
 
@@ -76,7 +77,7 @@ end]]
 
 local steeringratio = 0.8
 function SWEP:Attack(proj)
-	if (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) and proj:IsValid() then
+	if proj:IsValid() and (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) then
 		self.Owner:EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
 		self:TakeAmmo()
 	
@@ -89,25 +90,21 @@ function SWEP:Attack(proj)
 		local fireorigin = self.Owner:GetShootPos()
 		local firevec = ( projcenter - fireorigin ):GetNormalized()
 		local ed = EffectData()
+			ed:SetFlags( 0x0003 ) --TRACER_FLAG_USEATTACHMENT + TRACER_FLAG_WHIZ
+			ed:SetEntity(self)
+			ed:SetAttachment(1)
+			ed:SetOrigin(proj:GetPos())
+		util.Effect("tracer_interception", ed)
+		local ed = EffectData()	
 			ed:SetOrigin(proj:GetPos())
 			ed:SetNormal(firevec*-1)
 			ed:SetRadius(2)
 			ed:SetMagnitude(1)
 			ed:SetScale(1)
 		util.Effect("MetalSpark", ed)
-		owner:FireBullets({Num = 1, Src = fireorigin, Dir = firevec, Spread = Vector(0, 0, 0), Tracer = 1, TracerName = "AR2Tracer", Force = self.Primary.Damage * 0.1, Damage = 1, Callback = nil})
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		if SERVER then
 			local aimvec = owner:GetAimVector()
-			local td = {}
-				td.start = owner:EyePos()
-				td.mask = MASK_SHOT
-				td.filter = {}
-				table.Add(td.filter, team.GetPlayers( owner:Team()))
-				td.endpos = td.start + owner:EyeAngles():Forward()*10000
-				table.Add(td.filter, {self})
-				local tr = util.TraceLine(td)
-			if tr.Hit then aimvec = (tr.HitPos - fireorigin):GetNormalized() end
 			local phys = proj:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:SetVelocity(phys:GetVelocity()*0.25)
@@ -118,7 +115,8 @@ function SWEP:Attack(proj)
 				proj:Remove()
 			end
 		end
-		self.LastAttemptedShot = CurTime()
+		self.LastAttack = CurTime()
+		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*1.5)
 	end
 end
 
@@ -128,18 +126,19 @@ function SWEP:Think()
 		self.IdleAnimation = nil
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
-	self.BaseClass.Think(self)	
+	if SERVER then
 	if (self.LastAttack + self.Primary.Delay*2 <= curTime ) and self:Clip1() > 0 then
 		local center = self.Owner:GetShootPos()
 		for _, ent in ipairs(ents.FindInSphere(center, self.SearchRadius)) do
-			if (ent ~= self and ent:IsProjectile() and not ent:GetMoveType() == MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
+			if (ent ~= self and !ent:IsPlayer() and ent:IsProjectile() and ent:GetMoveType() != MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
 				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
 				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
 					self:Attack(ent)
-					self.LastAttack = curTime
-					self:SetNextPrimaryFire(curTime + self.Primary.Delay*1.5)
+					break
 				end
 			end
 		end
 	end
+	end
+	self.BaseClass.Think(self)	
 end
