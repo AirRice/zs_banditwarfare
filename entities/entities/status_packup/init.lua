@@ -19,7 +19,12 @@ function ENT:Think()
 	local packer = self:GetOwner()
 	local owner = packer
 	local pack = self:GetPackUpEntity()
-	if pack:IsValid() and owner:TraceLine(64, MASK_SOLID, owner:GetMeleeFilter()).Entity == pack then
+	local eyepos = owner:EyePos()
+	local aimvec = owner:GetAimVector()
+	local point = pack:NearestPoint(eyepos)
+	local dist = point:DistToSqr(eyepos)
+	local istraced = owner:CompensatedMeleeTrace(64, 4, nil, nil).Entity == pack or ((dist <= 64 or (point - eyepos):GetNormalized():Dot(aimvec) >= 0.75) and dist <= 4096 and WorldVisible(aimvec, point))
+	if pack:IsValid() and istraced then
 		if not self:GetNotOwner() and pack.GetObjectOwner then
 			local packowner = pack:GetObjectOwner()
 			if packowner:IsValid() and packowner:Team() == packer:Team() and packowner ~= packer and not gamemode.Call("PlayerIsAdmin", packer) then

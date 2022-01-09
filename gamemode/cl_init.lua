@@ -1210,7 +1210,6 @@ local function EndRoundShouldDrawLocalPlayer(pl)
 	hook.Remove("ShouldDrawLocalPlayer", "EndRoundShouldDrawLocalPlayer")
 end
 
-local function EndRoundGetMeleeFilter(self) return {self} end
 function GM:EndRound(winner, nextmap)
 	if self.RoundEnded then return end
 	self.RoundEnded = true
@@ -1221,8 +1220,6 @@ function GM:EndRound(winner, nextmap)
 	
 	RunConsoleCommand("stopsound")
 	gamemode.Call("RestartBeats")
-	
-	FindMetaTable("Player").GetMeleeFilter = EndRoundGetMeleeFilter
 
 	self.HUDPaint = self.HUDPaintEndRound
 	self.HUDPaintBackground = self.HUDPaintBackgroundEndRound

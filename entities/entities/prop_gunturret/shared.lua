@@ -50,11 +50,27 @@ function ENT:IsValidTarget(target)
 	end
 end
 
+local temp_attacker
+local temp_attacker_team
+local function ManualTraceFilter(ent)
+	if ent == temp_attacker or ent:IsPlayer() and ent:Team() == temp_attacker_team then
+		return false
+	end
+
+	return true
+end
+
+local trace_manual = {mask = MASK_SHOT, filter = ManualTraceFilter}
 function ENT:GetManualTrace()
 	local owner = self:GetObjectOwner()
-	local filter = owner:GetMeleeFilter()
-	table.insert(filter, self)
-	return owner:TraceLine(4096, MASK_SOLID, filter)
+	local start = self:ShootPos()
+
+	trace_manual.start = start
+	trace_manual.endpos = start + owner:GetAimVector() * 4096
+
+	temp_attacker = self
+	temp_attacker_team = owner:IsPlayer() and owner:Team() or -1
+	return util.TraceLine(trace_manual)
 end
 
 function ENT:CalculatePoseAngles()

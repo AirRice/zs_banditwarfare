@@ -58,7 +58,7 @@ SWEP.ConeMin = 0.005
 SWEP.MovingConeOffset = 0.03
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
-
+SWEP.NailSize = 0.875
 function SWEP:CanPrimaryAttack()
 	if self.Owner:GetBarricadeGhosting() then return false end
 	if self:Clip1() < self.RequiredClip then
@@ -74,7 +74,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
-	local tr = self.Owner:TraceLine(128, MASK_SOLID, self.Owner:GetMeleeFilter())
+	local tr = owner:CompensatedMeleeTrace(128, self.NailSize, nil, nil)
 	if self.Owner:IsHolding() and self.Owner:AttemptNail(tr) then
 		self:ShootNormalBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 	else 

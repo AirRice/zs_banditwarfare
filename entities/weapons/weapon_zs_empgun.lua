@@ -130,7 +130,9 @@ function BulletCallback(attacker, tr, dmginfo)
 					e.m_PryingOut = true -- Prevents infinite loops	
 					end
 				end
-				ent:SetLocalVelocity( ent:GetVelocity() + tr.Normal*500)
+				if not ent:IsNailed() then
+					ent:SetLocalVelocity( ent:GetVelocity() + tr.Normal*500)
+				end
 			elseif ent.IsBarricadeObject and not ent:IsSameTeam(attacker) and SERVER then
 				ent:TakeDamage(ent:GetObjectHealth(),attacker,dmginfo:GetInflictor())
 				--ent:TakeSpecialDamage(self.Primary.Damage*2.5, DMG_DISSOLVE, owner, self)

@@ -39,18 +39,22 @@ function SWEP:PlayHitFleshSound()
 end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsNailed() and not hitent:IsSameTeam(attacker) and math.random(10) < 4 then
-		if not hitent:IsValid() or not hitent:IsNailed() or hitent:IsSameTeam(attacker) then return end
-		if not hitent or not gamemode.Call("CanRemoveNail", attacker, hitent) then return end
-		local nailowner = hitent:GetOwner()
-		if nailowner:IsValid() and nailowner:IsPlayer() and attacker:IsPlayer() and nailowner ~= attacker and nailowner:Team() == attacker:Team() then return end
-		for _, e in pairs(ents.FindByClass("prop_nail")) do
-			if not e.m_PryingOut and e:GetParent() == hitent and SERVER then
-				hitent:RemoveNail(e, nil, attacker)
-				e.m_PryingOut = true -- Prevents infinite loops	
-				break
+	if math.random(10) < 4 then
+		if hitent:IsNailed() and not hitent:IsSameTeam(attacker) and then
+			if not hitent:IsValid() or not hitent:IsNailed() or hitent:IsSameTeam(attacker) then return end
+			if not hitent or not gamemode.Call("CanRemoveNail", attacker, hitent) then return end
+			local nailowner = hitent:GetOwner()
+			if nailowner:IsValid() and nailowner:IsPlayer() and attacker:IsPlayer() and nailowner ~= attacker and nailowner:Team() == attacker:Team() then return end
+			for _, e in pairs(ents.FindByClass("prop_nail")) do
+				if not e.m_PryingOut and e:GetParent() == hitent and SERVER then
+					hitent:RemoveNail(e, nil, attacker)
+					e.m_PryingOut = true -- Prevents infinite loops	
+					break
+				end
+			end
+			if not hitent:IsNailed() then
+				hitent:SetLocalVelocity( hitent:GetVelocity() + tr.Normal*200)
 			end
 		end
 	end
-	hitent:SetLocalVelocity( hitent:GetVelocity() + tr.Normal*200)
 end
