@@ -127,8 +127,8 @@ local function SetViewer(tab)
 	end
 	frame.m_WeaponFeatureLabels = {}
 	local features = GetWeaponFeatures(swepname)
+	local prevlabel = frame.m_WeaponDescLabel
 	if (features and istable(features) and !table.IsEmpty(features)) then 
-		local prevlabel = frame.m_WeaponDescLabel
 		for _,v in ipairs(features) do
 			local featureline = frame.m_RightScroller:Add("DWeaponStatsLine")
 			local screenscale = BetterScreenScale()
@@ -139,8 +139,8 @@ local function SetViewer(tab)
 			--featureline:CenterHorizontal()
 			frame.m_WeaponFeatureLabels[_] = featureline;
 		end
-		frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
 	end
+	frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
 end
 
 function PANEL:Init()
@@ -817,8 +817,8 @@ local function SetViewer_upgrade(tab)
 	local original_swep = GAMEMODE.m_UpgradesShop.m_CurrentItemTab and GAMEMODE.m_UpgradesShop.m_CurrentItemTab.SWEP or nil
 	local original_features = GetWeaponFeatures(original_swep)
 	local features = GetWeaponFeatures(swepname)
+	local prevlabel = frame.m_WeaponDescLabel
 	if (features and istable(features) and !table.IsEmpty(features) and original_features and istable(original_features) and !table.IsEmpty(original_features)) then 
-		local prevlabel = frame.m_WeaponDescLabel
 		for i,v in ipairs(features) do
 			original_v = original_features[i]
 			local featureline = frame.m_RightScroller:Add("DWeaponStatsLine")
@@ -829,8 +829,8 @@ local function SetViewer_upgrade(tab)
 			prevlabel = featureline
 			frame.m_WeaponFeatureLabels[i] = featureline;
 		end
-		frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
 	end
+	frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
 end
 
 function PANEL:DoClick()

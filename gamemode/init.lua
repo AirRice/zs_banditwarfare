@@ -435,6 +435,21 @@ function GM:SetupProps()
 	end
 end
 
+local ammotoremove = {
+	"item_ammo_357",
+	"item_ammo_357_large",
+	"item_ammo_pistol",
+	"item_ammo_pistol_large",
+	"item_ammo_buckshot",
+	"item_ammo_ar2",
+	"item_ammo_ar2_large",
+	"item_ammo_ar2_altfire",
+	"item_ammo_crossbow",
+	"item_ammo_smg1",
+	"item_ammo_smg1_large",
+	"item_box_buckshot"
+}
+
 function GM:RemoveUnusedEntities()
 	-- Causes a lot of needless lag.
 	util.RemoveAll("prop_ragdoll")
@@ -459,65 +474,44 @@ function GM:RemoveUnusedEntities()
 	-- Shouldn't exist.
 	util.RemoveAll("item_suitcharger")
 	util.RemoveAll("item_healthcharger")
-end
-
-function GM:ReplaceMapWeapons()
-	for _, ent in pairs(ents.FindByClass("weapon_*")) do
-		local wepclass = ent:GetClass()
-		if wepclass ~= "weapon_map_base" then
-			if string.sub(wepclass, 1, 10) == "weapon_zs_" then
-				local wep = ents.Create("prop_weapon")
-				if wep:IsValid() then
-					wep:SetPos(ent:GetPos())
-					wep:SetAngles(ent:GetAngles())
-					wep:SetWeaponType(ent:GetClass())
-					wep:SetShouldRemoveAmmo(false)
-					wep:Spawn()
-					wep.IsPreplaced = true
-				end
-			end
-			ent:Remove()
-		end
-	end
-end
-
-local ammoreplacements = {
-	["item_ammo_357"] = "357",
-	["item_ammo_357_large"] = "357",
-	["item_ammo_pistol"] = "pistol",
-	["item_ammo_pistol_large"] = "pistol",
-	["item_ammo_buckshot"] = "buckshot",
-	["item_ammo_ar2"] = "ar2",
-	["item_ammo_ar2_large"] = "ar2",
-	["item_ammo_ar2_altfire"] = "pulse",
-	["item_ammo_crossbow"] = "xbowbolt",
-	["item_ammo_smg1"] = "smg1",
-	["item_ammo_smg1_large"] = "smg1",
-	["item_box_buckshot"] = "buckshot"
-}
-function GM:ReplaceMapAmmo()
-	for classname, ammotype in pairs(ammoreplacements) do
-		for _, ent in pairs(ents.FindByClass(classname)) do
-			--[[
-			Removing these for now for balancing purposes.
-			local newent = ents.Create("prop_ammo")
-			if newent:IsValid() then
-				newent:SetAmmoType(ammotype)
-				newent.PlacedInMap = true
-				newent:SetPos(ent:GetPos())
-				newent:SetAngles(ent:GetAngles())
-				newent:Spawn()
-				newent:SetAmmo(self.AmmoResupply[ammotype] or 1)
-			end]]
-			ent:Remove()
-		end
-	end
-
-	util.RemoveAll("item_item_crate")
-end
-
-function GM:ReplaceMapBatteries()
+	
+	
+	util.RemoveAll("item_healthkit")
+	util.RemoveAll("item_healthvial")	
 	util.RemoveAll("item_battery")
+	
+	-- Remove all ammo in the map.
+	for _, ammotype in ipairs(ammotoremove) do
+		for _, ent in pairs(ents.FindByClass(ammotype)) do
+			ent:Remove()
+		end
+	end
+	util.RemoveAll("item_item_crate")
+	
+	-- Remove all map-placed weapons. This is unbalanced, what were you thinking??
+	for _, ent in pairs(ents.FindByClass("weapon_*")) do
+		--[[local wepclass = ent:GetClass()
+		if string.sub(wepclass, 1, 10) == "weapon_zs_" then
+			local wep = ents.Create("prop_weapon")
+			if wep:IsValid() then
+				wep:SetPos(ent:GetPos())
+				wep:SetAngles(ent:GetAngles())
+				wep:SetWeaponType(ent:GetClass())
+				wep:SetShouldRemoveAmmo(false)
+				wep:Spawn()
+				wep.IsPreplaced = true
+			end
+		end]]
+		ent:Remove()
+	end
+	
+	-- Same with the prop versions of ammo & weapons.
+	for _, ent in pairs(ents.FindByClass("prop_ammo")) do 
+		ent:Remove() 
+	end
+	for _, ent in pairs(ents.FindByClass("prop_weapon")) do 
+		ent:Remove() 
+	end
 end
 
 function GM:IsClassicMode()
@@ -962,24 +956,7 @@ function GM:InitPostEntityMap()
 
 	gamemode.Call("SetupSpawnPoints")
 	gamemode.Call("RemoveUnusedEntities")
-	gamemode.Call("ReplaceMapWeapons")
-	gamemode.Call("ReplaceMapAmmo")
-	gamemode.Call("ReplaceMapBatteries")
 	gamemode.Call("SetupProps")
-	for _, ent in pairs(ents.FindByClass("prop_ammo")) do 
-		if self:IsClassicMode() then 
-			ent.PlacedInMap = true 
-		else 
-			ent:Remove() 
-		end 
-	end
-	for _, ent in pairs(ents.FindByClass("prop_weapon")) do 
-		if self:IsClassicMode() then 
-			ent.PlacedInMap = true 
-		else 
-			ent:Remove() 
-		end 
-	end
 end
 
 local function EndRoundPlayerShouldTakeDamage(pl, attacker) 
@@ -2609,7 +2586,6 @@ function GM:PlayerSpawn(pl)
 		
 		pl:SetMaxHealth(100)
 
-		--pl:Give("weapon_zs_fists")
 		local nosend = not pl.DidInitPostEntity
 		pl.HumanRepairMultiplier = nil
 		pl.HumanHealMultiplier = nil
