@@ -40,7 +40,7 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if math.random(10) < 4 then
-		if hitent:IsNailed() and not hitent:IsSameTeam(attacker) and then
+		if hitent:IsNailed() and not hitent:IsSameTeam(attacker) then
 			if not hitent:IsValid() or not hitent:IsNailed() or hitent:IsSameTeam(attacker) then return end
 			if not hitent or not gamemode.Call("CanRemoveNail", attacker, hitent) then return end
 			local nailowner = hitent:GetOwner()
