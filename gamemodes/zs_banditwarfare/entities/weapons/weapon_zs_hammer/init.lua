@@ -9,7 +9,7 @@ function SWEP:Reload()
 	local owner = self.Owner
 	if owner:GetBarricadeGhosting() then return end
 
-	local tr = owner:MeleeTrace(self.MeleeRange, self.MeleeSize, owner:GetMeleeFilter())
+	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)
 	local trent = tr.Entity
 	if not trent:IsValid() or not trent:IsNailed() or not trent:IsSameTeam(self.Owner) then return end
 	
@@ -77,7 +77,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			didrepair = true
 		elseif hitent:GetClass() == "prop_gunturret" and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() and hitent:GetObjectHealth() >= hitent:GetMaxObjectHealth() then 
 			local curammo = hitent:GetAmmo()
-			hitent:SetAmmo(curammo + 20)
+			hitent:SetAmmo(curammo + 40)
 			hitent:EmitSound("npc/turret_floor/click1.wav")
 			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, 20, self)
 		elseif hitent.GetObjectHealth and 
@@ -112,7 +112,7 @@ function SWEP:SecondaryAttack()
 		return
 	end
 	local owner = self.Owner
-	local tr = owner:TraceLine(64, MASK_SOLID, owner:GetMeleeFilter())
+	local tr = owner:CompensatedMeleeTrace(64, self.MeleeSize, nil, nil)
 	if owner:AttemptNail(tr,true) then
 		self:SendWeaponAnim(self.Alternate and ACT_VM_HITCENTER or ACT_VM_MISSCENTER)
 		self.Alternate = not self.Alternate

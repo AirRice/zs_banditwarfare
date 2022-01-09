@@ -56,6 +56,168 @@ function FindItem(id)
 	return t
 end
 
+function FindWeaponConsequents(id)
+	if not id then return end
+	local num = tonumber(id)
+	if num then
+		id = GAMEMODE.Items[num].Signature
+	end
+
+	local consequents = {}
+	for _, tab in ipairs(GAMEMODE.Items) do
+		if tab.Prerequisites and istable(tab.Prerequisites) then
+			for _, prereqsig in ipairs(tab.Prerequisites) do
+				if prereqsig == id then
+					table.insert(consequents, tab.Signature)
+					break
+				end
+			end
+		end
+	end
+	return consequents
+end
+
+function FindWeaponPrerequisites(id)
+	if not id then return {} end
+	local num = tonumber(id)
+	if num then
+		id = GAMEMODE.Items[num].Signature
+	end
+	local tab = FindItem(id)
+	if not tab then return {} end
+	return tab.Prerequisites
+end
+
+function PlayerCanPurchasePointshopUpgradeItem(pl,originaltab,itemtab,slot,revertmode)
+	if not (pl and pl:IsPlayer()) then return end
+	if not itemtab or not originaltab then return end
+	local upgradeable, upgradereasons = PlayerCanUpgradePointshopItem(pl,originaltab,slot)
+	if not upgradeable then
+		return false, upgradereasons
+	else
+		local normalpurchase, reasons = PlayerCanPurchasePointshopItem(pl,itemtab,slot,revertmode)
+		if normalpurchase then
+			local isupgradetreeorder = false
+			local prevs = {}
+			if revertmode then
+				prevs = originaltab.Prerequisites
+				isupgradetreeorder = (prevs and istable(prevs) and !table.IsEmpty(prevs) and itemtab.Signature and table.HasValue(prevs,itemtab.Signature))
+			else
+				prevs = itemtab.Prerequisites
+				isupgradetreeorder = (prevs and istable(prevs) and !table.IsEmpty(prevs) and originaltab.Signature and table.HasValue(prevs,originaltab.Signature))
+			end
+			local invalidreason = isupgradetreeorder and "" or translate.ClientGet(pl,"cant_purchase_right_now")
+			return isupgradetreeorder, invalidreason
+		else
+			return false, reasons
+		end
+	end
+end
+
+function PlayerCanUpgradePointshopItem(pl,itemtab,slot)
+	if not (pl and pl:IsPlayer()) then return end
+	if not itemtab then return end	
+	local owned = false
+	if not GAMEMODE:IsClassicMode() and not (slot == WEAPONLOADOUT_NULL or not slot) then 
+		owned = (itemtab.SWEP and pl:GetWeapon1() == itemtab.SWEP and slot == WEAPONLOADOUT_SLOT1)
+		or (itemtab.SWEP and pl:GetWeapon2() == itemtab.SWEP and slot == WEAPONLOADOUT_SLOT2)
+		or (itemtab.SWEP and pl:GetWeaponMelee() == itemtab.SWEP and slot == WEAPONLOADOUT_MELEE)
+		or (itemtab.SWEP and pl:GetWeaponToolslot() == itemtab.SWEP and slot == WEAPONLOADOUT_TOOLS)
+	else
+		owned = (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP))
+	end
+	local results = FindWeaponConsequents(itemtab.Signature)
+	local hasnexttier = !table.IsEmpty(results)
+	local hasprevtier = !table.IsEmpty(itemtab.Prerequisites)
+	
+	local finalresult = owned and (hasnexttier or hasprevtier)
+	local refuseupgradereasons = ""
+	if !owned then
+		refuseupgradereasons = translate.ClientGet(pl,"dont_own_prerequisite")
+	end
+	
+	return finalresult,refuseupgradereasons
+end
+
+function GetItemCost(itemtab)
+	if not itemtab then return nil end
+	local cost = itemtab.Worth
+	local cat = itemtab.Category
+	if not (cost and cat) then return nil end
+	cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and cat ~= ITEMCAT_OTHER) and GAMEMODE.ClassicModeDiscountMultiplier or 1))
+	return cost
+end
+
+function PlayerCanPurchasePointshopItem(pl,itemtab,slot,ignorecost)
+	if not (pl and pl:IsPlayer()) then return end
+	if not itemtab then return end
+	local cost = GetItemCost(itemtab)
+	local enoughcost = pl:GetPoints() >= cost or ignorecost
+	local notduplicate = true
+	if not GAMEMODE:IsClassicMode() and not (slot == WEAPONLOADOUT_NULL or not slot) then 
+		notduplicate = not (itemtab.SWEP and pl:GetWeapon1() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeapon2() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeaponMelee() == itemtab.SWEP)
+		and not (itemtab.SWEP and pl:GetWeaponToolslot() == itemtab.SWEP)
+	else
+		notduplicate = not (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP))
+		and not (itemtab.ControllerWep and pl:HasWeapon(itemtab.ControllerWep))
+	end
+	
+	local fitformode = not (itemtab.NoClassicMode and GAMEMODE:IsClassicMode()) and 
+	not (itemtab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+	not (itemtab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode())
+	
+	local auxreason = not (itemtab.CanPurchaseFunc and !itemtab.CanPurchaseFunc(pl))
+	
+	local finalresult = enoughcost and notduplicate and fitformode and auxreason
+
+	local refusepurchasereasons = ""
+	if !auxreason then
+		refusepurchasereasons = itemtab.FailTranslateString and translate.ClientGet(pl,itemtab.FailTranslateString) or translate.ClientGet(pl,"cant_purchase_right_now")
+	elseif !fitformode then
+		refusepurchasereasons = translate.ClientGet(pl,"cant_purchase_in_this_mode")
+	elseif !notduplicate then 
+		refusepurchasereasons = translate.ClientGet(pl,"already_have_weapon")
+	elseif !enoughcost then 
+		refusepurchasereasons = translate.ClientGet(pl,"dont_have_enough_points")
+	end
+	return finalresult, refusepurchasereasons
+end
+
+local weaponfeatures = {
+	{"WalkSpeed", "stat_walkspeed"},
+	{"MeleeDamage", "stat_meleedmg",1},
+	{"MeleeRange", "stat_meleerange"},
+
+	{"ClipSize", "stat_clipsize", 1, "Primary"},
+	{"DefaultClip", "stat_defaultgiven", 1, "Primary"},
+	{"Damage", "stat_gundmg", 1, "Primary"},
+	{"NumShots", "stat_numshots", 1, "Primary"},
+	{"Delay", "stat_firedelay", 0.001, "Primary"}
+}
+
+function GetWeaponFeatures(swep)
+	if not swep then return end
+	local sweptable = weapons.Get(swep)
+	if not sweptable then return end
+	
+	local output = {}
+	for i, featuretab in ipairs(weaponfeatures) do
+		local touse
+		if featuretab[4] then
+			touse = sweptable[ featuretab[4] ]
+		else
+			touse = sweptable
+		end
+		local value = touse[ featuretab[1] ]
+		if value and value > 0 then
+			table.insert(output,{featuretab[2],value})
+		end
+	end
+	return output
+end
+
 function TrueVisible(posa, posb, filter)
 	local filt = ents.FindByClass("projectile_*")
 	filt = table.Add(filt, player.GetAll())

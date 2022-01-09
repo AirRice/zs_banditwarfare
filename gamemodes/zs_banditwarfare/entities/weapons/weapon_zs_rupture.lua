@@ -9,8 +9,8 @@ if CLIENT then
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 70
 	SWEP.HUD3DBone = "v_weapon.famas"
-	SWEP.HUD3DPos = Vector(1.5, -4, 5)
-	SWEP.HUD3DScale = 0.02
+	SWEP.HUD3DPos = Vector(1.75, -4, 5)
+	SWEP.HUD3DScale = 0.026
 	SWEP.VElements = {
 		["sidebattery++++"] = { type = "Model", model = "models/items/car_battery01.mdl", bone = "v_weapon.famas", rel = "base", pos = Vector(-0.755, 1.029, -1.609), angle = Angle(-90, 180, 0), size = Vector(0.218, 0.218, 0.218), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["pullhandle"] = { type = "Model", model = "models/props_combine/combine_emitter01.mdl", bone = "v_weapon.bolt", rel = "", pos = Vector(0, 0.407, -0.244), angle = Angle(24.01, 90, -180), size = Vector(0.083, 0.083, 0.083), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
@@ -81,8 +81,8 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 0.768
 SWEP.WalkSpeed = SPEED_FAST
 
-SWEP.IronSightsPos = Vector(-2.3, 2, 1)
-SWEP.IronSightsAng = Vector(-1, 0.2, 2.55)
+SWEP.IronSightsPos = Vector(-6.15, 4, -1.5)
+SWEP.IronSightsAng = Vector(4, 0, 0)
 
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)

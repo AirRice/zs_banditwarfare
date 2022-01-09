@@ -13,7 +13,6 @@ AccessorFunc(PANEL, "m_tColor", "Color")
 function PANEL:Init()
 	self:SetBorderRadius(8)
 	self:SetCurve(true)
-
 	self:SetColor(Color(10, 10, 10, 120))
 end
 

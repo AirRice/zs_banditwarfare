@@ -54,7 +54,7 @@ SWEP.ConeMin = 0.0085
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.Recoil = 1.3
 SWEP.CSMuzzleFlashes = false
-SWEP.IronSightsPos = Vector(-6, -1, 2.25)
+SWEP.IronSightsPos = Vector(-6, -1, -1.25)
 
 SWEP.ReloadSpeed = 0.8
 

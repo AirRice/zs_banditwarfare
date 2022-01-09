@@ -114,6 +114,11 @@ function SWEP:RefreshSigils()
 	for _, ent in pairs(ents.FindByClass("point_fakesigil")) do
 		ent:Remove()
 	end
+	for _, ent in pairs(ents.FindByClass("info_sigilnode")) do
+		table.insert(GAMEMODE.ProfilerNodes, ent:GetPos())
+		ent:Remove()
+		GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
+	end
 	for _, point in pairs(GAMEMODE.ProfilerNodes) do
 		local ent = ents.Create("point_fakesigil")
 		if ent:IsValid() then
@@ -165,3 +170,12 @@ end
 end
 
 scripted_ents.Register(ENT, "point_fakesigil")
+
+local ENT = {}
+
+ENT.Type = "point"
+
+function ENT:Initialize()
+end
+
+scripted_ents.Register(ENT, "info_sigilnode")

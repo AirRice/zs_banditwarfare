@@ -45,7 +45,7 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 
-SWEP.IronSightsPos = Vector(-8.8, 10, 2)
+SWEP.IronSightsPos = Vector(-8.4, 10, 4)
 SWEP.IronSightsAng = Vector(1.4,0.1,5)
 
 function SWEP:SetupDataTables()

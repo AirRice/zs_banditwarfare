@@ -18,7 +18,7 @@ end
 
 function GM:DeleteProfilerPreMade()
 	file.Delete(self:GetProfilerFilePreMade())
-	GM.ProfilerNodes = {}
+	self.ProfilerNodes = {}
 end
 
 function GM:GetProfilerFilePreMade()

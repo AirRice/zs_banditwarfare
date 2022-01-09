@@ -10,7 +10,7 @@ if CLIENT then
 	SWEP.ViewModelFlip = false
 
 	SWEP.HUD3DBone = "base"
-	SWEP.HUD3DPos = Vector(5.3, 3.2, 12)
+	SWEP.HUD3DPos = Vector(0.5, -3.5, 22)
 	SWEP.HUD3DAng = Angle(180, 0, 0)
 	SWEP.HUD3DScale = 0.035
 	SWEP.VElements = {
@@ -70,7 +70,7 @@ SWEP.ConeMin = 0
 SWEP.Recoil = 2.25
 SWEP.MovingConeOffset = 0.28
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-SWEP.IronSightsPos = Vector(-16.8, 0, -5.64)
+SWEP.IronSightsPos = Vector(-16.8, 30, -3.64)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()

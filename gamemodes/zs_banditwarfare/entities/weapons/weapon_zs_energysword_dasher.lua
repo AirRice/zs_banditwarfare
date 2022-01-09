@@ -87,7 +87,7 @@ function SWEP:Think()
 
 			owner:LagCompensation(true)
 
-			local traces = owner:PenetratingMeleeTrace(24, 12, nil, owner:LocalToWorld(owner:OBBCenter()), dir)
+			local traces = owner:PenetratingMeleeTrace(24, 12, owner:LocalToWorld(owner:OBBCenter()), dir)
 			local ownerspeed = owner:GetVelocity():Length()
 			local hit = false
 			for _, trace in ipairs(traces) do

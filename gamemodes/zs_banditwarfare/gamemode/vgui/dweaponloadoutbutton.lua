@@ -61,8 +61,8 @@ function PANEL:OpenMenu()
 end
 
 function PANEL:CloseMenu()
-	--self:SetVisible(false)
-	self:Remove()
+	self:SetVisible(false)
+	--self:Remove()
 end
 
 local texRightEdge = surface.GetTextureID("gui/gradient")
@@ -84,8 +84,16 @@ function PANEL:PerformLayout()
 	end
 end
 
-vgui.Register("DSideMenu", PANEL, "DPanel")
+function PANEL:Think()
+	if not input.LookupBinding("+menu", true) then return end
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and not GAMEMODE:IsClassicMode() and not (GAMEMODE.m_PointsShop and GAMEMODE.m_PointsShop:Valid() and ispanel(GAMEMODE.m_PointsShop)) then
+		if not input.IsKeyDown(input.GetKeyCode(input.LookupBinding("+menu", true))) then
+			self:CloseMenu()
+		end
+	end
+end
 
+vgui.Register("DSideMenu", PANEL, "DPanel")
 
 local PANEL = {}
 

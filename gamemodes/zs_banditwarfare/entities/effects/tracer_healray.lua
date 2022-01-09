@@ -35,20 +35,20 @@ function EFFECT:Render()
 	local cubiconenorm = (cubicone - cubictwo)
 	local colr = self.Mode == 1 and 150 or 255
 	local colg = self.Mode == 1 and 255 or 150
-	render.DepthRange( 0, 0.01 )
+	--render.DepthRange( 0, 0.01 )
 	render.SetMaterial(beamcoremat)
 	for i = 0, 4 do
-		render.DrawBeam(self.StartPos, cubicone, 6, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
-		render.DrawBeam(cubicone, cubictwo, 6, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
-		render.DrawBeam(cubictwo, self.EndPos, 6, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
+		render.DrawBeam(self.StartPos, cubicone, 10, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
+		render.DrawBeam(cubicone, cubictwo, 10, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
+		render.DrawBeam(cubictwo, self.EndPos, 10, CurTime()*beamspeed, CurTime()*beamspeed-1, Color(colr, colg, 130, 255 * alpha))
 	end
 	render.SetMaterial(beammat)
-	render.DrawBeam(self.StartPos, cubicone, 12, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
-	render.DrawBeam(cubicone, cubictwo, 12, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
-	render.DrawBeam(cubictwo, self.EndPos, 12, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
+	render.DrawBeam(self.StartPos, cubicone, 18, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
+	render.DrawBeam(cubicone, cubictwo, 18, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
+	render.DrawBeam(cubictwo, self.EndPos, 18, CurTime()*beamspeed, CurTime()*beamspeed-2, Color(colr, colg, 190, 180 * alpha))
 	render.SetMaterial(glowmat)
 	render.DrawSprite(self.StartPos, 30, 30, Color(colr, colg, 190, 148 * alpha))
-	render.DepthRange( 0, 1)
+	--render.DepthRange( 0, 1)
 	render.DrawSprite(self.EndPos, 30, 30, Color(colr, colg, 190, 148 * alpha))
 
 end

@@ -9,7 +9,7 @@ if CLIENT then
 	SWEP.ViewModelFlip = false
 	SWEP.ViewModelFOV = 60
 	SWEP.HUD3DBone = "v_weapon.ump45_Release"
-	SWEP.HUD3DPos = Vector(-2, -5, 6)
+	SWEP.HUD3DPos = Vector(-1.2, -5.5, 3)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
 	SWEP.HUD3DScale = 0.025
 	SWEP.VElements = {
@@ -72,8 +72,8 @@ SWEP.ConeMin = 0
 SWEP.MovingConeOffset = 0.04
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
-SWEP.IronSightsPos = Vector(-3, 3, 2)
-SWEP.IronSightsAng = Vector(0, 0, 0)
+SWEP.IronSightsPos = Vector(-8.8, 7, 2.5)
+SWEP.IronSightsAng = Vector(-2.626, -0.28, -2.26)
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 function SWEP:EmitFireSound(secondary)

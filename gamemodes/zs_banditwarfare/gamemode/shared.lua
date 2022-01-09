@@ -3,7 +3,6 @@ GM.Author	=	"Jooho \"air rice\" Lee"
 GM.Email	=	""
 GM.Website	=	""
 
--- No, adding a gun doesn't make your name worth being here.
 GM.Credits = {
 	{"credit_airrice", "", "credit_airrice_desc"},
 	{"credit_jetboom", "williammoodhe@gmail.com (www.noxiousnet.com)", "credit_jetboom_desc"},
@@ -37,9 +36,8 @@ include("sh_globals.lua")
 include("sh_util.lua")
 include("sh_options.lua")
 include("sh_animations.lua")
-include("sh_channel.lua")
 include("sh_voiceset.lua")
-
+ 
 include("obj_vector_extend.lua")
 include("obj_entity_extend.lua")
 include("obj_player_extend.lua")
@@ -209,6 +207,7 @@ function GM:Move(pl, move)
 		move:SetMaxClientSpeed(move:GetMaxClientSpeed() * scale)
 	end
 end
+	
 
 function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 	if inwater then return true end
@@ -232,8 +231,8 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 			end
 			if pl:GetActiveWeapon().CapFallDamage && !isgoomba then damage = math.Clamp(damage,0,30) end
 			if isgoomba then damage = damage * 2 end
-			tohurt:TakeSpecialDamage(damage, DMG_FALL, isgoomba and pl or game.GetWorld(), game.GetWorld(), pl:GetPos())
-			if damage >= 30 and damage < pl:Health() then
+			tohurt:TakeSpecialDamage(damage, isgoomba and DMG_CLUB or DMG_FALL, isgoomba and pl or game.GetWorld(), game.GetWorld(), pl:GetPos())
+			if damage >= 30 and pl:Health() > 0 then
 				tohurt:KnockDown(damage * 0.05*mul)
 			end
 			tohurt:EmitSound("player/pl_fallpain"..(math.random(2) == 1 and 3 or 1)..".wav")
@@ -293,7 +292,7 @@ end
 
 function GM:FindUseEntity(pl, ent)
 	if not ent:IsValid() then
-		local e = pl:TraceLine(90, MASK_SOLID, pl:GetMeleeFilter()).Entity
+		local e = pl:TraceLine(90, MASK_SOLID, pl:GetSimpleTraceFilter()).Entity
 		if e:IsValid() then return e end
 	end
 

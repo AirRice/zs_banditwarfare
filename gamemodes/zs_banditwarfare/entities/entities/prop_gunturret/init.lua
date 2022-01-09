@@ -4,6 +4,9 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 ENT.LastHitSomething = 0
+ENT.ConeAdder = 0
+ENT.ConeMax = 0.065
+ENT.ConeMin = 0.015
 
 local function RefreshTurretOwners(pl)
 	for _, ent in pairs(ents.FindByClass("prop_gunturret")) do
@@ -90,15 +93,39 @@ function ENT:PlayShootSound()
 	-- Handled by the looping sound.
 end
 
+function ENT:GetCone()
+	return math.Clamp(self.ConeMax + self.ConeAdder,self.ConeMin,self.ConeMax)
+end
+ 
+function ENT:UpdateCone()
+	self.AimStartTime = CurTime()
+	hook.Add("Think", self, function(s)
+		s.ConeAdder = (math.Clamp(s.ConeAdder-0.02 * FrameTime(), s.ConeMin-s.ConeMax,0 ))
+		 if (s.AimStartTime + 0.04 <= CurTime()) then
+			s.CollapseStartTime = CurTime()
+			hook.Add("Think", s, function(_)
+				if (_.CollapseStartTime + 0.03 > CurTime()) then
+					return
+				end
+				_.ConeAdder = (math.Clamp(_.ConeAdder + 0.25 * FrameTime(), s.ConeMin-s.ConeMax,0))
+				if (_.ConeAdder >= 0) then
+					hook.Remove("Think", _)
+				end
+			end)
+		end
+	end)
+end
+
 function ENT:FireTurret(src, dir)
 	if self:GetNextFire() <= CurTime() then
 		local curammo = self:GetAmmo()
 		if curammo > 0 then
+			self:UpdateCone()
 			self:SetNextFire(CurTime() + 0.03)
 			self:SetAmmo(curammo - 1)
 			self:StartBulletKnockback()
 			self:PlayShootSound()
-			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(0.065, 0.065, 0), Tracer = 1, Force = 1, Damage = 4, Callback = BulletCallback, IgnoreEntity = self:GetObjectOwner() or nil})
+			self:FireBullets({Num = 1, Src = src, Dir = dir, Spread = Vector(self:GetCone(), self:GetCone(), 0), Tracer = 1, Force = 1, Damage = 4, Callback = BulletCallback, IgnoreEntity = self:GetObjectOwner() or nil})
 			self:DoBulletKnockback(0.01)
 			self:EndBulletKnockback()
 		else

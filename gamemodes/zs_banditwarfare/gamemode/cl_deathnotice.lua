@@ -162,6 +162,7 @@ killicon.Add("weapon_zs_fusilier", "killicon/weapon_zs_fusilier", color_white)
 killicon.Add("weapon_zs_grenadelauncher", "killicon/weapon_zs_grenadelauncher", color_white)
 killicon.Add("projectile_launchedgrenade", "killicon/weapon_zs_grenadelauncher", color_white)
 killicon.Add("weapon_zs_immortal", "killicon/weapon_zs_immortal", color_white)
+killicon.Add("weapon_zs_injector", "killicon/weapon_zs_injector", color_white)
 
 killicon.Add("weapon_zs_inquisition", "killicon/weapon_zs_inquisition", color_white)
 killicon.Add("projectile_tinyarrow", "killicon/weapon_zs_inquisition", color_white)

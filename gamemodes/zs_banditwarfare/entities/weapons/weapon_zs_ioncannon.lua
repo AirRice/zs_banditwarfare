@@ -10,7 +10,7 @@ if CLIENT then
 	SWEP.ViewModelFOV = 55
 
 	SWEP.HUD3DBone = "ValveBiped.Crossbow_base"
-	SWEP.HUD3DPos = Vector(3, 0.5, 11)
+	SWEP.HUD3DPos = Vector(2.2, -2, 30)
 	SWEP.HUD3DScale = 0.025
 	
 SWEP.VElements = {
@@ -55,9 +55,9 @@ sound.Add(
 	sound = "weapons/gauss/fire1.wav"
 })
 
-SWEP.Recoil = 4.1
-SWEP.Primary.Damage = 7
-SWEP.Primary.NumShots = 7
+SWEP.Recoil = 2.8
+SWEP.Primary.Damage = 6
+SWEP.Primary.NumShots = 6
 SWEP.Primary.Delay = 0.45
 SWEP.ReloadDelay = 1
 SWEP.Primary.ClipSize = 8
@@ -75,7 +75,6 @@ SWEP.AimSubtractUnit = 0.03
 SWEP.AimReleaseUnit = 0.2
 SWEP.AimExpandStayDuration = 0.1
 
-SWEP.Recoil = 0.96
 SWEP.WalkSpeed = SPEED_SLOWER
 
 function SWEP:Initialize()

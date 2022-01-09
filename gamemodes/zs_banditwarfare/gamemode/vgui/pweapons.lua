@@ -1,18 +1,30 @@
+local PANEL = {}
 
-local Features = {
-{"WalkSpeed", "이동속도"},
-{"MeleeDamage", "대미지",1},
-{"MeleeRange", "사정거리"},
+function PANEL:Init()
+	local screenscale = BetterScreenScale()
+	self:DockPadding(2, 0, 2, 0)
+	
+	self.FeatureLabel = EasyLabel(self, "", "ZSHUDFontTiny")
+	self.FeatureLabel:SetContentAlignment(4)
+	self.FeatureLabel:Dock(LEFT)
+	
+	self.ValueLabel = EasyLabel(self, "", "ZSHUDFontTiny")
+	self.ValueLabel:SetContentAlignment(6)
+	self.ValueLabel:Dock(RIGHT)	
+end
 
-{"ClipSize", "탄창 용량", 1, "Primary"},
-{"DefaultClip", "기본 지급 탄약", 1, "Primary"},
-{"Damage", "대미지", 1, "Primary"},
-{"NumShots", "탄환 수", 1, "Primary"},
-{"Delay", "발사 딜레이", 0.001, "Primary"}
-}
+function PANEL:SetValues(k,v)
+	self.FeatureLabel:SetText(k)
+	self.FeatureLabel:SizeToContents()
+	self.ValueLabel:SetText(v)
+	self.ValueLabel:SizeToContents()
+end
+
+vgui.Register("DWeaponStatsLine", PANEL, "DPanel")
 
 function GM:MakeWeaponInfo(swep)
-	local wid, hei = 500, 450
+	local screenscale = BetterScreenScale()
+	local wid, hei = 600*screenscale, 500*screenscale
 	local scrwid = ScrW()
 	local scrhei = ScrH()
 	local frame = vgui.Create("DFrame")
@@ -27,37 +39,37 @@ function GM:MakeWeaponInfo(swep)
 	if not swep then return end
 	local sweptable = weapons.GetStored(swep)
 	if not sweptable then return end
-
-	local title = EasyLabel(frame, sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swep, "ZSHUDFontSmall", COLOR_GRAY)
-	title:SetContentAlignment(8)
-	title:Dock(TOP)
-
+	local features = GetWeaponFeatures(swep)
+	if not (features and istable(features) and !table.IsEmpty(features)) then return end
+	
+	local title = sweptable.TranslateName and translate.Get(sweptable.TranslateName) or swep
 	local text = ""
-
 	if sweptable.TranslateDesc then
 		text = translate.Get(sweptable.TranslateDesc)
 	end
 	
-	for i, featuretab in ipairs(Features) do
-		local touse
-		if featuretab[4] then
-			touse = sweptable[ featuretab[4] ]
-		else
-			touse = sweptable
-		end
-		local value = touse[ featuretab[1] ]
-		if value and value > 0 then
-			text = text.."\n"..featuretab[2]..": "..value
-		end
-	end
-
-	local desc = vgui.Create("DLabel", frame)
-	desc:SetContentAlignment(7)
-	desc:SetFont("ZSHUDFontSmallest")
-	desc:SetText(text)
-	desc:SetMultiline(true)
-	desc:SetWrap(true)
-	desc:Dock(FILL)
+	local titlelabel = EasyLabel(frame, title, (screenscale > 0.9 and "ZSHUDFontSmall" or "ZSHUDFontSmaller"), COLOR_GRAY)
+	titlelabel:SetContentAlignment(8)
+	titlelabel:AlignTop(4)
+	titlelabel:CenterHorizontal()
 	
-	frame:SizeToContents()
+	local desclabel = EasyLabel(frame, text, (screenscale > 0.9 and "ZSHUDFontSmallest" or "ZSHUDFontTiny"), COLOR_GRAY)
+	desclabel:SetContentAlignment(7)
+	desclabel:SetMultiline(true)
+	desclabel:SetWrap(true)
+	desclabel:SetTall(frame:GetTall()*0.5)
+	desclabel:SetWide(wid*0.95)
+	desclabel:MoveBelow(titlelabel,4)
+	desclabel:CenterHorizontal()
+	local prevlabel = desclabel
+	for _,v in ipairs(features) do
+		local featureline = vgui.Create( "DWeaponStatsLine", frame )
+		featureline:SetWide(wid*0.95)
+		featureline:SetValues(translate.Get(v[1]),v[2])
+		featureline:MoveBelow(prevlabel,1)
+		prevlabel = featureline
+		featureline:CenterHorizontal()
+	end
+	--featureslist:SizeToContents()
+	--frame:SizeToContents()
 end

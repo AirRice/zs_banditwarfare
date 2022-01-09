@@ -44,6 +44,7 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	local shots = math.min(self:Clip1(),3)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*(shots + 1.5))
+	self:SetNextReload(CurTime() + self.Primary.Delay*(shots + 1.5))
 	for i = 0, shots-1 do
 		timer.Simple(self.Primary.Delay * i, function()
 			if (self:IsValid() and self.Owner:Alive()) then
@@ -52,7 +53,6 @@ function SWEP:PrimaryAttack()
 				self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 			end
 		end)
-		
 	end
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
+	self.IdleAnimation = CurTime() + self:SequenceDuration()		
 end

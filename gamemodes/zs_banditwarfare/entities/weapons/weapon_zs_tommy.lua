@@ -10,7 +10,7 @@ if CLIENT then
 	SWEP.ViewModelFOV = 60
 
 	SWEP.HUD3DBone = "v_weapon.galil"
-	SWEP.HUD3DPos = Vector(3,0, 6)
+	SWEP.HUD3DPos = Vector(2.15,-0.5, 8)
 	SWEP.HUD3DScale = 0.025
 	SWEP.VElements = {
 		["drumclip"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "v_weapon.magazine", rel = "", pos = Vector(0, 5.149, 2.482), angle = Angle(180, 0, 0), size = Vector(0.363, 0.363, 0.092), color = Color(150, 150, 150, 255), surpresslightning = false, material = "", skin = 6, bodygroup = {} },
@@ -55,6 +55,9 @@ SWEP.ConeMin = 0.017
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.Recoil = 0.58
+
+SWEP.IronSightsPos = Vector(-6.4, 8, 2)
+SWEP.IronSightsAng = Vector(0,0,0)
 
 SWEP.WalkSpeed = SPEED_SLOWER
 function SWEP:EmitFireSound()

@@ -41,4 +41,4 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOW
 
-SWEP.IronSightsPos = Vector(-3, 3, 2)
+SWEP.IronSightsPos = Vector(-6.15, 3, 1)

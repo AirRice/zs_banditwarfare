@@ -2,15 +2,17 @@
 function GM:OnSigilTaken(sigilent, justtakenby)
 	local sigils = {}
 	local sigilteams = {}
-
 	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
 		sigils[#sigils + 1] = ent
 		sigilteams[#sigilteams + 1] = ent:GetSigilTeam()
 	end
-	--PrintTable(sigils)
+	
 	net.Start("zs_currentsigils")
-		net.WriteTable(sigilteams)
+		for i=1, self.MaxSigils do
+			net.WriteInt(sigilteams[i],4)
+		end
 	net.Broadcast()
+	
 	self.CurrentSigilTable = sigils
 
 	local translatestring = nil

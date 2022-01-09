@@ -10,6 +10,8 @@ LANGUAGE.sample_collect_mode						= "샘플 수집전"
 LANGUAGE.transmission_mode							= "점령전"
 LANGUAGE.win										= "%s 승리"
 LANGUAGE.draw										= "무승부"
+LANGUAGE.x_kills_x_deaths                           = "%sK/%dD"
+LANGUAGE.x_kills_x_deaths_x_points                  = "%sK/%dD | %s"
 
 LANGUAGE.itemcategory_guns							= "총기"
 LANGUAGE.itemcategory_ammo							= "탄약"
@@ -25,6 +27,7 @@ LANGUAGE.colors_button								= "색깔 선택"
 LANGUAGE.options_button								= "옵션"
 LANGUAGE.credits_button								= "제작진"
 LANGUAGE.close_button								= "닫기"
+LANGUAGE.back_button								= "뒤로가기"
 LANGUAGE.consumables_purchase_button				= "소모품 구매"
 
 
@@ -139,6 +142,8 @@ LANGUAGE.weapon_meathook_name						= "갈고리"
 LANGUAGE.weapon_meathook_desc						= "공격이 맞으면 피격대상에게 갈고리가 박혀 지속적인 피해를 입힌다. 이 피해는 아무런 도움이 없으면 적을 죽음까지 몰 수 있다."
 LANGUAGE.weapon_hunter_name							= "'헌터' 소총"
 LANGUAGE.weapon_hunter_desc							= "대구경 탄환을 발사하는 저격소총. 탄창 용량이 1발밖에 되지 않으며 장전속도는 느리지만 매우 강력하다. \n이 탄환이 머리에 맞는 적은 즉사한다."
+LANGUAGE.weapon_injector_name						= "'재버' 의료 주입기"
+LANGUAGE.weapon_injector_desc						= "근거리에서 사용 가능한 의료용 총기. 아군을 치료하거나 적에게 지속적인 피해를 입힐 수 있다. 사정거리 밖의 대상에게는 발사할 수 없다."
 LANGUAGE.weapon_immortal_name						= "'불멸' 권총"
 LANGUAGE.weapon_immortal_desc						= "이 리볼버는 콤바인 기술로 강화되었다. 사용자의 체력이 낮을수록 데미지가 최대 2배까지 증가한다."
 LANGUAGE.weapon_inferno_name						= "'인페르노' 돌격소총"
@@ -260,7 +265,7 @@ LANGUAGE.shopitem_adrenaline_toomuch				= "아드레날린을 더 사용하는 �
 
 LANGUAGE.shopitem_ammo_name							= "추가 탄약"
 LANGUAGE.shopitem_ammo_desc							= "구매 시 현재 무기의 탄약을 지급한다. 무기 당 탄약 지급량이 다르며, 처음 무기를 구매할 때 주어진 양과 동일하다. 일부 무기는 탄약 보충이 불가능하다."
-LANGUAGE.shopitem_ammo_invalid						= "이 무기의 탄약은 추가적으로 구매할 수 없다."
+LANGUAGE.shopitem_ammo_invalid						= "이 무기는 상점에서 보충할 수 없다."
 
 LANGUAGE.statusname_invuln							= "무적 상태"
 LANGUAGE.statusname_bodyarmor						= "방탄복"
@@ -307,15 +312,33 @@ LANGUAGE.cant_purchase_in_this_mode					= "이 모드에서는 사용할 수 없
 LANGUAGE.already_have_weapon						= "이미 소유하고 있다."
 LANGUAGE.cant_use_in_classic_mode					= "섬멸전에서는 사용할 수 없다."
 LANGUAGE.nothing_for_this_ammo						= "이 탄약을 이용할 무기를 소유하고 있지 않다."
+LANGUAGE.dont_own_prerequisite						= "필요로 하는 무기를 소유하고 있지 않다."
+LANGUAGE.weapon_has_no_upgrades						= "이 무기는 업그레이드가 불가능하다."
+LANGUAGE.weapon_has_no_prerequisites				= "이 무기는 전 단계가 없다."
+LANGUAGE.cant_purchase_right_now					= "지금은 구매할 수 없다."
+LANGUAGE.dont_have_enough_points					= "포인트가 부족하다."
+LANGUAGE.weapon_is_not_owned						= "본인이 구매한 무기만 업그레이드가 가능하다."
 
 LANGUAGE.purchased_for_x_points						= "%d포인트에 구매했다."
+LANGUAGE.refunded_and_given_x_points				= "%d포인트가 환불되었다."
+LANGUAGE.upgraded_for_x_points						= "%d포인트에 업그레이드했다."
+
 LANGUAGE.require_x_more_points						= "%d포인트 부족"
 LANGUAGE.purchase_item								= "구매"
+LANGUAGE.upgrade_item								= "업그레이드"
+LANGUAGE.revert_item								= "환불"
 LANGUAGE.pointshop_title							= "포인트 상점"
 LANGUAGE.pointshop_title_guns1						= "무기 1 구매"
 LANGUAGE.pointshop_title_guns2						= "무기 2 구매"
 LANGUAGE.pointshop_title_melee						= "근접 무기 구매"
 LANGUAGE.pointshop_title_tools						= "도구 구매"
+
+LANGUAGE.upgrade_to									= "업그레이드: "
+LANGUAGE.revert_to									= "다운그레이드: "
+LANGUAGE.upgrading_x								= "%s 업그레이드 중"
+LANGUAGE.reverting_x								= "%s 다운그레이드 중"
+LANGUAGE.switch_to_upgrade							= "업그레이드 모드로 변경"
+LANGUAGE.switch_to_revert							= "다운그레이드 모드로 변경"
 
 LANGUAGE.tier_x										= "%d티어"
 LANGUAGE.button_help								= "도움말"
@@ -325,8 +348,6 @@ LANGUAGE.weapon_insured								= "무기 저장됨"
 
 LANGUAGE.disconnect_killed							= "%s이(가) %s에게 살해당해 빡종해버렸다."
 LANGUAGE.nail_removed_by							= "%s이(가) %s의 못을 뺐다."
-LANGUAGE.cant_purchase_right_now					= "지금은 구매할 수 없다."
-LANGUAGE.dont_have_enough_points					= "포인트가 부족하다."
 LANGUAGE.prepare_yourself							= "전쟁을 대비하자..."
 LANGUAGE.purchased_x_for_y_points					= "%s을(를) %d포인트에 구매했다."
 LANGUAGE.will_appear_after_respawn					= "리스폰 후 지급됩니다."
@@ -408,6 +429,44 @@ LANGUAGE.integrity_x								= "내구도: %d%%"
 LANGUAGE.empty										= "비어 있음"
 LANGUAGE.manual_control								= "수동 조작"
 
+LANGUAGE.credits_window_title                       = "ZS:BW 제작진"
+LANGUAGE.credit_airrice                             = "Jooho \"air rice\" Lee"
+LANGUAGE.credit_airrice_desc                        = "밴딧 워페어 주 개발자"
+LANGUAGE.credit_jetboom                             = "William \"JetBoom\" Moodhe"
+LANGUAGE.credit_jetboom_desc                        = "좀비 서바이벌 창시자/주 개발자"
+LANGUAGE.credit_zombiepanicsource                   = "좀비 패닉: 소스"
+LANGUAGE.credit_zombiepanicsource_desc              = "근접 무기 음향"
+LANGUAGE.credit_samuel                              = "Samuel"
+LANGUAGE.credit_samuel_desc                         = "판자 더미 모델"
+LANGUAGE.credit_honsal                              = "honsal"
+LANGUAGE.credit_honsal_desc                         = "좀비 서바이벌 기본 한글화"
+LANGUAGE.credit_sunrust_community                   = "Benjy, The Darker One, Raox, Scott"
+LANGUAGE.credit_sunrust_community_desc              = "코드 공헌"
+LANGUAGE.credit_github                              = "GitHub의 다른 모든 ZS 코드 공헌자들"
+LANGUAGE.credit_github_desc                         = "각종 코드"
+
+LANGUAGE.scoreboard_gamemode_author                 = "%s (%s) 제작"
+
+LANGUAGE.scoreboard_tag_jetboom                     = "JetBoom\n좀비 서바이벌의 주 개발자!"
+LANGUAGE.scoreboard_tag_airrice                     = "air rice\n밴딧 워페어 개발자"
+LANGUAGE.scoreboard_tag_admin                       = "어드민"
+
+LANGUAGE.pointfloater_x_assisted                    = "%s (어시스트)"
+LANGUAGE.pointfloater_x_assist                      = "%s (어시스트)"
+
+LANGUAGE.pointfloater_x_kills                       = "%s 명 사살"
+LANGUAGE.pointfloater_kill_killed                   = "사살"
+
+LANGUAGE.stat_walkspeed								= "이동속도"
+LANGUAGE.stat_meleedmg 								= "대미지"
+LANGUAGE.stat_meleerange							= "근접 무기 리치"
+
+LANGUAGE.stat_clipsize								= "탄창 크기"
+LANGUAGE.stat_defaultgiven							= "기본 지급 탄약"
+LANGUAGE.stat_gundmg								= "대미지"
+LANGUAGE.stat_numshots								= "발사 탄환 수"
+LANGUAGE.stat_firedelay								= "공격 딜레이"
+
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Zombie Survival:밴딧 워페어"
 LANGUAGE.help_cat_keys								= "키 설명"
@@ -438,7 +497,7 @@ LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들
 <hr>
 <h2>섬멸전</h2> <br>
 <p>섬멸전 모드에서는 송신기가 없으며, 유일한 목표는 모든 적을 사살하는 것입니다. 이 모드에서는 로드아웃을 사용할 수 없으며, 기본으로 지급되는 권총과 칼을 제외하면 모든 무기를 상점 (F2) 에서 구매하여 사용해야 합니다.</p>
-<p>게임이 간소화된 만큼 제한 시간도 짧으며 도구 대부분을 사용할 수 없게 됩니다. 대신 모든 상점 아이템을 25% 저렴한 가격에 사용 가능합니다!</p>
+<p>게임이 간소화된 만큼 제한 시간도 짧으며 도구 대부분을 사용할 수 없게 됩니다. 대신 모든 상점 아이템을 30% 저렴한 가격에 사용 가능합니다!</p>
 <p>다른 모드와는 다르게 죽을 때 무기를 잃어버릴 수도 있으니 조심해야 합니다.</p>
 <ul><li>파란색으로 표시되는 무기들은 <strong>저장</strong>됩니다. 이 무기들은 죽어도 떨어뜨리지 않습니다.</li> 
 <li>무기를 사자마자 저장되지는 않습니다. 무기를 사고 난 후 그 라운드에서 무기를 소유한 채 생존할 시 무기가 저장됩니다.</li>

@@ -153,7 +153,7 @@ function meta:ClippedName()
 end
 
 function meta:DispatchAltUse()
-	local tr = self:TraceLine(64, MASK_SOLID, self:GetMeleeFilter())
+	local tr = self:CompensatedMeleeTrace(64, 4, nil, nil, nil, true)
 	local ent = tr.Entity
 	if ent and ent:IsValid() then
 		if ent.AltUse then
@@ -217,24 +217,6 @@ end
 function meta:TraceHull(distance, mask, size, filter, start)
 	start = start or self:GetShootPos()
 	return util.TraceHull({start = start, endpos = start + self:GetAimVector() * distance, filter = filter or self, mask = mask, mins = Vector(-size, -size, -size), maxs = Vector(size, size, size)})
-end
-
-function meta:DoubleTrace(distance, mask, size, mask2, filter)
-	local tr1 = self:TraceLine(distance, mask, filter)
-	if tr1.Hit then return tr1 end
-	if mask2 then
-		local tr2 = self:TraceLine(distance, mask2, filter)
-		if tr2.Hit then return tr2 end
-	end
-
-	local tr3 = self:TraceHull(distance, mask, size, filter)
-	if tr3.Hit then return tr3 end
-	if mask2 then
-		local tr4 = self:TraceHull(distance, mask2, size, filter)
-		if tr4.Hit then return tr4 end
-	end
-
-	return tr1
 end
 
 function meta:AttemptNail(tr,showmessages)
@@ -505,24 +487,125 @@ function meta:AirBrake()
 	self:SetLocalVelocity(vel)
 end
 
-function meta:GetMeleeFilter()
-	return GAMEMODE.RoundEnded and {self} or team.GetPlayers(self:Team())
-end
-meta.GetTraceFilter = meta.GetMeleeFilter
+local temp_attacker = NULL
+local temp_attacker_team = -1
+local temp_pen_ents = {}
 
-function meta:MeleeTrace(distance, size, filter, start)
-	return self:TraceHull(distance, MASK_SOLID, size, filter, start)
+local function MeleeTraceFilter(ent)
+	if ent == temp_attacker
+	or ent:IsPlayer() and ent:Team() == temp_attacker_team
+	or temp_pen_ents[ent] then
+		return false
+	end
+	return true
 end
 
-function meta:PenetratingMeleeTrace(distance, size, prehit, start, dir)
+local function SimpleTraceFilter(ent)
+	if ent.IgnoreTraces or ent:IsPlayer() then
+		return false
+	end
+
+	return true
+end
+
+function meta:GetSimpleTraceFilter()
+	return SimpleTraceFilter
+end
+
+local melee_trace = {filter = MeleeTraceFilter, mask = MASK_SOLID, mins = Vector(), maxs = Vector()}
+
+function meta:MeleeTrace(distance, size, start, dir, override_mask)
 	start = start or self:GetShootPos()
 	dir = dir or self:GetAimVector()
 
+	local tr
+
+	temp_attacker = self
+	temp_attacker_team = self:Team()
+	melee_trace.start = start
+	melee_trace.endpos = start + dir * distance
+	melee_trace.mask = override_mask or MASK_SOLID
+	melee_trace.mins.x = -size
+	melee_trace.mins.y = -size
+	melee_trace.mins.z = -size
+	melee_trace.maxs.x = size
+	melee_trace.maxs.y = size
+	melee_trace.maxs.z = size
+	melee_trace.filter = MeleeTraceFilter
+
+	tr = util.TraceLine(melee_trace)
+
+	if tr.Hit then
+		return tr
+	end
+
+	return util.TraceHull(melee_trace)
+end
+
+local function InvalidateCompensatedTrace(tr, start, distance)
+	-- Need to do this or people with 300 ping will be hitting people across rooms
+	if tr.Entity:IsValid() and tr.Entity:IsPlayer() and tr.HitPos:DistToSqr(start) > distance * distance + 144 then -- Give just a little bit of leeway
+		tr.Hit = false
+		tr.HitNonWorld = false
+		tr.Entity = NULL
+	end
+end
+
+function meta:CompensatedMeleeTrace(distance, size, start, dir)
+	start = start or self:GetShootPos()
+	dir = dir or self:GetAimVector()
+
+	self:LagCompensation(true)
+	local tr = self:MeleeTrace(distance, size, start, dir)
+	self:LagCompensation(false)
+
+	InvalidateCompensatedTrace(tr, start, distance)
+
+	return tr
+end
+
+function meta:CompensatedPenetratingMeleeTrace(distance, size, start, dir)
+	start = start or self:GetShootPos()
+	dir = dir or self:GetAimVector()
+
+	self:LagCompensation(true)
+	local t = self:PenetratingMeleeTrace(distance, size, start, dir)
+	self:LagCompensation(false)
+
+	for _, tr in pairs(t) do
+		InvalidateCompensatedTrace(tr, start, distance)
+	end
+
+	return t
+end
+
+function meta:PenetratingMeleeTrace(distance, size, start, dir)
+	start = start or self:GetShootPos()
+	dir = dir or self:GetAimVector()
+
+	local tr, ent
+
+	temp_attacker = self
+	temp_attacker_team = self:Team()
+	temp_pen_ents = {}
+	melee_trace.start = start
+	melee_trace.endpos = start + dir * distance
+	melee_trace.mask = MASK_SOLID
+	melee_trace.mins.x = -size
+	melee_trace.mins.y = -size
+	melee_trace.mins.z = -size
+	melee_trace.maxs.x = size
+	melee_trace.maxs.y = size
+	melee_trace.maxs.z = size
+
 	local t = {}
-	local trace = {start = start, endpos = start + dir * distance, filter = self:GetMeleeFilter(), mask = MASK_SOLID, mins = Vector(-size, -size, -size), maxs = Vector(size, size, size)}
 	local onlyhitworld
 	for i=1, 50 do
-		local tr = util.TraceHull(trace)
+		tr = util.TraceLine(melee_trace)
+
+		if not tr.Hit then
+			tr = util.TraceHull(melee_trace)
+		end
 
 		if not tr.Hit then break end
 
@@ -533,29 +616,34 @@ function meta:PenetratingMeleeTrace(distance, size, prehit, start, dir)
 
 		if onlyhitworld then break end
 
-		local ent = tr.Entity
-		if ent and ent:IsValid() then
+		ent = tr.Entity
+		if ent:IsValid() then
 			if not ent:IsPlayer() then
-				trace.mask = MASK_SOLID_BRUSHONLY
+				melee_trace.mask = MASK_SOLID_BRUSHONLY
 				onlyhitworld = true
 			end
 
 			table.insert(t, tr)
-			table.insert(trace.filter, ent)
+			temp_pen_ents[ent] = true
 		end
 	end
 
-	if prehit and (#t == 1 and not t[1].HitNonWorld and prehit.HitNonWorld or #t == 0 and prehit.HitNonWorld) then
-		t[1] = prehit
-	end
+	temp_pen_ents = {}
 
-	return t
+	return t, onlyhitworld
 end
 
 function meta:ActiveBarricadeGhosting(override)
 	if not (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and not override or not self:GetBarricadeGhosting() then return false end
+	
+	local aabbmin, aabbmax = self:WorldSpaceAABB()
+	aabbmin.x = aabbmin.x + 1
+	aabbmin.y = aabbmin.y + 1
 
-	for _, ent in pairs(ents.FindInBox(self:WorldSpaceAABB())) do
+	aabbmax.x = aabbmax.x - 1
+	aabbmax.y = aabbmax.y - 1
+	
+	for _, ent in pairs(ents.FindInBox(aabbmin,aabbmax)) do
 		if ent and ent:IsValid() and self:ShouldBarricadeGhostWith(ent) then return true end
 	end
 

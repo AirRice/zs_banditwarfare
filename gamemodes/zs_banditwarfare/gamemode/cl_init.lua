@@ -1210,7 +1210,6 @@ local function EndRoundShouldDrawLocalPlayer(pl)
 	hook.Remove("ShouldDrawLocalPlayer", "EndRoundShouldDrawLocalPlayer")
 end
 
-local function EndRoundGetMeleeFilter(self) return {self} end
 function GM:EndRound(winner, nextmap)
 	if self.RoundEnded then return end
 	self.RoundEnded = true
@@ -1221,8 +1220,6 @@ function GM:EndRound(winner, nextmap)
 	
 	RunConsoleCommand("stopsound")
 	gamemode.Call("RestartBeats")
-	
-	FindMetaTable("Player").GetMeleeFilter = EndRoundGetMeleeFilter
 
 	self.HUDPaint = self.HUDPaintEndRound
 	self.HUDPaintBackground = self.HUDPaintBackgroundEndRound
@@ -1372,6 +1369,13 @@ net.Receive("zs_bodyarmor", function(length)
 	LocalPlayer().BodyArmor = net.ReadFloat()
 end)
 GM.ClassicModeInsuredWeps = {}
+GM.ClassicModePurchasedThisWave = {}
+
+net.Receive("zs_weapon_toinsure", function(length)
+	local wep = net.ReadString()
+	GAMEMODE.ClassicModePurchasedThisWave[wep] = true
+end)
+
 net.Receive("zs_insure_weapon", function(length)
 	local wep = net.ReadString()
 	GAMEMODE.ClassicModeInsuredWeps[wep] = true
@@ -1380,6 +1384,10 @@ net.Receive("zs_insure_weapon", function(length)
 		local wepname = weapons.GetStored(wep).TranslateName and translate.Get(weapons.GetStored(wep).TranslateName)or wep
 		GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
 	end
+end)
+net.Receive("zs_remove_insured_weapon", function(length)
+	local wep = net.ReadString()
+	GAMEMODE.ClassicModeInsuredWeps[wep] = false
 end)
 
 net.Receive("zs_playerrespawntime", function(length)
@@ -1457,7 +1465,10 @@ net.Receive("zs_honmention", function(length)
 end)
 
 net.Receive("zs_currentsigils", function(length)
-	local sigilteams = net.ReadTable()
+	local sigilteams = {}
+	for i=1, GAMEMODE.MaxSigils do
+		sigilteams[i] = net.ReadInt(4)
+	end
 	gamemode.Call("UpdateSigilTeamCounter",sigilteams)
 end)
 
@@ -1512,7 +1523,7 @@ net.Receive("zs_waveend", function(length)
 		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", COLOR_DARKGRAY, translate.ClientGet(pl, "draw"),{killicon = "default"})
 	end
 	gamemode.Call("SetWaveStart", time)
-	
+	GAMEMODE.ClassicModePurchasedThisWave = {}
 	if wave < GAMEMODE:GetNumberOfWaves() and wave > 0 then
 		GAMEMODE:CenterNotify(COLOR_RED, {font = "ZSHUDFont"}, translate.Format("wave_x_is_over", wave))
 		timer.Simple(0.1, function() surface_PlaySound("ambient/atmosphere/cave_hit"..math.random(6)..".wav") end)

@@ -151,93 +151,9 @@ function SWEP:MeleeSwing()
 	local owner = self.Owner
 
 	owner:DoAttackEvent()
+	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)
 
-	local filter = owner:GetMeleeFilter()
-
-	--owner:LagCompensation(true)
-
-	local tr = owner:ClipHullMeleeTrace(self.MeleeRange, self.MeleeSize, filter)
-	if tr.Hit then
-		local damagemultiplier = 1
-		local damage = self.MeleeDamage * damagemultiplier
-		local hitent = tr.Entity
-		local hitflesh = tr.MatType == MAT_FLESH or tr.MatType == MAT_BLOODYFLESH or tr.MatType == MAT_ANTLION or tr.MatType == MAT_ALIENFLESH
-
-		if self.HitAnim then
-			self:SendWeaponAnim(self.HitAnim)
-		end
-		self.IdleAnimation = CurTime() + self:SequenceDuration()
-
-		if hitflesh then
-			util.Decal(self.BloodDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
-			self:PlayHitFleshSound()
-			if SERVER and not (hitent:IsValid() and hitent:IsPlayer() and hitent:Team() == owner:Team()) then
-				util.Blood(tr.HitPos, math.Rand(damage * 0.25, damage * 0.6), (tr.HitPos - owner:GetShootPos()):GetNormalized(), math.Rand(damage * 6, damage * 12), true)
-			end
-			if not self.NoHitSoundFlesh then
-				self:PlayHitSound()
-			end
-		else
-			util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
-			self:PlayHitSound()
-		end
-
-		if self.OnMeleeHit and self:OnMeleeHit(hitent, hitflesh, tr) then
-			--owner:LagCompensation(false)
-			return
-		end
-
-		if SERVER and hitent:IsValid() then
-			damage = self.MeleeDamage * damagemultiplier
-
-			if hitent:GetClass() == "func_breakable_surf" then
-				hitent:Fire("break", "", 0.01) -- Delayed because no way to do prediction.
-			else
-				local dmginfo = DamageInfo()
-				dmginfo:SetDamagePosition(tr.HitPos)
-				dmginfo:SetDamage(damage)
-				dmginfo:SetAttacker(owner)
-				dmginfo:SetInflictor(self)
-				dmginfo:SetDamageType(self.DamageType)
-				if hitent:IsPlayer() then
-					hitent:MeleeViewPunch(damage*0.1)
-					gamemode.Call("ScalePlayerDamage", hitent, tr.HitGroup, dmginfo)
-
-					if self.MeleeKnockBack > 0 then
-						hitent:ThrowFromPositionSetZ(tr.HitPos, self.MeleeKnockBack, nil, true)
-					end
-					if hitent:IsPlayer() and hitent:WouldDieFrom(damage, dmginfo:GetDamagePosition()) then
-						dmginfo:SetDamageForce(math.min(self.MeleeDamage, 50) * 400 * owner:GetAimVector())
-					end
-				end
-
-				if hitent:IsPlayer() then
-					hitent:TakeDamageInfo(dmginfo)
-				else
-					-- Again, no way to do prediction.
-					timer.Simple(0, function()
-						if hitent:IsValid() then
-							-- Workaround for propbroken not calling.
-							local h = hitent:Health()
-
-							hitent:TakeDamageInfo(dmginfo)
-
-							if hitent:Health() <= 0 and h ~= hitent:Health() then
-								gamemode.Call("PropBroken", hitent, owner)
-							end
-
-							local phys = hitent:GetPhysicsObject()
-							if hitent:GetMoveType() == MOVETYPE_VPHYSICS and phys:IsValid() and phys:IsMoveable() then
-								hitent:SetPhysicsAttacker(owner)
-							end
-						end
-					end)
-				end
-			end
-		end
-
-		if self.PostOnMeleeHit then self:PostOnMeleeHit(hitent, hitflesh, tr) end
-	else
+	if not tr.Hit then
 		if self.MissAnim then
 			self:SendWeaponAnim(self.MissAnim)
 		end
@@ -245,9 +161,111 @@ function SWEP:MeleeSwing()
 		self:PlaySwingSound()
 
 		if self.PostOnMeleeMiss then self:PostOnMeleeMiss(tr) end
+
+		return
 	end
 
-	--owner:LagCompensation(false)
+	local damagemultiplier = 1
+	local hitent = tr.Entity
+	local hitflesh = tr.MatType == MAT_FLESH or tr.MatType == MAT_BLOODYFLESH or tr.MatType == MAT_ANTLION or tr.MatType == MAT_ALIENFLESH
+
+	if self.HitAnim then
+		self:SendWeaponAnim(self.HitAnim)
+	end
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
+
+	if hitflesh then
+		util.Decal(self.BloodDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		self:PlayHitFleshSound()
+
+		if SERVER then
+			util.Blood(tr.HitPos, math.Rand(damage * 0.25, damage * 0.6), (tr.HitPos - owner:GetShootPos()):GetNormalized(), math.min(400, math.Rand(damage * 6, damage * 12)), true)
+		end
+
+		if not self.NoHitSoundFlesh then
+			self:PlayHitSound()
+		end
+	else
+		util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		self:PlayHitSound()
+	end
+
+	if self.OnMeleeHit and self:OnMeleeHit(hitent, hitflesh, tr) then
+		return
+	end
+
+	if SERVER and hitent and hitent:IsValid() then
+		local phys = hitent:GetPhysicsObject()
+		if hitent:GetMoveType() == MOVETYPE_VPHYSICS and phys:IsValid() and phys:IsMoveable() then
+			hitent:SetPhysicsAttacker(self:GetOwner())
+		end
+	end
+
+	self:MeleeHitEntity(tr, hitent, damagemultiplier)
+
+	if self.PostOnMeleeHit then self:PostOnMeleeHit(hitent, hitflesh, tr) end
+end
+
+function SWEP:MeleeHitEntity(tr, hitent, damagemultiplier)
+	if not IsFirstTimePredicted() then return end
+	if self.MeleeFlagged then self.IsMelee = true end
+	
+	local owner = self:GetOwner()
+	local damage = self.MeleeDamage * damagemultiplier
+	local dmginfo = DamageInfo()
+	dmginfo:SetDamagePosition(tr.HitPos)
+	dmginfo:SetAttacker(owner)
+	dmginfo:SetInflictor(self)
+	dmginfo:SetDamageType(self.DamageType)
+	dmginfo:SetDamage(damage)
+	dmginfo:SetDamageForce(math.min(self.MeleeDamage, 50) * 50 * owner:GetAimVector())
+
+	local vel
+	if hitent:IsPlayer() then
+		self:PlayerHitUtil(owner, damage, hitent, dmginfo)
+		gamemode.Call("ScalePlayerDamage", hitent, tr.HitGroup, dmginfo)
+		if SERVER then
+			if hitent:WouldDieFrom(damage, tr.HitPos) then
+				dmginfo:SetDamageForce(math.min(self.MeleeDamage, 50) * 400 * owner:GetAimVector())
+			end
+		end
+		vel = hitent:GetVelocity()
+	end
+
+	self:PostHitUtil(owner, hitent, dmginfo, tr, vel)
+end
+
+function SWEP:PostHitUtil(owner, hitent, dmginfo, tr, vel)
+	hitent:DispatchTraceAttack(dmginfo, tr, owner:GetAimVector())
+	if vel then
+		hitent:SetLocalVelocity(vel)
+	end
+
+	-- Perform our own knockback vs. players
+	if hitent:IsPlayer() then
+		local knockback = self.MeleeKnockBack
+		if knockback > 0 then
+			hitent:ThrowFromPositionSetZ(tr.StartPos, knockback, nil, true)
+		end
+	end
+
+	local effectdata = EffectData()
+	effectdata:SetOrigin(tr.HitPos)
+	effectdata:SetStart(tr.StartPos)
+	effectdata:SetNormal(tr.HitNormal)
+	util.Effect("RagdollImpact", effectdata)
+	if not tr.HitSky then
+		effectdata:SetSurfaceProp(tr.SurfaceProps)
+		effectdata:SetDamageType(self.DamageType)
+		effectdata:SetHitBox(tr.HitBox)
+		effectdata:SetEntity(hitent)
+		util.Effect("Impact", effectdata)
+	end
+	if self.MeleeFlagged then self.IsMelee = nil end
+end
+
+function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
+	hitent:MeleeViewPunch(damage*0.1)
 end
 
 function SWEP:StopSwinging()

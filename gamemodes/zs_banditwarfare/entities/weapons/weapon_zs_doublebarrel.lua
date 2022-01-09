@@ -49,7 +49,7 @@ SWEP.Recoil = 5.71
 SWEP.ReloadDelay = 0.8
 
 SWEP.Primary.ClipSize = 2
-SWEP.Primary.Automatic = true
+SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 10
 SWEP.SelfKnockBackForce = 100
