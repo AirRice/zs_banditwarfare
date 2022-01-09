@@ -541,16 +541,15 @@ function meta:DropAmmoByType(ammotype, amount)
 	local mycount = self:GetAmmoCount(ammotype)
 	amount = math.min(mycount, amount or mycount)
 	if not amount or amount <= 0 then return end
-
-	local ent = ents.Create("prop_ammo")
-	if ent:IsValid() then
-		ent:SetAmmoType(ammotype)
-		ent:SetAmmo(amount)
-		ent:Spawn()
-
-		self:RemoveAmmo(amount, ammotype)
-
-		return ent
+	self:RemoveAmmo(amount, ammotype)
+	if GAMEMODE.AmmoResupply[ammotype] > 0 then
+		local ent = ents.Create("prop_ammo")
+		if ent:IsValid() then
+			ent:SetAmmoType(ammotype)
+			ent:SetAmmo(amount)
+			ent:Spawn()
+			return ent
+		end
 	end
 end
 
@@ -558,8 +557,8 @@ function meta:DropAllAmmo()
 	local vPos = self:GetPos()
 	local vVel = self:GetVelocity()
 	local zmax = self:OBBMaxs().z * 0.75
-	for ammotype in pairs(GAMEMODE.AmmoResupply) do
-		local ent = self:DropAmmoByType(ammotype)
+	for i,ammotype in ipairs(game.GetAmmoTypes()) do
+		local ent = self:DropAmmoByType(string.lower(ammotype))
 		if ent and ent:IsValid() then
 			ent:SetPos(vPos + Vector(math.Rand(-16, 16), math.Rand(-16, 16), math.Rand(2, zmax)))
 			ent:SetAngles(VectorRand():Angle())

@@ -19,7 +19,7 @@ SWEP.MeleeDamage = 28
 SWEP.MeleeRange = 55
 SWEP.MeleeSize = 1.5
 SWEP.MeleeKnockBack = 10
-
+SWEP.DamageType = DMG_CLUB
 SWEP.Primary.Delay = 0.7
 
 SWEP.SwingTime = 0.4

@@ -24,6 +24,7 @@ SWEP.Base = "weapon_zs_basemelee"
 
 SWEP.HoldType = "melee2"
 SWEP.DamageType = DMG_DISSOLVE
+SWEP.FakeDamageType = DMG_SLASH
 SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.ShowWorldModel = false
 SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
@@ -64,5 +65,5 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		edata:SetMagnitude(1)
 		edata:SetScale(1)
 		util.Effect("AR2Impact", edata)
-		util.Decal("Manhackcut", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		--util.Decal("Manhackcut", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
 end
