@@ -166,6 +166,7 @@ function SWEP:MeleeSwing()
 	end
 
 	local damagemultiplier = 1
+	local damage = self.MeleeDamage * damagemultiplier
 	local hitent = tr.Entity
 	local hitflesh = tr.MatType == MAT_FLESH or tr.MatType == MAT_BLOODYFLESH or tr.MatType == MAT_ANTLION or tr.MatType == MAT_ALIENFLESH
 

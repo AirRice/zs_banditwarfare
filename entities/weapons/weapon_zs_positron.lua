@@ -58,12 +58,13 @@ SWEP.Primary.Ammo = "pulse"
 SWEP.ConeMax = 0
 SWEP.ConeMin = 0
 SWEP.NoAmmo = false
-SWEP.Recoil = 0.1
+SWEP.Recoil = 0.075
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 
 SWEP.IronSightsPos = Vector(-6.6, 20, 3.1)
 SWEP.NextHurt = 0
+SWEP.NextEffect = 0
 SWEP.StartPos = nil
 SWEP.EndPos = nil
 
@@ -103,7 +104,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Owner:RemoveAmmo((self:GetLastHurtDmg() >= 15 and 2 or 1), self.Primary.Ammo, false)
+	self.Owner:RemoveAmmo((self:GetLastHurtDmg() >= 15 and 3 or 1), self.Primary.Ammo, false)
 	if (!IsValid(self.Owner)) then
 		return
 	end
@@ -132,7 +133,7 @@ end
 
 
 function SWEP:Think()
-    if self.Owner:KeyReleased(IN_ATTACK) or self.Owner:Health() <= 0 or not self.Owner:Alive() then
+    if self.Owner:KeyReleased(IN_ATTACK) or not self.Owner:Alive() or self.Owner:Health() <= 0 then
 		self:StopSound( "Loop_Lepton_Fire" )
 		self:StopSound( "Loop_Lepton_Fire2" )
 		self:EmitSound("weapons/physcannon/physcannon_claws_close.wav")
@@ -161,20 +162,25 @@ function SWEP:Think()
 		table.Add(td.filter, team.GetPlayers( self.Owner:Team()))
 		td.endpos = td.start + self.Weapon.Owner:EyeAngles():Forward()*10000
 		table.Add(td.filter, {self})
+		self.Owner:LagCompensation(true)
 		local tr = util.TraceLine(td)
+		self.Owner:LagCompensation(false)
 		self.EndPos = tr.HitPos
         if tr.Hit then
 			self.EndPos = tr.HitPos
 			local ent = tr.Entity
 			if CurTime() >= self.NextHurt then
 				if not tr.HitSky then
-					local e = EffectData()
-						e:SetOrigin(tr.HitPos)
-						e:SetNormal(tr.HitNormal)
-						e:SetRadius(8)
-						e:SetMagnitude(1)
-						e:SetScale(1)
-					util.Effect("cball_bounce", e)
+					if CurTime() >= self.NextEffect then
+						local e = EffectData()
+							e:SetOrigin(tr.HitPos)
+							e:SetNormal(tr.HitNormal)
+							e:SetRadius(8)
+							e:SetMagnitude(1)
+							e:SetScale(1)
+						util.Effect("cball_bounce", e)
+						self.NextEffect = CurTime()+self.Primary.Delay*1.5
+					end
 					util.Decal( "FadingScorch", tr.HitPos+tr.HitNormal, tr.HitPos-tr.HitNormal)
 				end
 				if ent:IsValid() then
@@ -189,11 +195,11 @@ function SWEP:Think()
 					local owner = self:GetOwner()
 					if ent:IsPlayer() then
 						if ent:Team() == owner:Team() then return end
-						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self, tr.HitPos)
 					elseif (ent.IsBarricadeObject or ent:IsNailed()) and not ent:IsSameTeam(owner)  then
-						ent:TakeSpecialDamage(dmg, DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(dmg, DMG_DISSOLVE, owner, self, tr.HitPos)
 					else
-						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self)
+						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self, tr.HitPos)
 					end
 					self.NextHurt = CurTime()+self.Primary.Delay
 				end
