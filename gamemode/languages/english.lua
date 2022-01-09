@@ -445,6 +445,7 @@ LANGUAGE.survivors_victory							= "SURVIVORS WIN"
 LANGUAGE.survivors_victory_desc						= "The survivors will live to see another day."
 LANGUAGE.no_victory									= "DRAW"
 LANGUAGE.no_victory_desc							= "Humanity will perish in this meaningless war."
+LANGUAGE.honorable_mentions							= "Honorable Mentions"
 
 LANGUAGE.right_click_to_hammer_nail					= "Right click to hammer a nail in."
 LANGUAGE.nails_x									= "Nails: %d"

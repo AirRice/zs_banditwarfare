@@ -542,7 +542,7 @@ function meta:DropAmmoByType(ammotype, amount)
 	amount = math.min(mycount, amount or mycount)
 	if not amount or amount <= 0 then return end
 	self:RemoveAmmo(amount, ammotype)
-	if GAMEMODE.AmmoResupply[ammotype] > 0 then
+	if GAMEMODE.AmmoResupply[ammotype] ~= nil and GAMEMODE.AmmoResupply[ammotype] > 0 then
 		local ent = ents.Create("prop_ammo")
 		if ent:IsValid() then
 			ent:SetAmmoType(ammotype)

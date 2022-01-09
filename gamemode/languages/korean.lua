@@ -421,6 +421,7 @@ LANGUAGE.survivors_victory							= "생존자 승리"
 LANGUAGE.survivors_victory_desc						= "생존자들은 또 다른 날을 맞이할 것이다."
 LANGUAGE.no_victory									= "무승부"
 LANGUAGE.no_victory_desc							= "무의미한 싸움 속에서 인류는 멸망할 것이다."
+LANGUAGE.honorable_mentions							= "최고의 플레이"
 
 LANGUAGE.right_click_to_hammer_nail					= "오른쪽 클릭으로 못 박기."
 LANGUAGE.nails_x									= "못: %d"
