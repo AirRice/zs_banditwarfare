@@ -40,7 +40,7 @@ function ENT:Think()
 						phys:SetVelocityInstantaneous(Vector(0, 0, 200) + parent:GetVelocity())
 					end
 				end
-			elseif self:GetOwner():IsPlayer() and self:GetOwner():GetWeaponMelee() == self.WeaponClass and self:GetOwner:Alive() then
+			elseif self:GetOwner():IsPlayer() and self:GetOwner():GetWeaponMelee() == self.WeaponClass and self:GetOwner():Alive() then
 				local originalwep = self:GetOwner():GetWeapon(self.WeaponClass)
 				if not (originalwep and originalwep:IsValid()) then
 					self:GetOwner():Give(self.WeaponClass)

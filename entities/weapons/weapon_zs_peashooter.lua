@@ -25,7 +25,7 @@ SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_P228.Single")
 SWEP.Primary.Damage = 8
-SWEP.Primary.NumShots = 1
+SWEP.Primary.NumShots = 3
 SWEP.Primary.Delay = 0.08
 
 SWEP.Primary.ClipSize = 18
@@ -42,7 +42,7 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
-	local shots = math.min(self:Clip1(),3)
+	local shots = math.min(self:Clip1(),self.Primary.NumShots)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*(shots + 1.5))
 	self:SetNextReload(CurTime() + self.Primary.Delay*(shots + 1.5))
 	for i = 0, shots-1 do
@@ -50,7 +50,7 @@ function SWEP:PrimaryAttack()
 			if (self:IsValid() and self.Owner:Alive()) then
 				self:EmitFireSound()
 				self:TakeAmmo()
-				self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
+				self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
 			end
 		end)
 	end
