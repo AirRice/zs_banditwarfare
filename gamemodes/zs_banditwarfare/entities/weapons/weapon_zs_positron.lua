@@ -189,7 +189,7 @@ function SWEP:Think()
 						dmg = math.min(self:GetLastHurtDmg()+3,self.Primary.Damage*3)
 					else
 						self:SetLastHurtTarget(ent)
-						dmg = math.max(self:GetLastHurtDmg()-12,3)
+						dmg = math.max(self:GetLastHurtDmg()-15,3)
 					end
 					self:SetLastHurtDmg(dmg)
 					local owner = self:GetOwner()
@@ -201,8 +201,12 @@ function SWEP:Think()
 					else
 						ent:TakeSpecialDamage(math.floor(dmg/3), DMG_DISSOLVE, owner, self, tr.HitPos)
 					end
-					self.NextHurt = CurTime()+self.Primary.Delay
+				else
+					local dmg = math.max(self:GetLastHurtDmg()-15,3)
+					self:SetLastHurtTarget(nil)
+					self:SetLastHurtDmg(dmg)
 				end
+				self.NextHurt = CurTime()+self.Primary.Delay
 			end
 		end
 	end

@@ -86,7 +86,7 @@ LANGUAGE.weapon_gunturret_desc						= "This turret will automatically search for
 LANGUAGE.weapon_carphammer_name						= "Carpenter's Hammer"
 LANGUAGE.weapon_carphammer_desc						= "This otherwise lackluster melee weapon can be used in a stunningly numerous amount of ways.\n It is primarily used to nail in props to build barricades and other structures.\nCan also be used to fix friendly structures such as turrets as well as replenishing their ammo by hitting them.\nCan also be used to counteract EMP effects on transmitters.\nPrimary attack: Repair/attack\nSecondary attack: Nail in prop\nReload: Remove nail"
 LANGUAGE.weapon_arbalest_name						= "'Arbalest' Crossbow"
-LANGUAGE.weapon_arbalest_desc						= "A crossbow firing specialised hard-tipped bolts. These bolts will bounce off any solid surface. \nEvery time the bolt bounces, it will do 1.5 times the original damage when it eventually hits an enemy."
+LANGUAGE.weapon_arbalest_desc						= "A crossbow firing specialised hard-tipped bolts. These bolts will bounce off any solid surface. \nEvery time the bolt bounces, it will do 1.5 times more damage when it eventually hits an enemy."
 LANGUAGE.weapon_albatross_name						= "'Albatross' Shotgun"
 LANGUAGE.weapon_albatross_desc						= "A Drum magazine-fed shotgun modified to fire in full auto. Can be extremely useful in close quarters, but the reload speed must be considered."
 LANGUAGE.weapon_ammokit_name 						= "Ammo Box"
@@ -217,7 +217,7 @@ LANGUAGE.weapon_severance_desc						= "A shotgun firing powerful large bore ammu
 LANGUAGE.weapon_shovel_name							= "Shovel"
 LANGUAGE.weapon_shovel_desc							= ""
 LANGUAGE.weapon_signalbooster_name					= "Signal Booster"
-LANGUAGE.weapon_signalbooster_desc					= "Holding this weapon in your hand will allow you to capture transmitters at double the speed."
+LANGUAGE.weapon_signalbooster_desc					= "Holding this weapon in your hand will allow you to capture transmitters at double the speed. \nIt also shows the distance to each transmitter."
 LANGUAGE.weapon_silencer_name						= "'Silencer' Machine Pistol"
 LANGUAGE.weapon_silencer_desc						= "An automatic pistol with an exceptionally fast rate of fire. \nCan easily dispatch any enemy up close, but individual bullets have a very low caliber. The gun also suffers from low accuracy when continuously being fired."
 LANGUAGE.weapon_sledgehammer_name					= "Sledgehammer"
@@ -271,15 +271,15 @@ LANGUAGE.weapon_rupture_desc						= "This crossbow shoots specialised electrifie
 
 LANGUAGE.shopitem_bodyarmor_name					= "Body Armor"
 LANGUAGE.shopitem_bodyarmor_desc					= "On purchase, wear additional military grade body armor with a durability of 100 that lowers movement speed by 25.\n This body armor will block 75% of explosion damage and 60% of bullet and melee damage.\nHowever, it does not protect the head or prevent damage from armor-ignoring sources, such as poison.\nTaking damage that is reduced by the protection will slowly wear down the armor's durability."
-LANGUAGE.shopitem_bodyarmor_alreadyhave				= "You are already wearing body armor"
+LANGUAGE.shopitem_bodyarmor_alreadyhave				= "You are already wearing body armor."
 
 LANGUAGE.shopitem_adrenaline_name					= "Adrenaline"
 LANGUAGE.shopitem_adrenaline_desc					= "On purchase, inject adrenaline that increases movement speed by 20, while lowering maximum health by 10."
-LANGUAGE.shopitem_adrenaline_toomuch				= "Further adrenaline usage is fatal"
+LANGUAGE.shopitem_adrenaline_toomuch				= "Further adrenaline usage is fatal."
 
 LANGUAGE.shopitem_ammo_name							= "Ammunition"
 LANGUAGE.shopitem_ammo_desc							= "On purchase, obtain ammunition for the currently held weapon.\nAmount obtained differs by weapon, and is how much ammunition was given during the first purchase."
-LANGUAGE.shopitem_ammo_invalid						= "This weapon cannot be refilled"
+LANGUAGE.shopitem_ammo_invalid						= "This weapon cannot be refilled."
 
 LANGUAGE.statusname_invuln							= "INVULNERABLE"
 LANGUAGE.statusname_bodyarmor						= "BODY ARMOR"
@@ -438,7 +438,7 @@ LANGUAGE.requires_x_people							= "Requires %d people"
 LANGUAGE.packing_others_object						= "Packing up someone else's object"
 LANGUAGE.packing									= "Packing up"
 LANGUAGE.loading									= "Loading..."
-LANGUAGE.next_round_in_x							= "Map change in %s"
+LANGUAGE.next_round_in_x							= "Next Round in %s"
 LANGUAGE.warning									= "Warning!"
 LANGUAGE.ok_and_no_reminder							= "Don't see again"
 
@@ -518,6 +518,7 @@ LANGUAGE.help_cont_introduction_transmission		=	[[<h2>Transmission</h2> <br>
 <p>Remember that the transmitters are the most important thing in this mode! You cannot win if you do not control them, even if you kill members of the opposite team. Conversely, you will lose if the enemy controls transmitters for too long, even if you kill them all! There are several tools available to aid you in capturing them or preventing enemy control.</p>
 <p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely.</p>
 <p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>]]
+
 LANGUAGE.help_cont_introduction_collection			=	[[<h2>Collection</h2> <br>
 <p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
 <p>Samples can be earned by killing enemies. Headshots will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
@@ -525,6 +526,7 @@ LANGUAGE.help_cont_introduction_collection			=	[[<h2>Collection</h2> <br>
 <p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert the samples at a rate of 2 per second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
 <p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>
 <p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>]]
+
 LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>Deathmatch</h2> <br>
 <p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one simplified shop. Here, purchasing weapons and other tools will give them to you directly.</p>
 <p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 30% cheaper!</p>
