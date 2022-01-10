@@ -134,7 +134,6 @@ function SWEP:PrimaryAttack()
 			curtgt:GiveStatus("healdartboost").DieTime = CurTime() + 5
 			local oldhealth = curtgt:Health()
 			local newhealth = math.min(oldhealth+self.Primary.Damage, curtgt:GetMaxHealth())
-			magnitude = newhealth - oldhealth
 			if oldhealth ~= newhealth then
 				curtgt:SetHealth(newhealth)
 				if owner:IsPlayer() then
@@ -158,7 +157,7 @@ function SWEP:PrimaryAttack()
 				stat.Damager = owner
 				stat.TimeInterval = self.ToxicTick
 			end
-			curtgt:AddLegDamage(magnitude*2)
+			curtgt:AddLegDamage(dmg*2)
 			curtgt:GiveStatus("knockdown", 2)
 		end
 	end	

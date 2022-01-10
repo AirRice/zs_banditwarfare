@@ -388,6 +388,7 @@ LANGUAGE.impossible									= "불가능하다."
 LANGUAGE.trying_to_put_nails_in_glass				= "맙소사! 내가 유리에 못을 박으려 했어!"
 
 LANGUAGE.comms_interrupted							= "송신 정지됨!"
+LANGUAGE.all_sigils_taken_by_x						= "모든 송신기가 %s들에게 점령당했다!"
 LANGUAGE.one_sigil_taken_by_x						= "송신기 하나가 %s들에게 점령당했다!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s들이 송신을 마쳤다."
 LANGUAGE.sigil_comms_tied							= "두 팀이 모두 송신을 마쳤다."

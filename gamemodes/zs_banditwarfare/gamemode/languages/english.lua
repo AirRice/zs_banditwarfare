@@ -397,6 +397,7 @@ LANGUAGE.impossible									= "Impossible."
 LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 
 LANGUAGE.comms_interrupted							= "Comms Interrupted!"
+LANGUAGE.all_sigils_taken_by_x						= "%s have taken all transmitters!"
 LANGUAGE.one_sigil_taken_by_x						= "%s have taken a transmitter!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s have finished their transmission."
 LANGUAGE.sigil_comms_tied							= "Both teams finished their transmissions."
