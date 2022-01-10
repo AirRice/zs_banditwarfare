@@ -186,7 +186,7 @@ function SWEP:Reload()
 end
 
 function SWEP:FinishReload()
-	self:SendWeaponAnim(ACT_VM_IDLE)
+	self:SendWeaponAnim(self.IdleActivity)
 	self:SetNextReload(0)
 	self:SetReloadStart(0)
 	self:SetReloadFinish(0)

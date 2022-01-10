@@ -40,6 +40,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
 SWEP.ConeMax = 0.065
 SWEP.ConeMin = 0.01
+SWEP.MovingConeOffset = 0
 SWEP.Recoil = 0.375
 SWEP.WalkSpeed = SPEED_NORMAL
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)

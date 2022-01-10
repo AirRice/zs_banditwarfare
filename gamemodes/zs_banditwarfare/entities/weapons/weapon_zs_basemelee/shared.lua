@@ -166,6 +166,7 @@ function SWEP:MeleeSwing()
 	end
 
 	local damagemultiplier = 1
+	local damage = self.MeleeDamage * damagemultiplier
 	local hitent = tr.Entity
 	local hitflesh = tr.MatType == MAT_FLESH or tr.MatType == MAT_BLOODYFLESH or tr.MatType == MAT_ANTLION or tr.MatType == MAT_ALIENFLESH
 
@@ -186,7 +187,7 @@ function SWEP:MeleeSwing()
 			self:PlayHitSound()
 		end
 	else
-		util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		--util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
 		self:PlayHitSound()
 	end
 
@@ -256,7 +257,7 @@ function SWEP:PostHitUtil(owner, hitent, dmginfo, tr, vel)
 	util.Effect("RagdollImpact", effectdata)
 	if not tr.HitSky then
 		effectdata:SetSurfaceProp(tr.SurfaceProps)
-		effectdata:SetDamageType(self.DamageType)
+		effectdata:SetDamageType(self.FakeDamageType and self.FakeDamageType or self.DamageType)
 		effectdata:SetHitBox(tr.HitBox)
 		effectdata:SetEntity(hitent)
 		util.Effect("Impact", effectdata)

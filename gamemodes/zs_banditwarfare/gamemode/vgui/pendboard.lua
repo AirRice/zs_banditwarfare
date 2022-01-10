@@ -52,7 +52,7 @@ function MakepEndBoard(winner)
 
 	local starty = y
 
-	local svpan = EasyLabel(frame, "최고의 플레이", "ZSHUDFontSmall", COLOR_WHITE)
+	local svpan = EasyLabel(frame, translate.Get("honorable_mentions"), "ZSHUDFontSmall", COLOR_WHITE)
 	svpan:SetPos(wid * 0.5 - svpan:GetWide() * 0.5, y)
 	y = y + svpan:GetTall() + 4
 

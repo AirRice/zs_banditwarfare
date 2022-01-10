@@ -34,6 +34,7 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ConeMax = 0.13
 SWEP.ConeMin = 0.01
+SWEP.MovingConeOffset = -0.01
 SWEP.Recoil = 0.22
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.AimExpandUnit = 0.1

@@ -183,7 +183,7 @@ LANGUAGE.weapon_peashooterpistol_desc				= "3점사를 하도록 설정된 권�
 LANGUAGE.weapon_leadpipe_name						= "납 파이프"
 LANGUAGE.weapon_leadpipe_desc						= "상당히 무거운 둔기이다. 이 무기에 타격당하면 큰 충격을 받아 시야가 심하게 흔들리게 된다."
 LANGUAGE.weapon_palliator_name						= "'팔리에이터' 의료 빔"
-LANGUAGE.weapon_palliator_desc						= "의료 에너지를 입자선의 형태로 방출하며, 설정한 목표 한 명을 향해 자동으로 입자선이 유도된다. 이 입자선은 설정된 아군을 치료하거나 적군에게 피해를 입히며 느려지게 한다.\n주 공격: 목표물 고정\n보조 공격: 목표 해제"
+LANGUAGE.weapon_palliator_desc						= "의료 에너지를 입자선의 형태로 방출하며, 설정한 목표 한 명을 향해 자동으로 입자선이 유도된다. 이 입자선은 설정된 아군을 치료하거나 적군을 느려지게 하면서 피해를 입힐 수 있다. 25% 확률로 공격받는 적을 잠시동안 행동불능 상태로 만들 수도 있다.\n주 공격: 목표물 고정\n보조 공격: 목표 해제"
 LANGUAGE.weapon_plankmelee_name						= "판자조각"
 LANGUAGE.weapon_plankmelee_desc						= "같은 상대를 타격할수록 휘두르는 속도가 높아지는 근접 무기이다."
 LANGUAGE.weapon_podvodny_name						= "'포드보드니' 플레셰트 소총"
@@ -333,6 +333,8 @@ LANGUAGE.pointshop_title_guns2						= "무기 2 구매"
 LANGUAGE.pointshop_title_melee						= "근접 무기 구매"
 LANGUAGE.pointshop_title_tools						= "도구 구매"
 
+LANGUAGE.x_points_abbreviated						= "%s포인트"
+
 LANGUAGE.upgrade_to									= "업그레이드: "
 LANGUAGE.revert_to									= "다운그레이드: "
 LANGUAGE.upgrading_x								= "%s 업그레이드 중"
@@ -370,6 +372,7 @@ LANGUAGE.waiting_for_next_wave						= "다음 웨이브가 시작되길 기다�
 LANGUAGE.impossible									= "불가능하다."
 LANGUAGE.trying_to_put_nails_in_glass				= "맙소사! 내가 유리에 못을 박으려 했어!"
 
+LANGUAGE.comms_interrupted							= "송신 정지됨!"
 LANGUAGE.one_sigil_taken_by_x						= "송신기 하나가 %s들에게 점령당했다!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s들이 송신을 마쳤다."
 LANGUAGE.sigil_comms_tied							= "두 팀이 모두 송신을 마쳤다."
@@ -421,6 +424,7 @@ LANGUAGE.survivors_victory							= "생존자 승리"
 LANGUAGE.survivors_victory_desc						= "생존자들은 또 다른 날을 맞이할 것이다."
 LANGUAGE.no_victory									= "무승부"
 LANGUAGE.no_victory_desc							= "무의미한 싸움 속에서 인류는 멸망할 것이다."
+LANGUAGE.honorable_mentions							= "최고의 플레이"
 
 LANGUAGE.right_click_to_hammer_nail					= "오른쪽 클릭으로 못 박기."
 LANGUAGE.nails_x									= "못: %d"
@@ -468,7 +472,7 @@ LANGUAGE.stat_numshots								= "발사 탄환 수"
 LANGUAGE.stat_firedelay								= "공격 딜레이"
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
-LANGUAGE.help_cat_introduction						= "Zombie Survival:밴딧 워페어"
+LANGUAGE.help_cat_introduction						= "Introduction"
 LANGUAGE.help_cat_keys								= "키 설명"
 LANGUAGE.help_cat_tips								= "팁"
 LANGUAGE.help_cat_barricading						= "바리케이드"
@@ -477,25 +481,25 @@ LANGUAGE.help_cat_upgrades							= "개조"
 LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들과 그에 맞선 밴딧의 끝없는 전쟁.</p><br>
 <h1>과연 누가 승리할 것인가?</h1> <br>
 <p><h3>밴딧 워페어에는 크게 3개의 게임 형식이 있습니다.</h3></p>
+<p>포인트는 적 사살, 아군의 적 사살 지원, 아군의 체력을 회복, 바리케이드 수리, 송신기 점령 등의 방법으로 벌 수 있습니다. 각 웨이브 이후 각 팀에게 현재 게임의 상황에 맞춰 부여되기도 합니다.</p>
 <hr>
-<h2>점령전</h2> <br>
+
+]]
+LANGUAGE.help_cont_introduction_transmission		=	[[<h2>점령전</h2> <br>
 <p>점령전에서는 두 팀 중 하나의 일원이 되어 적들을 싸워내며 송신기를 찾아내어 신호를 먼저 보내는 것이 목표입니다.</p>
 <p>송신기는 총 3개가 생성되며, 이 송신기들은 각각 총 데이터의 0.5%씩 매 초마다 송신 가능합니다. </p>
 <p>두 팀의 목표는 같으며, 송신기를 이용해 신호를 보내는 것입니다. 송신을 한 팀이 먼저 완료하면 그 웨이브를 이기게 되며, 더 많은 웨이브에서 승리한 팀이 마지막에 게임을 이기게 됩니다. 송신기 옆에 붙어 있으면 그 송신기를 서서히 점령하기 시작하며, 점령된 송신기는 서서히 팀의 송신 진척도를 올려줍니다.</p>
 <p>기억하세요. 송신기가 가장 중요합니다! 적을 모두 사살한다 하더라도, 이 송신기들을 찾아내 송신을 완료하지 않는 이상 이길 수 없습니다. 송신기의 위치를 파악하기 위해 여러가지 도구를 사용할 수 있습니다.</p>
 <p>게리모드 메뉴 키 (기본 'Q')를 누르고 있으면 현재 설정된 무기 로드아웃을 볼 수 있으며 이 메뉴에서 무기 아이콘을 클릭하면 상점에서 다른 무기를 구매해 슬롯을 교체할 수 있습니다. 이 로드아웃의 무기들은 부활할 때마다 다시 지급됩니다.</p>
-<p>점령전 모드에서는 모드 내 존재하는 모든 도구들과 장비를 사용할 수 있습니다. 예를 들어 EMP 툴은 특정 송신기가 잠시동안 작동하지 못하도록 (진척도에 영향을 미치지 못하게) 막을 수 있으며, 해킹 툴은 적 송신기에 사용할 시 적의 통신 진척도를 깎은 뒤 송신기를 즉시 우리 쪽으로 들고 옵니다. 드론을 사용하면 맵 한쪽을 지키면서 다른 곳의 송신기를 원격으로 점령할 수도 있습니다.</p>
-<p>포인트는 적 사살, 아군의 적 사살 지원, 아군의 체력을 회복, 바리케이드 수리, 송신기 점령 등의 방법으로 벌 수 있습니다. 각 웨이브 이후 각 팀에게 현재 게임의 상황에 맞춰 부여되기도 합니다.</p>
-<hr>
-<h2>샘플 수집전</h2> <br>
+<p>점령전 모드에서는 모드 내 존재하는 모든 도구들과 장비를 사용할 수 있습니다. 예를 들어 EMP 툴은 특정 송신기가 잠시동안 작동하지 못하도록 (진척도에 영향을 미치지 못하게) 막을 수 있으며, 해킹 툴은 적 송신기에 사용할 시 적의 통신 진척도를 깎은 뒤 송신기를 즉시 우리 쪽으로 들고 옵니다. 드론을 사용하면 맵 한쪽을 지키면서 다른 곳의 송신기를 원격으로 점령할 수도 있습니다.</p>]]
+LANGUAGE.help_cont_introduction_collection			=	[[<h2>샘플 수집전</h2> <br>
 <p>샘플 수집전에서는 두 팀이 좀비 바이러스에 대한 백신을 찾기 위해 적을 사살한 후 생체 샘플을 모읍니다. </p>
 <p>샘플은 적이 죽으면서 떨구며, 머리에 맞아 죽을 경우 2배의 샘플을 떨굽니다.</p>
 <p>라운드 시작 후 30초마다 좀비 둥지가 생성될 수 있습니다. 이 둥지를 파괴할 시 10개의 샘플을 떨구며, 파괴한 사람은 일정량의 포인트를 얻을 수 있습니다.</p>
 <p>샘플을 획득한 후에는 맵 곳곳에 위치한 기계에 투입해야 합니다. 기계 주변에 서 있으면 매 초당 2개의 샘플을 투입하지만, 적이 주변에 서 있다면 투입이 불가능합니다.</p>
 <p>점령전과 마찬가지로 무기 로드아웃을 Q로 열고 구입할 수 있으나 일부 도구는 사용이 불가능하게 됩니다.</p>
-<p>이 모드에서는 장거리 교전보다는 근거리 돌격이 유용합니다. 장거리에서 적을 저격해도 샘플을 획득할 수 없기 때문이죠.</p>
-<hr>
-<h2>섬멸전</h2> <br>
+<p>이 모드에서는 장거리 교전보다는 근거리 돌격이 유용합니다. 장거리에서 적을 저격해도 샘플을 획득할 수 없기 때문이죠.</p>]]
+LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>섬멸전</h2> <br>
 <p>섬멸전 모드에서는 송신기가 없으며, 유일한 목표는 모든 적을 사살하는 것입니다. 이 모드에서는 로드아웃을 사용할 수 없으며, 기본으로 지급되는 권총과 칼을 제외하면 모든 무기를 상점 (F2) 에서 구매하여 사용해야 합니다.</p>
 <p>게임이 간소화된 만큼 제한 시간도 짧으며 도구 대부분을 사용할 수 없게 됩니다. 대신 모든 상점 아이템을 30% 저렴한 가격에 사용 가능합니다!</p>
 <p>다른 모드와는 다르게 죽을 때 무기를 잃어버릴 수도 있으니 조심해야 합니다.</p>
@@ -503,7 +507,7 @@ LANGUAGE.help_cont_introduction						= [[<p>좀비 사태 이후의 생존자들
 <li>무기를 사자마자 저장되지는 않습니다. 무기를 사고 난 후 그 라운드에서 무기를 소유한 채 생존할 시 무기가 저장됩니다.</li>
 <li>투척형 무기 또는 소모품은 특성상 저장이 불가능합니다.</li>
 <li>상점에서 구매하지 않고 얻게 되는 무기들 (땅에서 주운 무기 등)은 저장되지 않습니다.</li>
-]]
+</ul>]]
 
 LANGUAGE.help_cont_keys					= 
 [[<table>

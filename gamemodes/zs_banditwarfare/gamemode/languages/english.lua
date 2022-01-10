@@ -195,7 +195,7 @@ LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol set to fire 
 LANGUAGE.weapon_leadpipe_name						= "Lead Pipe"
 LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off."
 LANGUAGE.weapon_palliator_name						= "'Palliator' Medical Beamer"
-LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy. \nPrimary attack: Lock in target\nSecondary attack: Cancel target"
+LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy. It also has a 25% chance to stun them every time it hits them.\nPrimary attack: Lock in target\nSecondary attack: Cancel target"
 LANGUAGE.weapon_plankmelee_name						= "Plank"
 LANGUAGE.weapon_plankmelee_desc						= "A seemingly useless melee weapon.\nIt can be swung faster every time it hits a target."
 LANGUAGE.weapon_podvodny_name						= "'Podvodny' Flechette rifle"
@@ -357,6 +357,8 @@ LANGUAGE.pointshop_title_guns2						= "Purchase Weapon 2"
 LANGUAGE.pointshop_title_melee						= "Purchase Melee Weapon"
 LANGUAGE.pointshop_title_tools						= "Purchase Tool"
 
+LANGUAGE.x_points_abbreviated						= "%s Pts"
+
 LANGUAGE.upgrade_to									= "Upgrade To: "
 LANGUAGE.revert_to									= "Revert To: "
 LANGUAGE.upgrading_x								= "Upgrading %s"
@@ -394,6 +396,7 @@ LANGUAGE.waiting_for_next_wave						= "Waiting for next wave..."
 LANGUAGE.impossible									= "Impossible."
 LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 
+LANGUAGE.comms_interrupted							= "Comms Interrupted!"
 LANGUAGE.one_sigil_taken_by_x						= "%s have taken a transmitter!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s have finished their transmission."
 LANGUAGE.sigil_comms_tied							= "Both teams finished their transmissions."
@@ -445,6 +448,7 @@ LANGUAGE.survivors_victory							= "SURVIVORS WIN"
 LANGUAGE.survivors_victory_desc						= "The survivors will live to see another day."
 LANGUAGE.no_victory									= "DRAW"
 LANGUAGE.no_victory_desc							= "Humanity will perish in this meaningless war."
+LANGUAGE.honorable_mentions							= "Honorable Mentions"
 
 LANGUAGE.right_click_to_hammer_nail					= "Right click to hammer a nail in."
 LANGUAGE.nails_x									= "Nails: %d"
@@ -493,7 +497,7 @@ LANGUAGE.stat_firedelay								= "Attack Delay"
 
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
-LANGUAGE.help_cat_introduction						= "Zombie Survival: Bandit Warfare"
+LANGUAGE.help_cat_introduction						= "Introduction"
 LANGUAGE.help_cat_keys								= "Controls"
 LANGUAGE.help_cat_tips								= "Tips"
 LANGUAGE.help_cat_barricading						= "Barricading"
@@ -503,26 +507,25 @@ LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between ant
 <b>Who will survive?</b> <br>
 <p><h3>There are three game modes in Bandit Warfare.</h3></p>
 <hr>
-<h2>Transmission</h2> <br>
+
+<p>Points are obtained by doing various activities including killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
+]]
+
+LANGUAGE.help_cont_introduction_transmission		=	[[<h2>Transmission</h2> <br>
 <p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for reinforcements before the other team.</p>
 <p>Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
 <p>Once a wave begins, three transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5% of the overall transmission progress every second while they are controlled.</p>
 <p>Remember that the transmitters are the most important thing in this mode! You cannot win if you do not control them, even if you kill members of the opposite team. Conversely, you will lose if the enemy controls transmitters for too long, even if you kill them all! There are several tools available to aid you in capturing them or preventing enemy control.</p>
 <p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>
-<p>Points are obtained by doing various activities including killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
-<hr>
-
-<h2>Collection</h2> <br>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>]]
+LANGUAGE.help_cont_introduction_collection			=	[[<h2>Collection</h2> <br>
 <p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
 <p>Samples can be earned by killing enemies. Headshots will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
 <p>Every 30 seconds, a zombie nest may spawn randomly on the map. Finding and destroying them gives some points, as well as making them drop 10 samples.</p>
 <p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert the samples at a rate of 2 per second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
-<p>Much like the transmission mode, you are able to use the weapon loadout via the Spawn Menu button but some tools are unavailable.</p>
-<p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>
-<hr>
-
-<h2>Deathmatch</h2> <br>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>
+<p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>]]
+LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>Deathmatch</h2> <br>
 <p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one simplified shop. Here, purchasing weapons and other tools will give them to you directly.</p>
 <p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 30% cheaper!</p>
 <p>You will also drop your weapons on death for the enemy to collect at their leisure, although there are specific circumstances:</p>
@@ -530,9 +533,7 @@ LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between ant
 <li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>
 <li>Consumables such as grenades or flashbangs, and tools such as forcefields that you place into the world, will never be insured. You will lose these every time.</li>
 <li>Weapons you do not buy, such as those you get by picking them up from the ground, will never be insured.</li>
-</ul>
-
-]]
+</ul>]]
 
 LANGUAGE.help_cont_keys					= 
 [[<table>

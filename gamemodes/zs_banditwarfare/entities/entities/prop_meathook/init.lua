@@ -27,26 +27,24 @@ function ENT:Think()
 			end
 		else
 			if GAMEMODE:IsClassicMode() then
-			local ent = ents.Create("prop_weapon")
-			if ent:IsValid() then
-				ent:SetWeaponType("weapon_zs_hook")
-				ent:SetPos(self:GetPos())
-				ent:SetAngles(self:GetAngles())
-				ent:Spawn()
-
-				local owner = self:GetOwner()
-				if owner:IsValid() and owner:IsPlayer() and owner:Team() == TEAM_HUMAN then
-					ent.NoPickupsTime = CurTime() + 3
-					ent.NoPickupsOwner = self:GetOwner()
+				local ent = ents.Create("prop_weapon")
+				if ent:IsValid() then
+					ent:SetWeaponType("weapon_zs_hook")
+					ent:SetPos(self:GetPos())
+					ent:SetAngles(self:GetAngles())
+					ent:Spawn()
+					local phys = ent:GetPhysicsObject()
+					if phys:IsValid() then
+						phys:Wake()
+						phys:AddAngleVelocity(VectorRand() * 200)
+						phys:SetVelocityInstantaneous(Vector(0, 0, 200) + parent:GetVelocity())
+					end
 				end
-
-				local phys = ent:GetPhysicsObject()
-				if phys:IsValid() then
-					phys:Wake()
-					phys:AddAngleVelocity(VectorRand() * 200)
-					phys:SetVelocityInstantaneous(Vector(0, 0, 200) + parent:GetVelocity())
+			elseif self:GetOwner():IsPlayer() and self:GetOwner():GetWeaponMelee() == self.WeaponClass and self:GetOwner():Alive() then
+				local originalwep = self:GetOwner():GetWeapon(self.WeaponClass)
+				if not (originalwep and originalwep:IsValid()) then
+					self:GetOwner():Give(self.WeaponClass)
 				end
-			end
 			end
 			self:Remove()
 		end

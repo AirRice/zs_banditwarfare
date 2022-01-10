@@ -29,7 +29,7 @@ function PANEL:Init()
 	spawnbuffstatus:SetTall(20)
 	spawnbuffstatus:SetAlpha(200)
 	spawnbuffstatus:SetColor(Color(200, 200, 200))
-	spawnbuffstatus:SetMemberName(translate.Get("statusname_invuln"))
+	spawnbuffstatus:SetTranslateMemberName("statusname_invuln")
 	spawnbuffstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -48,7 +48,7 @@ function PANEL:Init()
 	armorstatus:SetTall(20)
 	armorstatus:SetAlpha(200)
 	armorstatus:SetColor(Color(10, 10, 255))
-	armorstatus:SetMemberName(translate.Get("statusname_bodyarmor"))
+	armorstatus:SetTranslateMemberName("statusname_bodyarmor")
 	armorstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -63,7 +63,7 @@ function PANEL:Init()
 	poisonstatus:SetTall(20)
 	poisonstatus:SetAlpha(200)
 	poisonstatus:SetColor(Color(180, 180, 0))
-	poisonstatus:SetMemberName(translate.Get("statusname_poisonrecover"))
+	poisonstatus:SetTranslateMemberName("statusname_poisonrecover")
 	poisonstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -79,7 +79,7 @@ function PANEL:Init()
 	toxstatus:SetTall(20)
 	toxstatus:SetAlpha(200)
 	toxstatus:SetColor(Color(50, 100, 0))
-	toxstatus:SetMemberName(translate.Get("statusname_toxic"))
+	toxstatus:SetTranslateMemberName("statusname_toxic")
 	toxstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -97,7 +97,7 @@ function PANEL:Init()
 	bleedstatus:SetTall(20)
 	bleedstatus:SetAlpha(200)
 	bleedstatus:SetColor(Color(220, 0, 0))
-	bleedstatus:SetMemberName(translate.Get("statusname_bleeding"))
+	bleedstatus:SetTranslateMemberName("statusname_bleeding")
 	bleedstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
 		if lp:IsValid() then
@@ -314,12 +314,12 @@ local PANEL = {}
 PANEL.MemberValue = 0
 PANEL.LerpMemberValue = 0
 PANEL.MemberMaxValue = 100
-PANEL.MemberName = "Unnamed"
+PANEL.TranslateMemberName = "Unnamed"
 
 function PANEL:SetColor(col) self.m_Color = col end
 function PANEL:GetColor() return self.m_Color end
-function PANEL:SetMemberName(n) self.MemberName = n end
-function PANEL:GetMemberName() return self.MemberName end
+function PANEL:SetTranslateMemberName(n) self.TranslateMemberName = n end
+function PANEL:GetTranslateMemberName() return self.TranslateMemberName end
 
 function PANEL:Init()
 	self:SetColor(Color(255, 255, 255))
@@ -356,31 +356,16 @@ function PANEL:Paint()
 	surface.DrawRect(3, 3, (w - 6) * math.Clamp(value / max, 0, 1), h - 6)
 
 	local t1 = math.ceil(value)
+	local membername = translate.Get(self:GetTranslateMemberName())
 	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(membername, "ZSHUDFontTinyNS", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(membername, "ZSHUDFontTinyNS", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 vgui.Register("ZSHealthStatus", PANEL, "Panel")
 
-
-
 local PANEL = {}
-
-PANEL.MemberValue = 0
-PANEL.LerpMemberValue = 0
-PANEL.MemberMaxValue = 100
-PANEL.MemberName = "Unnamed"
-
-function PANEL:SetColor(col) self.m_Color = col end
-function PANEL:GetColor() return self.m_Color end
-function PANEL:SetMemberName(n) self.MemberName = n end
-function PANEL:GetMemberName() return self.MemberName end
-
-function PANEL:Init()
-	self:SetColor(Color(255, 255, 255))
-end
 
 function PANEL:Think()
 	if self.GetMemberValue then
@@ -389,28 +374,7 @@ function PANEL:Think()
 	if self.GetMemberMaxValue then
 		self.MemberMaxValue = self:GetMemberMaxValue() or self.MemberMaxValue
 	end
+	self.LerpMemberValue = self.MemberValue
 end
 
-function PANEL:Paint()
-	local value = self.MemberValue
-	if value <= 0 then return end
-
-	local col = self:GetColor()
-	local max = self.MemberMaxValue
-	local w, h = self:GetSize()
-
-	surface.SetDrawColor(0, 0, 0, 255)
-	surface.DrawRect(0, 0, w, h)
-
-	surface.SetDrawColor(col)
-	surface.DrawOutlinedRect(0, 0, w, h)
-	surface.DrawRect(3, 3, (w - 6) * math.Clamp(value / max, 0, 1), h - 6)
-
-	local t1 = math.ceil(value)
-	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(self.MemberName, "ZSHUDFontTinyNS", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-end
-
-vgui.Register("ZSAbsoluteHealthStatus", PANEL, "Panel")
+vgui.Register("ZSAbsoluteHealthStatus", PANEL, "ZSHealthStatus")

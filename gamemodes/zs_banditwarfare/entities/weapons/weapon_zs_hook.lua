@@ -53,6 +53,10 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() and hitent:Health() > self.MeleeDamage then
+		local status = hitent:GetStatus("spawnbuff")
+		if status and status:IsValid() then
+			return false
+		end
 		hitent:AddLegDamage(50)
 
 		if SERVER then
@@ -80,7 +84,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 
 				ent:SetAngles(ang)
 			end
-			self:GetOwner():StripWeapon(self:GetClass())
+			timer.Simple(0, function() self:GetOwner():StripWeapon(self:GetClass()) end)
 		end
 	end
 end

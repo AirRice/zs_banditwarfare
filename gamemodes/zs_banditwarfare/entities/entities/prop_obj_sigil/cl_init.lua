@@ -68,12 +68,13 @@ function ENT:DrawTranslucent()
 	self:DrawHealthBar(healthperc)
 	draw.SimpleText(math.Round(self:GetSigilHealth()), "ZS3D2DFontBig", 0,280, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if (self:GetSigilTeam() == TEAM_BANDIT or self:GetSigilTeam() == TEAM_HUMAN) then
-		draw.SimpleText(team.GetName(self:GetSigilTeam()), "ZS3D2DFontBig", 0, -100, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
+		local teamname = translate.Get(TEAM_BANDIT and teamname_bandit or teamname_human)
+		draw.SimpleText(teamname, "ZS3D2DFontBig", 0, -100, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
 		draw.RoundedBox( 40, -500, -900, 1000, 750, teamcolor ~= nil and teamcolor or COLOR_WHITE )
 	end
 	if self:GetCanCommunicate() ~= 1 then
 		self:DrawWaitingBar(waitingperc)
-		draw.SimpleText("정지됨!", "ZS3D2DFontBig", 0, 80, COLOR_DARKRED, TEXT_ALIGN_CENTER)
+		draw.SimpleText(translate.Get("comms_interrupted"), "ZS3D2DFontBig", 0, 80, COLOR_DARKRED, TEXT_ALIGN_CENTER)
 	end
 	cam.End3D2D()
 	--cam.IgnoreZ(false)

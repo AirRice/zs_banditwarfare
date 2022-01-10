@@ -59,10 +59,9 @@ function meta:NearestBone(pos)
 	return nearest
 end
 
-
-
 function meta:IsProjectile()
-	return self:GetCollisionGroup() == COLLISION_GROUP_PROJECTILE or self.m_IsProjectile
+	isproj = (self:GetCollisionGroup() == COLLISION_GROUP_PROJECTILE or self.m_IsProjectile)
+	return isproj or false
 end
 
 function meta:ResetBones(onlyscale)

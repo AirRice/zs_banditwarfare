@@ -13,7 +13,12 @@ Content = "help_cont_barricading"},
 
 {Name = "help_cat_upgrades",
 Content = "help_cont_upgrades"}
+}
 
+GM.RoundModeHelp = {
+	[ROUNDMODE_TRANSMISSION] = "help_cont_introduction_transmission",
+	[ROUNDMODE_SAMPLES] = "help_cont_introduction_collection",
+	[ROUNDMODE_CLASSIC] = "help_cont_introduction_deathmatch"
 }
 
 function MakepCredits()
@@ -97,6 +102,7 @@ function MakepHelp()
 	propertysheet:StretchToParent(12, 52, 12, 64)
 
 	for _, helptab in ipairs(GAMEMODE.Help) do
+		local content_translated = (helptab.Name == "help_cat_introduction") and (translate.Get(helptab.Content)..translate.Get(GAMEMODE.RoundModeHelp[GetGlobalInt("roundgamemode", 0)])) or translate.Get(helptab.Content)
 		local htmlpanel = vgui.Create("DHTML", propertysheet)
 		htmlpanel:StretchToParent(4, 4, 4, 24)
 		htmlpanel:SetHTML([[<html>
@@ -135,7 +141,7 @@ function MakepHelp()
 		</head>
 		<body>
 <center><span style="font-size:26px;font-weight:bold;color:limegreen;text-decoration:underline;">ZS:Bandit Warfare</span><br>
-]]..translate.Get(helptab.Name)..[[</center><br><br><div>]]..translate.Get(helptab.Content)..[[</div>
+]]..translate.Get(helptab.Name)..[[</center><br><br><div>]]..content_translated..[[</div>
 </body>
 </html>]])
 		propertysheet:AddSheet(translate.Get(helptab.Name), htmlpanel, helptab.Icon, false, false)

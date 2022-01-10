@@ -29,7 +29,8 @@ SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.09
 SWEP.Primary.ClipSize = 30
 
-SWEP.Recoil = 0.5
+SWEP.Recoil = 0.45
+SWEP.DefaultRecoil = 0.5
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "ar2"
 
@@ -53,6 +54,15 @@ SWEP.IronSightsAng = Vector(0, 0, 0)
 
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
+end
+
+function SWEP:Think()
+	if (self:GetIronsights()) then
+		self.Recoil = self.DefaultRecoil*0.6
+	else
+		self.Recoil = self.DefaultRecoil
+	end
+	self.BaseClass.Think(self)
 end
 
 if CLIENT then
