@@ -175,7 +175,7 @@ function SWEP:CheckValidTarget(tgt)
 	return true
 end
 
-SWEP.NextEmit = nil
+SWEP.NextEmit = 0
 function SWEP:Think()
 	local curtgt = self:GetCurrentTarget()
 	local owner = self:GetOwner()
@@ -193,7 +193,7 @@ function SWEP:Think()
 			self:EmitSound("Loop_Palliator_Heal")
 			self:EmitSound("Loop_Palliator_Heal2")
 			local sameteam = curtgt:Team() == owner:Team()
-			if self.NextEmit and self.NextEmit <= CurTime() then
+			if self.NextEmit <= CurTime() then
 				local effectdata = EffectData()
 					effectdata:SetOrigin(curtgt:WorldSpaceCenter())
 					effectdata:SetFlags(sameteam and 1 or 0)
@@ -217,10 +217,15 @@ function SWEP:Think()
 							end
 						end
 					else
-						curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
-						curtgt:AddLegDamage(magnitude*2)
-						if math.random(4) == 4 then
-							curtgt:GiveStatus("stunned", 0.2)
+						local invuln = curtgt:GetStatus("spawnbuff")
+						if not (invuln and invuln:IsValid()) then
+							curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
+							curtgt:AddLegDamage(magnitude*2)
+							if math.random(4) == 4 then
+								curtgt:GiveStatus("stunned", 0.2)
+							end
+						else
+							magnitude = 0
 						end
 					end
 					owner:RemoveAmmo(magnitude, self:GetPrimaryAmmoType(), false)
@@ -294,7 +299,8 @@ if CLIENT then
 				local sameteam = (self:GetCurrentTarget():Team() == MySelf:Team())
 				local screenscale = BetterScreenScale()
 				surface.SetFont("ZSHUDFontSmall")
-				local text = sameteam and "HEALING "..self:GetCurrentTarget():Name() or "ATTACKING "..self:GetCurrentTarget():Name() 
+				local translatestring = sameteam and "weapon_palliator_healing_x" or "weapon_palliator_attacking_x"
+				local text = translate.Format(translatestring,self:GetCurrentTarget():Name())
 				local _, nTEXH = surface.GetTextSize(text)
 				draw.SimpleText(text, "ZSHUDFontSmall", ScrW() - 218 * screenscale, ScrH() - nTEXH * 6, sameteam and COLOR_DARKGREEN or COLOR_DARKRED, TEXT_ALIGN_CENTER)
 			end

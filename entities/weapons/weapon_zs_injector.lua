@@ -142,23 +142,26 @@ function SWEP:PrimaryAttack()
 			end
 				
 		else
-			local tox = curtgt:GetStatus("tox")
-			if (tox and tox:IsValid()) then
-				tox:AddTime(self.ToxDuration)
-				tox.Owner = curtgt
-				tox.Damage = self.ToxicDamage
-				tox.Damager = owner
-				tox.TimeInterval = self.ToxicTick
-			else
-				stat = curtgt:GiveStatus("tox")
-				stat:SetTime(self.ToxDuration)
-				stat.Owner = curtgt
-				stat.Damage = self.ToxicDamage
-				stat.Damager = owner
-				stat.TimeInterval = self.ToxicTick
+			local invuln = curtgt:GetStatus("spawnbuff")
+			if not (invuln and invuln:IsValid()) then
+				local tox = curtgt:GetStatus("tox")
+				if (tox and tox:IsValid()) then
+					tox:AddTime(self.ToxDuration)
+					tox.Owner = curtgt
+					tox.Damage = self.ToxicDamage
+					tox.Damager = owner
+					tox.TimeInterval = self.ToxicTick
+				else
+					stat = curtgt:GiveStatus("tox")
+					stat:SetTime(self.ToxDuration)
+					stat.Owner = curtgt
+					stat.Damage = self.ToxicDamage
+					stat.Damager = owner
+					stat.TimeInterval = self.ToxicTick
+				end
+				curtgt:AddLegDamage(dmg*2)
+				curtgt:GiveStatus("knockdown", 2)
 			end
-			curtgt:AddLegDamage(dmg*2)
-			curtgt:GiveStatus("knockdown", 2)
 		end
 	end	
 	self.IdleAnimation = CurTime() + self:SequenceDuration()

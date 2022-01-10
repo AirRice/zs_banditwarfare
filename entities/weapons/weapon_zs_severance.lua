@@ -79,10 +79,13 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	local phys = ent:GetPhysicsObject()
 	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() and SERVER then
-		local pushvel = tr.Normal * 50
-		pushvel.z = math.max(pushvel.z, 10)
-		ent:SetGroundEntity(nil)
-		ent:SetLocalVelocity(ent:GetVelocity() + pushvel)
+		local invuln = ent:GetStatus("spawnbuff")
+		if not (invuln and invuln:IsValid()) then
+			local pushvel = tr.Normal * 50
+			pushvel.z = math.max(pushvel.z, 10)
+			ent:SetGroundEntity(nil)
+			ent:SetLocalVelocity(ent:GetVelocity() + pushvel)
+		end
 	elseif IsValid(phys) then
 		phys:AddVelocity(phys:GetVelocity() + tr.Normal * 5)
 	end

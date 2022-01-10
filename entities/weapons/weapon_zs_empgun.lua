@@ -138,15 +138,18 @@ function BulletCallback(attacker, tr, dmginfo)
 				--ent:TakeSpecialDamage(self.Primary.Damage*2.5, DMG_DISSOLVE, owner, self)
 			end
 		else
-            if SERVER then
-			local fwd = 500
-			local up = 100
-			local pushvel = tr.Normal * fwd
-            pushvel.z = math.max(pushvel.z, up)
-			--ent:KnockDown(3)
-            ent:SetGroundEntity(nil)
-            ent:SetLocalVelocity( ent:GetVelocity() + pushvel)
-            end
+			local invuln = ent:GetStatus("spawnbuff")
+			if not (invuln and invuln:IsValid()) then
+				if SERVER then
+					local fwd = 500
+					local up = 100
+					local pushvel = tr.Normal * fwd
+					pushvel.z = math.max(pushvel.z, up)
+					--ent:KnockDown(3)
+					ent:SetGroundEntity(nil)
+					ent:SetLocalVelocity( ent:GetVelocity() + pushvel)
+				end
+			end
 		end
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)

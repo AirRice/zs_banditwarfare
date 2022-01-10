@@ -41,6 +41,9 @@ end
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() then
 		hitent:AddLegDamage(self.StunDamage)
-		hitent:GiveStatus("stunned", 0.3)
+		local invuln = hitent:GetStatus("spawnbuff")
+		if not (invuln and invuln:IsValid()) then
+			hitent:GiveStatus("stunned", 0.3)
+		end
 	end
 end
