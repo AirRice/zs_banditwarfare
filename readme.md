@@ -34,3 +34,5 @@ The gamemode has been built with the ideology that the #1 issue with most Garry'
      - ...Or just clear the area of all enemy activity! The last team standing wins!
  - Utilise a variety of different weapons, all designed to tailor to a specific feature or niche. Progress your weapons through the upgrade tree to reach weapons with devastating power.
  - Supplement your arsenal with various tools that can turn the tide of battle, from handheld interceptors that reflect back enemy projectiles to EMP guns that can halt enemy transmission progress.
+
+Visit the [related wiki pages](https://github.com/AirRice/zs_banditwarfare/wiki) for more information on specific subjects. 
