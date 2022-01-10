@@ -219,7 +219,9 @@ function SWEP:Think()
 					else
 						curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
 						curtgt:AddLegDamage(magnitude*2)
-						curtgt:GiveStatus("stunned", 0.2)
+						if math.random(4) == 4 then
+							curtgt:GiveStatus("stunned", 0.2)
+						end
 					end
 					owner:RemoveAmmo(magnitude, self:GetPrimaryAmmoType(), false)
 				end	
