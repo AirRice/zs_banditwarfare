@@ -286,7 +286,7 @@ LANGUAGE.hm_mostenemykilled_desc 					= "%s убил %d своих врагов.
 LANGUAGE.hm_mostdamagetoenemy_name 					= "Разжигатель войны"
 LANGUAGE.hm_mostdamagetoenemy_desc 					= "%s нанёс своим врагам в общей сложности %d урона."
 LANGUAGE.hm_pacifist_name 							= "Пацифист"
-LANGUAGE.hm_pacifist_desc 							= "%s отказался убить ни одного врага."
+LANGUAGE.hm_pacifist_desc 							= "%s не убил ни одного врага."
 LANGUAGE.hm_mosthelpful_name 						= "Рука помощи"
 LANGUAGE.hm_mosthelpful_desc 						= "%s помог в убийстве %d врагов своими союзниками"
 LANGUAGE.hm_mostpurchases_name 						= "Капитализм"
@@ -388,8 +388,9 @@ LANGUAGE.waiting_for_next_wave						= "Ожидание следующей во�
 LANGUAGE.impossible									= "Невозможно."
 LANGUAGE.trying_to_put_nails_in_glass				= "Нельзя забить гвоздь в стекло!"
 
-LANGUAGE.comms_interrupted                          = "Связь прервана!"
-LANGUAGE.one_sigil_taken_by_x						= "%s захватили один передатчик!"
+LANGUAGE.comms_interrupted                          = "Трансляция прервана!"
+LANGUAGE.all_sigils_taken_by_x                      = "%s захватили все передатчики!"
+LANGUAGE.one_sigil_taken_by_x						= "%s захватили один из передатчиков!"
 LANGUAGE.sigil_comms_finished_by_x					= "%s закончили трансляцию."
 LANGUAGE.sigil_comms_tied							= "Обе команды закончили трансляцию."
 LANGUAGE.samples_finished_by_x						= "%s собрали достаточно образцов."
@@ -461,9 +462,9 @@ LANGUAGE.credit_samuel_desc                         = "Модель компле
 LANGUAGE.credit_honsal                              = "honsal"
 LANGUAGE.credit_honsal_desc                         = "Оригинальный перевод ZS на корейский"
 LANGUAGE.credit_sunrust_community                   = "Benjy, The Darker One, Raox, Scott"
-LANGUAGE.credit_sunrust_community_desc              = "Вклад в код режим"
-LANGUAGE.credit_github                              = "Различные другие участники проекта GitHub ZS"
-LANGUAGE.credit_github_desc                         = "Различные вклады"
+LANGUAGE.credit_sunrust_community_desc              = "Вклад в код режима"
+LANGUAGE.credit_github                              = "Другие участники проекта GitHub ZS"
+LANGUAGE.credit_github_desc                         = "Различные вклады в код"
 
 LANGUAGE.scoreboard_gamemode_author                 = "от %s (%s)"
 
