@@ -16,14 +16,20 @@ function GM:OnSigilTaken(sigilent, justtakenby)
 	self.CurrentSigilTable = sigils
 
 	local translatestring = nil
-
+	local allSameTeam = true
+	for i,team in ipairs(sigilteams) do
+		if team != justtakenby then
+			allSameTeam = false
+			break
+		end
+	end
 	for _, pl in pairs(player.GetAll()) do
 		if justtakenby == TEAM_BANDIT then
 			translatestring = translate.ClientGet(pl,"teamname_bandit")
 		elseif justtakenby == TEAM_HUMAN then
 			translatestring = translate.ClientGet(pl,"teamname_human")
 		end
-		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "one_sigil_taken_by_x",translatestring))
+		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_sigils_taken_by_x" or "one_sigil_taken_by_x",translatestring))
 	end
 	
 	if self:IsTransmissionMode() then
