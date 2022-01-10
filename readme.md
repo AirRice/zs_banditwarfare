@@ -29,8 +29,10 @@ The gamemode has been built with the ideology that the #1 issue with most Garry'
 ### Features
 
  - Fight as 2 separate teams pitted against each other over various objectives.
- -- Collect biological samples from fallen enemies and comrades to fuel the zombie vaccine research effort.
- -- Capture and hold transmitters for long enough to contact the rest of your allies faster than the enemies can.
- -- ...Or just clear the area of all enemy activity! The last team standing wins!
+     - Collect biological samples from fallen enemies and comrades to fuel the zombie vaccine research effort.
+     - Capture and hold transmitters for long enough to contact the rest of your allies faster than the enemies can.
+     - ...Or just clear the area of all enemy activity! The last team standing wins!
  - Utilise a variety of different weapons, all designed to tailor to a specific feature or niche. Progress your weapons through the upgrade tree to reach weapons with devastating power.
  - Supplement your arsenal with various tools that can turn the tide of battle, from handheld interceptors that reflect back enemy projectiles to EMP guns that can halt enemy transmission progress.
+
+Visit the [related wiki pages](https://github.com/AirRice/zs_banditwarfare/wiki) for more information on specific subjects. 
