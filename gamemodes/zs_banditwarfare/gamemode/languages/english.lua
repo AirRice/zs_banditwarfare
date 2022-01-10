@@ -454,7 +454,7 @@ LANGUAGE.empty										= "EMPTY"
 LANGUAGE.manual_control								= "MANUAL OVERRIDE"
 
 LANGUAGE.credits_window_title                       = "ZS: BW Credits"
-LANGUAGE.credit_airrice                             = "Jooho \"air rice\" Lee"
+LANGUAGE.credit_airrice                             = "Joo-ho \"air rice\" Lee"
 LANGUAGE.credit_airrice_desc                        = "Bandit Warfare Programmer"
 LANGUAGE.credit_jetboom                             = "William \"JetBoom\" Moodhe"
 LANGUAGE.credit_jetboom_desc                        = "Zombie Survival Creator / Programmer"
@@ -584,8 +584,8 @@ LANGUAGE.help_cont_keys					=
   </tr>
 </table>
 <br>
-<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with Reload/Alternate Fire (R and Right Mouse respectively) and finally placed with the "Attack" key (Default: Left Mouse Button).</li> 
-<li>Press and hold Run (Default: Shift) to pack them back up for later.</li>
+<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with 'Reload/Alternate Fire' key (R and Right Mouse respectively) and finally placed with the 'Attack' key (Default: Left Mouse Button).</li> 
+<li>Press and hold 'run' key (Default: Shift) to pack them back up for later.</li>
 <li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default: E).</li>
 <li>Press 'gmod_undo' (Default: Z) to enter phase mode for a while where you can phase through friendly barricaded props. "Suit Zoom" will let you indefinitely hold phase mode, but it is not bound by default and must be manually set to a key in your options menu.</li>
 </ul>
