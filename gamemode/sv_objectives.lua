@@ -42,6 +42,7 @@ end
 
 GM.LastCommLink = 0
 function GM:TransmitterCommsThink()
+	if self.RoundEnded then return end
 	local objteams = self.CurrentTransmitterTable
 	local bnum = 0
 	local hnum = 0
@@ -79,6 +80,7 @@ function GM:TransmitterCommsThink()
 	end
 end
 function GM:SamplesThink()
+	if self.RoundEnded then return end
 	if not self.SamplesEnd then 
 		if self.NextNestSpawn and self.NextNestSpawn <= CurTime() then
 			gamemode.Call("CreateZombieNest")

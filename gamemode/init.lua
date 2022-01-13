@@ -996,7 +996,7 @@ function GM:EndRound(winner)
 	end
 	
 	
-	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughTransmitters(mapname) and player.GetCount() >= 6 then
+	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
@@ -2203,24 +2203,21 @@ function GM:PlayerDeath(pl, inflictor, attacker)
 			net.WriteEntity(pl)
 		net.Broadcast()
 	end
-end
-
-function GM:PostPlayerDeath(pl)
 	if self:IsClassicMode() then
 		self.RoundEndCamPos = pl:WorldSpaceCenter()
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
 	end
-	local banditcount = 0
-	local humancount = 0
-	for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
-		if bandit:Alive() then banditcount = banditcount +1 end
-	end
-	for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
-		if human:Alive() then humancount = humancount +1 end
-	end
 	if self:GetWaveActive() and (self:IsClassicMode() or self.SuddenDeath) then 
+		local banditcount = 0
+		local humancount = 0
+		for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
+			if bandit:Alive() then banditcount = banditcount +1 end
+		end
+		for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
+			if human:Alive() then humancount = humancount +1 end
+		end
 		if humancount == 0 or banditcount == 0 then
 			self.SuddenDeath = false
 			net.Start("zs_suddendeath")
@@ -2244,6 +2241,9 @@ function GM:PostPlayerDeath(pl)
 			end
 		end
 	end
+end
+
+function GM:PostPlayerDeath(pl)
 end
 
 function GM:PlayerDeathSound()
