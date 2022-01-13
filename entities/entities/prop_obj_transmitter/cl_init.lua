@@ -11,7 +11,7 @@ end
 
 function ENT:Think()
 	if EyePos():Distance(self:GetPos()) <= 1000 and self:GetCanCommunicate() == 1 then
-		self.AmbientSound:PlayEx(1, 75 + (self:GetSigilHealth() / self:GetSigilMaxHealth()) * 25)
+		self.AmbientSound:PlayEx(1, 75 + (self:GetTransmitterHealth() / self:GetTransmitterMaxHealth()) * 25)
 	else
 		self.AmbientSound:Stop()
 	end
@@ -35,11 +35,11 @@ function ENT:DrawTranslucent()
 	local curtime = CurTime()
 	local eyepos = EyePos()
 	local eyeangles = EyeAngles()
-	local healthperc = math.Clamp(self:GetSigilHealth() / self:GetSigilMaxHealth(),0,1)
-	local waitingperc = math.Clamp((self:GetSigilNextRestart()-CurTime())/15,0,1)
+	local healthperc = math.Clamp(self:GetTransmitterHealth() / self:GetTransmitterMaxHealth(),0,1)
+	local waitingperc = math.Clamp((self:GetTransmitterNextRestart()-CurTime())/15,0,1)
 	local teamcolor = nil
-	if self:GetSigilTeam() ~= nil then 
-		teamcolor = team.GetColor(self:GetSigilTeam())
+	if self:GetTransmitterTeam() ~= nil then 
+		teamcolor = team.GetColor(self:GetTransmitterTeam())
 	end
 	local dlight = DynamicLight(self:EntIndex())
 	if dlight then
@@ -66,9 +66,9 @@ function ENT:DrawTranslucent()
 	--cam.IgnoreZ(true)
 	cam.Start3D2D(vPos, Angle(0,ang.yaw,90), 0.05)
 	self:DrawHealthBar(healthperc)
-	draw.SimpleText(math.Round(self:GetSigilHealth()), "ZS3D2DFontBig", 0,280, COLOR_WHITE, TEXT_ALIGN_CENTER)
-	if (self:GetSigilTeam() == TEAM_BANDIT or self:GetSigilTeam() == TEAM_HUMAN) then
-		local teamname = translate.Get(self:GetSigilTeam() == TEAM_BANDIT and "teamname_bandit" or "teamname_human")
+	draw.SimpleText(math.Round(self:GetTransmitterHealth()), "ZS3D2DFontBig", 0,280, COLOR_WHITE, TEXT_ALIGN_CENTER)
+	if (self:GetTransmitterTeam() == TEAM_BANDIT or self:GetTransmitterTeam() == TEAM_HUMAN) then
+		local teamname = translate.Get(self:GetTransmitterTeam() == TEAM_BANDIT and "teamname_bandit" or "teamname_human")
 		draw.SimpleText(teamname, "ZS3D2DFontBig", 0, -100, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
 		draw.RoundedBox( 40, -500, -900, 1000, 750, teamcolor ~= nil and teamcolor or COLOR_WHITE )
 	end

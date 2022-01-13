@@ -67,9 +67,9 @@ function SWEP:PrimaryAttack()
 		tr.endpos = self.Owner:GetShootPos() + 300 * self.Owner:GetAimVector()
 		tr.filter = {self.Owner}
 		local trace = util.TraceLine(tr)
-		if trace.Hit and trace.Entity:GetClass() == "prop_obj_sigil" 
-		and self.Owner:IsPlayer() and (trace.Entity:GetSigilTeam() == TEAM_BANDIT or trace.Entity:GetSigilTeam() == TEAM_HUMAN) 
-		and trace.Entity:GetSigilTeam() ~= self.Owner:Team() then
+		if trace.Hit and trace.Entity:GetClass() == "prop_obj_transmitter" 
+		and self.Owner:IsPlayer() and (trace.Entity:GetTransmitterTeam() == TEAM_BANDIT or trace.Entity:GetTransmitterTeam() == TEAM_HUMAN) 
+		and trace.Entity:GetTransmitterTeam() ~= self.Owner:Team() then
 			self.Owner:Freeze( true )
 			self.IsHacking = true
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)

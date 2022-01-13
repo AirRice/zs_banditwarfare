@@ -106,8 +106,8 @@ function BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if IsValid(ent) then
 		if not ent:IsPlayer() then
-			if ent:GetClass() == "prop_obj_sigil" then
-				if (ent:GetSigilTeam() == TEAM_BANDIT or ent:GetSigilTeam() == TEAM_HUMAN) and attacker:IsPlayer() and ent:GetSigilTeam() ~= attacker:Team() and SERVER then
+			if ent:GetClass() == "prop_obj_transmitter" then
+				if (ent:GetTransmitterTeam() == TEAM_BANDIT or ent:GetTransmitterTeam() == TEAM_HUMAN) and attacker:IsPlayer() and ent:GetTransmitterTeam() ~= attacker:Team() and SERVER then
 					ent:DoStopComms()
 				end
 			elseif ent:GetClass() == "prop_ffemitterfield" then

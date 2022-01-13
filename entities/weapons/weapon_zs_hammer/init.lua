@@ -90,8 +90,8 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			self:PlayRepairSound(hitent)
 			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed / 2, self)
 			didrepair = true
-		elseif hitent:GetClass() == "prop_obj_sigil" and hitent:GetSigilTeam() == self.Owner:Team() and not hitent:GetCanCommunicate() then
-			hitent:SetSigilNextRestart(hitent:GetSigilNextRestart() - 3)
+		elseif hitent:GetClass() == "prop_obj_transmitter" and hitent:GetTransmitterTeam() == self.Owner:Team() and not hitent:GetCanCommunicate() then
+			hitent:SetTransmitterNextRestart(hitent:GetTransmitterNextRestart() - 3)
 			didrepair = true
 		end
 		if didrepair then

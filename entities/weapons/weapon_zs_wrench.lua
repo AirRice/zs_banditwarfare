@@ -15,8 +15,6 @@ if CLIENT then
 	SWEP.WElements = {
 		["base"] = { type = "Model", model = "models/props_c17/tools_wrench01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(2, 1, 0), angle = Angle(190, 90, 90), size = Vector(1.5, 1.5, 1.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/props_c17/metalladder001", skin = 0, bodygroup = {} }
 	}
-
-	SWEP.Description = "이 도구로 터렛이나 이지스 판자 등을 고칠 수 있다."
 end
 
 SWEP.Base = "weapon_zs_basemelee"
@@ -63,7 +61,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent.GetObjectHealth and 
 	(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() or 
 	hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self.Owner:Team() or
-	hitent:GetClass() == "prop_obj_sigil" and hitent:GetSigilTeam() == self.Owner:Team()) then
+	hitent:GetClass() == "prop_obj_transmitter" and hitent:GetTransmitterTeam() == self.Owner:Team()) then
 		local oldhealth = hitent:GetObjectHealth()
 		if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 4 then return end
 

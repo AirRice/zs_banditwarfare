@@ -35,7 +35,7 @@ AddCSLuaFile("obj_weapon_extend.lua")
 AddCSLuaFile("obj_entity_extend.lua")
 
 AddCSLuaFile("vgui/dgamestate.lua")
-AddCSLuaFile("vgui/dsigilcounter.lua")
+AddCSLuaFile("vgui/dtransmittercounter.lua")
 AddCSLuaFile("vgui/dteamcounter.lua")
 AddCSLuaFile("vgui/dmodelpanelex.lua")
 AddCSLuaFile("vgui/dweaponloadoutbutton.lua")
@@ -51,13 +51,11 @@ AddCSLuaFile("vgui/dexrotatedimage.lua")
 AddCSLuaFile("vgui/dexnotificationslist.lua")
 AddCSLuaFile("vgui/dexchanginglabel.lua")
 
-AddCSLuaFile("vgui/mainmenu.lua")
 AddCSLuaFile("vgui/pmainmenu.lua")
 AddCSLuaFile("vgui/poptions.lua")
 AddCSLuaFile("vgui/phelp.lua")
 AddCSLuaFile("vgui/pweapons.lua")
 AddCSLuaFile("vgui/pendboard.lua")
-AddCSLuaFile("vgui/psigils.lua")
 AddCSLuaFile("vgui/ppointshop.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 
@@ -68,7 +66,7 @@ include("obj_player_extend_sv.lua")
 include("mapeditor.lua")
 include("sv_playerspawnentities.lua")
 include("sv_profiling.lua")
-include("sv_sigils.lua")
+include("sv_objectives.lua")
 
 if file.Exists(GM.FolderName.."/gamemode/maps/"..game.GetMap()..".lua", "LUA") then
 	include("maps/"..game.GetMap()..".lua")
@@ -284,7 +282,7 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_dmg_prop")
 	util.AddNetworkString("zs_legdamage")
 	util.AddNetworkString("zs_bodyarmor")
-	util.AddNetworkString("zs_currentsigils")
+	util.AddNetworkString("zs_currenttransmitters")
 	util.AddNetworkString("zs_hitmarker")
 	
 	util.AddNetworkString("zs_pl_kill_pl")
@@ -636,7 +634,7 @@ function GM:Think()
 				gamemode.Call("SetWaveActive", false)
 			end
 			if not self:IsClassicMode() and not self.SuddenDeath and self:IsTransmissionMode() then
-				gamemode.Call("SigilCommsThink")
+				gamemode.Call("TransmitterCommsThink")
 			elseif not self:IsClassicMode() and not self.SuddenDeath and self:IsSampleCollectMode() then
 				gamemode.Call("SamplesThink")
 			end
@@ -845,7 +843,7 @@ GM.StartingZombie = {}
 GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
-GM.CurrentSigilTable = {}
+GM.CurrentTransmitterTable = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
 GM.SuddenDeath = false
@@ -853,7 +851,7 @@ GM.CurrentWaveWinner = nil
 GM.NextNestSpawn = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
-	self.UseSigils = nil
+	self.UseTransmitters = nil
 	self:SetComms(0,0)
 	self:SetSamples(0,0)
 	self.NextNestSpawn = nil
@@ -863,7 +861,7 @@ function GM:RestartLua()
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentSigilTable = {}
+	self.CurrentTransmitterTable = {}
 	self:SetCurrentWaveWinner(nil)
 
 	self.CappedInfliction = 0
@@ -899,12 +897,12 @@ function GM:DoRestartGame()
 	end
 	self.CurrentMapLoadedPlayers = 0
 	self.ShuffledPlayersThisRound = false
-	net.Start("zs_currentsigils")
-		for i=1, self.MaxSigils do
+	net.Start("zs_currenttransmitters")
+		for i=1, self.MaxTransmitters do
 			net.WriteInt(0,4)
 		end
 	net.Broadcast()
-	self.CurrentSigilTable = {}
+	self.CurrentTransmitterTable = {}
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -998,7 +996,7 @@ function GM:EndRound(winner)
 	end
 	
 	
-	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughSigils(mapname) and player.GetCount() >= 6 then
+	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughTransmitters(mapname) and player.GetCount() >= 6 then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
@@ -1706,17 +1704,17 @@ end
 
 function GM:CanRespawnQuicker(ply)
 	if ply == nil or not ply:IsPlayer() or self:IsSampleCollectMode() then return false end
-	local banditsigils, humansigils = 0,0
-	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
-		if ent:GetSigilCaptureProgress() > 0 then
-			if ent:GetSigilTeam() == TEAM_BANDIT then
-				banditsigils = banditsigils + 1
-			elseif ent:GetSigilTeam() == TEAM_HUMAN then
-				humansigils = humansigils + 1
+	local banditobjs, humanobjs = 0,0
+	for _, ent in pairs(ents.FindByClass("prop_obj_transmitter")) do
+		if ent:GetTransmitterCaptureProgress() > 0 then
+			if ent:GetTransmitterTeam() == TEAM_BANDIT then
+				banditobjs = banditobjs + 1
+			elseif ent:GetTransmitterTeam() == TEAM_HUMAN then
+				humanobjs = humanobjs + 1
 			end
 		end
 	end
-	if (banditsigils < humansigils and ply:Team() == TEAM_BANDIT) or (humansigils < banditsigils and ply:Team() == TEAM_HUMAN) then
+	if (banditobjs < humanobjs and ply:Team() == TEAM_BANDIT) or (humanobjs < banditobjs and ply:Team() == TEAM_HUMAN) then
 		--ply:CenterNotify(COLOR_RED, translate.ClientGet(pl, "respawn_quicker"))
 		return true
 	else
@@ -1972,7 +1970,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		ent:SetColor(col)
 
 		dispatchdamagedisplay = true
-	elseif ent:IsBarricadeProp() and attacker:IsPlayer() then
+	elseif ent:IsBarricadeProp() and attacker:IsPlayer() and not ent.NoDamageNumbers and not ent:IsSameTeam(attacker)then
 		dispatchdamagedisplay = true
 	end
 	if dmginfo:GetDamage() > 0 then
@@ -2672,7 +2670,7 @@ function GM:WaveStateChanged(newstate)
 		if prevwave >= self:GetNumberOfWaves() and not self.SuddenDeath then return end
 		if not self:IsClassicMode() and not self.SuddenDeath then
 			if self:IsTransmissionMode() then
-				gamemode.Call("CreateObjectives","prop_obj_sigil",false)
+				gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
 			elseif self:IsSampleCollectMode() then
 				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
 			end
@@ -2814,15 +2812,15 @@ function GM:WaveStateChanged(newstate)
 			net.WriteFloat(self:GetWaveStart())
 			net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
 		net.Broadcast()
-		net.Start("zs_currentsigils")
-			for i=1, self.MaxSigils do
+		net.Start("zs_currenttransmitters")
+			for i=1, self.MaxTransmitters do
 				net.WriteInt(0,4)
 			end
 		net.Broadcast()
-		self.CurrentSigilTable = {}
+		self.CurrentTransmitterTable = {}
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
-		util.RemoveAll("prop_obj_sigil")
+		util.RemoveAll("prop_obj_transmitter")
 		util.RemoveAll("prop_obj_nest")
 		util.RemoveAll("prop_obj_sample")
 		util.RemoveAll("prop_sampledepositterminal")

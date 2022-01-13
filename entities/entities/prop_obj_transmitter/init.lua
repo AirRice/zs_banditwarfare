@@ -11,17 +11,17 @@ function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
 	self:SetPos( Vector( self:GetPos().x, self:GetPos().y, self:GetPos().z+35.3 )) 
-	self:SetSigilMaxHealth(10+5*(math.floor(#player.GetAll()/5)))
+	self:SetTransmitterMaxHealth(10+5*(math.floor(#player.GetAll()/5)))
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)
 		phys:Wake()
 	end
-	self:SetSigilCaptureProgress(self:GetSigilMaxHealth())
-	self:SetSigilHealthRegen(self.HealthRegen)
-	self:SetSigilLastDamaged(0)
-	self:SetSigilNextRestart(0)
-	self:SetSigilTeam(0)
+	self:SetTransmitterCaptureProgress(self:GetTransmitterMaxHealth())
+	self:SetTransmitterHealthRegen(self.HealthRegen)
+	self:SetTransmitterLastDamaged(0)
+	self:SetTransmitterNextRestart(0)
+	self:SetTransmitterTeam(0)
 	self:SetCanCommunicate(1)
 end
 
@@ -61,12 +61,12 @@ end
 
 function ENT:Think()
 	local cappingteam, cappers = self:CalcClosePlayers()
-	if self:GetSigilNextRestart() <= CurTime() then
+	if self:GetTransmitterNextRestart() <= CurTime() then
 		self:SetCanCommunicate(1)
 	end
 	
-	local oldhealth = self:GetSigilHealth()
-	if self:GetSigilTeam() ~= cappingteam and (cappingteam == TEAM_HUMAN or cappingteam == TEAM_BANDIT) and self:GetSigilLastDamaged() <= CurTime() - 1 then 
+	local oldhealth = self:GetTransmitterHealth()
+	if self:GetTransmitterTeam() ~= cappingteam and (cappingteam == TEAM_HUMAN or cappingteam == TEAM_BANDIT) and self:GetTransmitterLastDamaged() <= CurTime() - 1 then 
 		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 150 )) do
 			if pl:IsPlayer() and pl:Team() == cappingteam and pl:Alive() then
 				pl:AddPoints(1)
@@ -78,14 +78,14 @@ function ENT:Think()
 			end
 		end
 					
-		self:SetSigilCaptureProgress(oldhealth - math.Clamp(cappers,0,5))
+		self:SetTransmitterCaptureProgress(oldhealth - math.Clamp(cappers,0,5))
 		self:EmitSound("buttons/blip1.wav")
-		self:SetSigilLastDamaged(CurTime())
-		if self:GetSigilHealth() <= 0 then
-			self:SetSigilTeam(cappingteam)
-			self:SetSigilCaptureProgress(self:GetSigilMaxHealth())
+		self:SetTransmitterLastDamaged(CurTime())
+		if self:GetTransmitterHealth() <= 0 then
+			self:SetTransmitterTeam(cappingteam)
+			self:SetTransmitterCaptureProgress(self:GetTransmitterMaxHealth())
 			self:EmitSound("ambient/machines/thumper_startup1.wav")
-			gamemode.Call("OnSigilTaken", self, cappingteam)
+			gamemode.Call("OnTransmitterTaken", self, cappingteam)
 		end
 	end
 end
@@ -95,8 +95,7 @@ function ENT:DoStopComms()
 		effectdata:SetOrigin(self:LocalToWorld(self:OBBCenter()))
 	util.Effect("Explosion", effectdata, true, true)
 	self:SetCanCommunicate(0)
-	self:SetSigilNextRestart(CurTime() + 15)
-	--gamemode.Call("OnSigilStopped", self)
+	self:SetTransmitterNextRestart(CurTime() + 15)
 end
 
 function ENT:DoDamageComms(team,pl)
@@ -112,12 +111,12 @@ function ENT:DoDamageComms(team,pl)
 		elseif team == TEAM_HUMAN then
 			translatestring = translate.ClientGet(pl,"teamname_bandit")
 		end
-		pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "sigil_comms_disrupted_x",translatestring))
+		pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "transmitter_comms_disrupted_x",translatestring))
 	end
-	self:SetSigilTeam(team)
-	self:SetSigilCaptureProgress(self:GetSigilMaxHealth())
+	self:SetTransmitterTeam(team)
+	self:SetTransmitterCaptureProgress(self:GetTransmitterMaxHealth())
 	self:EmitSound("ambient/machines/thumper_startup1.wav")
-	gamemode.Call("OnSigilTaken", self, team)
+	gamemode.Call("OnTransmitterTaken", self, team)
 	if team == TEAM_BANDIT then
 		gamemode.Call("AddComms", 0,-10)
 	elseif team == TEAM_HUMAN then

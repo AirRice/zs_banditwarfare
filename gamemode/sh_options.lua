@@ -226,17 +226,18 @@ GM:AddPointShopWeapon(nil,"crphmr", ITEMCAT_MELEE, 30, "weapon_zs_hammer").NoCla
 GM:AddPointShopWeapon(nil,"crowbar", ITEMCAT_MELEE, 32, "weapon_zs_crowbar")
 GM:AddPointShopWeapon(nil,"stunbaton", ITEMCAT_MELEE, 35, "weapon_zs_stunbaton")
 GM:AddPointShopWeapon(nil,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
+GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 35, "weapon_zs_butcherknife")
 GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 30, "weapon_zs_sledgehammer")
 GM:AddPointShopWeapon(nil,"zpplnk", ITEMCAT_MELEE, 20, "weapon_zs_plank")
-GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 35, "weapon_zs_butcherknife")
 GM:AddPointShopWeapon(nil,"hook", ITEMCAT_MELEE, 23, "weapon_zs_hook")
 
+--GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 40, "weapon_zs_energysword")
 --GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 25, "weapon_zs_axe")
 --GM:AddPointShopWeapon(nil,"shovel", ITEMCAT_MELEE, 45, "weapon_zs_shovel")
 --GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
 --GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 32, "weapon_zs_pot")
 --GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
---GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 40, "weapon_zs_energysword")
+--
 
 GM:AddPointShopWeapon(nil,"nailgun", ITEMCAT_TOOLS, 30, "weapon_zs_nailgun").NoClassicMode = true
 GM:AddPointShopWeapon(nil,"barricadekit", ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
@@ -438,7 +439,7 @@ function GM:SetupAimDefaults(tab,primtab)
 	tab.AimExpandStayDuration = tab.Primary.Delay*0.75
 end
 	
-GM.MaxSigils = 3
+GM.MaxTransmitters = 3
 GM.NumberOfWaves = CreateConVar("zsb_numberofwaves", "9", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Number of waves in a game."):GetInt()
 cvars.AddChangeCallback("zsb_numberofwaves", function(cvar, oldvalue, newvalue)
 	GAMEMODE.NumberOfWaves = tonumber(newvalue) or 1

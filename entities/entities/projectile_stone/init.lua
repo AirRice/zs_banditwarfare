@@ -38,7 +38,6 @@ function ENT:PhysicsCollide(data, phys)
 end
 
 function ENT:StartTouch(ent)
-	
 	if self.DieTime ~= 0 and ent:IsValid() then
 		local owner = self:GetOwner()
 		if not owner:IsValid() then owner = self end
@@ -47,9 +46,7 @@ function ENT:StartTouch(ent)
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 			ent:TakeSpecialDamage(self.Damage, DMG_CLUB, owner, self, nil, Vector(0, 0, 60000))
 			self:Explode()
-		elseif ent:GetClass() == "prop_obj_sigil" and owner:IsPlayer() and ent:GetSigilTeam() ~= owner:Team() then
-			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
-			ent:TakeSpecialDamage(ent:GetSigilMaxHealth()*0.2, DMG_CLUB, owner, self, nil, Vector(0, 0, 60000))
+		else
 			self:Explode()
 		end
 	end

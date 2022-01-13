@@ -1,5 +1,4 @@
 -- Sometimes persistent ones don't get created.
--- Sometimes persistent ones don't get created.
 local dummy = CreateClientConVar("_zs_dummyconvar", 1, false, false)
 local oldCreateClientConVar = CreateClientConVar
 function CreateClientConVar(...)
@@ -16,7 +15,7 @@ include("cl_targetid.lua")
 include("cl_postprocess.lua")
 
 include("vgui/dgamestate.lua")
-include("vgui/dsigilcounter.lua")
+include("vgui/dtransmittercounter.lua")
 include("vgui/dteamcounter.lua")
 include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
@@ -30,13 +29,11 @@ include("vgui/dexrotatedimage.lua")
 include("vgui/dexnotificationslist.lua")
 include("vgui/dexchanginglabel.lua")
 
-include("vgui/mainmenu.lua")
 include("vgui/pmainmenu.lua")
 include("vgui/poptions.lua")
 include("vgui/phelp.lua")
 include("vgui/pweapons.lua")
 include("vgui/pendboard.lua")
-include("vgui/psigils.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
 include("vgui/zshealtharea.lua")
@@ -164,9 +161,9 @@ end
 function GM:ClickedEndBoardPlayerButton(pl, button)
 end
 
-function GM:UpdateSigilTeamCounter(sigiltable)
-	if self.SigilCounterPanel and self.SigilCounterPanel:Valid() then
-		self.SigilCounterPanel:UpdateSigilTeams(sigiltable)
+function GM:UpdateTransmitterTeamCounter(objtable)
+	if self.TransmitterCounterPanel and self.TransmitterCounterPanel:Valid() then
+		self.TransmitterCounterPanel:UpdateTransmitterTeams(objtable)
 	end
 end
 
@@ -757,10 +754,10 @@ function GM:CreateVGUI()
 	self.GameStatePanel:SetSize(screenscale * 420, screenscale * 80)
 	self.GameStatePanel:ParentToHUD()
 
-	self.SigilCounterPanel = vgui.Create("DSigilCounter")
-	self.SigilCounterPanel:SetAlpha(220)
-	self.SigilCounterPanel:InvalidateLayout()
-	self.SigilCounterPanel:ParentToHUD()
+	self.TransmitterCounterPanel = vgui.Create("DTransmitterCounter")
+	self.TransmitterCounterPanel:SetAlpha(220)
+	self.TransmitterCounterPanel:InvalidateLayout()
+	self.TransmitterCounterPanel:ParentToHUD()
 	
 	self.TopNotificationHUD = vgui.Create("DEXNotificationsList")
 	self.TopNotificationHUD:SetAlign(RIGHT)
@@ -843,19 +840,19 @@ function GM:_HUDPaintBackground()
 			end
 		end
 	elseif self:IsTransmissionMode() then
-		for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
+		for _, ent in pairs(ents.FindByClass("prop_obj_transmitter")) do
 			local uipos = ent:GetPos()+ent:GetAngles():Up()*30
 			if !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
 				local teamcolor = nil
-				if ent:GetSigilTeam() ~= nil then 
-					teamcolor = team.GetColor(ent:GetSigilTeam())
+				if ent:GetTransmitterTeam() ~= nil then 
+					teamcolor = team.GetColor(ent:GetTransmitterTeam())
 				end
 				local colr,colg,colb,cola = (teamcolor ~= nil and teamcolor or defaultcolor):Unpack()
 				local size = 24
 				local scrpos = uipos:ToScreen()
 				scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 				scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
-				if MySelf:GetActiveWeapon().AdditionalSigilInfo then
+				if MySelf:GetActiveWeapon().AdditionalTransmitterInfo then
 					local text = math.ceil(MySelf:GetPos():Distance(ent:GetPos()))
 					local w, h = surface.GetTextSize(text)
 					draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size - h/2)
@@ -894,7 +891,7 @@ hook.Add( "InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI )
 
 local function VoiceNotifyThink(pnl)
 	pnl.TeamCol = COLOR_DARKGRAY
-	if (pnl.ply:Team() == TEAM_BANDIT or pnl.ply:Team() == TEAM_HUMAN) then
+	if pnl.ply and pnl.ply:IsValid() and pnl.ply:IsPlayer() and (pnl.ply:Team() == TEAM_BANDIT or pnl.ply:Team() == TEAM_HUMAN) then
 		pnl.TeamCol = team.GetColor(pnl.ply:Team())
 	end
 	pnl.TeamCol = ColorAlpha( pnl.TeamCol, 190)
@@ -1124,15 +1121,29 @@ end
 local undomodelblend = false
 local undozombievision = false
 local matWhite = Material("models/debug/debugwhite")
+local matStealth = Material("models/props_lab/warp_sheet")
 function GM:_PrePlayerDraw(pl)
 	local shadowman = false
-
-	if pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then 
+	local myteam = MySelf:Team()
+	if myteam != pl:Team() and pl ~= MySelf and MySelf:Alive() and pl:Alive() and (pl:Team() == TEAM_BANDIT or pl:Team() == TEAM_HUMAN) then
+		local wep = pl:GetActiveWeapon()
+		if wep.m_IsStealthWeapon then
+			local blend = wep:GetStealthWepBlend()
+			render.SetBlend(blend)
+			if blend < 0.55 then
+				render.ModelMaterialOverride(matStealth)
+				shadowman = true
+				if blend < 0.3 then
+					render.ModelMaterialOverride(matWhite)
+					render.SetColorModulation(0.2, 0.2, 0.2)
+				end
+			end
+		end
+	elseif pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then 
 	-- We need to do this otherwise the player's real model shows up for some reason.
 		undomodelblend = true
 		render.SetBlend(0)
 	else
-		local myteam = MySelf:Team()
 		if myteam == pl:Team() and pl ~= MySelf and not self.MedicalAura and MySelf:Alive() then
 			local radius = self.TransparencyRadius
 			if radius > 0 then
@@ -1464,12 +1475,12 @@ net.Receive("zs_honmention", function(length)
 	end
 end)
 
-net.Receive("zs_currentsigils", function(length)
-	local sigilteams = {}
-	for i=1, GAMEMODE.MaxSigils do
-		sigilteams[i] = net.ReadInt(4)
+net.Receive("zs_currenttransmitters", function(length)
+	local objteams = {}
+	for i=1, GAMEMODE.MaxTransmitters do
+		objteams[i] = net.ReadInt(4)
 	end
-	gamemode.Call("UpdateSigilTeamCounter",sigilteams)
+	gamemode.Call("UpdateTransmitterTeamCounter",objteams)
 end)
 
 net.Receive("zs_wavestart", function(length)

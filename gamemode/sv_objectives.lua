@@ -1,23 +1,23 @@
 
-function GM:OnSigilTaken(sigilent, justtakenby)
-	local sigils = {}
-	local sigilteams = {}
-	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
-		sigils[#sigils + 1] = ent
-		sigilteams[#sigilteams + 1] = ent:GetSigilTeam()
+function GM:OnTransmitterTaken(objent, justtakenby)
+	local objs = {}
+	local objteams = {}
+	for _, ent in pairs(ents.FindByClass("prop_obj_transmitter")) do
+		objs[#objs + 1] = ent
+		objteams[#objteams + 1] = ent:GetTransmitterTeam()
 	end
 	
-	net.Start("zs_currentsigils")
-		for i=1, self.MaxSigils do
-			net.WriteInt(sigilteams[i],4)
+	net.Start("zs_currenttransmitters")
+		for i=1, self.MaxTransmitters do
+			net.WriteInt(objteams[i],4)
 		end
 	net.Broadcast()
 	
-	self.CurrentSigilTable = sigils
+	self.CurrentTransmitterTable = objs
 
 	local translatestring = nil
 	local allSameTeam = true
-	for i,team in ipairs(sigilteams) do
+	for i,team in ipairs(objteams) do
 		if team != justtakenby then
 			allSameTeam = false
 			break
@@ -29,39 +29,26 @@ function GM:OnSigilTaken(sigilent, justtakenby)
 		elseif justtakenby == TEAM_HUMAN then
 			translatestring = translate.ClientGet(pl,"teamname_human")
 		end
-		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_sigils_taken_by_x" or "one_sigil_taken_by_x",translatestring))
+		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_transmitters_taken_by_x" or "one_transmitter_taken_by_x",translatestring))
 	end
 	
 	if self:IsTransmissionMode() then
-		self.RoundEndCamPos = sigilent:WorldSpaceCenter()
+		self.RoundEndCamPos = objent:WorldSpaceCenter()
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
 	end
-	
-	--[[if self.SuddenDeath then 
-		for _, pl in pairs(player.GetAll()) do
-			if justtakenby == TEAM_BANDIT then
-				translatestring = translate.ClientGet(pl,"teamname_bandit")
-			elseif justtakenby == TEAM_HUMAN then
-				translatestring = translate.ClientGet(pl,"teamname_human")
-			end
-			pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "sigil_comms_finished_by_x",translatestring), {killicon = "default"})
-		end
-		timer.Simple(2, function() gamemode.Call("WaveEndWithWinner", justtakenby) end)
-	end]]
 end
 
 GM.LastCommLink = 0
-function GM:SigilCommsThink()
-	--PrintTable(self.CurrentSigilTable)
-	local sigilteams = self.CurrentSigilTable
+function GM:TransmitterCommsThink()
+	local objteams = self.CurrentTransmitterTable
 	local bnum = 0
 	local hnum = 0
-	for _, sigil in pairs(sigilteams) do
-		if sigil:GetSigilTeam() == TEAM_BANDIT and sigil:GetCanCommunicate() == 1 then
+	for _, obj in pairs(objteams) do
+		if obj:GetTransmitterTeam() == TEAM_BANDIT and obj:GetCanCommunicate() == 1 then
 			bnum = bnum +1
-		elseif sigil:GetSigilTeam() == TEAM_HUMAN and sigil:GetCanCommunicate() == 1 then
+		elseif obj:GetTransmitterTeam() == TEAM_HUMAN and obj:GetCanCommunicate() == 1 then
 			hnum = hnum +1
 		end
 	end
@@ -73,19 +60,19 @@ function GM:SigilCommsThink()
 		elseif self:GetBanditComms() >= 200 and self:GetHumanComms() >= 200 then
 			self.CommsEnd = true
 			for _, pl in pairs(player.GetAll()) do
-				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "sigil_comms_tied"), {killicon = "default"})
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "transmitter_comms_tied"), {killicon = "default"})
 			end
 			gamemode.Call("WaveEndWithWinner", nil)
 		elseif self:GetBanditComms() >= 200 then
 			self.CommsEnd = true
 			for _, pl in pairs(player.GetAll()) do
-				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "sigil_comms_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
 			end
 			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 		elseif self:GetHumanComms() >= 200 then
 			self.CommsEnd = true
 			for _, pl in pairs(player.GetAll()) do
-				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "sigil_comms_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
+				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
 			end
 			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 		end
@@ -178,7 +165,7 @@ function GM:CreateZombieNest()
 		end
 		chosen = !playerswithin
 	end
-	-- Remove the chosen point from the temp table and make the sigil.
+	-- Remove the chosen point from the temp table and make the nest.
 	local point = nodes[id].v
 	local ent = ents.Create("prop_obj_nest")
 	if ent:IsValid() then
@@ -190,7 +177,7 @@ function GM:CreateZombieNest()
 end
 
 function GM:CreateObjectives(entname,nocollide)
-	if #self.ProfilerNodes < self.MaxSigils then
+	if #self.ProfilerNodes < self.MaxTransmitters then
 		return
 	end
 
@@ -223,7 +210,7 @@ function GM:CreateObjectives(entname,nocollide)
 		end
 	end
 	table.sort(nodes, SortDistFromLast)
-	for i=1, self.MaxSigils do
+	for i=1, self.MaxTransmitters do
 		local id
 		local sigs = ents.FindByClass(entname)
 		local flag = false
@@ -238,18 +225,18 @@ function GM:CreateObjectives(entname,nocollide)
 		-- Sort the nodes by their distances.
 		-- Select node with algorithm that randomly selects while selecting closer ids more
 		local id = 1
-		if #nodes >=self.MaxSigils*2 then
+		if #nodes >=self.MaxTransmitters*2 then
 			local decider = math.random(1,5)
 			if decider > 2 then
-				id = math.random(1,self.MaxSigils)
+				id = math.random(1,self.MaxTransmitters)
 			else
-				id = math.random(self.MaxSigils+1,#nodes)
+				id = math.random(self.MaxTransmitters+1,#nodes)
 			end
 		else
 			id = math.random(1,#nodes)
 		end
 
-		-- Remove the chosen point from the temp table and make the sigil.
+		-- Remove the chosen point from the temp table and make the transmitter.
 		local point = nodes[id].v
 		table.remove(nodes, id)
 		local ent = ents.Create(entname)
