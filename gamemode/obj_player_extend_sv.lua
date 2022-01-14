@@ -69,12 +69,41 @@ function meta:FakeDeath(sequenceid, modelscale, length)
 	return ent
 end
 
-function meta:ChangeTeam(teamid)
-	local oldteam = self:Team()
-	self:SetTeam(teamid)
-	if oldteam ~= teamid then
-		gamemode.Call("OnPlayerChangedTeam", self, oldteam, teamid)
+function meta:RefreshPlayerModel()
+	local desiredname = self:GetInfo("cl_playermodel")
+	local randommodel = nil
+	if (self:Team() == TEAM_HUMAN) then
+		randommodel = GAMEMODE.RandomSurvivorModels[math.random(#GAMEMODE.RandomSurvivorModels)]
+	elseif (self:Team() == TEAM_BANDIT) then
+		randommodel = GAMEMODE.RandomBanditModels[math.random(#GAMEMODE.RandomBanditModels)]
+	else
+		randommodel = GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]
 	end
+	
+	
+	if #desiredname == 0 then
+		desiredname = randommodel
+	end
+	
+	local modelname = player_manager.TranslatePlayerModel(desiredname)
+	if table.HasValue(GAMEMODE.RestrictedModels, string.lower(modelname)) or (self:Team() == TEAM_HUMAN and table.HasValue(GAMEMODE.RandomBanditModels, string.lower(desiredname))) or (self:Team() == TEAM_BANDIT and table.HasValue(GAMEMODE.RandomSurvivorModels, string.lower(desiredname))) then
+		modelname = player_manager.TranslatePlayerModel(randommodel)
+	end
+	local lowermodelname = string.lower(modelname)
+	self:SetModel(modelname)
+	self:SetupHands()
+	-- Cache the voice set.
+	if GAMEMODE.VoiceSetTranslate[lowermodelname] then
+		self.VoiceSet = GAMEMODE.VoiceSetTranslate[lowermodelname]
+	elseif string.find(lowermodelname, "female", 1, true) then
+		self.VoiceSet = "female"
+	else
+		self.VoiceSet = "male"
+	end
+end
+
+function meta:ChangeTeam(teamid)
+	self:SetTeam(teamid)
 	self:CollisionRulesChanged()
 end
 

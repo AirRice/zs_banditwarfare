@@ -465,12 +465,15 @@ function GM:HumanHUD(screenscale)
 
 	if not self.RoundEnded then
 		if self:GetWave() == 0 and not self:GetWaveActive() then
-			local txth = draw_GetFontHeight("ZSHUDFontSmall")
-			draw_SimpleTextBlurry(translate.Get("waiting_for_players").." "..util.ToMinutesSeconds(math.max(0, self:GetWaveStart() - curtime)), "ZSHUDFontSmall", w * 0.5, h * 0.25, COLOR_GRAY, TEXT_ALIGN_CENTER)
+			local wavezerowait = math.max(0, self:GetWaveStart() - self.WaveIntermissionLength - curtime)
+			if wavezerowait > 0 then
+				local txth = draw_GetFontHeight("ZSHUDFontSmall")
+				draw_SimpleTextBlurry(translate.Get("waiting_for_players").." "..util.ToMinutesSeconds(math.max(0, self:GetWaveStart() - self.WaveIntermissionLength - curtime)), "ZSHUDFontSmall", w * 0.5, h * 0.25, COLOR_GRAY, TEXT_ALIGN_CENTER)
 
-			local y = h * 0.75 + txth * 2
+				local y = h * 0.75 + txth * 2
 
-			txth = draw_GetFontHeight("ZSHUDFontTiny")
+				txth = draw_GetFontHeight("ZSHUDFontTiny")
+			end
 		end
 
 		local drown = MySelf.status_drown
@@ -592,11 +595,11 @@ function GM:ObserverHUD(obsmode)
 			draw_SimpleTextBlur(translate.Get("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		end
 	end
-	local space = texh + 8
+	local space = texh+4
 		draw_SimpleTextBlurry(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_WHITE, TEXT_ALIGN_CENTER)
-		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*3, COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*2, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if MySelf:Team() == TEAM_SPECTATOR then
-		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 5, COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 3, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	end
 end
 local indicator_mat = Material("vgui/ico_friend_indicator_alone")

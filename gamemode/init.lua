@@ -819,6 +819,7 @@ function GM:PreRestartRound()
 	for _, pl in ipairs(player.GetAll()) do
 		pl:StripWeapons()
 		pl:Spectate(OBS_MODE_ROAMING)
+		pl:SetTeam(TEAM_UNASSIGNED)
 		pl:GodDisable()
 	end
 end
@@ -1998,12 +1999,13 @@ function GM:DamageFloater(attacker, victim, dmginfo)
 	net.Send(attacker)
 end
 
-function GM:OnPlayerChangedTeam(pl, oldteam, newteam)
+function GM:PlayerChangedTeam(pl, oldteam, newteam)
 	local uid = pl:UniqueID()
 	if newteam == TEAM_HUMAN or newteam == TEAM_BANDIT then
 		pl.DamagedBy = {}
 		self.PreviouslyDied[uid] = nil
 		pl:SetBarricadeGhosting(false)
+		timer.Simple(0.25, function() pl:RefreshPlayerModel() end)
 	elseif newteam == TEAM_SPECTATOR then
 		self.PreviousTeam[uid] = oldteam
 		self.PreviousPoints[uid] = pl:GetPoints()
@@ -2545,36 +2547,7 @@ function GM:PlayerSpawn(pl)
 		pl.DamagedBy = {}
 		pl.m_PointQueue = 0
 		pl.PackedItems = {}
-		
-		local desiredname = pl:GetInfo("cl_playermodel")
-		local randommodel = self.RandomPlayerModels[math.random(#self.RandomPlayerModels)]
-		if (pl:Team() == TEAM_HUMAN) then
-			randommodel = self.RandomSurvivorModels[math.random(#self.RandomSurvivorModels)]
-		elseif (pl:Team() == TEAM_BANDIT) then
-			randommodel = self.RandomBanditModels[math.random(#self.RandomBanditModels)]
-		end
-		
-		
-		if #desiredname == 0 then
-			desiredname = randommodel
-		end
-		
-		local modelname = player_manager.TranslatePlayerModel(desiredname)
-		if table.HasValue(self.RestrictedModels, string.lower(modelname)) or (pl:Team() == TEAM_HUMAN and table.HasValue(self.RandomBanditModels, string.lower(desiredname))) or (pl:Team() == TEAM_BANDIT and table.HasValue(self.RandomSurvivorModels, string.lower(desiredname))) then
-			modelname = player_manager.TranslatePlayerModel(randommodel)
-		end
-		local lowermodelname = string.lower(modelname)
-		pl:SetModel(modelname)
-		
-		-- Cache the voice set.
-		if self.VoiceSetTranslate[lowermodelname] then
-			pl.VoiceSet = self.VoiceSetTranslate[lowermodelname]
-		elseif string.find(lowermodelname, "female", 1, true) then
-			pl.VoiceSet = "female"
-		else
-			pl.VoiceSet = "male"
-		end
-
+		pl:RefreshPlayerModel()
 		pl:ResetSpeed()
 		pl:SetJumpPower(DEFAULT_JUMP_POWER)
 		pl:SetCrouchedWalkSpeed(0.65)
