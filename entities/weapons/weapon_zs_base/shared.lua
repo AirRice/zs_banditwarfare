@@ -154,14 +154,14 @@ function SWEP:EmitReloadFinishSound()
 end
 
 function SWEP:CanReload()
-	local hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) > 0)
+	local hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:Ammo1() > 0)
 	if self.RequiredClip > 1 then
-		hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) >= self.RequiredClip)
+		hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:Ammo1() >= self.RequiredClip)
 	end
 
 	return self:GetNextReload() <= CurTime() and self:GetReloadFinish() == 0 and
 		(
-			hasclip1 or self:GetMaxClip2() > 0 and self:Clip1() < self:GetMaxClip2() and self:ValidSecondaryAmmo() and self:GetOwner():GetAmmoCount(self:GetSecondaryAmmoType()) > 0
+			hasclip1 or self:GetMaxClip2() > 0 and self:Clip1() < self:GetMaxClip2() and self:ValidSecondaryAmmo() and self:Ammo1() > 0
 		)
 end
 

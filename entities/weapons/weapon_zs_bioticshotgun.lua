@@ -81,7 +81,7 @@ end
 function SWEP:Reload()
 	if self.reloading then return end
 
-	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
 		self.reloading = true
 		self.reloadtimer = CurTime() + self.ReloadDelay
@@ -99,7 +99,7 @@ function SWEP:Think()
 		self:SetClip1(self:Clip1() + 1)
 		self:EmitSound("Weapon_Shotgun.Reload")
 
-		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
+		if self.Primary.ClipSize <= self:Clip1() or self:Ammo1() <= 0 then
 			self.nextreloadfinish = CurTime() + self.ReloadDelay
 			self.reloading = false
 			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)

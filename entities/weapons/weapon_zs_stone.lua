@@ -158,6 +158,9 @@ local colWhite = Color(220, 220, 220, 230)
 SWEP.HUD3DPos = Vector(5, 2, 0)
 
 function SWEP:PostDrawViewModel(vm)
+	if self.BaseClass.PostDrawViewModel then 
+		self.BaseClass.PostDrawViewModel(self,vm, pl, wep)
+	end
 	if not self.HUD3DPos or GAMEMODE.WeaponHUDMode == 1 then return end
 
 	local bone = vm:LookupBone("ValveBiped.Bip01_R_Hand")

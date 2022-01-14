@@ -121,7 +121,7 @@ end
 
 function SWEP:PrimaryAttack()
 	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self:GetNextPrimaryFire() > CurTime() or self:GetCurrentTarget():IsValid() or not (self:GetCurrentLookTarget() and self:GetCurrentLookTarget():IsValid()) then return end
-	if self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0 then
+	if self:Ammo1() <= 0 then
 		self:EmitSound("items/suitchargeno1.wav", 75, 110)
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return
@@ -187,7 +187,7 @@ function SWEP:Think()
 			self.LastUpdate = CurTime()
 		end
 	elseif curtgt:IsPlayer() then
-		if not self:CheckValidTarget(curtgt) or self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0 then 
+		if not self:CheckValidTarget(curtgt) or self:Ammo1() <= 0 then 
 			self:SecondaryAttack() 
 		else
 			self:EmitSound("Loop_Palliator_Heal")
@@ -204,7 +204,7 @@ function SWEP:Think()
 			end
 			if self:GetLastHealTime() + self.Primary.Delay <= CurTime() then
 				if SERVER then
-					local magnitude = math.min(self.Primary.Damage,owner:GetAmmoCount(self:GetPrimaryAmmoType()))
+					local magnitude = math.min(self.Primary.Damage,self:Ammo1())
 					if sameteam then
 						curtgt:GiveStatus("healdartboost").DieTime = CurTime() + 1
 						local oldhealth = curtgt:Health()

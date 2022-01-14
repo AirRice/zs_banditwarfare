@@ -59,7 +59,7 @@ end
 
 function SWEP:CanPrimaryAttack()
 	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
-	if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if 0 >= self:Ammo1() then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return false
@@ -97,7 +97,7 @@ function SWEP:PrimaryAttack()
 		end
 	end
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
-	if self.Owner:GetAmmoCount(self.Primary.Ammo) > 0 then
+	if self:Ammo1() > 0 then
 		local bow = self
 		timer.Simple( 0.3, function() 
 			if (not IsValid(bow:GetOwner())) or (not bow:GetOwner():Alive()) then return end

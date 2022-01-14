@@ -122,7 +122,7 @@ end
 
 function SWEP:CanPrimaryAttack()
 	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
-	if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if 0 >= self:Ammo1() then
 		self:EmitSound("buttons/combine_button_locked.wav")
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return false
@@ -142,7 +142,7 @@ function SWEP:Think()
 		self:SetLastHurtDmg(0)
     end
     if self.Owner:KeyDown(IN_ATTACK) then
-		if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) or self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then 
+		if 0 >= self:Ammo1() or self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then 
 			self:SetFiringLaser( false )
 			self:StopSound( "Loop_Lepton_Fire" )
 			self:StopSound( "Loop_Lepton_Fire2" )

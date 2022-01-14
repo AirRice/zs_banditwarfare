@@ -3,7 +3,7 @@ AddCSLuaFile()
 if CLIENT then
 	SWEP.TranslateName = "weapon_inquisition_name"
 	SWEP.TranslateDesc = "weapon_inquisition_desc"
-	SWEP.Slot = 3
+	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
 	SWEP.ViewModelFOV = 60

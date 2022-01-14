@@ -249,13 +249,6 @@ if CLIENT then
 		end
 	end    
 	function SWEP:PostDrawViewModel(vm, pl, wep)
-		if self.HUD3DPos and GAMEMODE.WeaponHUDMode ~= 1 then
-			local pos, ang = self:GetHUD3DPos(vm)
-			if pos then
-				self:Draw3DHUD(vm, pos, ang)
-			end
-		end
-
 		local veles = self.VElements
 
 		local time = CurTime()
@@ -269,6 +262,9 @@ if CLIENT then
 		else
 			veles["Syringe+"].color = col2
 			veles["Syringe"].color = col2
+		end
+		if self.BaseClass.PostDrawViewModel then 
+			self.BaseClass.PostDrawViewModel(self,vm, pl, wep)
 		end
 	end
 end

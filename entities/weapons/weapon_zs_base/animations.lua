@@ -187,7 +187,7 @@ if CLIENT then
 		if (self.ShowWorldModel == nil or self.ShowWorldModel) then
 			self:DrawModel()
 		end
-		
+		if MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner then return end
 		if (!self.WElements) then return end
 		
 		if (!self.wRenderOrder) then

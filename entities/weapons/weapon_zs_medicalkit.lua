@@ -237,7 +237,7 @@ function SWEP:DrawHUD()
 
 	local wid, hei = 180 * screenscale, 64 * screenscale
 	local x, y = ScrW() - wid - screenscale * 128, ScrH() - hei - screenscale * 72
-	local clip = self.Owner:GetAmmoCount(self:GetPrimaryAmmoType())
+	local clip = self:Ammo1()
 
 	draw.RoundedBox(16, x, y, wid, hei, colBG)
 	local font = "ZSHUDFontBig"
