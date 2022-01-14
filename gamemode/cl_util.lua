@@ -16,6 +16,31 @@ function DontDrawViewModel()
 	end
 end
 
+function GetHUD3DPos(wep,vm)
+	local bone = vm:LookupBone(wep.HUD3DBone or "base")
+	if not bone then return end
+
+	local m = vm:GetBoneMatrix(bone)
+	if not m then return end
+
+	local pos, ang = m:GetTranslation(), m:GetAngles()
+
+	if wep.ViewModelFlip then
+		ang.r = -ang.r
+	end
+	if not wep.HUD3DPos then return end
+	local offset = wep.HUD3DPos
+	local aoffset = wep.HUD3DAng or Angle(180, 0, 0)
+
+	pos = pos + ang:Forward() * offset.x + ang:Right() * offset.y + ang:Up() * offset.z
+
+	if aoffset.yaw ~= 0 then ang:RotateAroundAxis(ang:Up(), aoffset.yaw) end
+	if aoffset.pitch ~= 0 then ang:RotateAroundAxis(ang:Right(), aoffset.pitch) end
+	if aoffset.roll ~= 0 then ang:RotateAroundAxis(ang:Forward(), aoffset.roll) end
+
+	return pos, ang
+end
+
 -- Scales the screen based around 1080p but doesn't make things TOO tiny on low resolutions.
 function BetterScreenScale()
 	return math.Clamp(ScrH() / 1080, 0.6, 1)
