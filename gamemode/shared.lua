@@ -1,7 +1,7 @@
 GM.Name		=	"Zombie Survival:Bandit Warfare"
 GM.Author	=	"Jooho \"air rice\" Lee"
-GM.Email	=	""
-GM.Website	=	""
+GM.Email	=	"jpumph2@gmail.com"
+GM.Website	=	"https://github.com/AirRice/zs_banditwarfare/"
 
 GM.Credits = {
 	{"credit_airrice", "", "credit_airrice_desc"},

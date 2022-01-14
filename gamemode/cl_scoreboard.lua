@@ -38,7 +38,9 @@ end
 local function emptypaint(self)
 	return true
 end
-
+local function scrollbuttonpaint( w, h )
+	draw.RoundedBox( 0, 0, 0, w, h, Color( 200, 100, 0 ))
+end
 function PANEL:Init()
 	self.NextRefresh = RealTime() + 0.1
 
@@ -75,12 +77,14 @@ function PANEL:Init()
 	self.HumanList = vgui.Create("DScrollPanel", self)
 	self.HumanList.Team = TEAM_HUMAN
 	
-	self.SpectatorsLabel = vgui.Create("DLabel", self)
-	self.SpectatorsLabel.Font = "ZSHUDFontSmallerNS"
-	self.SpectatorsLabel:SetFont(self.SpectatorsLabel.Font)
-	self.SpectatorsLabel:SetTextColor(COLOR_GRAY)
+	self.BottomArea = vgui.Create("DPanel",self)
+
+	self.SpectatorsLabel = EasyLabel(self.BottomArea,translate.ClientGet(MySelf, "teamname_spectator")..":","ZSHUDFontSmallerNS",COLOR_GRAY)
 	self.SpectatorsLabel:NoClipping(true)
+	self.SpectatorsLabel:SizeToContents()
 	
+	self.SpectatorList = vgui.Create("DHorizontalScroller",self.BottomArea)
+	self.SpectatorList:SetOverlap(-16)
 	self:InvalidateLayout()
 end
 
@@ -103,9 +107,16 @@ function PANEL:PerformLayout()
 	self.BanditList:SetSize(self:GetWide() / 2 - 24, self:GetTall() - 150)
 	self.BanditList:AlignBottom(16)
 	self.BanditList:AlignRight(8)
-	self.SpectatorsLabel:SetSize(self:GetWide() - 24,24)
-	self.SpectatorsLabel:AlignBottom(8)
+	
+	self.BottomArea:AlignBottom(8)
+	self.BottomArea:SetSize(self:GetWide()-16,32)
+	self.BottomArea:CenterHorizontal()
+	
 	self.SpectatorsLabel:AlignLeft(8)
+	self.SpectatorsLabel:CenterVertical()	
+
+	self.SpectatorList:MoveRightOf(self.SpectatorsLabel,2)
+	self.SpectatorList:SetSize(self.BottomArea:GetWide()-(self.SpectatorsLabel:GetWide()+20),32)
 end
 
 function PANEL:Think()
@@ -127,6 +138,12 @@ function PANEL:Paint()
 	surface.SetDrawColor(5, 5, 5, 220)
 	PaintGenericFrame(self, 0, 0, wid, 64, 32)
 
+	surface.SetDrawColor(30, 30, 30, 200)
+	local bottomx,bottomy = self.BottomArea:GetPos()
+	surface.DrawRect(0, bottomy, wid, 32)
+	surface.SetDrawColor(60, 60, 60, 200)
+	surface.DrawOutlinedRect(0, bottomy, wid, 32)
+
 	--[[surface.SetDrawColor(5, 5, 5, 160)
 	surface.DrawRect(wid * 0.5 - 16, 64, 32, hei - 128)]]
 end
@@ -143,11 +160,18 @@ function PANEL:CreatePlayerPanel(pl)
 	local curpan = self:GetPlayerPanel(pl)
 	if curpan and curpan:Valid() then return curpan end
 
-	if pl:Team() == TEAM_SPECTATOR then return end
-
-	local panel = vgui.Create("ZSPlayerPanel", pl:Team() == TEAM_BANDIT and self.BanditList or self.HumanList)
+	local panel = vgui.Create("ZSPlayerPanel", self)
+	--[[if pl:Team() == TEAM_BANDIT then
+		panel:Dock(TOP)
+		panel:SetParent(self.BanditList)
+	elseif pl:Team() == TEAM_HUMAN then
+		panel:Dock(TOP)
+		panel:SetParent(self.HumanList)
+	else
+		panel:Dock(LEFT)
+		panel:SetParent(self.SpectatorList)
+	end]]
 	panel:SetPlayer(pl)
-	panel:Dock(TOP)
 	panel:DockMargin(8, 2, 8, 2)
 
 	self.PlayerPanels[pl] = panel
@@ -159,22 +183,16 @@ function PANEL:Refresh()
 	self.m_ServerNameLabel:SetText(GetHostName())
 	self.m_ServerNameLabel:SizeToContents()
 	self.m_ServerNameLabel:SetPos(math.min(self:GetWide() - self.m_ServerNameLabel:GetWide(), self:GetWide() * 0.75 - self.m_ServerNameLabel:GetWide() * 0.5), 32 - self.m_ServerNameLabel:GetTall() / 2)
-	local SpectatorNames = {}
-	for _, pl in pairs(player.GetAllSpectators()) do
-		table.insert (SpectatorNames,pl:Name())					
-	end
-	
-	self.SpectatorsLabel:SetText(translate.ClientGet(MySelf, "teamname_spectator")..":"..table.concat(SpectatorNames, ", "))
 	
 	if self.PlayerPanels == nil then self.PlayerPanels = {} end
 
 	for pl, panel in pairs(self.PlayerPanels) do
-		if not panel:Valid() or pl:IsValid() and pl:IsSpectator() then
+		if not panel:Valid() then
 			self:RemovePlayerPanel(panel)
 		end
 	end
 
-	for _, pl in pairs(player.GetAllActive()) do
+	for _, pl in pairs(player.GetAll()) do
 		self:CreatePlayerPanel(pl)
 	end
 end
@@ -249,12 +267,15 @@ function PANEL:Paint()
 	local mul = 0.5
 	local pl = self:GetPlayer()
 	if pl:IsValid() then
-		col = team.GetColor(pl:Team())
-
-		if (GAMEMODE:IsClassicMode() or GAMEMODE.IsInSuddenDeath) and not pl:Alive() then 
-			mul = 0.1
-		elseif pl == MySelf then
-			mul = 0.8
+		if (pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) then
+			col = COLOR_GRAY
+		else
+			col = team.GetColor(pl:Team())
+			if (GAMEMODE:IsClassicMode() or GAMEMODE.IsInSuddenDeath) and not pl:Alive() then 
+				mul = 0.1
+			elseif pl == MySelf then
+				mul = 0.8
+			end
 		end
 	end
 
@@ -308,17 +329,23 @@ function PANEL:Refresh()
 		self:Remove()
 		return
 	end
-
+	local namelen = 18
+	if (self._LastTeam == TEAM_HUMAN or self._LastTeam == TEAM_BANDIT) then
+		if GAMEMODE.SimpleScoreBoard or pl:Team() ~= LocalPlayer():Team() then
+			self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths", pl:Frags(), pl:Deaths()))
+		else
+			self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths_x_points", pl:Frags(), pl:Deaths(), pl:GetPoints()))
+		end
+	else
+		namelen = 9
+		self.m_ScoreLabel:SetText("")
+	end
+	
 	local name = pl:Name()
-	if #name > 26 then
-		name = string.sub(name, 1, 24)..".."
+	if #name > namelen then
+		name = string.sub(name, 1, namelen-2)..".."
 	end
 	self.m_PlayerLabel:SetText(name)
-	if GAMEMODE.SimpleScoreBoard or pl:Team() ~= LocalPlayer():Team() then
-		self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths", pl:Frags(), pl:Deaths()))
-	else
-		self.m_ScoreLabel:SetText(translate.ClientFormat(self, "x_kills_x_deaths_x_points", pl:Frags(), pl:Deaths(), pl:GetPoints()))
-	end
 	
 	if pl == LocalPlayer() then
 		self.m_Mute:SetVisible(false)
@@ -334,7 +361,19 @@ function PANEL:Refresh()
 
 	if pl:Team() ~= self._LastTeam then
 		self._LastTeam = pl:Team()
-		self:SetParent(self._LastTeam == TEAM_HUMAN and ScoreBoard.HumanList or ScoreBoard.BanditList)
+		if self._LastTeam == TEAM_HUMAN then
+			self:SetWide(ScoreBoard.HumanList:GetWide())
+			self:SetParent(ScoreBoard.HumanList)
+			self:Dock(TOP)
+		elseif self._LastTeam == TEAM_BANDIT then
+			self:SetWide(ScoreBoard.BanditList:GetWide())
+			self:SetParent(ScoreBoard.BanditList)
+			self:Dock(TOP)
+		else
+			self:SetWide(math.max(ScoreBoard.SpectatorList:GetWide()/4,192))
+			ScoreBoard.SpectatorList:AddPanel(self)
+			self:Dock(NODOCK)
+		end
 	end
 
 	self:InvalidateLayout()

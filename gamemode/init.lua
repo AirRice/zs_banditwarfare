@@ -824,6 +824,12 @@ function GM:PreRestartRound()
 	end
 end
 
+function GM:ResetPlayerTeams()
+	for _, pl in ipairs(player.GetAll()) do
+		pl:SetTeam(TEAM_UNASSIGNED)
+	end
+end
+
 GM.CurrentRound = 1
 GM.CurrentMapLoadedPlayers = 0
 GM.ShuffledPlayersThisRound = false
@@ -1208,7 +1214,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	if self.PreviousPoints[pl:UniqueID()] then
 		pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
 	elseif self:GetWave() > 0 then
-		pl:AddPoints(self:GetTeamPoints(pl:Team())/team.NumPlayers(pl:Team()))
+		pl:AddPoints(self:GetTeamPoints(pl:Team())/(team.NumPlayers(pl:Team())-1))
 	else
 		pl:AddPoints(20)
 	end
@@ -2070,8 +2076,14 @@ function GM:WeaponDeployed(pl, wep)
 	pl:ResetSpeed()
 end
 
+local function SpectatorSetupPlayerVisibility(pl)
+	if (not pl:Alive() or pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) and IsValid(pl:GetObserverTarget()) then
+		AddOriginToPVS(pl:GetObserverTarget():WorldSpaceCenter())
+	end
+end
 function GM:KeyPress(pl, key)
-	if not pl:Alive() and pl:GetObserverMode() ~= OBS_MODE_NONE then
+	hook.Add("SetupPlayerVisibility", "SpectatorSetupPlayerVisibility", SpectatorSetupPlayerVisibility)
+	if (not pl:Alive() or pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) and pl:GetObserverMode() ~= OBS_MODE_NONE then
 		if key == IN_ATTACK2 then
 			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
 			local living = {}
@@ -2091,8 +2103,13 @@ function GM:KeyPress(pl, key)
 			end
 			local specplayer = living[pl.SpectatedPlayerKey]
 			if specplayer and specplayer:IsPlayer() and specplayer:Alive() then
-				pl:Spectate(OBS_MODE_CHASE)
+				local lastspecmode = pl:GetObserverMode()
+				if (lastspecmode != OBS_MODE_CHASE and lastspecmode != OBS_MODE_IN_EYE) then 
+					lastspecmode = OBS_MODE_CHASE
+				end
+				pl:Spectate(lastspecmode)
 				pl:SpectateEntity(specplayer)
+				pl:SetupHands(specplayer)
 			end
 		elseif key == IN_DUCK then 
 			local specplayer = pl:GetObserverTarget()
@@ -2100,15 +2117,16 @@ function GM:KeyPress(pl, key)
 				if pl:GetObserverMode() == OBS_MODE_CHASE then
 					pl:Spectate(OBS_MODE_IN_EYE)
 					pl:SpectateEntity(specplayer)
+					pl:SetupHands(specplayer)
 				elseif pl:GetObserverMode() == OBS_MODE_IN_EYE then
 					pl:Spectate(OBS_MODE_CHASE)
 					pl:SpectateEntity(specplayer)
 				end
 			end
 		elseif key == IN_JUMP then
-			if pl:IsSpectator() then
+			if pl:IsSpectator() and pl:GetObserverMode() != OBS_MODE_ROAMING then
 				pl:Spectate(OBS_MODE_ROAMING)
-				pl:SpectateEntity(NULL)
+				pl:SpectateEntity(nil)
 				pl.SpectatedPlayerKey = nil
 			end
 		end
@@ -2723,9 +2741,13 @@ function GM:WaveStateChanged(newstate)
 			local teamspawns = {}
 			teamspawns = team.GetValidSpawnPoint(pl:Team())
 			if pl:GetInfo("zsb_spectator") == "1" then
-				pl:ChangeTeam(TEAM_SPECTATOR)
-				pl:StripWeapons( )
-				pl:Spectate( OBS_MODE_ROAMING )	
+				if pl:Team() != TEAM_SPECTATOR then
+					pl:ChangeTeam(TEAM_SPECTATOR)
+				end
+				pl:StripWeapons()
+				if pl:GetObserverMode() != OBS_MODE_ROAMING then
+					pl:Spectate(OBS_MODE_ROAMING)
+				end
 			elseif pl:Alive() then
 				if not self:IsClassicMode() then
 					pl:UpdateWeaponLoadouts()
