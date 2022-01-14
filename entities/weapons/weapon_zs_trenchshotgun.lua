@@ -57,8 +57,8 @@ SWEP.ShowWorldModel = false
 SWEP.ReloadDelay = 0.45
 
 SWEP.Primary.Sound = Sound("Weapon_M3.Single")
-SWEP.Primary.Damage = 5
-SWEP.Primary.NumShots = 8
+SWEP.Primary.Damage = 6
+SWEP.Primary.NumShots = 9
 SWEP.Primary.Delay = 0.65
 SWEP.Recoil = 4
 SWEP.Primary.ClipSize = 4
