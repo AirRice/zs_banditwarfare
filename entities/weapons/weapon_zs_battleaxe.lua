@@ -23,7 +23,7 @@ SWEP.WorldModel = "models/weapons/w_pist_usp.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Sound = Sound("Weapon_USP.Single")
-SWEP.Primary.Damage = 15
+SWEP.Primary.Damage = 16
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.19
 SWEP.Recoil = 0.5

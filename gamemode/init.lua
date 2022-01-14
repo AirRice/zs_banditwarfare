@@ -2076,13 +2076,7 @@ function GM:WeaponDeployed(pl, wep)
 	pl:ResetSpeed()
 end
 
-local function SpectatorSetupPlayerVisibility(pl)
-	if (not pl:Alive() or pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) and IsValid(pl:GetObserverTarget()) then
-		AddOriginToPVS(pl:GetObserverTarget():WorldSpaceCenter())
-	end
-end
 function GM:KeyPress(pl, key)
-	hook.Add("SetupPlayerVisibility", "SpectatorSetupPlayerVisibility", SpectatorSetupPlayerVisibility)
 	if (not pl:Alive() or pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) and pl:GetObserverMode() ~= OBS_MODE_NONE then
 		if key == IN_ATTACK2 then
 			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
