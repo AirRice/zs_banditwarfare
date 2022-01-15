@@ -85,7 +85,7 @@ SWEP.ReloadGesture = ACT_HL2MP_GESTURE_RELOAD_SMG1
 
 SWEP.ConeMax = 0.125
 SWEP.ConeMin = 0.019
-SWEP.Recoil = 1.35
+SWEP.Recoil = 1.05
 SWEP.WalkSpeed = SPEED_NORMAL
 
 function SWEP:ShootBullets(dmg, numbul, cone)
