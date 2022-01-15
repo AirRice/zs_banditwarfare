@@ -31,8 +31,9 @@ if CLIENT then
 	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
-	SWEP.HUD3DPos = Vector(-0.95, 0, 1)
+	SWEP.HUD3DPos = Vector(-1, 0.4, 1)
 	SWEP.HUD3DAng = Angle(0, 0, 0)
+	SWEP.HUD3DScale = 0.015
 	SWEP.HUD3DBone = "v_weapon.USP_Slide"
 end
 
@@ -63,6 +64,7 @@ SWEP.IronSightsPos = Vector(-5.75, 10, 2.7)
 
 SWEP.ReloadSpeed = 0.45
 SWEP.HealRangeSqr = 9216
+SWEP.HealRangeSqrMin = 2048
 SWEP.LastUpdate = 0
 
 SWEP.ToxicDamage = 2
@@ -132,15 +134,7 @@ function SWEP:PrimaryAttack()
 	if SERVER then
 		if sameteam then
 			curtgt:GiveStatus("healdartboost").DieTime = CurTime() + 5
-			local oldhealth = curtgt:Health()
-			local newhealth = math.min(oldhealth+self.Primary.Damage, curtgt:GetMaxHealth())
-			if oldhealth ~= newhealth then
-				curtgt:SetHealth(newhealth)
-				if owner:IsPlayer() then
-					gamemode.Call("PlayerHealedTeamMember", owner, curtgt, newhealth - oldhealth, self)
-				end
-			end
-				
+			curtgt:HealHealth(self.Primary.Damage,owner,self)
 		else
 			local invuln = curtgt:GetStatus("spawnbuff")
 			if not (invuln and invuln:IsValid()) then
@@ -178,7 +172,7 @@ function SWEP:GetClosestTarget()
 		local centre = ent:WorldSpaceCenter()
 		local sqrdst = mypos:DistToSqr(centre)
 		if sqrdst > self.HealRangeSqr then continue end
-		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.85 then continue end
+		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.85 and not (sqrdst < self.HealRangeSqrMin) then continue end
 		if (minimum == nil or sqrdst < minimum) then
 			minimum = sqrdst
 			selectedTarget = ent
@@ -198,7 +192,7 @@ function SWEP:CheckValidTarget(tgt)
 
 	local centre = tgt:WorldSpaceCenter()
 	local sqrdst = mypos:DistToSqr(centre)
-	if sqrdst > self.HealRangeSqr or (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre) then return false end
+	if sqrdst > self.HealRangeSqr or (not (sqrdst < self.HealRangeSqrMin) and ((centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre))) then return false end
 
 	return true
 end

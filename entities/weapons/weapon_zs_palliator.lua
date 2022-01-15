@@ -72,9 +72,9 @@ SWEP.Recoil = 0.1
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 1
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.3
+SWEP.Primary.Delay = 0.05
 
 
 SWEP.WalkSpeed = SPEED_SLOWEST
@@ -87,6 +87,7 @@ SWEP.EndPos = nil
 SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 150
 SWEP.HealRangeSqr = 147456
+SWEP.HealRangeSqrMin = 2048
 SWEP.LastUpdate = 0
 SWEP.PossibleTargets = {}
 sound.Add( {
@@ -151,7 +152,7 @@ function SWEP:GetClosestTarget()
 		local centre = ent:WorldSpaceCenter()
 		local sqrdst = mypos:DistToSqr(centre)
 		if sqrdst > self.HealRangeSqr then continue end
-		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.9 then continue end
+		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.9 and not (sqrdst < self.HealRangeSqrMin) then continue end
 		if (minimum == nil or sqrdst < minimum) then
 			minimum = sqrdst
 			selectedTarget = ent
@@ -170,7 +171,7 @@ function SWEP:CheckValidTarget(tgt)
 
 	local centre = tgt:WorldSpaceCenter()
 	local sqrdst = mypos:DistToSqr(centre)
-	if sqrdst > self.HealRangeSqr or (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre) then return false end
+	if sqrdst > self.HealRangeSqr or (not (sqrdst < self.HealRangeSqrMin) and ((centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre))) then return false end
 
 	return true
 end
@@ -206,24 +207,20 @@ function SWEP:Think()
 				if SERVER then
 					local magnitude = math.min(self.Primary.Damage,self:Ammo1())
 					if sameteam then
-						curtgt:GiveStatus("healdartboost").DieTime = CurTime() + 1
-						local oldhealth = curtgt:Health()
-						local newhealth = math.min(oldhealth + magnitude, curtgt:GetMaxHealth())
-						magnitude = newhealth - oldhealth
-						if oldhealth ~= newhealth then
-							curtgt:SetHealth(newhealth)
-							if owner:IsPlayer() then
-								gamemode.Call("PlayerHealedTeamMember", owner, curtgt, newhealth - oldhealth, self)
-							end
+						local boost = curtgt:GetStatus("healdartboost")
+						if !(boost and boost:IsValid()) then
+							boost = curtgt:GiveStatus("healdartboost")
+							boost.DieTime = CurTime() + 1
 						end
+						if curtgt:Health() >= curtgt:GetMaxHealth() then
+							magnitude = 0
+						end
+						curtgt:HealHealth(magnitude,owner,self)
 					else
 						local invuln = curtgt:GetStatus("spawnbuff")
 						if not (invuln and invuln:IsValid()) then
 							curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
 							curtgt:AddLegDamage(magnitude*2)
-							if math.random(4) == 4 then
-								curtgt:GiveStatus("stunned", 0.2)
-							end
 						else
 							magnitude = 0
 						end

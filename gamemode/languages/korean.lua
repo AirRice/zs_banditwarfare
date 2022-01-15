@@ -189,7 +189,7 @@ LANGUAGE.weapon_peashooterpistol_desc				= "3점사를 하도록 설정된 권�
 LANGUAGE.weapon_leadpipe_name						= "납 파이프"
 LANGUAGE.weapon_leadpipe_desc						= "상당히 무거운 둔기이다. 이 무기에 타격당하면 큰 충격을 받아 시야가 심하게 흔들리게 된다."
 LANGUAGE.weapon_palliator_name						= "'팔리에이터' 의료 빔"
-LANGUAGE.weapon_palliator_desc						= "의료 에너지를 입자선의 형태로 방출하며, 설정한 목표 한 명을 향해 자동으로 입자선이 유도된다. 이 입자선은 설정된 아군을 치료하거나 적군을 느려지게 하면서 피해를 입힐 수 있다. 25% 확률로 공격받는 적을 잠시동안 행동불능 상태로 만들 수도 있다.\n주 공격: 목표물 고정\n보조 공격: 목표 해제"
+LANGUAGE.weapon_palliator_desc						= "의료 에너지를 입자선의 형태로 방출하며, 설정한 목표 한 명을 향해 자동으로 입자선이 유도된다. 이 입자선은 설정된 아군을 치료하거나 적군을 느려지게 하면서 피해를 입힐 수 있다.\n주 공격: 목표물 고정\n보조 공격: 목표 해제"
 LANGUAGE.weapon_palliator_attacking_x				= "%s 공격중"
 LANGUAGE.weapon_palliator_healing_x					= "%s 치료중"
 
@@ -232,7 +232,7 @@ LANGUAGE.weapon_smokegrenade_desc					= "2초 후 폭발해 시야를 가리는 
 LANGUAGE.weapon_stubber_name						= "'스터버' 소총"
 LANGUAGE.weapon_stubber_desc						= "조준경이 달려 있는 볼트 액션 소총이다. 느린 재장전과 연사 속도 때문에 신중한 조준을 필요로 한다."
 LANGUAGE.weapon_stunstick_name						= "전기충격기"
-LANGUAGE.weapon_stunstick_desc						= "다른 근접 무기보다는 약하지만, 상대를 잠시동안 행동불능 상태로 만들 수 있다."
+LANGUAGE.weapon_stunstick_desc						= "다른 근접 무기보다는 약하지만, 상대를 잠시동안 행동 불능 상태로 만들 수 있다."
 LANGUAGE.weapon_sweeper_name						= "'스위퍼' 산탄총"
 LANGUAGE.weapon_sweeper_desc						= "강력한 펌프식 산탄총이다. 근거리에서 최대의 효과를 낼 수 있다."
 LANGUAGE.weapon_combatknife_name					= "군용 나이프"

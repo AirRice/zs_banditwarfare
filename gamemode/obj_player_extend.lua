@@ -136,6 +136,18 @@ function meta:GetBleedDamage()
 	return self.Bleed and self.Bleed:IsValid() and self.Bleed:GetDamage() or 0
 end
 
+function meta:HealHealth(toheal,healer, wep)
+	local oldhealth = self:Health()
+	local newhealth = math.min(self:GetMaxHealth(),oldhealth + toheal)
+	self:SetHealth(newhealth)
+	if healer:IsPlayer() and healer~=self and newhealth != oldhealth and healer:Team() == self:Team() then
+		if SERVER and toheal > 5 then
+			self:PurgeStatusEffects()
+		end
+		gamemode.Call("PlayerHealedTeamMember", healer, self, newhealth - oldhealth, wep)
+	end
+end
+
 function meta:CallWeaponFunction(funcname, ...)
 	local wep = self:GetActiveWeapon()
 	if wep:IsValid() and wep[funcname] then

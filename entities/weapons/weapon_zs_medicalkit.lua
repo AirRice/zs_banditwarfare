@@ -70,32 +70,17 @@ function SWEP:PrimaryAttack()
 		local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Primary.Heal * multiplier, maxhealth - health)))
 		local totake = math.ceil(toheal / multiplier)
 		if toheal > 0 then
-			local tox = ent:GetStatus("tox")
-			if (tox and tox:IsValid()) then
-				tox:SetTime(1)
-			end
-			local bleed = ent:GetStatus("bleed")
-			if (bleed and bleed:IsValid()) then
-				bleed:SetDamage(1)
-			end
-			for _, hook in pairs(ents.FindInSphere(ent:GetPos(), 60 )) do
-				if hook:GetClass() == "prop_meathook" and hook:GetParent() == ent then
-					hook.TicksLeft = 0
-				end
-			end
 			self:SetNextCharge(CurTime() + self.Primary.Delay * math.min(1, toheal / self.Primary.Heal))
 			owner.NextMedKitUse = self:GetNextCharge()
 
 			self:TakeCombinedPrimaryAmmo(totake)
 
-			ent:SetHealth(health + toheal)
+			ent:HealHealth(toheal,owner,self)
 			self:EmitSound("items/medshot4.wav")
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 
 			owner:DoAttackEvent()
 			self.IdleAnimation = CurTime() + self:SequenceDuration()
-
-			gamemode.Call("PlayerHealedTeamMember", owner, ent, toheal, self)
 		end
 	end
 end
@@ -109,25 +94,12 @@ function SWEP:SecondaryAttack()
 	local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Secondary.Heal * multiplier, maxhealth - health)))
 	local totake = math.ceil(toheal / multiplier)
 	if toheal > 0 then
-		local tox = owner:GetStatus("tox")
-		if (tox and tox:IsValid()) then
-			tox:SetTime(1)
-		end
-		local bleed = owner:GetStatus("bleed")
-		if (bleed and bleed:IsValid()) then
-			bleed:SetDamage(1)
-		end
-		for _, hook in pairs(ents.FindInSphere(owner:GetPos(), 60 )) do
-			if hook:GetClass() == "prop_meathook" and hook:GetParent() == owner then
-				hook.TicksLeft = 0
-			end
-		end
 		self:SetNextCharge(CurTime() + self.Secondary.Delay * math.min(1, toheal / self.Secondary.Heal))
 		owner.NextMedKitUse = self:GetNextCharge()
 
 		self:TakeCombinedPrimaryAmmo(totake)
 
-		owner:SetHealth(health + toheal)
+		owner:HealHealth(toheal,owner,self)
 		self:EmitSound("items/smallmedkit1.wav")
 
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)

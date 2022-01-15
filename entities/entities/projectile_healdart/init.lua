@@ -75,28 +75,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		if eHitEntity:IsPlayer() and (eHitEntity:Team() == TEAM_HUMANS or eHitEntity:Team() == TEAM_BANDIT) then
 			if eHitEntity:Team() == team then
 				eHitEntity:GiveStatus("healdartboost").DieTime = CurTime() + 10
-				local tox = eHitEntity:GetStatus("tox")
-				if (tox and tox:IsValid()) then
-					tox:SetTime(0)
-				end
-				local bleed = eHitEntity:GetStatus("bleed")
-				if (bleed and bleed:IsValid()) then
-					bleed:SetDamage(1)
-				end
-				for _, hook in pairs(ents.FindInSphere(self:GetPos(), 60 )) do
-					if hook:GetClass() == "prop_meathook" and hook:GetParent() == eHitEntity then
-						hook.TicksLeft = 0
-					end
-				end
-				local oldhealth = eHitEntity:Health()
-				local newhealth = math.min(oldhealth + self.Heal, eHitEntity:GetMaxHealth())
-				if oldhealth ~= newhealth then
-					eHitEntity:SetHealth(newhealth)
-
-					if owner:IsPlayer() then
-						gamemode.Call("PlayerHealedTeamMember", owner, eHitEntity, newhealth - oldhealth, self)
-					end
-				end
+				eHitEntity:HealHealth(self.Heal,owner,self)
 			else	
 				local tox = eHitEntity:GetStatus("tox")
 				if (tox and tox:IsValid()) then

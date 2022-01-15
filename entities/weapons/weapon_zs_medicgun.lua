@@ -39,6 +39,7 @@ SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
 SWEP.Primary.Delay = 0.2
 
+SWEP.Primary.Damage = 10
 SWEP.Primary.ClipSize = 60
 SWEP.Primary.DefaultClip = 180
 SWEP.Primary.Ammo = "Battery"

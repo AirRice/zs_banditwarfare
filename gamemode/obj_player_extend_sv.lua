@@ -349,11 +349,18 @@ function meta:RemoveAllStatus(bSilent, bInstant)
 end
 
 function meta:PurgeStatusEffects()
+	for _, hook in pairs(ents.FindByClass("prop_meathook")) do
+		if hook:GetClass() == "prop_meathook" and hook:GetParent() == self then
+			hook.TicksLeft = 0
+		end
+	end
 	self:RemoveStatus("confusion", false, true)
 	self:RemoveStatus("ghoultouch", false, true)
 	self:RemoveStatus("bleed", false, true)
 	self:RemoveStatus("poisonrecovery", false, true)
 	self:RemoveStatus("tox", false, true)
+	self:RemoveStatus("stunned", false, true)
+	self:RemoveStatus("knockdown", false, true)
 end
 
 function meta:RemoveStatus(sType, bSilent, bInstant, sExclude)

@@ -121,14 +121,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				if tr.HitGroup == HITGROUP_HEAD then
 					toheal = toheal * 1.5
 				end
-				local oldhealth = ent:Health()
-				local newhealth = math.min(oldhealth + toheal, ent:GetMaxHealth())
-				if oldhealth ~= newhealth then
-					ent:SetHealth(newhealth)
-					if shooter:IsPlayer() then
-						gamemode.Call("PlayerHealedTeamMember", shooter, ent, newhealth - oldhealth, self)
-					end
-				end
+				ent:HealHealth(toheal,shooter,wep)
 			end
 		end
 	end	
