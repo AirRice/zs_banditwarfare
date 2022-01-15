@@ -37,10 +37,6 @@ function ENT:Think()
 		if ent:IsValid() then
 			ent:Fire("break", "", 0)
 			ent:Fire("kill", "", 0.01)
-
-			local effectdata = EffectData()
-				effectdata:SetOrigin(ent:WorldSpaceCenter())
-			util.Effect("Explosion", effectdata)
 		end
 
 		self:Remove()

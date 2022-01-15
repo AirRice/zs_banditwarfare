@@ -193,10 +193,6 @@ function meta:FloatingScore(victimorpos, effectname, frags, flags)
 	end
 end
 
-function meta:MarkAsBadProfile()
-	self.NoProfiling = true
-end
-
 function meta:CenterNotify(...)
 	net.Start("zs_centernotify")
 		net.WriteTable({...})
@@ -285,12 +281,9 @@ local function RemoveSkyCade(groundent, timername)
 
 	for _, pl in pairs(player.GetAll()) do
 		if pl:Alive() and pl:GetGroundEntity() == groundent then
-			groundent:TakeDamage(3, groundent, groundent)
-			pl:ViewPunch(Angle(math.Rand(-25, 25), math.Rand(-25, 25), math.Rand(-25, 25)))
-			if math.random(9) == 1 then
-				groundent:EmitSound("npc/strider/creak"..math.random(4)..".wav", 65, math.random(95, 105))
-			end
-
+			groundent:TakeDamage(150, groundent, groundent)
+			pl:ViewPunch(Angle(math.Rand(-15, 15), math.Rand(-15, 15), math.Rand(-15, 15)))
+			groundent:EmitSound("physics/metal/metal_box_impact_hard"..math.random(3)..".wav", 80, 255)
 			return
 		end
 	end
@@ -310,32 +303,12 @@ function meta:PreventSkyCade()
 										endpos = start + checkoffset,
 										mins = groundent:OBBMins() * 0.85, maxs = groundent:OBBMaxs() * 0.85,
 										mask = MASK_SOLID_BRUSHONLY}).Hit then
-					self:MarkAsBadProfile()
-					timer.Create(timername, 0.25, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
+					timer.Create(timername, 0.5, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
 				end
-			end
-		elseif groundent.IsBarricadeObject then
-			local timername = "RemoveSkyCade"..tostring(groundent)
-			local start = groundent:WorldSpaceCenter()
-			if not timer.Exists(timername) and not util.TraceHull({start = start,
-									endpos = start + checkoffset,
-									mins = groundent:OBBMins() * 0.85, maxs = groundent:OBBMaxs() * 0.85,
-									mask = MASK_SOLID_BRUSHONLY}).Hit then
-				self:MarkAsBadProfile()
-				timer.Create(timername, 0.25, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
 			end
 		end
 	end
 end
-
---[[function meta:CoupleWith(plheadcrab)
-	if self:GetZombieClassTable().Headcrab == plheadcrab:GetZombieClassTable().Name then
-		local status = self:GiveStatus("headcrabcouple")
-		if status:IsValid() then
-			status:SetCouple(plheadcrab)
-		end
-	end
-end]]
 
 function meta:FixModelAngles(velocity)
 	local eye = self:EyeAngles()

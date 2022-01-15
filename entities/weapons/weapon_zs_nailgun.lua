@@ -74,7 +74,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
-	local tr = owner:CompensatedMeleeTrace(128, self.NailSize, nil, nil)
+	local tr = self.Owner:CompensatedMeleeTrace(128, self.NailSize, nil, nil)
 	if self.Owner:IsHolding() and self.Owner:AttemptNail(tr) then
 		self:ShootNormalBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 	else 

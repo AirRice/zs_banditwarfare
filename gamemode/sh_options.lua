@@ -58,7 +58,7 @@ GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler")
 GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber")
 GM:AddPointShopWeapon(0,"doublebarrel", ITEMCAT_GUNS, 15, "weapon_zs_doublebarrel")
 GM:AddPointShopWeapon(0,"jabbr", ITEMCAT_GUNS, 20, "weapon_zs_injector")
-
+GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 30, "weapon_zs_nailgun").NoClassicMode = true
 
 local item = GM:AddPointShopWeapon(1,"deagle", ITEMCAT_GUNS, 65, "weapon_zs_deagle")
 GM:AddWeaponPrerequisite(item,"btlax")
@@ -93,6 +93,7 @@ GM:AddWeaponPrerequisite(item,"crklr")
 
 local item = GM:AddPointShopWeapon(1,"inquisition", ITEMCAT_GUNS, 70, "weapon_zs_inquisition")
 GM:AddWeaponPrerequisite(item,"slngr")
+GM:AddWeaponPrerequisite(item,"nailgun")
 
 local item = GM:AddPointShopWeapon(2,"magnum", ITEMCAT_GUNS, 140, "weapon_zs_magnum")
 GM:AddWeaponPrerequisite(item,"deagle")
@@ -239,7 +240,6 @@ GM:AddPointShopWeapon(nil,"hook", ITEMCAT_MELEE, 23, "weapon_zs_hook")
 --GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
 --
 
-GM:AddPointShopWeapon(nil,"nailgun", ITEMCAT_TOOLS, 30, "weapon_zs_nailgun").NoClassicMode = true
 GM:AddPointShopWeapon(nil,"barricadekit", ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
 local item = GM:AddPointShopWeapon(nil,"empgun", ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
 item.NoClassicMode = true
@@ -276,7 +276,7 @@ GM:AddPointShopWeapon(nil,"ffemitter", ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter")
 GM:AddPointShopWeapon(nil,"pointdefence", ITEMCAT_TOOLS, 60, "weapon_zs_spotlamp").Countables = "prop_spotlamp"
 GM:AddPointShopWeapon(nil,"enemytracker", ITEMCAT_TOOLS, 15, "weapon_zs_enemyradar")
 GM:AddPointShopWeapon(nil,"medkit", ITEMCAT_TOOLS, 40, "weapon_zs_medicalkit")
-GM:AddPointShopWeapon(nil,"ammokit", ITEMCAT_TOOLS, 30, "weapon_zs_ammokit")
+GM:AddPointShopWeapon(nil,"ammokit", ITEMCAT_TOOLS, 40, "weapon_zs_ammokit")
 
 GM:AddPointShopWeapon(nil,"boardpack", ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
 

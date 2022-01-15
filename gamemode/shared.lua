@@ -276,7 +276,7 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 end
 
 function GM:CanDamageNail(ent, attacker, inflictor, damage, dmginfo)
-	return (attacker:IsPlayer() and not ent:IsSameTeam(attacker))
+	return ent == attacker or (attacker:IsPlayer() and not ent:IsSameTeam(attacker))
 end
 
 function GM:CanPlaceNail(pl, tr)
@@ -366,11 +366,6 @@ function GM:PlayerNoClip(pl, on)
 		if SERVER then
 			PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", pl:Name()))
 		end
-
-		if SERVER then
-			pl:MarkAsBadProfile()
-		end
-
 		return true
 	end
 
