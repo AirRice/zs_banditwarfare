@@ -693,15 +693,13 @@ function GM:Think()
 
 	if NextTick <= time then
 		NextTick = time + 1
-
-		local doafk = not self:GetWaveActive() and wave == 0
-
+		
 		for _, pl in ipairs(allplayers) do
 			if pl:Alive() then
-
 				if pl:WaterLevel() >= 3 and not (pl.status_drown and pl.status_drown:IsValid()) then
 					pl:GiveStatus("drown")
 				end
+				pl:PreventSkyCade()
 			end
 		end
 	end
@@ -844,9 +842,6 @@ function GM:RestartRound()
 	net.Broadcast()
 end
 GM.TiedWaves = 0
-GM.DynamicSpawning = true
-GM.CappedInfliction = 0
-GM.StartingZombie = {}
 GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
@@ -871,7 +866,6 @@ function GM:RestartLua()
 	self.CurrentTransmitterTable = {}
 	self:SetCurrentWaveWinner(nil)
 
-	self.CappedInfliction = 0
 	
 	self.PreviouslyDied = {}
 	self.PreviousTeam = {}
@@ -1234,10 +1228,6 @@ function GM:PlayerInitialSpawnRound(pl)
 	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 		timer.Simple(0.2, function() pl:Kill() end)
 	end
-end
-
-function GM:GetDynamicSpawning()
-	return self.DynamicSpawning
 end
 
 function GM:PlayerDisconnected(pl)

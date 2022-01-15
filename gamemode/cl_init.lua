@@ -305,11 +305,6 @@ end
 local currentpower = 0
 local spawngreen = 0
 
-
---[[function GM:GetDynamicSpawning()
-	return not GetGlobalBool("DynamicSpawningDisabled", false)
-end]]
-
 function GM:TrackLastDeath()
 	if MySelf:Alive() then
 		self.LastTimeAlive = CurTime()
@@ -1153,7 +1148,7 @@ function GM:_PrePlayerDraw(pl)
 				local eyepos = EyePos()
 				local dist = pl:NearestPoint(eyepos):Distance(eyepos)
 				if dist < radius then
-					local blend = math.max((dist / radius) ^ 1.4, myteam == TEAM_HUMAN and 0.04 or 0.1)
+					local blend = math.max((dist / radius) ^ 1.4, (myteam == TEAM_HUMAN or myteam == TEAM_BANDIT) and 0.04 or 0.1)
 					render.SetBlend(blend)
 					if (myteam == TEAM_HUMAN or myteam == TEAM_BANDIT) and blend < 0.4 then
 						render.ModelMaterialOverride(matWhite)
@@ -1396,7 +1391,11 @@ net.Receive("zs_insure_weapon", function(length)
 	local doMessage = net.ReadBool()
 	if doMessage then
 		local wepname = weapons.GetStored(wep).TranslateName and translate.Get(weapons.GetStored(wep).TranslateName)or wep
-		GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		if killicon.Get(wep) == killicon.Get("default") then
+			GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		else
+			GAMEMODE:CenterNotify({killicon = wep}, " ", COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		end
 	end
 end)
 net.Receive("zs_remove_insured_weapon", function(length)
@@ -1507,7 +1506,7 @@ net.Receive("zs_wavestart", function(length)
 	elseif LocalPlayer():Team() == TEAM_HUMAN then
 		surface.PlaySound(humanintros[math.random(#humanintros)])
 	else
-		surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
+		surface_PlaySound("ambient/levels/streetwar/city_battle"..math.random(6, 9)..".wav")--"ambient/creatures/town_zombie_call1.wav"
 	end
 end)
 

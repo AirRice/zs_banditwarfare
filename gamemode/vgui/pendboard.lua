@@ -36,7 +36,7 @@ function MakepEndBoard(winner)
 		heading = EasyLabel(frame, translate.Get("survivors_victory"), "ZSHUDFont", team.GetColor(TEAM_HUMAN))
 		subheading = EasyLabel(frame, translate.Get("survivors_victory_desc"), "ZSHUDFontSmaller", COLOR_WHITE)
 	elseif winner == TEAM_BANDIT then
-		surface.PlaySound("ambient/levels/streetwar/city_battle"..math.random(3, 5)..".wav")
+		surface.PlaySound("ambient/levels/streetwar/city_riot"..math.random(1, 2)..".wav")
 		heading = EasyLabel(frame, translate.Get("bandits_victory"), "ZSHUDFont", team.GetColor(TEAM_BANDIT))
 		subheading = EasyLabel(frame, translate.Get("bandits_victory_desc"), "ZSHUDFontSmaller", COLOR_WHITE)
 	else
