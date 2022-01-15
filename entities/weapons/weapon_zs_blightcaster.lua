@@ -46,8 +46,8 @@ SWEP.ShowWorldModel = false
 SWEP.ShowViewModel = false
 SWEP.Base = "weapon_zs_base"
 
-SWEP.HoldType = "rpg"
-
+SWEP.HoldType = "shotgun"
+SWEP.IronSightsHoldType = "rpg"
 SWEP.ViewModel = "models/weapons/c_rpg.mdl"
 SWEP.WorldModel = "models/weapons/w_rocket_launcher.mdl"
 SWEP.UseHands = true

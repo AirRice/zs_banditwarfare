@@ -31,8 +31,8 @@ end
 SWEP.Base = "weapon_zs_base"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
-SWEP.HoldType = "rpg"
-
+SWEP.HoldType = "shotgun"
+SWEP.IronSightsHoldType = "rpg"
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 
@@ -58,8 +58,6 @@ SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 SWEP.PukeLeft = 0
 SWEP.NextPuke = 0
-function SWEP:SecondaryAttack()
-end
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end

@@ -76,7 +76,6 @@ SWEP.AimReleaseUnit = 0.2
 SWEP.AimExpandStayDuration = 0.1
 
 SWEP.WalkSpeed = SPEED_SLOWER
-
 function SWEP:Initialize()
 	if not self:IsValid() then return end
 	self:SetWeaponHoldType(self.HoldType)

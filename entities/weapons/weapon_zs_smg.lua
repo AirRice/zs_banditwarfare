@@ -18,7 +18,7 @@ end
 SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "shotgun"
-
+SWEP.IronSightsHoldType = "smg"
 SWEP.ViewModel = "models/weapons/cstrike/c_smg_mp5.mdl"
 SWEP.WorldModel = "models/weapons/w_smg_mp5.mdl"
 SWEP.UseHands = true

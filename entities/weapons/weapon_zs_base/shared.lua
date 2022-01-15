@@ -33,7 +33,7 @@ SWEP.Secondary.Ammo = "dummy"
 SWEP.WalkSpeed = SPEED_NORMAL
 SWEP.ReloadSpeed = 1
 SWEP.HoldType = "pistol"
-SWEP.IronSightsHoldType = "ar2"
+--SWEP.IronSightsHoldType = "ar2"
 
 SWEP.IdleActivity = ACT_VM_IDLE
 
@@ -250,13 +250,17 @@ end
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)
 end
-
+SWEP.IronSightsHoldTypeTranslate = {
+	["pistol"] = "revolver",
+	["shotgun"] = "ar2",
+	["crossbow"] = "ar2",
+}
 function SWEP:SetIronsights(b)
 	self:SetDTBool(0, b)
-
-	if self.IronSightsHoldType then
+	sightsholdtype = (self.IronSightsHoldType and self.IronSightsHoldType or (self.IronSightsHoldTypeTranslate[self.HoldType] and self.IronSightsHoldTypeTranslate[self.HoldType] or nil))
+	if sightsholdtype then
 		if b then
-			self:SetWeaponHoldType(self.IronSightsHoldType)
+			self:SetWeaponHoldType(sightsholdtype)
 		else
 			self:SetWeaponHoldType(self.HoldType)
 		end

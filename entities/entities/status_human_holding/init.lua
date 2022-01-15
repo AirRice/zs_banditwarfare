@@ -66,7 +66,7 @@ function ENT:OnRemove()
 
 		owner:DrawWorldModel(true)
 
-		if owner:Alive() and owner:Team() == TEAM_HUMAN then
+		if owner:Alive() and (owner:Team() == TEAM_HUMAN or owner:Team() == TEAM_BANDIT) then
 			local wep = owner:GetActiveWeapon()
 			if wep:IsValid() then
 				wep:SendWeaponAnim(ACT_VM_DRAW)

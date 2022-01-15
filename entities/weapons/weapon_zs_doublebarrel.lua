@@ -38,7 +38,7 @@ SWEP.HoldType = "shotgun"
 
 SWEP.ViewModel = "models/weapons/c_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
-
+SWEP.UseHands = true
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
