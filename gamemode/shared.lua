@@ -162,7 +162,8 @@ function GM:ValidMenuLockOnTarget(pl, ent)
 end
 
 function GM:GetHandsModel(pl)
-	return player_manager.TranslatePlayerHands(pl:GetInfo("cl_playermodel"))
+	local playermodel = player_manager.TranslateToPlayerModelName( pl:GetModel() )
+	return player_manager.TranslatePlayerHands(playermodel)
 end
 
 function GM:GetEndRound()

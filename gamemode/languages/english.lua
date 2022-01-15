@@ -55,6 +55,7 @@ LANGUAGE.option_always_show_nail_info				= "Always show nail information"
 LANGUAGE.option_weapon_hud_style					= "Weapon HUD style"
 LANGUAGE.option_music_volume						= "Music Volume"
 LANGUAGE.option_ally_transparency_radius			= "Ally transparency radius"
+LANGUAGE.option_use_model_health_bar				= "Use Expensive Health Display"
 
 LANGUAGE.option_crosshair_color_primary				= "Crosshair Color - Primary"
 LANGUAGE.option_crosshair_color_secondary			= "Crosshair Color - Secondary"

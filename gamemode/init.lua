@@ -2577,17 +2577,8 @@ function GM:PlayerSpawn(pl)
 		pl.NoObjectPickup = nil
 		pl.DamageVulnerability = nil
 			
+		pl:SetupHands()
 
-		local oldhands = pl:GetHands()
-		if IsValid(oldhands) then
-			oldhands:Remove()
-		end
-
-		local hands = ents.Create("zs_hands")
-		if hands:IsValid() then
-			hands:DoSetup(pl)
-			hands:Spawn()
-		end
 		if self:IsClassicMode() then
 			for _, wep in pairs(pl.ClassicModeInsuredWeps) do
 				local storedwep = weapons.GetStored(wep)

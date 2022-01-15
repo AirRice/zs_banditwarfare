@@ -138,7 +138,14 @@ function MakepOptions()
 	check:SetConVar("zsb_alwaysshownails")
 	check:SizeToContents()
 	list:AddItem(check)
-
+	
+	local check = vgui.Create("DCheckBoxLabel", Window)
+	check:SetText(translate.Get("option_use_model_health_bar"))
+	check:SetFont("ZSHUDFontSmallerNS")
+	check:SetConVar("zsb_modelhealthbar")
+	check:SizeToContents()
+	list:AddItem(check)
+	
 	list:AddItem(EasyLabel(Window, translate.Get("option_weapon_hud_style"), "ZSHUDFontSmallerNS", color_white))
 	local dropdown = vgui.Create("DComboBox", Window)
 	dropdown:SetMouseInputEnabled(true)

@@ -49,6 +49,7 @@ LANGUAGE.option_always_show_nail_info				= "못 체력 항상 표시"
 LANGUAGE.option_weapon_hud_style					= "무기 HUD 스타일"
 LANGUAGE.option_music_volume						= "음악 볼륨"
 LANGUAGE.option_ally_transparency_radius			= "동료 투명도 적용 범위"
+LANGUAGE.option_use_model_health_bar				= "고사양 체력 표시 사용"
 
 LANGUAGE.option_crosshair_color_primary				= "크로스헤어 색깔 - 기본"
 LANGUAGE.option_crosshair_color_secondary			= "크로스헤어 색깔 - 보조"

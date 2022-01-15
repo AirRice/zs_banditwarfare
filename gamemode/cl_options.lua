@@ -86,5 +86,10 @@ cvars.AddChangeCallback("zsb_ragdolleyes", function(cvar, oldvalue, newvalue)
 	GAMEMODE.DontDoRagdollEyes = tonumber(newvalue) == 1
 end)
 
+GM.UseModelHealthBar = CreateClientConVar("zsb_modelhealthbar", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_modelhealthbar", function(cvar, oldvalue, newvalue)
+	GAMEMODE.UseModelHealthBar = tonumber(newvalue) == 1
+end)
+
 CreateConVar( "cl_playercolor", "0.24 0.34 0.41", { FCVAR_ARCHIVE, FCVAR_USERINFO }, "The value is a Vector - so between 0-1 - not between 0-255" )
 CreateConVar( "cl_weaponcolor", "0.30 1.80 2.10", { FCVAR_ARCHIVE, FCVAR_USERINFO }, "The value is a Vector - so between 0-1 - not between 0-255" )

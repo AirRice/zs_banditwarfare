@@ -69,6 +69,18 @@ function meta:FakeDeath(sequenceid, modelscale, length)
 	return ent
 end
 
+function meta:SetupHands( ply )
+	local oldhands = self:GetHands()
+	if IsValid(oldhands) then
+		oldhands:Remove()
+	end
+	local hands = ents.Create("zs_hands")
+	if hands:IsValid() then
+		hands:DoSetup(self, ply)
+		hands:Spawn()
+	end
+end
+
 function meta:RefreshPlayerModel()
 	local desiredname = self:GetInfo("cl_playermodel")
 	local randommodel = nil

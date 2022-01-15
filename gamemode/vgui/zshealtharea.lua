@@ -1,15 +1,14 @@
 local PANEL = {}
-
 local colHealth = Color(0, 0, 0, 240)
 local function ContentsPaint(self)
 	local lp = LocalPlayer()
 	if lp:IsValid() then
 		local health = math.max(lp:Health(), 0)
 		local healthperc = math.Clamp(health / lp:GetMaxHealthEx(), 0, 1)
-
 		colHealth.r = (1 - healthperc) * 180
 		colHealth.g = healthperc * 180
-
+		colHealth.b = 0		
+		
 		draw.SimpleTextBlurry(health, "ZSHUDFont", 8, self:GetTall() - 8, colHealth, TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
 	end
 end
@@ -28,7 +27,7 @@ function PANEL:Init()
 	local spawnbuffstatus = vgui.Create("ZSHealthStatus", contents)
 	spawnbuffstatus:SetTall(20)
 	spawnbuffstatus:SetAlpha(200)
-	spawnbuffstatus:SetColor(Color(200, 200, 200))
+	spawnbuffstatus:SetColor(Color(150, 150, 150))
 	spawnbuffstatus:SetTranslateMemberName("statusname_invuln")
 	spawnbuffstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
@@ -72,13 +71,13 @@ function PANEL:Init()
 
 		return 0
 	end
-	poisonstatus.MemberMaxValue = 50
+	poisonstatus.MemberMaxValue = 75
 	poisonstatus:Dock(TOP)
 
 	local toxstatus = vgui.Create("ZSHealthStatus", contents)
 	toxstatus:SetTall(20)
 	toxstatus:SetAlpha(200)
-	toxstatus:SetColor(Color(50, 100, 0))
+	toxstatus:SetColor(Color(50, 190, 0))
 	toxstatus:SetTranslateMemberName("statusname_toxic")
 	toxstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()
@@ -90,7 +89,7 @@ function PANEL:Init()
 		end
 		return 0
 	end
-	toxstatus.MemberMaxValue = 20
+	toxstatus.MemberMaxValue = 50
 	toxstatus:Dock(TOP)
 	
 	local bleedstatus = vgui.Create("ZSHealthStatus", contents)
@@ -117,13 +116,48 @@ function PANEL:PerformLayout()
 
 	self:SetSize(screenscale * 350, screenscale * 156)
 
-	self.HealthModel:SetWide(screenscale * 128)
+	self.HealthModel:SetWide(screenscale * 120)
 
 	self:AlignLeft(screenscale * 24)
 	self:AlignBottom(screenscale * 24)
 end
-
+local matGlow = Material("sprites/glow04_noz")
+local texSideEdge = surface.GetTextureID("gui/gradient")
 function PANEL:Paint()
+	local lp = LocalPlayer()
+	if lp:IsValid() and !GAMEMODE.UseModelHealthBar then
+		local health = math.max(lp:Health(), 0)
+		local healthperc = math.Clamp(health / lp:GetMaxHealthEx(), 0, 1)
+		local barghost = lp:IsBarricadeGhosting()
+		colHealth.r = (1 - healthperc) * 180
+		colHealth.g = healthperc * 180
+		colHealth.b = 0		
+		local screenscale = BetterScreenScale()		
+		local wid, hei = 24 * screenscale, 156 * screenscale
+
+		local x = (self.HealthModel:GetWide() - wid - 16)
+
+		local subhei = healthperc * hei
+		if barghost then
+			surface.SetDrawColor(60, 60, 255, 255)
+			surface.DrawRect(x-5, 0, wid+10, hei)		
+		end
+		surface.SetDrawColor(0, 0, 0, 150)
+		surface.DrawRect(x ,0, wid, hei)
+
+		surface.SetDrawColor(colHealth.r * 0.6, colHealth.g * 0.6, colHealth.b, 160)
+		surface.SetTexture(texSideEdge)
+		surface.DrawTexturedRect(x + 2, 2+(hei-subhei), wid - 4, subhei - 4)
+		surface.SetDrawColor(colHealth.r * 0.6, colHealth.g * 0.6, colHealth.b, 230)
+		surface.DrawRect(x + 2, 2+(hei-subhei), wid - 4, subhei - 4)
+
+		surface.SetMaterial(matGlow)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(x + 1 - wid/2 , hei-subhei+1, wid*2, 4)
+		
+		surface.SetDrawColor(60, 60, 60, 240)
+		surface.DrawOutlinedRect(x-1, -1, wid+2, hei+2,3)
+	end
 end
 
 vgui.Register("ZSHealthArea", PANEL, "Panel")
@@ -165,7 +199,7 @@ end
 
 function PANEL:Think()
 	local lp = LocalPlayer()
-	if lp:IsValid() then
+	if lp:IsValid() and GAMEMODE.UseModelHealthBar then
 		self.Health = math.Clamp(lp:Health() / lp:GetMaxHealthEx(), 0, 1)
 		self.BarricadeGhosting = math.Approach(self.BarricadeGhosting, lp:IsBarricadeGhosting() and 1 or 0, FrameTime() * 5)
 
@@ -222,12 +256,11 @@ function PANEL:OnRemove()
 end
 
 local matWhite = Material("models/debug/debugwhite")
-local matGlow = Material("sprites/glow04_noz")
 local matShadow = CreateMaterial("zshealthhudshadow", "UnlitGeneric", {["$basetexture"] = "decals/simpleshadow", ["$vertexalpha"] = "1", ["$vertexcolor"] = "1"})
 local colShadow = Color(20, 20, 20, 230)
 function PANEL:Paint()
 	local ent = self.OverrideEntity or self.Entity
-	if not ent or not ent:IsValid() then return end
+	if not ent or not ent:IsValid() or !GAMEMODE.UseModelHealthBar then return end
 
 	local lp = LocalPlayer()
 	if not lp:IsValid() then return end
@@ -357,10 +390,10 @@ function PANEL:Paint()
 
 	local t1 = math.ceil(value)
 	local membername = translate.Get(self:GetTranslateMemberName())
-	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(t1, "ZSHUDFontTinyNS", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(membername, "ZSHUDFontTinyNS", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-	draw.SimpleText(membername, "ZSHUDFontTinyNS", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(t1, "DefaultFontLarge", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(t1, "DefaultFontLarge", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(membername, "DefaultFontLarge", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(membername, "DefaultFontLarge", 4, h / 2, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 vgui.Register("ZSHealthStatus", PANEL, "Panel")
