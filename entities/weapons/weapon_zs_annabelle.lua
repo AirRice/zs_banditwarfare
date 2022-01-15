@@ -18,7 +18,7 @@ SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "ar2"
 
-SWEP.ViewModel = "models/weapons/v_annabelle.mdl"
+SWEP.ViewModel = "models/weapons/c_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
 
 SWEP.CSMuzzleFlashes = false
