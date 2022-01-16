@@ -1,6 +1,6 @@
 # ZS:BANDIT WARFARE
 
-Mod by  Jooho 'air rice' Lee
+Mod by  Joo-ho 'air rice' Lee
 ### Additional credits:
 | Contribution | Author |
 |--|--|
