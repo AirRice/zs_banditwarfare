@@ -601,13 +601,8 @@ LANGUAGE.help_cont_keys					=
   </tr>
 </table>
 <br>
-<<<<<<< HEAD:gamemodes/zs_banditwarfare/gamemode/languages/english.lua
-<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with 'Reload/Alternate Fire' key (R and Right Mouse respectively) and finally placed with the 'Attack' key (Default: Left Mouse Button).</li> 
-<li>Press and hold 'run' key (Default: Shift) to pack them back up for later.</li>
-=======
 <ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with Reload/Alternate Fire (Default: R and Right Mouse respectively) and finally placed with the "Attack" key (Default: Left Mouse Button).</li> 
 <li>Press and hold Run (Default: Shift) to pack these placeables back up for later.</li>
->>>>>>> upstream/master:gamemode/languages/english.lua
 <li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default: E).</li>
 <li>Press 'gmod_undo' (Default: Z) to enter phase mode for a while where you can phase through friendly barricaded props. "Suit Zoom" will let you indefinitely hold phase mode, but it is not bound by default and must be manually set to a key in your options menu.</li>
 </ul>
