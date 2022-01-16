@@ -463,7 +463,7 @@ LANGUAGE.empty										= "EMPTY"
 LANGUAGE.manual_control								= "MANUAL OVERRIDE"
 
 LANGUAGE.credits_window_title                       = "ZS: BW Credits"
-LANGUAGE.credit_airrice                             = "Jooho \"air rice\" Lee"
+LANGUAGE.credit_airrice                             = "Joo-ho \"air rice\" Lee"
 LANGUAGE.credit_airrice_desc                        = "Bandit Warfare Programmer"
 LANGUAGE.credit_jetboom                             = "William \"JetBoom\" Moodhe"
 LANGUAGE.credit_jetboom_desc                        = "Zombie Survival Creator / Programmer"

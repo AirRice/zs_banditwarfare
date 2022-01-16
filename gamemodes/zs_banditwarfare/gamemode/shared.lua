@@ -1,5 +1,5 @@
 GM.Name		=	"Zombie Survival:Bandit Warfare"
-GM.Author	=	"Jooho \"air rice\" Lee"
+GM.Author	=	"Joo-ho \"air rice\" Lee"
 GM.Email	=	"jpumph2@gmail.com"
 GM.Website	=	"https://github.com/AirRice/zs_banditwarfare/"
 
