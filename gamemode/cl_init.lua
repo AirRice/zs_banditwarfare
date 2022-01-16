@@ -1238,15 +1238,15 @@ function GM:EndRound(winner, nextmap)
 
 	local snd = nil
 	if winner == TEAM_BANDIT then
-		snd = "sound/music/bandit/music_banditwin_vrts.ogg"
+		snd = self.BanditWinSound
 	elseif winner == TEAM_HUMANS then
-		snd = "sound/music/bandit/music_humanwin_vrts.ogg"
+		snd = self.HumanWinSound
 	else
-		snd = "sound/music/bandit/music_lose.ogg"
+		snd = self.AllLoseSound
 	end
 	if snd then
 		timer.Simple(0.5, function()
- 			sound.PlayFile(snd,"noplay",function(channel, errId, errName)
+ 			sound.PlayFile("sound/"..snd,"noplay",function(channel, errId, errName)
  				if (!errId and IsValid(channel)) then
  					GAMEMODE.BeatsSoundChannel = channel
  					GAMEMODE.BeatsSoundChannel:SetVolume(GAMEMODE.BeatsVolume)

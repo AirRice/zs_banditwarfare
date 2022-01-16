@@ -220,7 +220,7 @@ function GM:AddResources()
 
 	resource.AddFile("sound/music/bandit/lasthuman.ogg")
 	resource.AddFile("sound/music/bandit/music_humanwin_vrts.ogg")
-	resource.AddFile("sound/music/bandit/music_banditwin_vrts.ogg")
+	resource.AddFile("sound/music/bandit/music_banditwin_vrts_2.ogg")
 	resource.AddFile("sound/music/bandit/music_lose.ogg")
 end
 
