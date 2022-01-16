@@ -47,7 +47,7 @@ LANGUAGE.option_always_show_nail_info				= "Всегда показывать и
 LANGUAGE.option_weapon_hud_style					= "Стиль интерфейса оружия"
 LANGUAGE.option_music_volume						= "Громкость музыки"
 LANGUAGE.option_ally_transparency_radius			= "Радиус прозрачности союзников"
-LANGUAGE.option_use_model_health_bar                = "Использовать затратное отображение здоровья"
+LANGUAGE.option_use_model_health_bar                = "Использовать 3D-отображение здоровья"
 
 LANGUAGE.option_crosshair_color_primary				= "Цвет прицела - Основной"
 LANGUAGE.option_crosshair_color_secondary			= "Цвет прицела - Дополнительный"
