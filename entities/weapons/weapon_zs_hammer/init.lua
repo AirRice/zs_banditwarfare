@@ -6,12 +6,12 @@ include("shared.lua")
 function SWEP:Reload()
 	if CurTime() < self:GetNextPrimaryFire() then return end
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if owner:GetBarricadeGhosting() then return end
 
 	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)
 	local trent = tr.Entity
-	if not trent:IsValid() or not trent:IsNailed() or not trent:IsSameTeam(self.Owner) then return end
+	if not trent:IsValid() or not trent:IsNailed() or not trent:IsSameTeam(self:GetOwner()) then return end
 	
 	local ent
 	local dist
@@ -41,7 +41,7 @@ function SWEP:Reload()
 
 	owner:EmitSound("weapons/melee/crowbar/crowbar_hit-"..math.random(4)..".ogg")
 
-	ent:GetParent():RemoveNail(ent, nil, self.Owner)
+	ent:GetParent():RemoveNail(ent, nil, self:GetOwner())
 
 	if nailowner and nailowner:IsValid() and nailowner:IsPlayer() and owner:IsValid() and owner:IsPlayer() and nailowner ~= owner and nailowner:Team() == owner:Team() then
 
@@ -57,15 +57,15 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() then
-		if hitent.HitByHammer and hitent:HitByHammer(self, self.Owner, tr) then
+		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr) then
 			return
 		end
-		if hitent.HitByWrench and hitent:HitByWrench(self, self.Owner, tr) then
+		if hitent.HitByWrench and hitent:HitByWrench(self, self:GetOwner(), tr) then
 			return
 		end
 		local didrepair = false
-		local healstrength = GAMEMODE.NailHealthPerRepair * (self.Owner.HumanRepairMultiplier or 1) * self.HealStrength
-		if hitent:IsNailed() and hitent:IsSameTeam(self.Owner) then
+		local healstrength = GAMEMODE.NailHealthPerRepair * (self:GetOwner().HumanRepairMultiplier or 1) * self.HealStrength
+		if hitent:IsNailed() and hitent:IsSameTeam(self:GetOwner()) then
 			local oldhealth = hitent:GetBarricadeHealth()
 			if oldhealth <= 0 or oldhealth >= hitent:GetMaxBarricadeHealth() or hitent:GetBarricadeRepairs() <= 0 then return end
 
@@ -73,24 +73,24 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			local healed = hitent:GetBarricadeHealth() - oldhealth
 			hitent:SetBarricadeRepairs(math.max(hitent:GetBarricadeRepairs() - healed, 0))
 			self:PlayRepairSound(hitent)
-			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed, self)
+			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, healed, self)
 			didrepair = true
-		elseif hitent:GetClass() == "prop_gunturret" and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() and hitent:GetObjectHealth() >= hitent:GetMaxObjectHealth() then 
+		elseif hitent:GetClass() == "prop_gunturret" and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() and hitent:GetObjectHealth() >= hitent:GetMaxObjectHealth() then 
 			local curammo = hitent:GetAmmo()
 			hitent:SetAmmo(curammo + 40)
 			hitent:EmitSound("npc/turret_floor/click1.wav")
-			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, 20, self)
+			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, 20, self)
 		elseif hitent.GetObjectHealth and 
-		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self.Owner:Team() or 
-		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self.Owner:Team()) then
+		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() or 
+		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self:GetOwner():Team()) then
 			local oldhealth = hitent:GetObjectHealth()
 			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 1 then return end
 			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength/2))
 			local healed = hitent:GetObjectHealth() - oldhealth
 			self:PlayRepairSound(hitent)
-			gamemode.Call("PlayerRepairedObject", self.Owner, hitent, healed / 2, self)
+			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, healed / 2, self)
 			didrepair = true
-		elseif hitent:GetClass() == "prop_obj_transmitter" and hitent:GetTransmitterTeam() == self.Owner:Team() and not hitent:GetCanCommunicate() then
+		elseif hitent:GetClass() == "prop_obj_transmitter" and hitent:GetTransmitterTeam() == self:GetOwner():Team() and not hitent:GetCanCommunicate() then
 			hitent:SetTransmitterNextRestart(hitent:GetTransmitterNextRestart() - 3)
 			didrepair = true
 		end
@@ -106,12 +106,12 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetPrimaryAmmoCount() <= 0 or CurTime() < self:GetNextPrimaryFire() or self.Owner:GetBarricadeGhosting() then return end
+	if self:GetPrimaryAmmoCount() <= 0 or CurTime() < self:GetNextPrimaryFire() or self:GetOwner():GetBarricadeGhosting() then return end
 	if GAMEMODE:IsClassicMode() then
 		owner:PrintTranslatedMessage(HUD_PRINTCENTER, "cant_do_that_in_classic_mode")
 		return
 	end
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	local tr = owner:CompensatedMeleeTrace(64, self.MeleeSize, nil, nil)
 	if owner:AttemptNail(tr,true) then
 		self:SendWeaponAnim(self.Alternate and ACT_VM_HITCENTER or ACT_VM_MISSCENTER)

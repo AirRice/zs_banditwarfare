@@ -8,7 +8,7 @@ SWEP.Slot = 4
 SWEP.SlotPos = 0
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	return true
 end

@@ -56,12 +56,12 @@ function SWEP:PrimaryAttack()
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots * clip, self:GetCone())
 		local kotime = 0.2+math.Clamp(clip-1,0,3)*0.5
 		self:TakePrimaryAmmo(clip)
-		self.Owner:ViewPunch(clip * 0.5 * self.Primary.Recoil * Angle(math.Rand(-0.1, -0.1), math.Rand(-0.1, 0.1), 0))
-		if self.Owner and self.Owner:IsPlayer() and self.Owner:Alive() then 	
-			self.Owner:KnockDown(kotime) 
+		self:GetOwner():ViewPunch(clip * 0.5 * self.Primary.Recoil * Angle(math.Rand(-0.1, -0.1), math.Rand(-0.1, 0.1), 0))
+		if self:GetOwner() and self:GetOwner():IsPlayer() and self:GetOwner():Alive() then 	
+			self:GetOwner():KnockDown(kotime) 
 		end
-		self.Owner:SetGroundEntity(NULL)
-		self.Owner:SetVelocity(-190 * clip * self.Owner:GetAimVector())
+		self:GetOwner():SetGroundEntity(NULL)
+		self:GetOwner():SetVelocity(-190 * clip * self:GetOwner():GetAimVector())
 
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 	end
@@ -91,9 +91,6 @@ end
 function SWEP:Think()
 	if self:GetReloadTimer() > 0 and CurTime() >= self:GetReloadTimer() then
 		self:DoReload()
-	end
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
 	end
 	if self.BaseClass.Think then
 		self.BaseClass.Think(self)

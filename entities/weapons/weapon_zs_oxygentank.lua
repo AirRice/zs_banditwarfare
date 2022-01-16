@@ -66,7 +66,7 @@ function SWEP:Deploy()
 end
 
 function SWEP:SpawnTank()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsValid() then return end
 
 	for _, ent in pairs(ents.FindByClass("status_oxygentank")) do

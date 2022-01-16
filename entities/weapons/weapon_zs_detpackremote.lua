@@ -45,12 +45,12 @@ end
 if SERVER then
 function SWEP:Think()
 	for _, ent in pairs(ents.FindByClass("prop_detpack")) do
-		if ent:GetOwner() == self.Owner then
+		if ent:GetOwner() == self:GetOwner() then
 			return
 		end
 	end
 
-	self.Owner:StripWeapon(self:GetClass())
+	self:GetOwner():StripWeapon(self:GetClass())
 end
 end
 
@@ -61,7 +61,7 @@ function SWEP:PrimaryAttack()
 		if CLIENT then return end
 
 		for _, ent in pairs(ents.FindByClass("prop_detpack")) do
-			if ent:GetOwner() == self.Owner and ent:GetExplodeTime() == 0 then
+			if ent:GetOwner() == self:GetOwner() and ent:GetExplodeTime() == 0 then
 				ent:SetExplodeTime(CurTime() + ent.ExplosionDelay)
 			end
 		end
@@ -76,7 +76,7 @@ function SWEP:Reload()
 end
 	
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self:SendWeaponAnim(ACT_SLAM_DETONATOR_IDLE)
 

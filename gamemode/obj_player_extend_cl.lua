@@ -22,7 +22,7 @@ end
 
 function meta:GetStatus(sType)
 	local ent = self["status_"..sType]
-	if ent and ent:IsValid() and ent.Owner == self then return ent end
+	if ent and ent:IsValid() and ent:GetOwner() == self then return ent end
 end
 
 function meta:GiveStatus(sType, fDie)

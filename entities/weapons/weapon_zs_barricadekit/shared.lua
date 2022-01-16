@@ -31,7 +31,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:EmitSound("Weapon_Shotgun.Empty")

@@ -46,7 +46,7 @@ function SWEP:IsScoped()
 end
 
 function SWEP:Think()
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetIronsights() and not self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
 	if self.BaseClass.Think then
@@ -58,7 +58,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 	if 0 >= self:Ammo1() then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + 0.5)
@@ -72,12 +72,12 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
-	self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
+	self:GetOwner():RemoveAmmo(1, self.Primary.Ammo, false)
 	local dmg = self.Primary.Damage
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()

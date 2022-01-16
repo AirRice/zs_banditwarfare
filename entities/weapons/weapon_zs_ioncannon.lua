@@ -113,18 +113,18 @@ function SWEP:SetConeAndFire()
 end
 
 function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
+	if self:GetOwner():IsHolding() then return end
 
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
 
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.5)
+		self:GetOwner():GetViewModel():SetPlaybackRate(0.5)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
 		self:SetNextPrimaryFire(self.IdleAnimation)
 		self:SetNextReload(self.IdleAnimation)
-		self.Owner:DoReloadEvent()
+		self:GetOwner():DoReloadEvent()
 		if self.ReloadSound then
 			self:EmitSound(self.ReloadSound)
 		end

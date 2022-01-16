@@ -30,10 +30,10 @@ function SWEP:DrawWeaponSelection(...)
 end
 
 function SWEP:Think()
-	if self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:RotateGhost(FrameTime() * 60)
 	end
-	if self.Owner:KeyDown(IN_RELOAD) then
+	if self:GetOwner():KeyDown(IN_RELOAD) then
 		self:RotateGhost(FrameTime() * -60)
 	end
 end

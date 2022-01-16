@@ -71,9 +71,6 @@ function SWEP:Think()
 	if self:GetReloadTimer() > 0 and CurTime() >= self:GetReloadTimer() then
 		self:DoReload()
 	end
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
-	end
 	if self.BaseClass.Think then
 		self.BaseClass.Think(self)
 	end

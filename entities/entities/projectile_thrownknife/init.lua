@@ -65,7 +65,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 			self:SetParent(eHitEntity)
 		end
 
-		if eHitEntity:IsPlayer() and self.Owner:IsPlayer() and eHitEntity:Team() ~= self.Owner:Team() then
+		if eHitEntity:IsPlayer() and self:GetOwner():IsPlayer() and eHitEntity:Team() ~= self:GetOwner():Team() then
 			local attach = eHitEntity:GetAttachment(1)
 			eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 			eHitEntity:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")

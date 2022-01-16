@@ -65,7 +65,7 @@ function SWEP:SetWeaponSwingHoldType(t)
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 
 	return true
@@ -95,7 +95,7 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	return self:GetNextPrimaryFire() <= CurTime() and not self:IsSwinging()
 end
@@ -148,7 +148,7 @@ function SWEP:StartSwinging()
 end
 
 function SWEP:MeleeSwing()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	owner:DoAttackEvent()
 	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)

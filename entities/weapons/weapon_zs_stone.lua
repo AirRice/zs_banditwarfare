@@ -63,7 +63,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -77,7 +77,7 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	self:SendWeaponAnim(ACT_VM_THROW)
 	owner:DoAttackEvent()
 
@@ -96,7 +96,7 @@ function SWEP:PrimaryAttack()
 			if phys:IsValid() then
 				phys:Wake()
 				phys:AddAngleVelocity(VectorRand() * 360)
-				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 900)
+				phys:SetVelocityInstantaneous(self:GetOwner():GetAimVector() * 900)
 			end
 		end
 
@@ -118,7 +118,7 @@ function SWEP:Reload()
 end
 
 function SWEP:Deploy()
-	GAMEMODE:WeaponDeployed(self.Owner, self)
+	GAMEMODE:WeaponDeployed(self:GetOwner(), self)
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:SendWeaponAnim(ACT_VM_THROW)
@@ -146,7 +146,7 @@ function SWEP:Think()
 		else
 			self:SendWeaponAnim(ACT_VM_THROW)
 			if SERVER then
-				self.Owner:StripWeapon(self:GetClass())
+				self:GetOwner():StripWeapon(self:GetClass())
 			end
 		end
 	end

@@ -2585,7 +2585,10 @@ function GM:PlayerSpawn(pl)
 		else
 			pl:UpdateWeaponLoadouts()
 			if not self.SuddenDeath then
-				pl:GiveStatus("spawnbuff").Owner = pl
+				local buff = pl:GiveStatus("spawnbuff")
+				if buff and IsValid(buff) then
+					buff:SetOwner(pl)
+				end
 			end
 		end
 	end

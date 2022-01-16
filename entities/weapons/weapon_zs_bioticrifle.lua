@@ -67,7 +67,7 @@ SWEP.IronSightsAng = Vector(0, -1, 0)
 SWEP.WalkSpeed = SPEED_SLOWER
 
 function SWEP:ShootBullets(dmg, numbul, cone)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	if SERVER then
 		self:SetConeAndFire()
@@ -77,7 +77,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	owner:DoAttackEvent()
 
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
-	self.Owner:EmitSound("npc/headcrab_poison/ph_scream"..math.random(1, 3)..".wav",35,math.Rand(140,150))
+	self:GetOwner():EmitSound("npc/headcrab_poison/ph_scream"..math.random(1, 3)..".wav",35,math.Rand(140,150))
 	if CLIENT then return end
 	for i=1, numbul do
 	local ent = ents.Create("projectile_poisonspit")
@@ -90,7 +90,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		ent:EmitSound("weapons/crossbow/bolt_fly4.wav")
 		local phys = ent:GetPhysicsObject()
 		if phys:IsValid() then
-			local ShotAng = self.Owner:EyeAngles():Forward()
+			local ShotAng = self:GetOwner():EyeAngles():Forward()
 			phys:Wake()
 			phys:SetVelocityInstantaneous(ShotAng * 2000)
 			phys:EnableGravity(false)

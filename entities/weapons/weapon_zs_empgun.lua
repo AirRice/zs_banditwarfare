@@ -75,18 +75,18 @@ SWEP.IronSightsPos = Vector(-6.5, 0, -0.65)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 
 function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
+	if self:GetOwner():IsHolding() then return end
 
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
 	
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.5)
+		self:GetOwner():GetViewModel():SetPlaybackRate(0.5)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
 		self:SetNextPrimaryFire(self.IdleAnimation)
 		self:SetNextReload(self.IdleAnimation+0.3)
-		self.Owner:DoReloadEvent()
+		self:GetOwner():DoReloadEvent()
 		if self.ReloadSound then
 			self:EmitSound(self.ReloadSound)
 		end

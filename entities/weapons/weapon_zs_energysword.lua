@@ -71,7 +71,7 @@ end
 function SWEP:Think()
 
 	local curtime = CurTime()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	if self.SwiftStriking then
 			local dir = owner:GetAimVector()
@@ -96,7 +96,7 @@ function SWEP:Think()
 						hit = true
 						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
 						local nearest = ent:NearestPoint(trace.StartPos)
-						ent:ThrowFromPositionSetZ(self.Owner:GetPos(), ownerspeed * 0.3)
+						ent:ThrowFromPositionSetZ(self:GetOwner():GetPos(), ownerspeed * 0.3)
 						self:ApplyMeleeDamage(ent, trace, math.Clamp(ownerspeed/1400,0,2)*self.MeleeDamage)
 					end
 				end
@@ -110,8 +110,8 @@ function SWEP:Think()
 
 			if hit then
 				self.SwiftStriking = false
-				self.Owner:SetGravity(1)
-				self.Owner:SetFriction(1)
+				self:GetOwner():SetGravity(1)
+				self:GetOwner():SetFriction(1)
 			end
 	end
 	self.BaseClass.Think(self)
@@ -123,9 +123,9 @@ end
 function SWEP:ApplyMeleeDamage(ent, trace, damage)
 	ent:EmitSound("npc/manhack/grind_flesh1.wav")
 	if ent:IsPlayer() then
-		ent:TakeSpecialDamage(damage, self.DamageType, self.Owner, self, trace.HitPos)
+		ent:TakeSpecialDamage(damage, self.DamageType, self:GetOwner(), self, trace.HitPos)
 	else
-		local dmgtype, owner, hitpos = self.DamageType, self.Owner, trace.HitPos
+		local dmgtype, owner, hitpos = self.DamageType, self:GetOwner(), trace.HitPos
 		timer.Simple(0, function() -- Avoid prediction errors.
 			if ent:IsValid() then
 				ent:TakeSpecialDamage(damage, dmgtype, owner, self, hitpos)
@@ -135,20 +135,20 @@ function SWEP:ApplyMeleeDamage(ent, trace, damage)
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() then
+	if self:GetNextSecondaryFire() <= CurTime() and not self:GetOwner():IsHolding() then
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 	self:EmitSound("npc/env_headcrabcanister/incoming.wav", 80, math.Rand(90, 100))
 	if SERVER then
 		local fwd = 500
-		self.Owner:SetAnimation( PLAYER_ATTACK1 )
+		self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
 		self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
-		local pushvel = self.Owner:GetEyeTrace().Normal * fwd + (self.Owner:GetAngles():Up()*100)
-        self.Owner:SetGroundEntity(nil)
-        self.Owner:SetLocalVelocity( self.Owner:GetVelocity() + pushvel)
+		local pushvel = self:GetOwner():GetEyeTrace().Normal * fwd + (self:GetOwner():GetAngles():Up()*100)
+        self:GetOwner():SetGroundEntity(nil)
+        self:GetOwner():SetLocalVelocity( self:GetOwner():GetVelocity() + pushvel)
 		self.SwiftStriking = true
-		local ownerplayer = self.Owner
+		local ownerplayer = self:GetOwner()
 		timer.Simple( 0.75, function() 
-			if self and self:IsValid() and self.Owner and self.Owner:IsValid() and self.Owner:IsPlayer() and self.Owner:Alive() then 
+			if self and self:IsValid() and self:GetOwner() and self:GetOwner():IsValid() and self:GetOwner():IsPlayer() and self:GetOwner():Alive() then 
 				self.SwiftStriking = false
 			end 
 		end)

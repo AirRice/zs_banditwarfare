@@ -121,7 +121,7 @@ function SWEP:Reload()
 end
 
 function SWEP:PrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self:GetNextPrimaryFire() > CurTime() or self:GetCurrentTarget():IsValid() or not (self:GetCurrentLookTarget() and self:GetCurrentLookTarget():IsValid()) then return end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() or self:GetNextPrimaryFire() > CurTime() or self:GetCurrentTarget():IsValid() or not (self:GetCurrentLookTarget() and self:GetCurrentLookTarget():IsValid()) then return end
 	if self:Ammo1() <= 0 then
 		self:EmitSound("items/suitchargeno1.wav", 75, 110)
 		self:SetNextPrimaryFire(CurTime() + 0.5)
@@ -134,7 +134,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return end
 	if self:GetNextPrimaryFire() <= CurTime() then
 		self:SetCurrentTarget(nil)
 		self:SetNextPrimaryFire(CurTime() + 0.5)

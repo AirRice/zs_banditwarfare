@@ -45,7 +45,7 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -60,7 +60,7 @@ function SWEP:CanSecondaryAttack()
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	return true
 end

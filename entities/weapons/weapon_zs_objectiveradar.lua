@@ -74,7 +74,7 @@ function SWEP:DrawTarget(tgt, size, offset, color)
 	scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 	scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
 	draw.RoundedBox( 10,scrpos.x - size, scrpos.y - size, size * 2, size * 2, color ~= nil and color or COLOR_GREY )
-	local text = math.ceil(self.Owner:GetPos():Distance(tgt:GetPos()))
+	local text = math.ceil(self:GetOwner():GetPos():Distance(tgt:GetPos()))
 	local w, h = surface.GetTextSize(text)
 	draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size+ (offset * size) - h/2)
 end

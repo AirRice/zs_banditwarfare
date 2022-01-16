@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()

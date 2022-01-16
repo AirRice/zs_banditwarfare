@@ -14,7 +14,7 @@ SWEP.SlotPos = 0
 
 
 function SWEP:DrawHUD()
-	local isspectated = (self.Owner:IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner)
+	local isspectated = (self:GetOwner():IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner)
 	if GAMEMODE.WeaponHUDMode >= 1 and not isspectated then
 		self:Draw2DHUD()
 	end

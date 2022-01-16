@@ -34,7 +34,7 @@ end
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	local aimvec = owner:GetAimVector()
 	local shootpos = owner:GetShootPos()
 	local tr = util.TraceLine({start = shootpos, endpos = shootpos + aimvec * 32, filter = owner})
@@ -67,7 +67,7 @@ function SWEP:PrimaryAttack()
 					phys:SetVelocityInstantaneous(owner:GetVelocity())
 				end
 			end
-			ent:SetPhysicsAttacker(self.Owner)
+			ent:SetPhysicsAttacker(self:GetOwner())
 			self:TakePrimaryAmmo(1)
 			if (self:GetPrimaryAmmoCount() <= 0) then
 				self:GetOwner():StripWeapon(self:GetClass())
@@ -84,9 +84,9 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
-	if math.abs(self.Owner:GetVelocity().z) >= 256 then return false end
+	if math.abs(self:GetOwner():GetVelocity().z) >= 256 then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -106,13 +106,13 @@ function SWEP:Think()
 		local count = self:GetPrimaryAmmoCount()
 		if count ~= self:GetReplicatedAmmo() then
 			self:SetReplicatedAmmo(count)
-			self.Owner:ResetSpeed()
+			self:GetOwner():ResetSpeed()
 		end
 	end
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 

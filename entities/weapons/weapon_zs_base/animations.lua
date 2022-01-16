@@ -33,8 +33,8 @@ function SWEP:Anim_Initialize()
 		self:CreateModels(self.WElements) // create worldmodels
 		
 		// init view model bone build function
-		if IsValid(self.Owner) then
-			local vm = self.Owner:GetViewModel()
+		if IsValid(self:GetOwner()) then
+			local vm = self:GetOwner():GetViewModel()
 			if IsValid(vm) then
 				self:ResetBonePositions(vm)
 				
@@ -57,8 +57,8 @@ end
 
 function SWEP:Anim_Holster()
 	
-	if CLIENT and IsValid(self.Owner) then
-		local vm = self.Owner:GetViewModel()
+	if CLIENT and IsValid(self:GetOwner()) then
+		local vm = self:GetOwner():GetViewModel()
 		if IsValid(vm) then
 			self:ResetBonePositions(vm)
 		end
@@ -76,7 +76,7 @@ if CLIENT then
 	SWEP.vRenderOrder = nil
 	function SWEP:Anim_ViewModelDrawn()
 		
-		local vm = self.Owner:GetViewModel()
+		local vm = self:GetOwner():GetViewModel()
 		if !IsValid(vm) then return end
 		
 		if (!self.VElements) then return end
@@ -187,7 +187,7 @@ if CLIENT then
 		if (self.ShowWorldModel == nil or self.ShowWorldModel) then
 			self:DrawModel()
 		end
-		if MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner then return end
+		if MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self:GetOwner() then return end
 		if (!self.WElements) then return end
 		
 		if (!self.wRenderOrder) then
@@ -204,8 +204,8 @@ if CLIENT then
 
 		end
 		
-		if (IsValid(self.Owner)) then
-			bone_ent = self.Owner
+		if (IsValid(self:GetOwner())) then
+			bone_ent = self:GetOwner()
 		else
 			// when the weapon is dropped
 			bone_ent = self
@@ -330,8 +330,8 @@ if CLIENT then
 				pos, ang = m:GetTranslation(), m:GetAngles()
 			end
 			
-			if (IsValid(self.Owner) and self.Owner:IsPlayer() and 
-				ent == self.Owner:GetViewModel() and self.ViewModelFlip) then
+			if (IsValid(self:GetOwner()) and self:GetOwner():IsPlayer() and 
+				ent == self:GetOwner():GetViewModel() and self.ViewModelFlip) then
 				ang.r = -ang.r // Fixes mirrored models
 			end
 		

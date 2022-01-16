@@ -51,7 +51,7 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self.IsHacking then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() or self.IsHacking then return false end
 	return self:GetNextPrimaryFire() <= CurTime()
 end
 function SWEP:Think()
@@ -63,27 +63,26 @@ end
 function SWEP:PrimaryAttack()	
 	if self:CanPrimaryAttack() then
 		local tr = {}
-		tr.start = self.Owner:GetShootPos()
-		tr.endpos = self.Owner:GetShootPos() + 300 * self.Owner:GetAimVector()
-		tr.filter = {self.Owner}
+		tr.start = self:GetOwner():GetShootPos()
+		tr.endpos = self:GetOwner():GetShootPos() + 300 * self:GetOwner():GetAimVector()
+		tr.filter = {self:GetOwner()}
 		local trace = util.TraceLine(tr)
 		if trace.Hit and trace.Entity:GetClass() == "prop_obj_transmitter" 
-		and self.Owner:IsPlayer() and (trace.Entity:GetTransmitterTeam() == TEAM_BANDIT or trace.Entity:GetTransmitterTeam() == TEAM_HUMAN) 
-		and trace.Entity:GetTransmitterTeam() ~= self.Owner:Team() then
-			self.Owner:Freeze( true )
+		and self:GetOwner():IsPlayer() and (trace.Entity:GetTransmitterTeam() == TEAM_BANDIT or trace.Entity:GetTransmitterTeam() == TEAM_HUMAN) 
+		and trace.Entity:GetTransmitterTeam() ~= self:GetOwner():Team() then
+			self:GetOwner():Freeze( true )
 			self.IsHacking = true
 			self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-			self.Weapon:SetNextPrimaryFire(CurTime()+self.Owner:GetViewModel():SequenceDuration()+1)
-			timer.Simple(self.Owner:GetViewModel():SequenceDuration(), function()
-				if SERVER then self.Owner:Freeze(false) end
-				if self.Owner:Alive() then
-					self.Owner:SetAnimation(PLAYER_ATTACK1)
+			self.Weapon:SetNextPrimaryFire(CurTime()+self:GetOwner():GetViewModel():SequenceDuration()+1)
+			timer.Simple(self:GetOwner():GetViewModel():SequenceDuration(), function()
+				if SERVER then self:GetOwner():Freeze(false) end
+				if self:GetOwner():Alive() then
+					self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 					self.Weapon:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
 					self.IsHacking = false
 					self:EmitSound("ambient/machines/thumper_shutdown1.wav")
 					if SERVER then 
-						self.Owner:Freeze(false)
-						trace.Entity:DoDamageComms(self.Owner:Team(),self.Owner)
+						trace.Entity:DoDamageComms(self:GetOwner():Team(),self:GetOwner())
 						self.Owner:StripWeapon(self:GetClass())
 					end
 				end

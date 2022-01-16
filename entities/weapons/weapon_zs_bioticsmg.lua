@@ -89,7 +89,7 @@ SWEP.Recoil = 1.05
 SWEP.WalkSpeed = SPEED_NORMAL
 
 function SWEP:ShootBullets(dmg, numbul, cone)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	if SERVER then
 		self:SetConeAndFire()
@@ -98,7 +98,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
 
-	self.Owner:EmitSound("physics/flesh/flesh_strider_impact_bullet"..math.random(1, 3)..".wav", 72, math.Rand(85, 95), 0.5)
+	self:GetOwner():EmitSound("physics/flesh/flesh_strider_impact_bullet"..math.random(1, 3)..".wav", 72, math.Rand(85, 95), 0.5)
 	if CLIENT then return end
 	local aimvec = owner:GetAimVector()
 	for i=1, numbul do
@@ -114,7 +114,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		local phys = ent:GetPhysicsObject()
 		if phys:IsValid() then
 			local cone = math.deg(self:GetCone())
-			local eyeang = self.Owner:EyeAngles()
+			local eyeang = self:GetOwner():EyeAngles()
 			eyeang:RotateAroundAxis(eyeang:Forward(),util_SharedRandom("rotate"..self:EntIndex(), 0, 360))
 			eyeang:RotateAroundAxis(eyeang:Up(),util_SharedRandom("bulletangle"..self:EntIndex(), -cone, cone))
 			phys:Wake()

@@ -30,7 +30,7 @@ function ENT:Explode()
 		self:CreateSmoke()
    else
 		if self.Exploded then return end
-		local owner = self.Owner
+		local owner = self:GetOwner()
 		self:EmitSound("HL1/ambience/steamburst1.wav")
 		self.Exploded = true
 		self:Remove()

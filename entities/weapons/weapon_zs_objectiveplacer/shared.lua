@@ -39,7 +39,7 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -56,7 +56,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -78,7 +78,7 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Reload()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -94,7 +94,7 @@ end
 if SERVER then
 function SWEP:Think()
 	if self.StartReload then
-		if not self.Owner:KeyDown(IN_RELOAD) then
+		if not self:GetOwner():KeyDown(IN_RELOAD) then
 			self.StartReload = nil
 			return
 		end
@@ -102,7 +102,7 @@ function SWEP:Think()
 		if CurTime() >= self.StartReload + 3 then
 			self.StartReload = nil
 
-			self.Owner:ChatPrint("Deleted all pre-made objective points.")
+			self:GetOwner():ChatPrint("Deleted all pre-made objective points.")
 			GAMEMODE:DeleteProfilerPreMade()
 			self:RefreshObjectives()
 		end

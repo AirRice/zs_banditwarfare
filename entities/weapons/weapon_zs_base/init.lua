@@ -17,14 +17,14 @@ function SWEP:Think()
 		self:SendWeaponAnim(self.IdleActivity)
 	end
 	
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetIronsights() and not self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
-	if not self.Owner:KeyDown(IN_ATTACK) and (self.LastAttemptedShot + (self.AutoReloadDelay and self.AutoReloadDelay or 1)  <= curTime) and self.Primary.Ammo == "autocharging" then
+	if not self:GetOwner():KeyDown(IN_ATTACK) and (self.LastAttemptedShot + (self.AutoReloadDelay and self.AutoReloadDelay or 1)  <= curTime) and self.Primary.Ammo == "autocharging" then
 		if self:GetNextAutoReload() <= curTime and self:Clip1() < self.Primary.ClipSize then
 			self:SetClip1(self:Clip1() + 1)
 			self:SetNextAutoReload(curTime+0.02)
-			self.Owner:EmitSound("buttons/button16.wav")
+			self:GetOwner():EmitSound("buttons/button16.wav")
 		end
 	end
 	

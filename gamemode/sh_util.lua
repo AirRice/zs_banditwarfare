@@ -327,7 +327,7 @@ function util.BlastDamageShredding(inflictor, attacker, epicenter, radius, damag
 		if ent and ent:IsValid() then
 			local nearest = ent:NearestPoint(epicenter)
 			local ratio = 1
-			if ent:GetClass() == "prop_drone" or ent:GetClass() == "prop_manhack" or (ent:IsNailed() and not ent:IsSameTeam(self.Owner)) or (ent.IsBarricadeObject and not ent:IsSameTeam(self.Owner)) then
+			if ent:GetClass() == "prop_drone" or ent:GetClass() == "prop_manhack" or (ent:IsNailed() and not ent:IsSameTeam(attacker)) or (ent.IsBarricadeObject and not ent:IsSameTeam(attacker)) then
 				ratio = ratio * 10
 			end
 			if nearest:Distance(epicenter) > radius/2 then

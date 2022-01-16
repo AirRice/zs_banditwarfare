@@ -59,12 +59,12 @@ function SWEP:Think()
 
 	if SERVER then
 		for _, ent in pairs(ents.FindByClass(self.EntityClass)) do
-			if ent:GetOwner() == self.Owner then
+			if ent:GetOwner() == self:GetOwner() then
 				return
 			end
 		end
 
-		self.Owner:StripWeapon(self:GetClass())
+		self:GetOwner():StripWeapon(self:GetClass())
 	end
 end
 
@@ -86,7 +86,7 @@ function SWEP:Reload()
 end
 	
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 

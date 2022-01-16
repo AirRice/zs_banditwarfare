@@ -61,7 +61,7 @@ function SWEP:Think()
 		local toscan = player.GetAll()
 		table.Merge(toscan, ents.FindByClass("prop_obj_nest"))
 		for _, ent in pairs(toscan) do
-			if (ent:GetClass() == "prop_obj_nest") or (self.Owner:IsPlayer() and ent:IsPlayer() and ent:Team() ~= self.Owner:Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive()) then 
+			if (ent:GetClass() == "prop_obj_nest") or (self:GetOwner():IsPlayer() and ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive()) then 
 				table.insert(self.targets,ent:GetPos())
 			end
 		end
@@ -109,7 +109,7 @@ function SWEP:DrawTarget(tgt, size, offset)
 	scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 	scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
 	surface.DrawCircle(scrpos.x - size, scrpos.y - size, size * 2,255,0,0,150)
-	local text = math.ceil(self.Owner:GetPos():Distance(tgt))
+	local text = math.ceil(self:GetOwner():GetPos():Distance(tgt))
 	local w, h = surface.GetTextSize(text)
 	--surface.SetFont("ZSHUDFontSmall")
 	--surface.DrawText(text)

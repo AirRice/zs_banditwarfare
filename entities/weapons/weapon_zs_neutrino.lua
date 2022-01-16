@@ -124,7 +124,7 @@ function SWEP:PrimaryAttack()
 		return end
 		self:EmitSound(self.Primary.Sound)
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
-		self.Owner:RemoveAmmo(1, self.Weapon:GetPrimaryAmmoType() )
+		self:GetOwner():RemoveAmmo(1, self.Weapon:GetPrimaryAmmoType() )
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		local combo = self:GetDTInt(4)
 		self:SetNextPrimaryFire(CurTime() + math.max(0.035, self.Primary.Delay * (1 - combo / 50)))
@@ -132,7 +132,7 @@ function SWEP:PrimaryAttack()
 	end
 end
 function SWEP:Think()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if owner:KeyDown(IN_ATTACK) and self:CanPrimaryAttack() then 
 		if self:Ammo1()<=0 then return end
 		self:EmitSound("Loop_Neutrino_Charging")

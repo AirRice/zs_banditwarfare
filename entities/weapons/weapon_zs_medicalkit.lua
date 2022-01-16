@@ -58,7 +58,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	owner:LagCompensation(true)
 	local ent = owner:MeleeTrace(32, 2).Entity
@@ -86,7 +86,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not self:CanPrimaryAttack() or not gamemode.Call("PlayerCanBeHealed", owner) then return end
 
 	local health, maxhealth = owner:Health(), owner:GetMaxHealth()
@@ -110,7 +110,7 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 
@@ -132,7 +132,7 @@ function SWEP:Holster()
 end
 
 function SWEP:OnRemove()
-	if CLIENT and self.Owner == LocalPlayer() then
+	if CLIENT and self:GetOwner() == LocalPlayer() then
 		hook.Remove("PostPlayerDraw", "PostPlayerDrawMedical")
 		GAMEMODE.MedicalAura = false
 	end
@@ -150,7 +150,7 @@ function SWEP:GetNextCharge()
 end
 
 function SWEP:CanPrimaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if owner:IsHolding() or owner:GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then

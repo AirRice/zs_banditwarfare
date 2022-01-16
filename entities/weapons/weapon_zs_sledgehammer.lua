@@ -44,11 +44,11 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if IsValid(hitent) then
-		if not hitent:IsPlayer() and self.Owner:IsPlayer() then
-			if hitent:GetClass() == "prop_drone" or hitent:GetClass() == "prop_manhack" and not hitent:IsSameTeam(self.Owner) and SERVER then
+		if not hitent:IsPlayer() and self:GetOwner():IsPlayer() then
+			if hitent:GetClass() == "prop_drone" or hitent:GetClass() == "prop_manhack" and not hitent:IsSameTeam(self:GetOwner()) and SERVER then
 				hitent:Destroy()
-			elseif (hitent:IsNailed() and not hitent:IsSameTeam(self.Owner)) or (hitent.IsBarricadeObject and not hitent:IsSameTeam(self.Owner) and SERVER) then
-				hitent:TakeSpecialDamage(self.MeleeDamage * 2, DMG_DIRECT, self.Owner, self, tr.HitPos)
+			elseif (hitent:IsNailed() and not hitent:IsSameTeam(self:GetOwner())) or (hitent.IsBarricadeObject and not hitent:IsSameTeam(self:GetOwner()) and SERVER) then
+				hitent:TakeSpecialDamage(self.MeleeDamage * 2, DMG_DIRECT, self:GetOwner(), self, tr.HitPos)
 			end
 		end
 	end

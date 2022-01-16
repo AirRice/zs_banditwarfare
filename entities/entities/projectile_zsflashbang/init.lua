@@ -31,7 +31,7 @@ function ENT:Think()
 end
 function ENT:Explode()
 	if self.Exploded then return end
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if owner:IsValid() and owner:IsPlayer() and (owner:Team() == TEAM_HUMAN or owner:Team() == TEAM_BANDIT) then	
 		for _, pl in pairs(player.GetAll()) do
 			if pl:Alive() then

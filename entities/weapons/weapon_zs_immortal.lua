@@ -70,6 +70,6 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
-	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
+	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self:GetOwner():Health()/self:GetOwner():GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end

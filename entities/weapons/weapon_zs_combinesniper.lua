@@ -115,7 +115,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:Think()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if self:GetIsCharging() then
 		if owner:KeyReleased(IN_ATTACK) then
 			local nextshotdelay = 0.25
@@ -153,7 +153,7 @@ function SWEP:Think()
 					self:SetIsCharging(false)
 					self.IdleAnimation = CurTime() + self:SequenceDuration()
 					self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-					self.Owner:TakeSpecialDamage(60, DMG_DISSOLVE, self.Owner, self)
+					self:GetOwner():TakeSpecialDamage(60, DMG_DISSOLVE, self:GetOwner(), self)
 					local effectdata = EffectData()
 						effectdata:SetOrigin(self:GetPos())
 					util.Effect("Explosion", effectdata, true, true)
@@ -288,13 +288,13 @@ if CLIENT then
 		local endpos = nil 
 		local startpos = nil
 		local td = {}
-			td.start = self.Owner:EyePos()
+			td.start = self:GetOwner():EyePos()
 			td.mask = MASK_SHOT
 			td.filter = {}
-			table.Add(td.filter, {self.Owner})
-			table.Add(td.filter, {self.Owner:GetActiveWeapon()})
-			table.Add(td.filter, team.GetPlayers(self.Owner:Team()))
-			td.endpos = td.start + self.Owner:EyeAngles():Forward()*10000
+			table.Add(td.filter, {self:GetOwner()})
+			table.Add(td.filter, {self:GetOwner():GetActiveWeapon()})
+			table.Add(td.filter, team.GetPlayers(self:GetOwner():Team()))
+			td.endpos = td.start + self:GetOwner():EyeAngles():Forward()*10000
 			table.Add(td.filter, {self})
 		local tr = util.TraceLine(td)
 		local endpos = tr.Hit and tr.HitPos

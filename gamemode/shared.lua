@@ -338,7 +338,7 @@ function GM:GetCurrentEquipmentCount(id,countteam)
 
 		if item.SWEP then
 			for k,v in pairs(ents.FindByClass(item.SWEP)) do
-				if v.Owner:IsPlayer() and v.Owner:Team() == countteam then
+				if v:GetOwner():IsPlayer() and v:GetOwner():Team() == countteam then
 					count = count + 1
 				end
 			end

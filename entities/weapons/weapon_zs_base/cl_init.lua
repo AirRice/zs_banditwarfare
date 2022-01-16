@@ -35,7 +35,7 @@ function SWEP:PreDrawViewModel(vm)
 end
 
 function SWEP:PostDrawViewModel(vm)
-	local isspectated = (self.Owner:IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner)
+	local isspectated = (self:GetOwner():IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self:GetOwner())
 
 	if self.ShowViewModel == false then
 		render.SetBlend(1)
@@ -69,7 +69,7 @@ function SWEP:Draw2DHUD()
 end
 
 function SWEP:Think()
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetIronsights() and not self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
 	if self:GetReloadFinish() > 0 then
@@ -134,7 +134,7 @@ function SWEP:CalcViewModelView(vm, oldpos, oldang, pos, ang)
 		pos = pos + Offset.x * Mul * ang:Right() + Offset.y * Mul * ang:Forward() + Offset.z * Mul * ang:Up()
 	end
 
-	if self.Owner:GetBarricadeGhosting() then
+	if self:GetOwner():GetBarricadeGhosting() then
 		ghostlerp = math.min(1, ghostlerp + FrameTime() * 4)
 	elseif ghostlerp > 0 then
 		ghostlerp = math.max(0, ghostlerp - FrameTime() * 5)
@@ -154,7 +154,7 @@ end
 
 function SWEP:DrawHUD()
 	self:DrawCrosshair()
-	local isspectated = (self.Owner:IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self.Owner)
+	local isspectated = (self:GetOwner():IsPlayer() and MySelf:GetObserverMode() == OBS_MODE_IN_EYE and MySelf:GetObserverTarget() == self:GetOwner())
 	if GAMEMODE.WeaponHUDMode >= 1 and not isspectated then
 		self:Draw2DHUD()
 	end

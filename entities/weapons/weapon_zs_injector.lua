@@ -115,7 +115,7 @@ function SWEP:PrimaryAttack()
 	local dmg = self.Primary.Damage
 	self:SetConeAndFire()
 	self:DoRecoil()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
@@ -141,14 +141,14 @@ function SWEP:PrimaryAttack()
 				local tox = curtgt:GetStatus("tox")
 				if (tox and tox:IsValid()) then
 					tox:AddTime(self.ToxDuration)
-					tox.Owner = curtgt
+					tox:SetOwner(curtgt)
 					tox.Damage = self.ToxicDamage
 					tox.Damager = owner
 					tox.TimeInterval = self.ToxicTick
 				else
 					stat = curtgt:GiveStatus("tox")
 					stat:SetTime(self.ToxDuration)
-					stat.Owner = curtgt
+					stat:SetOwner(curtgt)
 					stat.Damage = self.ToxicDamage
 					stat.Damager = owner
 					stat.TimeInterval = self.ToxicTick
