@@ -141,7 +141,7 @@ function meta:ProcessDamage(dmginfo)
 				ratio = ratio * 0.75
 				dmginfo:ScaleDamage(0.25)
 			elseif (dmginfo:IsDamageType(DMG_BULLET) or dmginfo:IsDamageType(DMG_CLUB) or dmginfo:IsDamageType(DMG_SLASH)) 
-			and not (attackweapon and attackweapon.IgnoreDamageScaling) and not (lasthitgroup == HITGROUP_HEAD) then
+			and not (attackweapon and attackweapon.IgnoreDamageScaling) and not (self:WasHitInHead()) then
 				ratio = ratio * 0.6
 				dmginfo:ScaleDamage(0.4)
 			end

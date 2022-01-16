@@ -30,3 +30,12 @@ function ENT:GetTransmitterHealth()
 
 	return math.Clamp(base + self:GetTransmitterHealthRegen() * math.max(0, CurTime() - (self:GetTransmitterLastDamaged() + self.RegenDelay)), 0, self:GetTransmitterMaxHealth())
 end
+
+function ENT:HitByWrench(wep, pl, tr)
+	if not (IsValid(pl) and pl:IsPlayer()) then return end
+	if self:GetTransmitterTeam() == pl:Team() and not self:GetCanCommunicate() then
+		self:SetTransmitterNextRestart(math.min(self:GetTransmitterNextRestart() - 3,CurTime()))
+		return true
+	end
+	return false
+end

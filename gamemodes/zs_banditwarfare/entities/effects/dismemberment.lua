@@ -7,8 +7,8 @@ end
 local Dismembers = {DISMEMBER_HEAD, DISMEMBER_LEFTLEG, DISMEMBER_RIGHTLEG, DISMEMBER_LEFTARM, DISMEMBER_RIGHTARM}
 local DismemberBones = {
 {ToZero = {"ValveBiped.Bip01_Head1"}, ToBleed = {["ValveBiped.Bip01_Head1"] = true}},
-{ToZero = {"ValveBiped.Bip01_L_Thigh", "ValveBiped.Bip01_L_Calf", "ValveBiped.Bip01_L_Foot"}, ToBleed = {["ValveBiped.Bip01_L_Thigh"]=true}},
-{ToZero = {"ValveBiped.Bip01_R_Thigh", "ValveBiped.Bip01_R_Calf", "ValveBiped.Bip01_R_Foot"}, ToBleed = {["ValveBiped.Bip01_R_Thigh"]=true}},
+{ToZero = {"ValveBiped.Bip01_L_Thigh", "ValveBiped.Bip01_L_Calf", "ValveBiped.Bip01_L_Foot", "ValveBiped.Bip01_L_Toe0"}, ToBleed = {["ValveBiped.Bip01_L_Thigh"]=true}},
+{ToZero = {"ValveBiped.Bip01_R_Thigh", "ValveBiped.Bip01_R_Calf", "ValveBiped.Bip01_R_Foot", "ValveBiped.Bip01_R_Toe0"}, ToBleed = {["ValveBiped.Bip01_R_Thigh"]=true}},
 {ToZero = {
 	"ValveBiped.Bip01_L_UpperArm",
 	"ValveBiped.Bip01_L_Forearm",
