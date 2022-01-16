@@ -124,6 +124,14 @@ function meta:ProcessDamage(dmginfo)
 	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
 	local lasthitgroup = self:LastHitGroup()
 	if attacker:IsPlayer() then
+		if attacker ~= self then
+			local dmgtype = dmginfo:GetDamageType()
+			local head = (self:WasHitInHead())
+			net.Start( "zs_hitmarker" )
+				net.WriteBool( self:IsPlayer() )
+				net.WriteBool( head )
+			net.Send( attacker )
+		end
 		if attacker:LessPlayersOnTeam() and attackweapon and not attackweapon.NoScaleToLessPlayers and not attackweapon.IgnoreDamageScaling then
 			dmginfo:ScaleDamage(1.25)
 		end
@@ -143,6 +151,14 @@ function meta:ProcessDamage(dmginfo)
 	if self.DamageVulnerability then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageVulnerability)
 	end
+end
+
+function meta:WasHitInHead()
+	return self.m_LastHitInHead and CurTime() <= self.m_LastHitInHead + 0.1
+end
+
+function meta:SetWasHitInHead()
+	self.m_LastHitInHead = CurTime()
 end
 
 function meta:AddLifeBarricadeDamage(amount)

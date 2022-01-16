@@ -260,8 +260,8 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
 	local headshot = hitgroup == HITGROUP_HEAD
 	if attackweapon.IgnoreDamageScaling then return end
-	if hitgroup == HITGROUP_HEAD and dmginfo:IsBulletDamage() then
-		pl.m_LastHeadShot = CurTime()
+	if headshot and dmginfo:IsBulletDamage() and SERVER then
+		pl:SetWasHitInHead()
 	end
 	if headshot then
 		dmginfo:ScaleDamage(1.5)

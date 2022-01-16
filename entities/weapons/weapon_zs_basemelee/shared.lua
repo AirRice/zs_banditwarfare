@@ -224,15 +224,16 @@ function SWEP:MeleeHitEntity(tr, hitent, damagemultiplier)
 	local vel
 	if hitent:IsPlayer() then
 		self:PlayerHitUtil(owner, damage, hitent, dmginfo)
-		gamemode.Call("ScalePlayerDamage", hitent, tr.HitGroup, dmginfo)
 		if SERVER then
+			if tr.HitGroup == HITGROUP_HEAD then
+				hitent:SetWasHitInHead()
+			end
 			if hitent:WouldDieFrom(damage, tr.HitPos) then
 				dmginfo:SetDamageForce(math.min(self.MeleeDamage, 50) * 400 * owner:GetAimVector())
 			end
 		end
 		vel = hitent:GetVelocity()
 	end
-
 	self:PostHitUtil(owner, hitent, dmginfo, tr, vel)
 end
 

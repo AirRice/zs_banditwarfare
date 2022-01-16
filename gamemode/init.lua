@@ -1791,18 +1791,30 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	local dispatchdamagedisplay = false
 
 	local entclass = ent:GetClass()
-
 	if ent:IsPlayer() then
 		dispatchdamagedisplay = true
-		if (attacker:IsPlayer() and attacker ~= ent) then
-			local activewep = attacker:GetActiveWeapon()
-			local dmgtype = dmginfo:GetDamageType()
-			local head = (ent:LastHitGroup() == HITGROUP_HEAD)
-			if dmgtype ~= DMG_BLAST or dmgtype ~= DMG_BURN or dmgtype ~= DMG_SLOWBURN then
-				net.Start( "zs_hitmarker" )
-					net.WriteBool( ent:IsPlayer() )
-					net.WriteBool( head )
-				net.Send( attacker )
+		if attacker:IsValid() then
+			if attacker:IsPlayer() then
+				ent:SetLastAttacker(attacker)
+
+				local myteam = attacker:Team()
+				local otherteam = ent:Team()
+				if myteam ~= otherteam then
+					damage = math.min(dmginfo:GetDamage(), ent:Health())
+					if damage > 0 then
+						attacker.DamageDealt = attacker.DamageDealt + damage
+
+						attacker:AddLifeEnemyDamage(damage)
+						ent.DamagedBy[attacker] = (ent.DamagedBy[attacker] or 0) + damage
+						attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * ent:GetBounty()+ math.floor(ent:GetFullPoints()/100),0) 
+						local pos = ent:GetPos()
+						pos.z = pos.z + 32
+						attacker.m_LastDamageDealtPosition = pos
+						attacker.m_LastDamageDealt = CurTime()
+					end
+				end
+			elseif attacker:GetClass() == "trigger_hurt" then
+				ent.LastHitWithTriggerHurt = CurTime()
 			end
 		end
 	elseif ent.PropHealth then -- A prop that was invulnerable and converted to vulnerable.
@@ -2036,29 +2048,6 @@ end
 function GM:PlayerHurt(victim, attacker, healthremaining, damage)
 	if 0 < healthremaining then
 		victim:PlayPainSound()
-	end
-
-	if attacker:IsValid() then
-		if attacker:IsPlayer() then
-			victim:SetLastAttacker(attacker)
-
-			local myteam = attacker:Team()
-			local otherteam = victim:Team()
-			if myteam ~= otherteam then
-				damage = math.min(damage, victim.m_PreHurtHealth)
-				victim.m_PreHurtHealth = healthremaining
-
-				attacker.DamageDealt = attacker.DamageDealt + damage
-
-				attacker:AddLifeEnemyDamage(damage)
-				victim.DamagedBy[attacker] = (victim.DamagedBy[attacker] or 0) + damage
-				attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / victim:GetMaxHealth(),0,1) * victim:GetBounty()+ math.floor(victim:GetFullPoints()/100),0) 
-				attacker.m_LastDamageDealtPosition = victim:GetPos()
-				attacker.m_LastDamageDealt = CurTime()
-			end
-		elseif attacker:GetClass() == "trigger_hurt" then
-			victim.LastHitWithTriggerHurt = CurTime()
-		end
 	end
 end
 
@@ -2344,7 +2333,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	local suicide = attacker == pl or attacker:IsWorld()
 	pl:Freeze(false)
 
-	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1 and not inflictor.IgnoreDamageScaling
+	local headshot = pl:WasHitInHead() and not inflictor.IgnoreDamageScaling 
 	local samplestodrop = 0
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()
@@ -2358,7 +2347,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 		end
 	end
 
-	if headshot then
+	if headshot and not (dmginfo:GetDamageType() == DMG_CLUB) then
 		local effectdata = EffectData()
 			effectdata:SetOrigin(dmginfo:GetDamagePosition())
 			local force = dmginfo:GetDamageForce()
@@ -2367,6 +2356,20 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
 		samplestodrop = samplestodrop + 3
+		if dmginfo:GetDamageType() == DMG_SLASH then
+			local headbonei = pl:LookupBone("ValveBiped.Bip01_Head1")
+			local headpos, headang = pl:GetBonePosition(headbonei)
+			if headpos == pl:GetPos() then
+				headpos = pl:GetBoneMatrix(headbonei):GetTranslation()
+			end
+			local ent = ents.CreateLimited("prop_playergib")
+			if ent:IsValid() then
+				ent:SetPos(headpos)
+				ent:SetAngles(headang)
+				ent:SetGibType(1)
+				ent:Spawn()
+			end
+		end
 	end
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
@@ -2604,8 +2607,6 @@ function GM:PlayerSpawn(pl)
 	wcol.y = math.Clamp(wcol.y, 0, 2.5)
 	wcol.z = math.Clamp(wcol.z, 0, 2.5)
 	pl:SetWeaponColor(wcol)
-
-	pl.m_PreHurtHealth = pl:Health()
 end
 
 function GM:SetWave(wave)

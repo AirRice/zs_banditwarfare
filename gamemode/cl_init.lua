@@ -356,7 +356,9 @@ function GM:_Think()
 			end
 		end
 	end
-
+	if CurTime() >= self.LastHitMarker+self.HitMarkerLifeTime then
+		self.LastHitMarkerHeadshot = false
+	end
 	local myteam = MySelf:Team()
 	self:PlayBeats()
 	if myteam == TEAM_HUMAN or myteam == TEAM_BANDIT then
@@ -437,15 +439,15 @@ function GM:DrawPackUpBar(x, y, fraction, notowner, screenscale)
 	draw_SimpleText(notowner and CurTime() % 2 < 1 and translate.Format("requires_x_people", 4) or notowner and translate.Get("packing_others_object") or translate.Get("packing"), "ZSHUDFontSmall", x, y - draw_GetFontHeight("ZSHUDFontSmall") - 2, col, TEXT_ALIGN_CENTER)
 end
 local colLifeStats = Color(255, 0, 0, 255)
-local hitmarkeralpha = 255
-
+GM.LastHitMarker = 0
+GM.LastHitMarkerHeadshot = false
 net.Receive( "zs_hitmarker", function( iLen )
 	local IsPlayer = net.ReadBool() 
 	local head = net.ReadBool() 
 	if not IsPlayer then return end
 	
-	hitmarkeralpha = 255;
-
+	GAMEMODE.LastHitMarker = CurTime()
+	GAMEMODE.LastHitMarkerHeadshot = head
 	LocalPlayer():EmitSound("bandit/hitsound.wav", 500, 100, 1,CHAN_ITEM)
 end )
 
@@ -508,7 +510,16 @@ function GM:HumanHUD(screenscale)
 			y = y + th
 		end
 	end
-
+	local hitmarkeralpha = (math.Clamp(self.HitMarkerLifeTime+self.LastHitMarker-CurTime(), 0,self.HitMarkerLifeTime)/self.HitMarkerLifeTime)
+	if hitmarkeralpha > 0 then
+		local screen = Vector(ScrW() / 2, ScrH() / 2)
+		local nonred = self.LastHitMarkerHeadshot and 0 or 255
+		surface_SetDrawColor(255,nonred,nonred,255*hitmarkeralpha)
+		surface.DrawLine( screen.x - 35, screen.y - 35, screen.x - 25, screen.y - 25 )
+		surface.DrawLine( screen.x - 35, screen.y + 35, screen.x - 25, screen.y + 25 )
+		surface.DrawLine( screen.x + 35, screen.y - 35, screen.x + 25, screen.y - 25 )
+		surface.DrawLine( screen.x + 35, screen.y + 35, screen.x + 25, screen.y + 25 )
+	end
 	local obsmode = MySelf:GetObserverMode()
 	if obsmode ~= OBS_MODE_NONE then
 		self:ObserverHUD(obsmode)
@@ -556,16 +567,6 @@ function GM:_HUDPaint()
 			self:ObserverHUD(obsmode)
 		end
 	end
-	hitmarkeralpha = math.Approach( hitmarkeralpha, 0, 5 )
-	
-	local screen = Vector(ScrW() / 2, ScrH() / 2)
-	surface_SetDrawColor(255,255,255,hitmarkeralpha)
-	surface.DrawLine( screen.x - 35, screen.y - 35, screen.x - 25, screen.y - 25 )
-	surface.DrawLine( screen.x - 35, screen.y + 35, screen.x - 25, screen.y + 25 )
-	surface.DrawLine( screen.x + 35, screen.y - 35, screen.x + 25, screen.y - 25 )
-	surface.DrawLine( screen.x + 35, screen.y + 35, screen.x + 25, screen.y + 25 )
-	
-
 end
 
 function GM:ObserverHUD(obsmode)

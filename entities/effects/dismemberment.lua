@@ -1,7 +1,6 @@
 function EFFECT:Init(data)
 	self.eEnt = data:GetEntity()
 	self.iScale = math.Round(data:GetScale())
-
 	self.DieTime = CurTime() + 3
 end
 

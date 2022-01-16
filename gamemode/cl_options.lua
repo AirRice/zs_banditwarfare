@@ -7,7 +7,7 @@ GM.ItemCategoryIcons = {
 }
 
 GM.LifeStatsLifeTime = 5
-
+GM.HitMarkerLifeTime = 0.3
 GM.CrosshairColor = Color(CreateClientConVar("zsb_crosshair_colr", "255", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colg", "255", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colb", "255", true, false):GetInt(), 220)
 GM.CrosshairColor2 = Color(CreateClientConVar("zsb_crosshair_colr2", "220", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colg2", "0", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colb2", "0", true, false):GetInt(), 220)
 cvars.AddChangeCallback("zsb_crosshair_colr", function(cvar, oldvalue, newvalue) GAMEMODE.CrosshairColor.r = tonumber(newvalue) or 255 end)
