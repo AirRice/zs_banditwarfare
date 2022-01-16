@@ -39,6 +39,7 @@ SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
 SWEP.Primary.Delay = 0.2
 
+SWEP.Primary.Damage = 10
 SWEP.Primary.ClipSize = 60
 SWEP.Primary.DefaultClip = 180
 SWEP.Primary.Ammo = "Battery"
@@ -53,7 +54,7 @@ SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 
 function SWEP:ShootBullets(dmg, numbul, cone)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
 
@@ -79,7 +80,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 
@@ -101,7 +102,7 @@ function SWEP:Holster()
 end
 
 function SWEP:OnRemove()
-	if CLIENT and self.Owner == LocalPlayer() then
+	if CLIENT and self:GetOwner() == LocalPlayer() then
 		hook.Remove("PostPlayerDraw", "PostPlayerDrawMedical")
 		GAMEMODE.MedicalAura = false
 	end

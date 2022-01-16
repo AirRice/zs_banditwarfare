@@ -72,9 +72,9 @@ SWEP.Recoil = 0.1
 
 SWEP.ReloadSound = ""
 SWEP.Primary.Sound = ""
-SWEP.Primary.Damage = 10
+SWEP.Primary.Damage = 1
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.3
+SWEP.Primary.Delay = 0.05
 
 
 SWEP.WalkSpeed = SPEED_SLOWEST
@@ -87,6 +87,7 @@ SWEP.EndPos = nil
 SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 150
 SWEP.HealRangeSqr = 147456
+SWEP.HealRangeSqrMin = 2048
 SWEP.LastUpdate = 0
 SWEP.PossibleTargets = {}
 sound.Add( {
@@ -120,8 +121,8 @@ function SWEP:Reload()
 end
 
 function SWEP:PrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self:GetNextPrimaryFire() > CurTime() or self:GetCurrentTarget():IsValid() or not (self:GetCurrentLookTarget() and self:GetCurrentLookTarget():IsValid()) then return end
-	if self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0 then
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() or self:GetNextPrimaryFire() > CurTime() or self:GetCurrentTarget():IsValid() or not (self:GetCurrentLookTarget() and self:GetCurrentLookTarget():IsValid()) then return end
+	if self:Ammo1() <= 0 then
 		self:EmitSound("items/suitchargeno1.wav", 75, 110)
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return
@@ -133,7 +134,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return end
 	if self:GetNextPrimaryFire() <= CurTime() then
 		self:SetCurrentTarget(nil)
 		self:SetNextPrimaryFire(CurTime() + 0.5)
@@ -151,7 +152,7 @@ function SWEP:GetClosestTarget()
 		local centre = ent:WorldSpaceCenter()
 		local sqrdst = mypos:DistToSqr(centre)
 		if sqrdst > self.HealRangeSqr then continue end
-		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.9 then continue end
+		if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.9 and not (sqrdst < self.HealRangeSqrMin) then continue end
 		if (minimum == nil or sqrdst < minimum) then
 			minimum = sqrdst
 			selectedTarget = ent
@@ -170,12 +171,12 @@ function SWEP:CheckValidTarget(tgt)
 
 	local centre = tgt:WorldSpaceCenter()
 	local sqrdst = mypos:DistToSqr(centre)
-	if sqrdst > self.HealRangeSqr or (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre) then return false end
+	if sqrdst > self.HealRangeSqr or (not (sqrdst < self.HealRangeSqrMin) and ((centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre))) then return false end
 
 	return true
 end
 
-SWEP.NextEmit = nil
+SWEP.NextEmit = 0
 function SWEP:Think()
 	local curtgt = self:GetCurrentTarget()
 	local owner = self:GetOwner()
@@ -187,13 +188,13 @@ function SWEP:Think()
 			self.LastUpdate = CurTime()
 		end
 	elseif curtgt:IsPlayer() then
-		if not self:CheckValidTarget(curtgt) or self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0 then 
+		if not self:CheckValidTarget(curtgt) or self:Ammo1() <= 0 then 
 			self:SecondaryAttack() 
 		else
 			self:EmitSound("Loop_Palliator_Heal")
 			self:EmitSound("Loop_Palliator_Heal2")
 			local sameteam = curtgt:Team() == owner:Team()
-			if self.NextEmit and self.NextEmit <= CurTime() then
+			if self.NextEmit <= CurTime() then
 				local effectdata = EffectData()
 					effectdata:SetOrigin(curtgt:WorldSpaceCenter())
 					effectdata:SetFlags(sameteam and 1 or 0)
@@ -204,23 +205,24 @@ function SWEP:Think()
 			end
 			if self:GetLastHealTime() + self.Primary.Delay <= CurTime() then
 				if SERVER then
-					local magnitude = math.min(self.Primary.Damage,owner:GetAmmoCount(self:GetPrimaryAmmoType()))
+					local magnitude = math.min(self.Primary.Damage,self:Ammo1())
 					if sameteam then
-						curtgt:GiveStatus("healdartboost").DieTime = CurTime() + 1
-						local oldhealth = curtgt:Health()
-						local newhealth = math.min(oldhealth + magnitude, curtgt:GetMaxHealth())
-						magnitude = newhealth - oldhealth
-						if oldhealth ~= newhealth then
-							curtgt:SetHealth(newhealth)
-							if owner:IsPlayer() then
-								gamemode.Call("PlayerHealedTeamMember", owner, curtgt, newhealth - oldhealth, self)
-							end
+						local boost = curtgt:GetStatus("healdartboost")
+						if !(boost and boost:IsValid()) then
+							boost = curtgt:GiveStatus("healdartboost")
+							boost.DieTime = CurTime() + 1
 						end
+						if curtgt:Health() >= curtgt:GetMaxHealth() then
+							magnitude = 0
+						end
+						curtgt:HealHealth(magnitude,owner,self)
 					else
-						curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
-						curtgt:AddLegDamage(magnitude*2)
-						if math.random(4) == 4 then
-							curtgt:GiveStatus("stunned", 0.2)
+						local invuln = curtgt:GetStatus("spawnbuff")
+						if not (invuln and invuln:IsValid()) then
+							curtgt:TakeSpecialDamage(magnitude, DMG_NERVEGAS, owner, self)
+							curtgt:AddLegDamage(magnitude*2)
+						else
+							magnitude = 0
 						end
 					end
 					owner:RemoveAmmo(magnitude, self:GetPrimaryAmmoType(), false)
@@ -294,7 +296,8 @@ if CLIENT then
 				local sameteam = (self:GetCurrentTarget():Team() == MySelf:Team())
 				local screenscale = BetterScreenScale()
 				surface.SetFont("ZSHUDFontSmall")
-				local text = sameteam and "HEALING "..self:GetCurrentTarget():Name() or "ATTACKING "..self:GetCurrentTarget():Name() 
+				local translatestring = sameteam and "weapon_palliator_healing_x" or "weapon_palliator_attacking_x"
+				local text = translate.Format(translatestring,self:GetCurrentTarget():Name())
 				local _, nTEXH = surface.GetTextSize(text)
 				draw.SimpleText(text, "ZSHUDFontSmall", ScrW() - 218 * screenscale, ScrH() - nTEXH * 6, sameteam and COLOR_DARKGREEN or COLOR_DARKRED, TEXT_ALIGN_CENTER)
 			end

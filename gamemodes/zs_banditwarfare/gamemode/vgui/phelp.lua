@@ -5,14 +5,14 @@ Content = "help_cont_introduction"},
 {Name = "help_cat_keys",
 Content = "help_cont_keys"},
 
+{Name = "help_cat_upgrades",
+Content = "help_cont_upgrades"},
+
 {Name = "help_cat_tips",
 Content = "help_cont_tips"},
 
 {Name = "help_cat_barricading",
-Content = "help_cont_barricading"},
-
-{Name = "help_cat_upgrades",
-Content = "help_cont_upgrades"}
+Content = "help_cont_barricading"}
 }
 
 GM.RoundModeHelp = {

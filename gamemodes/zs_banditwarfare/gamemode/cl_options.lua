@@ -7,7 +7,7 @@ GM.ItemCategoryIcons = {
 }
 
 GM.LifeStatsLifeTime = 5
-
+GM.HitMarkerLifeTime = 0.3
 GM.CrosshairColor = Color(CreateClientConVar("zsb_crosshair_colr", "255", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colg", "255", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colb", "255", true, false):GetInt(), 220)
 GM.CrosshairColor2 = Color(CreateClientConVar("zsb_crosshair_colr2", "220", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colg2", "0", true, false):GetInt(), CreateClientConVar("zsb_crosshair_colb2", "0", true, false):GetInt(), 220)
 cvars.AddChangeCallback("zsb_crosshair_colr", function(cvar, oldvalue, newvalue) GAMEMODE.CrosshairColor.r = tonumber(newvalue) or 255 end)
@@ -84,6 +84,11 @@ end)
 GM.DontDoRagdollEyes = CreateClientConVar("zsb_ragdolleyes", "1", true, false):GetBool()
 cvars.AddChangeCallback("zsb_ragdolleyes", function(cvar, oldvalue, newvalue)
 	GAMEMODE.DontDoRagdollEyes = tonumber(newvalue) == 1
+end)
+
+GM.UseModelHealthBar = CreateClientConVar("zsb_modelhealthbar", "1", true, false):GetBool()
+cvars.AddChangeCallback("zsb_modelhealthbar", function(cvar, oldvalue, newvalue)
+	GAMEMODE.UseModelHealthBar = tonumber(newvalue) == 1
 end)
 
 CreateConVar( "cl_playercolor", "0.24 0.34 0.41", { FCVAR_ARCHIVE, FCVAR_USERINFO }, "The value is a Vector - so between 0-1 - not between 0-255" )

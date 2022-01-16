@@ -27,7 +27,7 @@ if CLIENT then
 	SWEP.ViewModelFOV = 65
 	SWEP.ViewModelFlip = false
 
-	SWEP.Slot = 2
+	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 end
 
@@ -91,7 +91,7 @@ function SWEP:PrimaryAttack()
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
@@ -117,13 +117,6 @@ end
 
 if CLIENT then
 	function SWEP:PostDrawViewModel(vm, pl, wep)
-		if self.HUD3DPos and GAMEMODE.WeaponHUDMode ~= 1 then
-			local pos, ang = self:GetHUD3DPos(vm)
-			if pos then
-				self:Draw3DHUD(vm, pos, ang)
-			end
-		end
-
 		local veles = self.VElements
 
 		local boltpos = veles["BOLT"].pos
@@ -149,6 +142,9 @@ if CLIENT then
 		else
 			boltpos.y = 11
 			backang.pitch = 95
+		end
+		if self.BaseClass.PostDrawViewModel then 
+			self.BaseClass.PostDrawViewModel(self,vm, pl, wep)
 		end
 	end
 end

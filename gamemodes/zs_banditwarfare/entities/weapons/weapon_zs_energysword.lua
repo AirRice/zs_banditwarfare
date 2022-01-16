@@ -38,7 +38,7 @@ SWEP.MeleeSize = 2
 SWEP.WalkSpeed = SPEED_NORMAL
 
 SWEP.Primary.Delay = 0.5
-SWEP.Secondary.Delay = 10
+SWEP.Secondary.Delay = 5
 SWEP.SwiftStriking = false
 SWEP.CapFallDamage = true
 SWEP.HitAnim = ACT_VM_MISSCENTER
@@ -66,4 +66,116 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		edata:SetScale(1)
 		util.Effect("AR2Impact", edata)
 		--util.Decal("Manhackcut", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+end
+
+function SWEP:Think()
+
+	local curtime = CurTime()
+	local owner = self:GetOwner()
+
+	if self.SwiftStriking then
+			local dir = owner:GetAimVector()
+			dir.z = math.Clamp(dir.z, -0.5, 0.9)
+			dir:Normalize()
+
+			owner:LagCompensation(true)
+
+			local traces = owner:PenetratingMeleeTrace(24, 12, owner:LocalToWorld(owner:OBBCenter()), dir)
+			local ownerspeed = owner:GetVelocity():Length()
+			local hit = false
+			for _, trace in ipairs(traces) do
+				if not trace.Hit then continue end
+				if trace.HitWorld then
+					if trace.HitNormal.z < 0.8 then
+						hit = true
+						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+					end
+				else
+					local ent = trace.Entity
+					if ent and ent:IsValid() then
+						hit = true
+						self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+						local nearest = ent:NearestPoint(trace.StartPos)
+						ent:ThrowFromPositionSetZ(self:GetOwner():GetPos(), ownerspeed * 0.3)
+						self:ApplyMeleeDamage(ent, trace, math.Clamp(ownerspeed/1400,0,2)*self.MeleeDamage)
+					end
+				end
+			end
+
+			if SERVER and hit then
+				owner:EmitSound("npc/strider/strider_skewer1.wav")
+			end
+
+			owner:LagCompensation(false)
+
+			if hit then
+				self.SwiftStriking = false
+				self:GetOwner():SetGravity(1)
+				self:GetOwner():SetFriction(1)
+			end
+	end
+	self.BaseClass.Think(self)
+	self:NextThink(curtime)
+	return true
+
+end
+
+function SWEP:ApplyMeleeDamage(ent, trace, damage)
+	ent:EmitSound("npc/manhack/grind_flesh1.wav")
+	if ent:IsPlayer() then
+		ent:TakeSpecialDamage(damage, self.DamageType, self:GetOwner(), self, trace.HitPos)
+	else
+		local dmgtype, owner, hitpos = self.DamageType, self:GetOwner(), trace.HitPos
+		timer.Simple(0, function() -- Avoid prediction errors.
+			if ent:IsValid() then
+				ent:TakeSpecialDamage(damage, dmgtype, owner, self, hitpos)
+			end
+		end)
+	end
+end
+
+function SWEP:SecondaryAttack()
+	if self:GetNextSecondaryFire() <= CurTime() and not self:GetOwner():IsHolding() then
+	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+	self:EmitSound("npc/env_headcrabcanister/incoming.wav", 80, math.Rand(90, 100))
+	if SERVER then
+		local fwd = 500
+		self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
+		self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+		local pushvel = self:GetOwner():GetEyeTrace().Normal * fwd + (self:GetOwner():GetAngles():Up()*100)
+        self:GetOwner():SetGroundEntity(nil)
+        self:GetOwner():SetLocalVelocity( self:GetOwner():GetVelocity() + pushvel)
+		self.SwiftStriking = true
+		local ownerplayer = self:GetOwner()
+		timer.Simple( 0.75, function() 
+			if self and self:IsValid() and self:GetOwner() and self:GetOwner():IsValid() and self:GetOwner():IsPlayer() and self:GetOwner():Alive() then 
+				self.SwiftStriking = false
+			end 
+		end)
+		
+    end
+	end
+end
+
+if not CLIENT then return end
+local texGradDown = surface.GetTextureID("VGUI/gradient_down")
+function SWEP:DrawHUD()
+	local scrW = ScrW()
+	local scrH = ScrH()
+	local width = 200
+	local height = 30
+	local x, y = ScrW() - width - 32, ScrH() - height - 72
+	local ratio = math.max(self:GetNextSecondaryFire()-CurTime(),0) / self.Secondary.Delay
+	if ratio > 0 then
+		surface.SetDrawColor(5, 5, 5, 180)
+		surface.DrawRect(x, y, width, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.SetTexture(texGradDown)
+		surface.DrawTexturedRect(x, y, width*ratio, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.DrawOutlinedRect(x - 1, y - 1, width + 2, height + 2)
+	end
+	if self.BaseClass.DrawHUD then
+		self.BaseClass.DrawHUD(self)
+	end
 end

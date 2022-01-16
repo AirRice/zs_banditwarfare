@@ -31,8 +31,8 @@ end
 SWEP.Base = "weapon_zs_base"
 SWEP.UseHands = true
 SWEP.ShowViewModel = false
-SWEP.HoldType = "rpg"
-
+SWEP.HoldType = "shotgun"
+SWEP.IronSightsHoldType = "rpg"
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
 
@@ -58,8 +58,6 @@ SWEP.reloadtimer = 0
 SWEP.nextreloadfinish = 0
 SWEP.PukeLeft = 0
 SWEP.NextPuke = 0
-function SWEP:SecondaryAttack()
-end
 
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
@@ -69,24 +67,24 @@ function SWEP:PrimaryAttack()
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
 	self.PukeLeft = self.PukeLeft + self.Primary.NumShots
-	self.Owner:EmitSound("npc/barnacle/barnacle_die2.wav")
-	self.Owner:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
+	self:GetOwner():EmitSound("npc/barnacle/barnacle_die2.wav")
+	self:GetOwner():EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav", 72, math.Rand(85, 95))
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end
 
 function SWEP:Reload()
 	if self.reloading then return end
 
-	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + self.ReloadDelay)
 		self.reloading = true
 		self.reloadtimer = CurTime() + self.ReloadDelay
 		self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
-		self.Owner:RestartGesture(ACT_HL2MP_GESTURE_RELOAD_SHOTGUN)
+		self:GetOwner():RestartGesture(ACT_HL2MP_GESTURE_RELOAD_SHOTGUN)
 	end
 end
 
@@ -95,11 +93,11 @@ function SWEP:Think()
 		self.reloadtimer = CurTime() + self.ReloadDelay
 		self:SendWeaponAnim(ACT_VM_RELOAD)
 
-		self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
+		self:GetOwner():RemoveAmmo(1, self.Primary.Ammo, false)
 		self:SetClip1(self:Clip1() + 1)
 		self:EmitSound("Weapon_Shotgun.Reload")
 
-		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 then
+		if self.Primary.ClipSize <= self:Clip1() or self:Ammo1() <= 0 then
 			self.nextreloadfinish = CurTime() + self.ReloadDelay
 			self.reloading = false
 			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -113,11 +111,11 @@ function SWEP:Think()
 		self.nextreloadfinish = 0
 	end
 
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetIronsights() and not self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
 
-	local pl = self.Owner
+	local pl = self:GetOwner()
 	local cone = self:GetCone()
 	if self.PukeLeft > 0 and CurTime() >= self.NextPuke and SERVER then
 		self.PukeLeft = self.PukeLeft - 1
@@ -132,7 +130,7 @@ function SWEP:Think()
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				local cone = math.deg(self:GetCone())
-				local eyeang = self.Owner:EyeAngles()
+				local eyeang = self:GetOwner():EyeAngles()
 				eyeang:RotateAroundAxis(eyeang:Forward(),util_SharedRandom("rotate"..self:EntIndex(), 0, 360))
 				eyeang:RotateAroundAxis(eyeang:Up(),util_SharedRandom("bulletangle"..self:EntIndex(), -cone, cone))
 				phys:Wake()
@@ -148,7 +146,7 @@ function SWEP:Think()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:Clip1() <= 0 then
 		self:EmitSound("Weapon_Shotgun.Empty")

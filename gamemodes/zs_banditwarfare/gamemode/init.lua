@@ -35,7 +35,7 @@ AddCSLuaFile("obj_weapon_extend.lua")
 AddCSLuaFile("obj_entity_extend.lua")
 
 AddCSLuaFile("vgui/dgamestate.lua")
-AddCSLuaFile("vgui/dsigilcounter.lua")
+AddCSLuaFile("vgui/dtransmittercounter.lua")
 AddCSLuaFile("vgui/dteamcounter.lua")
 AddCSLuaFile("vgui/dmodelpanelex.lua")
 AddCSLuaFile("vgui/dweaponloadoutbutton.lua")
@@ -51,13 +51,11 @@ AddCSLuaFile("vgui/dexrotatedimage.lua")
 AddCSLuaFile("vgui/dexnotificationslist.lua")
 AddCSLuaFile("vgui/dexchanginglabel.lua")
 
-AddCSLuaFile("vgui/mainmenu.lua")
 AddCSLuaFile("vgui/pmainmenu.lua")
 AddCSLuaFile("vgui/poptions.lua")
 AddCSLuaFile("vgui/phelp.lua")
 AddCSLuaFile("vgui/pweapons.lua")
 AddCSLuaFile("vgui/pendboard.lua")
-AddCSLuaFile("vgui/psigils.lua")
 AddCSLuaFile("vgui/ppointshop.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 
@@ -68,7 +66,7 @@ include("obj_player_extend_sv.lua")
 include("mapeditor.lua")
 include("sv_playerspawnentities.lua")
 include("sv_profiling.lua")
-include("sv_sigils.lua")
+include("sv_objectives.lua")
 
 if file.Exists(GM.FolderName.."/gamemode/maps/"..game.GetMap()..".lua", "LUA") then
 	include("maps/"..game.GetMap()..".lua")
@@ -173,12 +171,12 @@ function GM:AddResources()
 	resource.AddFile("materials/models/weapons/hammer.vmt")
 	resource.AddFile("materials/models/weapons/v_hand/armtexture.vmt")
 	
-	resource.AddFile("models/weapons/v_annabelle.mdl")	
+	resource.AddFile("models/weapons/c_annabelle.mdl")	
 	resource.AddFile("models/weapons/w_sledgehammer.mdl")
 	resource.AddFile("models/weapons/v_sledgehammer/c_sledgehammer.mdl")
 	resource.AddFile("models/weapons/w_hammer.mdl")
 	resource.AddFile("models/weapons/v_hammer/c_hammer.mdl")
-	resource.AddFile("models/weapons/v_aegiskit.mdl")
+	resource.AddFile("models/weapons/c_aegiskit.mdl")
 
 	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-01.ogg")
 	resource.AddFile("sound/weapons/melee/golfclub/golf_hit-02.ogg")
@@ -222,7 +220,7 @@ function GM:AddResources()
 
 	resource.AddFile("sound/music/bandit/lasthuman.ogg")
 	resource.AddFile("sound/music/bandit/music_humanwin_vrts.ogg")
-	resource.AddFile("sound/music/bandit/music_banditwin_vrts.ogg")
+	resource.AddFile("sound/music/bandit/music_banditwin_vrts_2.ogg")
 	resource.AddFile("sound/music/bandit/music_lose.ogg")
 end
 
@@ -284,7 +282,7 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_dmg_prop")
 	util.AddNetworkString("zs_legdamage")
 	util.AddNetworkString("zs_bodyarmor")
-	util.AddNetworkString("zs_currentsigils")
+	util.AddNetworkString("zs_currenttransmitters")
 	util.AddNetworkString("zs_hitmarker")
 	
 	util.AddNetworkString("zs_pl_kill_pl")
@@ -636,7 +634,7 @@ function GM:Think()
 				gamemode.Call("SetWaveActive", false)
 			end
 			if not self:IsClassicMode() and not self.SuddenDeath and self:IsTransmissionMode() then
-				gamemode.Call("SigilCommsThink")
+				gamemode.Call("TransmitterCommsThink")
 			elseif not self:IsClassicMode() and not self.SuddenDeath and self:IsSampleCollectMode() then
 				gamemode.Call("SamplesThink")
 			end
@@ -695,15 +693,13 @@ function GM:Think()
 
 	if NextTick <= time then
 		NextTick = time + 1
-
-		local doafk = not self:GetWaveActive() and wave == 0
-
+		
 		for _, pl in ipairs(allplayers) do
 			if pl:Alive() then
-
 				if pl:WaterLevel() >= 3 and not (pl.status_drown and pl.status_drown:IsValid()) then
 					pl:GiveStatus("drown")
 				end
+				pl:PreventSkyCade()
 			end
 		end
 	end
@@ -821,7 +817,14 @@ function GM:PreRestartRound()
 	for _, pl in ipairs(player.GetAll()) do
 		pl:StripWeapons()
 		pl:Spectate(OBS_MODE_ROAMING)
+		pl:SetTeam(TEAM_UNASSIGNED)
 		pl:GodDisable()
+	end
+end
+
+function GM:ResetPlayerTeams()
+	for _, pl in ipairs(player.GetAll()) do
+		pl:SetTeam(TEAM_UNASSIGNED)
 	end
 end
 
@@ -839,13 +842,10 @@ function GM:RestartRound()
 	net.Broadcast()
 end
 GM.TiedWaves = 0
-GM.DynamicSpawning = true
-GM.CappedInfliction = 0
-GM.StartingZombie = {}
 GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
-GM.CurrentSigilTable = {}
+GM.CurrentTransmitterTable = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
 GM.SuddenDeath = false
@@ -853,7 +853,7 @@ GM.CurrentWaveWinner = nil
 GM.NextNestSpawn = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
-	self.UseSigils = nil
+	self.UseTransmitters = nil
 	self:SetComms(0,0)
 	self:SetSamples(0,0)
 	self.NextNestSpawn = nil
@@ -863,10 +863,9 @@ function GM:RestartLua()
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentSigilTable = {}
+	self.CurrentTransmitterTable = {}
 	self:SetCurrentWaveWinner(nil)
 
-	self.CappedInfliction = 0
 	
 	self.PreviouslyDied = {}
 	self.PreviousTeam = {}
@@ -899,12 +898,12 @@ function GM:DoRestartGame()
 	end
 	self.CurrentMapLoadedPlayers = 0
 	self.ShuffledPlayersThisRound = false
-	net.Start("zs_currentsigils")
-		for i=1, self.MaxSigils do
+	net.Start("zs_currenttransmitters")
+		for i=1, self.MaxTransmitters do
 			net.WriteInt(0,4)
 		end
 	net.Broadcast()
-	self.CurrentSigilTable = {}
+	self.CurrentTransmitterTable = {}
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -998,7 +997,7 @@ function GM:EndRound(winner)
 	end
 	
 	
-	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughSigils(mapname) and player.GetCount() >= 6 then
+	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
@@ -1209,7 +1208,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	if self.PreviousPoints[pl:UniqueID()] then
 		pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
 	elseif self:GetWave() > 0 then
-		pl:AddPoints(self:GetTeamPoints(pl:Team())/team.NumPlayers(pl:Team()))
+		pl:AddPoints(self:GetTeamPoints(pl:Team())/(team.NumPlayers(pl:Team())-1))
 	else
 		pl:AddPoints(20)
 	end
@@ -1229,10 +1228,6 @@ function GM:PlayerInitialSpawnRound(pl)
 	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 		timer.Simple(0.2, function() pl:Kill() end)
 	end
-end
-
-function GM:GetDynamicSpawning()
-	return self.DynamicSpawning
 end
 
 function GM:PlayerDisconnected(pl)
@@ -1706,17 +1701,17 @@ end
 
 function GM:CanRespawnQuicker(ply)
 	if ply == nil or not ply:IsPlayer() or self:IsSampleCollectMode() then return false end
-	local banditsigils, humansigils = 0,0
-	for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
-		if ent:GetSigilCaptureProgress() > 0 then
-			if ent:GetSigilTeam() == TEAM_BANDIT then
-				banditsigils = banditsigils + 1
-			elseif ent:GetSigilTeam() == TEAM_HUMAN then
-				humansigils = humansigils + 1
+	local banditobjs, humanobjs = 0,0
+	for _, ent in pairs(ents.FindByClass("prop_obj_transmitter")) do
+		if ent:GetTransmitterCaptureProgress() > 0 then
+			if ent:GetTransmitterTeam() == TEAM_BANDIT then
+				banditobjs = banditobjs + 1
+			elseif ent:GetTransmitterTeam() == TEAM_HUMAN then
+				humanobjs = humanobjs + 1
 			end
 		end
 	end
-	if (banditsigils < humansigils and ply:Team() == TEAM_BANDIT) or (humansigils < banditsigils and ply:Team() == TEAM_HUMAN) then
+	if (banditobjs < humanobjs and ply:Team() == TEAM_BANDIT) or (humanobjs < banditobjs and ply:Team() == TEAM_HUMAN) then
 		--ply:CenterNotify(COLOR_RED, translate.ClientGet(pl, "respawn_quicker"))
 		return true
 	else
@@ -1796,18 +1791,30 @@ function GM:EntityTakeDamage(ent, dmginfo)
 	local dispatchdamagedisplay = false
 
 	local entclass = ent:GetClass()
-
 	if ent:IsPlayer() then
 		dispatchdamagedisplay = true
-		if (attacker:IsPlayer() and attacker ~= ent) then
-			local activewep = attacker:GetActiveWeapon()
-			local dmgtype = dmginfo:GetDamageType()
-			local head = (ent:LastHitGroup() == HITGROUP_HEAD)
-			if dmgtype ~= DMG_BLAST or dmgtype ~= DMG_BURN or dmgtype ~= DMG_SLOWBURN then
-				net.Start( "zs_hitmarker" )
-					net.WriteBool( ent:IsPlayer() )
-					net.WriteBool( head )
-				net.Send( attacker )
+		if attacker:IsValid() then
+			if attacker:IsPlayer() then
+				ent:SetLastAttacker(attacker)
+
+				local myteam = attacker:Team()
+				local otherteam = ent:Team()
+				if myteam ~= otherteam then
+					damage = math.min(dmginfo:GetDamage(), ent:Health())
+					if damage > 0 then
+						attacker.DamageDealt = attacker.DamageDealt + damage
+
+						attacker:AddLifeEnemyDamage(damage)
+						ent.DamagedBy[attacker] = (ent.DamagedBy[attacker] or 0) + damage
+						attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * ent:GetBounty()+ math.floor(ent:GetFullPoints()/100),0) 
+						local pos = ent:GetPos()
+						pos.z = pos.z + 32
+						attacker.m_LastDamageDealtPosition = pos
+						attacker.m_LastDamageDealt = CurTime()
+					end
+				end
+			elseif attacker:GetClass() == "trigger_hurt" then
+				ent.LastHitWithTriggerHurt = CurTime()
 			end
 		end
 	elseif ent.PropHealth then -- A prop that was invulnerable and converted to vulnerable.
@@ -1972,7 +1979,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		ent:SetColor(col)
 
 		dispatchdamagedisplay = true
-	elseif ent:IsBarricadeProp() and attacker:IsPlayer() then
+	elseif ent:IsBarricadeProp() and attacker:IsPlayer() and not ent.NoDamageNumbers and not ent:IsSameTeam(attacker)then
 		dispatchdamagedisplay = true
 	end
 	if dmginfo:GetDamage() > 0 then
@@ -2000,12 +2007,13 @@ function GM:DamageFloater(attacker, victim, dmginfo)
 	net.Send(attacker)
 end
 
-function GM:OnPlayerChangedTeam(pl, oldteam, newteam)
+function GM:PlayerChangedTeam(pl, oldteam, newteam)
 	local uid = pl:UniqueID()
 	if newteam == TEAM_HUMAN or newteam == TEAM_BANDIT then
 		pl.DamagedBy = {}
 		self.PreviouslyDied[uid] = nil
 		pl:SetBarricadeGhosting(false)
+		timer.Simple(0.25, function() pl:RefreshPlayerModel() end)
 	elseif newteam == TEAM_SPECTATOR then
 		self.PreviousTeam[uid] = oldteam
 		self.PreviousPoints[uid] = pl:GetPoints()
@@ -2041,29 +2049,6 @@ function GM:PlayerHurt(victim, attacker, healthremaining, damage)
 	if 0 < healthremaining then
 		victim:PlayPainSound()
 	end
-
-	if attacker:IsValid() then
-		if attacker:IsPlayer() then
-			victim:SetLastAttacker(attacker)
-
-			local myteam = attacker:Team()
-			local otherteam = victim:Team()
-			if myteam ~= otherteam then
-				damage = math.min(damage, victim.m_PreHurtHealth)
-				victim.m_PreHurtHealth = healthremaining
-
-				attacker.DamageDealt = attacker.DamageDealt + damage
-
-				attacker:AddLifeEnemyDamage(damage)
-				victim.DamagedBy[attacker] = (victim.DamagedBy[attacker] or 0) + damage
-				attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / victim:GetMaxHealth(),0,1) * victim:GetBounty()+ math.floor(victim:GetFullPoints()/100),0) 
-				attacker.m_LastDamageDealtPosition = victim:GetPos()
-				attacker.m_LastDamageDealt = CurTime()
-			end
-		elseif attacker:GetClass() == "trigger_hurt" then
-			victim.LastHitWithTriggerHurt = CurTime()
-		end
-	end
 end
 
 function GM:WeaponDeployed(pl, wep)
@@ -2071,7 +2056,7 @@ function GM:WeaponDeployed(pl, wep)
 end
 
 function GM:KeyPress(pl, key)
-	if not pl:Alive() and pl:GetObserverMode() ~= OBS_MODE_NONE then
+	if (not pl:Alive() or pl:Team() != TEAM_BANDIT and pl:Team() != TEAM_HUMAN) and pl:GetObserverMode() ~= OBS_MODE_NONE then
 		if key == IN_ATTACK2 then
 			pl.SpectatedPlayerKey = (pl.SpectatedPlayerKey or 0) + 1
 			local living = {}
@@ -2091,8 +2076,13 @@ function GM:KeyPress(pl, key)
 			end
 			local specplayer = living[pl.SpectatedPlayerKey]
 			if specplayer and specplayer:IsPlayer() and specplayer:Alive() then
-				pl:Spectate(OBS_MODE_CHASE)
+				local lastspecmode = pl:GetObserverMode()
+				if (lastspecmode != OBS_MODE_CHASE and lastspecmode != OBS_MODE_IN_EYE) then 
+					lastspecmode = OBS_MODE_CHASE
+				end
+				pl:Spectate(lastspecmode)
 				pl:SpectateEntity(specplayer)
+				pl:SetupHands(specplayer)
 			end
 		elseif key == IN_DUCK then 
 			local specplayer = pl:GetObserverTarget()
@@ -2100,15 +2090,16 @@ function GM:KeyPress(pl, key)
 				if pl:GetObserverMode() == OBS_MODE_CHASE then
 					pl:Spectate(OBS_MODE_IN_EYE)
 					pl:SpectateEntity(specplayer)
+					pl:SetupHands(specplayer)
 				elseif pl:GetObserverMode() == OBS_MODE_IN_EYE then
 					pl:Spectate(OBS_MODE_CHASE)
 					pl:SpectateEntity(specplayer)
 				end
 			end
 		elseif key == IN_JUMP then
-			if pl:IsSpectator() then
+			if pl:IsSpectator() and pl:GetObserverMode() != OBS_MODE_ROAMING then
 				pl:Spectate(OBS_MODE_ROAMING)
-				pl:SpectateEntity(NULL)
+				pl:SpectateEntity(nil)
 				pl.SpectatedPlayerKey = nil
 			end
 		end
@@ -2205,24 +2196,21 @@ function GM:PlayerDeath(pl, inflictor, attacker)
 			net.WriteEntity(pl)
 		net.Broadcast()
 	end
-end
-
-function GM:PostPlayerDeath(pl)
 	if self:IsClassicMode() then
 		self.RoundEndCamPos = pl:WorldSpaceCenter()
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
 	end
-	local banditcount = 0
-	local humancount = 0
-	for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
-		if bandit:Alive() then banditcount = banditcount +1 end
-	end
-	for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
-		if human:Alive() then humancount = humancount +1 end
-	end
 	if self:GetWaveActive() and (self:IsClassicMode() or self.SuddenDeath) then 
+		local banditcount = 0
+		local humancount = 0
+		for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
+			if bandit:Alive() then banditcount = banditcount +1 end
+		end
+		for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
+			if human:Alive() then humancount = humancount +1 end
+		end
 		if humancount == 0 or banditcount == 0 then
 			self.SuddenDeath = false
 			net.Start("zs_suddendeath")
@@ -2246,6 +2234,9 @@ function GM:PostPlayerDeath(pl)
 			end
 		end
 	end
+end
+
+function GM:PostPlayerDeath(pl)
 end
 
 function GM:PlayerDeathSound()
@@ -2342,7 +2333,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	local suicide = attacker == pl or attacker:IsWorld()
 	pl:Freeze(false)
 
-	local headshot = pl:LastHitGroup() == HITGROUP_HEAD and pl.m_LastHeadShot and CurTime() <= pl.m_LastHeadShot + 0.1 and not inflictor.IgnoreDamageScaling
+	local headshot = pl:WasHitInHead() and not inflictor.IgnoreDamageScaling 
 	local samplestodrop = 0
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()
@@ -2356,7 +2347,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 		end
 	end
 
-	if headshot then
+	if headshot and not (dmginfo:GetDamageType() == DMG_CLUB) then
 		local effectdata = EffectData()
 			effectdata:SetOrigin(dmginfo:GetDamagePosition())
 			local force = dmginfo:GetDamageForce()
@@ -2365,6 +2356,20 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
 		samplestodrop = samplestodrop + 3
+		if dmginfo:GetDamageType() == DMG_SLASH then
+			local headbonei = pl:LookupBone("ValveBiped.Bip01_Head1")
+			local headpos, headang = pl:GetBonePosition(headbonei)
+			if headpos == pl:GetPos() then
+				headpos = pl:GetBoneMatrix(headbonei):GetTranslation()
+			end
+			local ent = ents.CreateLimited("prop_playergib")
+			if ent:IsValid() then
+				ent:SetPos(headpos)
+				ent:SetAngles(headang)
+				ent:SetGibType(1)
+				ent:Spawn()
+			end
+		end
 	end
 	if pl:Health() <= -70 and not pl.NoGibs then
 		pl:Gib(dmginfo)
@@ -2547,36 +2552,7 @@ function GM:PlayerSpawn(pl)
 		pl.DamagedBy = {}
 		pl.m_PointQueue = 0
 		pl.PackedItems = {}
-		
-		local desiredname = pl:GetInfo("cl_playermodel")
-		local randommodel = self.RandomPlayerModels[math.random(#self.RandomPlayerModels)]
-		if (pl:Team() == TEAM_HUMAN) then
-			randommodel = self.RandomSurvivorModels[math.random(#self.RandomSurvivorModels)]
-		elseif (pl:Team() == TEAM_BANDIT) then
-			randommodel = self.RandomBanditModels[math.random(#self.RandomBanditModels)]
-		end
-		
-		
-		if #desiredname == 0 then
-			desiredname = randommodel
-		end
-		
-		local modelname = player_manager.TranslatePlayerModel(desiredname)
-		if table.HasValue(self.RestrictedModels, string.lower(modelname)) or (pl:Team() == TEAM_HUMAN and table.HasValue(self.RandomBanditModels, string.lower(desiredname))) or (pl:Team() == TEAM_BANDIT and table.HasValue(self.RandomSurvivorModels, string.lower(desiredname))) then
-			modelname = player_manager.TranslatePlayerModel(randommodel)
-		end
-		local lowermodelname = string.lower(modelname)
-		pl:SetModel(modelname)
-		
-		-- Cache the voice set.
-		if self.VoiceSetTranslate[lowermodelname] then
-			pl.VoiceSet = self.VoiceSetTranslate[lowermodelname]
-		elseif string.find(lowermodelname, "female", 1, true) then
-			pl.VoiceSet = "female"
-		else
-			pl.VoiceSet = "male"
-		end
-
+		pl:RefreshPlayerModel()
 		pl:ResetSpeed()
 		pl:SetJumpPower(DEFAULT_JUMP_POWER)
 		pl:SetCrouchedWalkSpeed(0.65)
@@ -2594,17 +2570,8 @@ function GM:PlayerSpawn(pl)
 		pl.NoObjectPickup = nil
 		pl.DamageVulnerability = nil
 			
+		pl:SetupHands()
 
-		local oldhands = pl:GetHands()
-		if IsValid(oldhands) then
-			oldhands:Remove()
-		end
-
-		local hands = ents.Create("zs_hands")
-		if hands:IsValid() then
-			hands:DoSetup(pl)
-			hands:Spawn()
-		end
 		if self:IsClassicMode() then
 			for _, wep in pairs(pl.ClassicModeInsuredWeps) do
 				local storedwep = weapons.GetStored(wep)
@@ -2621,7 +2588,10 @@ function GM:PlayerSpawn(pl)
 		else
 			pl:UpdateWeaponLoadouts()
 			if not self.SuddenDeath then
-				pl:GiveStatus("spawnbuff").Owner = pl
+				local buff = pl:GiveStatus("spawnbuff")
+				if buff and IsValid(buff) then
+					buff:SetOwner(pl)
+				end
 			end
 		end
 	end
@@ -2637,8 +2607,6 @@ function GM:PlayerSpawn(pl)
 	wcol.y = math.Clamp(wcol.y, 0, 2.5)
 	wcol.z = math.Clamp(wcol.z, 0, 2.5)
 	pl:SetWeaponColor(wcol)
-
-	pl.m_PreHurtHealth = pl:Health()
 end
 
 function GM:SetWave(wave)
@@ -2672,7 +2640,7 @@ function GM:WaveStateChanged(newstate)
 		if prevwave >= self:GetNumberOfWaves() and not self.SuddenDeath then return end
 		if not self:IsClassicMode() and not self.SuddenDeath then
 			if self:IsTransmissionMode() then
-				gamemode.Call("CreateObjectives","prop_obj_sigil",false)
+				gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
 			elseif self:IsSampleCollectMode() then
 				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
 			end
@@ -2752,9 +2720,13 @@ function GM:WaveStateChanged(newstate)
 			local teamspawns = {}
 			teamspawns = team.GetValidSpawnPoint(pl:Team())
 			if pl:GetInfo("zsb_spectator") == "1" then
-				pl:ChangeTeam(TEAM_SPECTATOR)
-				pl:StripWeapons( )
-				pl:Spectate( OBS_MODE_ROAMING )	
+				if pl:Team() != TEAM_SPECTATOR then
+					pl:ChangeTeam(TEAM_SPECTATOR)
+				end
+				pl:StripWeapons()
+				if pl:GetObserverMode() != OBS_MODE_ROAMING then
+					pl:Spectate(OBS_MODE_ROAMING)
+				end
 			elseif pl:Alive() then
 				if not self:IsClassicMode() then
 					pl:UpdateWeaponLoadouts()
@@ -2814,15 +2786,15 @@ function GM:WaveStateChanged(newstate)
 			net.WriteFloat(self:GetWaveStart())
 			net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
 		net.Broadcast()
-		net.Start("zs_currentsigils")
-			for i=1, self.MaxSigils do
+		net.Start("zs_currenttransmitters")
+			for i=1, self.MaxTransmitters do
 				net.WriteInt(0,4)
 			end
 		net.Broadcast()
-		self.CurrentSigilTable = {}
+		self.CurrentTransmitterTable = {}
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
-		util.RemoveAll("prop_obj_sigil")
+		util.RemoveAll("prop_obj_transmitter")
 		util.RemoveAll("prop_obj_nest")
 		util.RemoveAll("prop_obj_sample")
 		util.RemoveAll("prop_sampledepositterminal")

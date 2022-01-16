@@ -105,7 +105,7 @@ function SWEP:Deploy()
 end
 
 function SWEP:ShootBullets(dmg, numbul, cone)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	if SERVER then
 		self:SetConeAndFire()
@@ -129,14 +129,14 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocityInstantaneous(self.Owner:GetAimVector() * 1000)
+				phys:SetVelocityInstantaneous(self:GetOwner():GetAimVector() * 1000)
 			end
 		end
 	end
 end
 
 function SWEP:Think()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not self.BarrelAligned then
 		if CLIENT then
 			if self.LastBarrelAngle %360 == 0 then

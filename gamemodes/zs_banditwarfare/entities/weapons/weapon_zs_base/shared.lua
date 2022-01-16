@@ -33,7 +33,7 @@ SWEP.Secondary.Ammo = "dummy"
 SWEP.WalkSpeed = SPEED_NORMAL
 SWEP.ReloadSpeed = 1
 SWEP.HoldType = "pistol"
-SWEP.IronSightsHoldType = "ar2"
+--SWEP.IronSightsHoldType = "ar2"
 
 SWEP.IdleActivity = ACT_VM_IDLE
 
@@ -78,7 +78,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:DoRecoil()
-	if (!IsValid(self.Owner)) then
+	if (!IsValid(self:GetOwner())) then
 		return
 	end
 	
@@ -86,7 +86,7 @@ function SWEP:DoRecoil()
 	
 	local mul = 1
 	
-	if (self.Owner:Crouching()) then
+	if (self:GetOwner():Crouching()) then
 		mul = mul - 0.2
 	end
 	
@@ -97,13 +97,13 @@ function SWEP:DoRecoil()
 	recoil = recoil * mul
 	
 	if SERVER then
-		self.Owner:ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
+		self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 	else
-		local curAng = self.Owner:EyeAngles()
+		local curAng = self:GetOwner():EyeAngles()
 		curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
 		curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
 		curAng.Roll = 0
-		self.Owner:SetEyeAngles(curAng)
+		self:GetOwner():SetEyeAngles(curAng)
 	end
 end
 
@@ -111,12 +111,12 @@ function SWEP:GetCone()
 	local basecone = self.ConeMin
 	local conediff = self.ConeMax - self.ConeMin + self.MovingConeOffset
 	
-	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1)*0.3
-	if !self.Owner:OnGround() then
+	local multiplier = math.min(self:GetOwner():GetVelocity():Length() / self.WalkSpeed, 1)*0.3
+	if !self:GetOwner():OnGround() then
 		basecone = basecone * 1.2
 		multiplier = 0.55
 	end
-	if self.Owner:Crouching() then 
+	if self:GetOwner():Crouching() then 
 		multiplier = multiplier - 0.1 
 	end
 	if self:GetIronsights() then 
@@ -136,7 +136,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if self:GetNextSecondaryFire() <= CurTime() and not self.Owner:IsHolding() and not (self:GetReloadFinish() > 0) then
+	if self:GetNextSecondaryFire() <= CurTime() and not self:GetOwner():IsHolding() and not (self:GetReloadFinish() > 0) then
 		self:SetIronsights(true)
 	end
 end
@@ -154,19 +154,19 @@ function SWEP:EmitReloadFinishSound()
 end
 
 function SWEP:CanReload()
-	local hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) > 0)
+	local hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:Ammo1() > 0)
 	if self.RequiredClip > 1 then
-		hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) >= self.RequiredClip)
+		hasclip1 = self:GetMaxClip1() > 0 and self:Clip1() < self:GetMaxClip1() and self:ValidPrimaryAmmo() and (self:Ammo1() >= self.RequiredClip)
 	end
 
 	return self:GetNextReload() <= CurTime() and self:GetReloadFinish() == 0 and
 		(
-			hasclip1 or self:GetMaxClip2() > 0 and self:Clip1() < self:GetMaxClip2() and self:ValidSecondaryAmmo() and self:GetOwner():GetAmmoCount(self:GetSecondaryAmmoType()) > 0
+			hasclip1 or self:GetMaxClip2() > 0 and self:Clip1() < self:GetMaxClip2() and self:ValidSecondaryAmmo() and self:Ammo1() > 0
 		)
 end
 
 function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
+	if self:GetOwner():IsHolding() then return end
 
 	-- Custom reload function that does not use c++ hardcoded DefaultReload, Taken from newer version ZS.
 	if self:CanReload() then	
@@ -178,7 +178,7 @@ function SWEP:Reload()
 		self:SendReloadAnimation()
 		self:ProcessReloadEndTime()
 
-		self.Owner:DoReloadEvent()
+		self:GetOwner():DoReloadEvent()
 		self.IdleAnimation = CurTime() + self:SequenceDuration()
 		self:SetNextReload(self.IdleAnimation)
 		self:EmitReloadSound()
@@ -250,19 +250,23 @@ end
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)
 end
-
+SWEP.IronSightsHoldTypeTranslate = {
+	["pistol"] = "revolver",
+	["shotgun"] = "ar2",
+	["crossbow"] = "ar2",
+}
 function SWEP:SetIronsights(b)
 	self:SetDTBool(0, b)
-
-	if self.IronSightsHoldType then
+	sightsholdtype = (self.IronSightsHoldType and self.IronSightsHoldType or (self.IronSightsHoldTypeTranslate[self.HoldType] and self.IronSightsHoldTypeTranslate[self.HoldType] or nil))
+	if sightsholdtype then
 		if b then
-			self:SetWeaponHoldType(self.IronSightsHoldType)
+			self:SetWeaponHoldType(sightsholdtype)
 		else
 			self:SetWeaponHoldType(self.HoldType)
 		end
 	end
 
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 end
 
 function SWEP:Deploy()
@@ -270,14 +274,14 @@ function SWEP:Deploy()
 	self:SetNextAutoReload(0)
 	self:SetReloadFinish(0)
 	self.LastAttemptedShot = CurTime()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 	self:SetIronsights(false)
 
 	if self.PreHolsterClip1 then
 		local diff = self:Clip1() - self.PreHolsterClip1
 		self:SetClip1(self.PreHolsterClip1)
 		if SERVER then
-			self.Owner:GiveAmmo(diff, self.Primary.Ammo, true)
+			self:GetOwner():GiveAmmo(diff, self.Primary.Ammo, true)
 		end
 		self.PreHolsterClip1 = nil
 	end
@@ -285,7 +289,7 @@ function SWEP:Deploy()
 		local diff = self:Clip2() - self.PreHolsterClip2
 		self:SetClip2(self.PreHolsterClip2)
 		if SERVER then
-			self.Owner:GiveAmmo(diff, self.Secondary.Ammo, true)
+			self:GetOwner():GiveAmmo(diff, self.Secondary.Ammo, true)
 		end
 		self.PreHolsterClip2 = nil
 	end
@@ -323,7 +327,7 @@ function SWEP:GetIronsights()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() or self:GetReloadFinish() > 0 then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() or self:GetReloadFinish() > 0 then return false end
 	self.LastAttemptedShot = CurTime()
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")
@@ -406,7 +410,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()
@@ -425,7 +429,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 end
 
 function SWEP:DoSelfKnockBack(scale)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	scale = scale or 1
 	if owner and owner:IsValid() and owner:IsPlayer() then
 		if self.SelfKnockBackForce > 0 then

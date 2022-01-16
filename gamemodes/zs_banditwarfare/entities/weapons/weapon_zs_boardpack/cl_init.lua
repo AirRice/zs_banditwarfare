@@ -4,36 +4,22 @@ SWEP.TranslateName = "weapon_boardpack_name"
 SWEP.TranslateDesc = "weapon_boardpack_desc"
 SWEP.ViewModelFOV = 45
 SWEP.ViewModelFlip = false
-
 SWEP.Slot = 4
 SWEP.SlotPos = 0
 
-function SWEP:Deploy()
-	self.IdleAnimation = CurTime() + self:SequenceDuration()
+SWEP.ShowWorldModel = false
 
-	return true
-end
-
-function SWEP:DrawWorldModel()
-	local owner = self.Owner
-	if owner:IsValid() and self:GetReplicatedAmmo() > 0 then
-		local id = owner:LookupAttachment("anim_attachment_RH")
-		if id and id > 0 then
-			local attch = owner:GetAttachment(id)
-			if attch then
-				cam.Start3D(EyePos() + (owner:GetPos() - attch.Pos + Vector(0, 0, 24)), EyeAngles())
-					self:DrawModel()
-				cam.End3D()
-			end
-		end
-	end
-end
-SWEP.DrawWorldModelTranslucent = SWEP.DrawWorldModel
+SWEP.VElements = {
+	["base"] = { type = "Model", model = "models/props_debris/wood_board05a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(4.004, 6.316, -5.428), angle = Angle(7.9, -2.475, -24.5), size = Vector(0.27, 0.27, 0.27), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+}
+SWEP.WElements = {
+	["base"] = { type = "Model", model = "models/props_debris/wood_board06a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(4.675, 2.596, -6.753), angle = Angle(180, 66.623, -1.17), size = Vector(0.75, 0.75, 0.75), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
+}
 
 function SWEP:Initialize()
 	self:SetDeploySpeed(1.1)
-	if self.TranslateName then
-		self.PrintName = translate.Get(self.TranslateName)
+	if self.BaseClass.Initialize then
+		self.BaseClass.Initialize(self)
 	end
 end
 
@@ -43,8 +29,4 @@ function SWEP:GetViewModelPosition(pos, ang)
 	end
 
 	return pos, ang
-end
-
-function SWEP:DrawWeaponSelection(...)
-	return self:BaseDrawWeaponSelection(...)
 end

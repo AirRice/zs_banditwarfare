@@ -41,7 +41,7 @@ function ENT:PhysicsUpdate(phys)
 
 	temp_me = self
 	temp_pen_ents = {}
-	myteammates = self.Owner:IsPlayer() and team.GetPlayers(self.Owner:Team()) or {}
+	myteammates = self:GetOwner():IsPlayer() and team.GetPlayers(self:GetOwner():Team()) or {}
 	for i = 1, 5 do
 		if not self.NoColl then
 			local velnorm = vel:GetNormalized()
@@ -67,7 +67,7 @@ function ENT:PhysicsUpdate(phys)
 			for _, trace in pairs(trs) do
 				if trace.Hit and not self.Touched[trace.Entity] then
 					local ent = trace.Entity
-					if ent ~= owner and (ent:IsPlayer() and ent:Team() ~= self.Owner:Team() and ent:Alive()) then
+					if ent ~= owner and (ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and ent:Alive()) then
 						self.Touched[trace.Entity] = trace
 						temp_pen_ents[trace.Entity] = true
 					end

@@ -92,7 +92,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	local shooter = attacker.Owner
+	local shooter = attacker:GetOwner()
 	local wep = attacker
 	dmginfo:SetAttacker(shooter)
 	if ent:IsPlayer() and SERVER then
@@ -101,17 +101,17 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				local tox = ent:GetStatus("tox")
 				if (tox and tox:IsValid()) then
 					tox:AddTime(wep.ToxDuration)
-					tox.Owner = ent
+					tox:SetOwner(ent)
 					tox.Damage = wep.ToxicDamage
 					tox.Damager = shooter
 					tox.TimeInterval = wep.ToxicTick
 				else
-					stat = ent:GiveStatus("tox")
-					stat:SetTime(wep.ToxDuration)
-					stat.Owner = ent
-					stat.Damage = wep.ToxicDamage
-					stat.Damager = shooter
-					stat.TimeInterval = wep.ToxicTick
+					tox = ent:GiveStatus("tox")
+					tox:SetTime(wep.ToxDuration)
+					tox:SetOwner(ent)
+					tox.Damage = wep.ToxicDamage
+					tox.Damager = shooter
+					tox.TimeInterval = wep.ToxicTick
 				end
 			else
 				dmginfo:SetDamage(0)
@@ -121,14 +121,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				if tr.HitGroup == HITGROUP_HEAD then
 					toheal = toheal * 1.5
 				end
-				local oldhealth = ent:Health()
-				local newhealth = math.min(oldhealth + toheal, ent:GetMaxHealth())
-				if oldhealth ~= newhealth then
-					ent:SetHealth(newhealth)
-					if shooter:IsPlayer() then
-						gamemode.Call("PlayerHealedTeamMember", shooter, ent, newhealth - oldhealth, self)
-					end
-				end
+				ent:HealHealth(toheal,shooter,wep)
 			end
 		end
 	end	

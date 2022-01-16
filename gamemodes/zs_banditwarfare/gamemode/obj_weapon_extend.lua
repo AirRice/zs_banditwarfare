@@ -56,11 +56,11 @@ function meta:GetNextReload()
 end
 
 function meta:GetPrimaryAmmoCount()
-	return self.Owner:GetAmmoCount(self.Primary.Ammo) + self:Clip1()
+	return self:GetOwner():GetAmmoCount(self.Primary.Ammo) + self:Clip1()
 end
 
 function meta:GetSecondaryAmmoCount()
-	return self.Owner:GetAmmoCount(self.Secondary.Ammo) + self:Clip2()
+	return self:GetOwner():GetAmmoCount(self.Secondary.Ammo) + self:Clip2()
 end
 
 function meta:HideViewAndWorldModel()
@@ -80,7 +80,7 @@ end
 
 function meta:TakeCombinedPrimaryAmmo(amount)
 	local ammotype = self.Primary.Ammo
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	local clip = self:Clip1()
 	local reserves = owner:GetAmmoCount(ammotype)
 
@@ -89,7 +89,7 @@ function meta:TakeCombinedPrimaryAmmo(amount)
 	local fromreserves = math.min(reserves, amount)
 	if fromreserves > 0 then
 		amount = amount - fromreserves
-		self.Owner:RemoveAmmo(fromreserves, ammotype)
+		self:GetOwner():RemoveAmmo(fromreserves, ammotype)
 	end
 
 	local fromclip = math.min(clip, amount)
@@ -100,7 +100,7 @@ end
 
 function meta:TakeCombinedSecondaryAmmo(amount)
 	local ammotype = self.Secondary.Ammo
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	local clip = self:Clip2()
 	local reserves = owner:GetAmmoCount(ammotype)
 
@@ -109,7 +109,7 @@ function meta:TakeCombinedSecondaryAmmo(amount)
 	local fromreserves = math.min(reserves, amount)
 	if fromreserves > 0 then
 		amount = amount - fromreserves
-		self.Owner:RemoveAmmo(fromreserves, ammotype)
+		self:GetOwner():RemoveAmmo(fromreserves, ammotype)
 	end
 
 	local fromclip = math.min(clip, amount)
@@ -199,7 +199,7 @@ function meta:DrawCrosshairCross()
 
 	local ironsights = self.GetIronsights and self:GetIronsights()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	local cone = self:GetCone()
 

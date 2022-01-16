@@ -65,7 +65,7 @@ function SWEP:SetWeaponSwingHoldType(t)
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 
 	return true
@@ -95,7 +95,7 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	return self:GetNextPrimaryFire() <= CurTime() and not self:IsSwinging()
 end
@@ -148,7 +148,7 @@ function SWEP:StartSwinging()
 end
 
 function SWEP:MeleeSwing()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	owner:DoAttackEvent()
 	local tr = owner:CompensatedMeleeTrace(self.MeleeRange, self.MeleeSize)
@@ -224,15 +224,16 @@ function SWEP:MeleeHitEntity(tr, hitent, damagemultiplier)
 	local vel
 	if hitent:IsPlayer() then
 		self:PlayerHitUtil(owner, damage, hitent, dmginfo)
-		gamemode.Call("ScalePlayerDamage", hitent, tr.HitGroup, dmginfo)
 		if SERVER then
+			if tr.HitGroup == HITGROUP_HEAD then
+				hitent:SetWasHitInHead()
+			end
 			if hitent:WouldDieFrom(damage, tr.HitPos) then
 				dmginfo:SetDamageForce(math.min(self.MeleeDamage, 50) * 400 * owner:GetAimVector())
 			end
 		end
 		vel = hitent:GetVelocity()
 	end
-
 	self:PostHitUtil(owner, hitent, dmginfo, tr, vel)
 end
 

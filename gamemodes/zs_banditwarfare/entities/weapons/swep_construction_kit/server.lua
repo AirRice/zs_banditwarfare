@@ -8,7 +8,7 @@ end
 hook.Add("PlayerCanPickupWeapon","SCKPickup",CanPickup)
 	
 function SWEP:Deploy()
-	self.LastOwner = self.Owner
+	self.LastOwner = self:GetOwner()
 end
 
 function SWEP:Holster()

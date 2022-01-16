@@ -1,7 +1,7 @@
 GM.Name		=	"Zombie Survival:Bandit Warfare"
 GM.Author	=	"Jooho \"air rice\" Lee"
-GM.Email	=	""
-GM.Website	=	""
+GM.Email	=	"jpumph2@gmail.com"
+GM.Website	=	"https://github.com/AirRice/zs_banditwarfare/"
 
 GM.Credits = {
 	{"credit_airrice", "", "credit_airrice_desc"},
@@ -162,7 +162,8 @@ function GM:ValidMenuLockOnTarget(pl, ent)
 end
 
 function GM:GetHandsModel(pl)
-	return player_manager.TranslatePlayerHands(pl:GetInfo("cl_playermodel"))
+	local playermodel = player_manager.TranslateToPlayerModelName( pl:GetModel() )
+	return player_manager.TranslatePlayerHands(playermodel)
 end
 
 function GM:GetEndRound()
@@ -259,8 +260,8 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
 	local headshot = hitgroup == HITGROUP_HEAD
 	if attackweapon.IgnoreDamageScaling then return end
-	if hitgroup == HITGROUP_HEAD and dmginfo:IsBulletDamage() then
-		pl.m_LastHeadShot = CurTime()
+	if headshot and dmginfo:IsBulletDamage() and SERVER then
+		pl:SetWasHitInHead()
 	end
 	if headshot then
 		dmginfo:ScaleDamage(1.5)
@@ -275,7 +276,7 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 end
 
 function GM:CanDamageNail(ent, attacker, inflictor, damage, dmginfo)
-	return (attacker:IsPlayer() and not ent:IsSameTeam(attacker))
+	return ent == attacker or (attacker:IsPlayer() and not ent:IsSameTeam(attacker))
 end
 
 function GM:CanPlaceNail(pl, tr)
@@ -337,7 +338,7 @@ function GM:GetCurrentEquipmentCount(id,countteam)
 
 		if item.SWEP then
 			for k,v in pairs(ents.FindByClass(item.SWEP)) do
-				if v.Owner:IsPlayer() and v.Owner:Team() == countteam then
+				if v:GetOwner():IsPlayer() and v:GetOwner():Team() == countteam then
 					count = count + 1
 				end
 			end
@@ -365,11 +366,6 @@ function GM:PlayerNoClip(pl, on)
 		if SERVER then
 			PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", pl:Name()))
 		end
-
-		if SERVER then
-			pl:MarkAsBadProfile()
-		end
-
 		return true
 	end
 

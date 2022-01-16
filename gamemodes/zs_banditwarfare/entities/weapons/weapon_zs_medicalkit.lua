@@ -58,7 +58,7 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 
 	owner:LagCompensation(true)
 	local ent = owner:MeleeTrace(32, 2).Entity
@@ -70,38 +70,23 @@ function SWEP:PrimaryAttack()
 		local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Primary.Heal * multiplier, maxhealth - health)))
 		local totake = math.ceil(toheal / multiplier)
 		if toheal > 0 then
-			local tox = ent:GetStatus("tox")
-			if (tox and tox:IsValid()) then
-				tox:SetTime(1)
-			end
-			local bleed = ent:GetStatus("bleed")
-			if (bleed and bleed:IsValid()) then
-				bleed:SetDamage(1)
-			end
-			for _, hook in pairs(ents.FindInSphere(ent:GetPos(), 60 )) do
-				if hook:GetClass() == "prop_meathook" and hook:GetParent() == ent then
-					hook.TicksLeft = 0
-				end
-			end
 			self:SetNextCharge(CurTime() + self.Primary.Delay * math.min(1, toheal / self.Primary.Heal))
 			owner.NextMedKitUse = self:GetNextCharge()
 
 			self:TakeCombinedPrimaryAmmo(totake)
 
-			ent:SetHealth(health + toheal)
+			ent:HealHealth(toheal,owner,self)
 			self:EmitSound("items/medshot4.wav")
 			self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 
 			owner:DoAttackEvent()
 			self.IdleAnimation = CurTime() + self:SequenceDuration()
-
-			gamemode.Call("PlayerHealedTeamMember", owner, ent, toheal, self)
 		end
 	end
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not self:CanPrimaryAttack() or not gamemode.Call("PlayerCanBeHealed", owner) then return end
 
 	local health, maxhealth = owner:Health(), owner:GetMaxHealth()
@@ -109,25 +94,12 @@ function SWEP:SecondaryAttack()
 	local toheal = math.min(self:GetPrimaryAmmoCount(), math.ceil(math.min(self.Secondary.Heal * multiplier, maxhealth - health)))
 	local totake = math.ceil(toheal / multiplier)
 	if toheal > 0 then
-		local tox = owner:GetStatus("tox")
-		if (tox and tox:IsValid()) then
-			tox:SetTime(1)
-		end
-		local bleed = owner:GetStatus("bleed")
-		if (bleed and bleed:IsValid()) then
-			bleed:SetDamage(1)
-		end
-		for _, hook in pairs(ents.FindInSphere(owner:GetPos(), 60 )) do
-			if hook:GetClass() == "prop_meathook" and hook:GetParent() == owner then
-				hook.TicksLeft = 0
-			end
-		end
 		self:SetNextCharge(CurTime() + self.Secondary.Delay * math.min(1, toheal / self.Secondary.Heal))
 		owner.NextMedKitUse = self:GetNextCharge()
 
 		self:TakeCombinedPrimaryAmmo(totake)
 
-		owner:SetHealth(health + toheal)
+		owner:HealHealth(toheal,owner,self)
 		self:EmitSound("items/smallmedkit1.wav")
 
 		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
@@ -138,7 +110,7 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 
@@ -160,7 +132,7 @@ function SWEP:Holster()
 end
 
 function SWEP:OnRemove()
-	if CLIENT and self.Owner == LocalPlayer() then
+	if CLIENT and self:GetOwner() == LocalPlayer() then
 		hook.Remove("PostPlayerDraw", "PostPlayerDrawMedical")
 		GAMEMODE.MedicalAura = false
 	end
@@ -178,7 +150,7 @@ function SWEP:GetNextCharge()
 end
 
 function SWEP:CanPrimaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if owner:IsHolding() or owner:GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
@@ -237,7 +209,7 @@ function SWEP:DrawHUD()
 
 	local wid, hei = 180 * screenscale, 64 * screenscale
 	local x, y = ScrW() - wid - screenscale * 128, ScrH() - hei - screenscale * 72
-	local clip = self.Owner:GetAmmoCount(self:GetPrimaryAmmoType())
+	local clip = self:Ammo1()
 
 	draw.RoundedBox(16, x, y, wid, hei, colBG)
 	local font = "ZSHUDFontBig"

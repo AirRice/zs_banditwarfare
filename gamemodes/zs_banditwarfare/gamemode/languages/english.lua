@@ -55,6 +55,7 @@ LANGUAGE.option_always_show_nail_info				= "Always show nail information"
 LANGUAGE.option_weapon_hud_style					= "Weapon HUD style"
 LANGUAGE.option_music_volume						= "Music Volume"
 LANGUAGE.option_ally_transparency_radius			= "Ally transparency radius"
+LANGUAGE.option_use_model_health_bar				= "Use Expensive Health Display"
 
 LANGUAGE.option_crosshair_color_primary				= "Crosshair Color - Primary"
 LANGUAGE.option_crosshair_color_secondary			= "Crosshair Color - Secondary"
@@ -195,7 +196,10 @@ LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol set to fire 
 LANGUAGE.weapon_leadpipe_name						= "Lead Pipe"
 LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off."
 LANGUAGE.weapon_palliator_name						= "'Palliator' Medical Beamer"
-LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy. It also has a 25% chance to stun them every time it hits them.\nPrimary attack: Lock in target\nSecondary attack: Cancel target"
+LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy.\nPrimary attack: Lock in target\nSecondary attack: Cancel target"
+LANGUAGE.weapon_palliator_attacking_x				= "ATTACKING %s"
+LANGUAGE.weapon_palliator_healing_x					= "HEALING %s"
+
 LANGUAGE.weapon_plankmelee_name						= "Plank"
 LANGUAGE.weapon_plankmelee_desc						= "A seemingly useless melee weapon.\nIt can be swung faster every time it hits a target."
 LANGUAGE.weapon_podvodny_name						= "'Podvodny' Flechette rifle"
@@ -397,15 +401,15 @@ LANGUAGE.impossible									= "Impossible."
 LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 
 LANGUAGE.comms_interrupted							= "Comms Interrupted!"
-LANGUAGE.all_sigils_taken_by_x						= "%s have taken all transmitters!"
-LANGUAGE.one_sigil_taken_by_x						= "%s have taken a transmitter!"
-LANGUAGE.sigil_comms_finished_by_x					= "%s have finished their transmission."
-LANGUAGE.sigil_comms_tied							= "Both teams finished their transmissions."
+LANGUAGE.all_transmitters_taken_by_x						= "%s have taken all transmitters!"
+LANGUAGE.one_transmitter_taken_by_x						= "%s have taken a transmitter!"
+LANGUAGE.transmitter_comms_finished_by_x					= "%s have finished their transmission."
+LANGUAGE.transmitter_comms_tied							= "Both teams finished their transmissions."
 LANGUAGE.samples_finished_by_x						= "%s have collected enough samples."
 LANGUAGE.samples_tied								= "Both teams have collected enough samples."
 LANGUAGE.nest_destroyed_by_x				 		= "%s has destroyed a nest!"
 LANGUAGE.nest_spawned								= "A new zombie nest has appeared!"
-LANGUAGE.sigil_comms_disrupted_x					= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
+LANGUAGE.transmitter_comms_disrupted_x					= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
 LANGUAGE.x_killed_all_enemies					    = "%s have killed all enemies."
 LANGUAGE.before_wave_cant_go_outside_spawn			= "You cannot leave the spawn before the round starts!"
 LANGUAGE.you_have_died								= "You have died"
@@ -515,17 +519,19 @@ LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between ant
 LANGUAGE.help_cont_introduction_transmission		=	[[<h2>Transmission</h2> <br>
 <p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for reinforcements before the other team.</p>
 <p>Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
-<p>Once a wave begins, three transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5% of the overall transmission progress every second while they are controlled.</p>
+<p>Once a wave begins, several transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5% of the overall transmission progress every second while they are controlled.</p>
 <p>Remember that the transmitters are the most important thing in this mode! You cannot win if you do not control them, even if you kill members of the opposite team. Conversely, you will lose if the enemy controls transmitters for too long, even if you kill them all! There are several tools available to aid you in capturing them or preventing enemy control.</p>
-<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>]]
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Unless you purchase weapons in your loadout before the wave starts, they will not be given to you immediately. However, every time you respawn you will spawn with all the weapons in your loadout.</p>
+<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely while protecting another side of the map.</p>]]
 
 LANGUAGE.help_cont_introduction_collection			=	[[<h2>Collection</h2> <br>
 <p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
-<p>Samples can be earned by killing enemies. Headshots will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
+<p>Both teams have the same objective: to add enough samples for the vaccine. If a team adds enough samples first they win the wave. At the end of the game the team with more waves won wins overall.</p>
+<p>Samples can be earned by killing enemies. If the killing blow was a headshot this will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
 <p>Every 30 seconds, a zombie nest may spawn randomly on the map. Finding and destroying them gives some points, as well as making them drop 10 samples.</p>
 <p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert the samples at a rate of 2 per second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Every time you respawn you will spawn with the weapons in your loadout, but they will not be given to you until your next respawn, or if you purchase weapons before each wave.</p>
+<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Unless you purchase weapons in your loadout before the wave starts, they will not be given to you immediately. However, every time you respawn you will spawn with all the weapons in your loadout.</p>
+<p>In Collection mode some tools and weapons are especially useful. Biometric scanners, alongside their usual purpose, displays any zombie nest locations as well. Bioweapon ammunition is readily dropped by zombie nests when they break, making these weapons especially useful in this mode.</p>
 <p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>]]
 
 LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>Deathmatch</h2> <br>
@@ -534,9 +540,11 @@ LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>Deathmatch</h2> <br>
 <p>You will also drop your weapons on death for the enemy to collect at their leisure, although there are specific circumstances:</p>
 <ul><li>Weapons that show up as blue are <strong>"Insured"</strong>: You will not lose them upon death.</li> 
 <li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>
-<li>Consumables such as grenades or flashbangs, and tools such as forcefields that you place into the world, will never be insured. You will lose these every time.</li>
-<li>Weapons you do not buy, such as those you get by picking them up from the ground, will never be insured.</li>
+<li>This works similarly when regarding upgrades too: Weapons will not be insured the first round you upgrade to them, but if the previous tier was insured you will get that previous weapon back even if you die and lose the upgraded weapon.</li>
+<li>Consumables such as grenades or flashbangs, and tools such as force fields that you place into the world, will never be insured. You will lose these every time.</li>
+<li>Weapons you do not buy, such as those you get by picking them up from the ground, will never be insured. You cannot upgrade them or refund them for points either!</li>
 </ul>]]
+
 
 LANGUAGE.help_cont_keys					= 
 [[<table>
@@ -576,6 +584,11 @@ LANGUAGE.help_cont_keys					=
     <td>F2</td>
     <td>Open shop</td>
   </tr>
+   <tr>
+    <td>Spare 1</td>
+    <td>F3</td>
+    <td>Drop currently held weapon (Deathmatch only)</td>
+  </tr>
   <tr>
     <td>Options</td>
     <td>F4</td>
@@ -588,8 +601,13 @@ LANGUAGE.help_cont_keys					=
   </tr>
 </table>
 <br>
+<<<<<<< HEAD:gamemodes/zs_banditwarfare/gamemode/languages/english.lua
 <ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with 'Reload/Alternate Fire' key (R and Right Mouse respectively) and finally placed with the 'Attack' key (Default: Left Mouse Button).</li> 
 <li>Press and hold 'run' key (Default: Shift) to pack them back up for later.</li>
+=======
+<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with Reload/Alternate Fire (Default: R and Right Mouse respectively) and finally placed with the "Attack" key (Default: Left Mouse Button).</li> 
+<li>Press and hold Run (Default: Shift) to pack these placeables back up for later.</li>
+>>>>>>> upstream/master:gamemode/languages/english.lua
 <li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default: E).</li>
 <li>Press 'gmod_undo' (Default: Z) to enter phase mode for a while where you can phase through friendly barricaded props. "Suit Zoom" will let you indefinitely hold phase mode, but it is not bound by default and must be manually set to a key in your options menu.</li>
 </ul>
@@ -632,4 +650,145 @@ Each plank placed down will use up one plank. These planks are different from na
 <li>There are many methods of combating barricades. Weapons that deal AoE damage, such as explosives, can harm multiple props at once. Sledgehammers do more damage to barricades and placeable tools, and a crowbar can remove nails from barricades by hitting them. EMP guns can dissole all barricade nails entirely from a prop by shooting it.</li>
 <li>Leaving holes inside your barricades for shooting at enemies is a good way to keep attacking the enemy while giving yourself some cover. Building a barricade in a strategic location, such as to block off pathways, is a surefire way to gain a strategic edge over your opponents.</li>
 </ul></p>]]
-LANGUAGE.help_cont_upgrades							= [[<p>COMING SOON</p>]]
+LANGUAGE.help_cont_upgrades							= [[
+<p><h3>The purchase system in ZS:Bandit Warfare is a tier-based system, where weaker weapons can be "upgraded" into stronger ones.</h3></p>
+<p>You can trade in previous weapons for a price and obtain a better one. Often these are straight improvements but some weapons have properties unique to them. You may also revert to a previous, weaker weapon and get half the points you would have used to upgrade to the new weapon originally refunded. Keep in mind that you cannot do this with weapons picked up off the ground, such as weapons given to you by allies or obtained from enemies in Deathmatch mode.</p>
+<p>A short summary of each weapon type may be found below.</p>
+<table>
+	<tbody>
+		<tr>
+			<th>Weapon Type</th>
+			<th>Example</th>
+			<th>Accuracy</th>
+			<th>Fire Rate</th>
+			<th>Bullets Fired</th>
+			<th>Damage per Bullet</th>
+		</tr>
+		<tr>
+			<td><b>Pistols(Fast)</b></td>
+			<td>Peashooter</td>
+			<td>Medium</td>
+			<td>High</td>
+			<td>Single</td>
+			<td>Low</td>
+		</tr>
+		<tr>
+			<td><b>Pistols(Accurate)</b></td>
+			<td>Battleaxe</td>
+			<td>High</td>
+			<td>Medium</td>
+			<td>Single</td>
+			<td>Medium-High</td>
+		</tr>
+		<tr>
+			<td><b>Pistols(Split)</b></td>
+			<td>Owens</td>
+			<td>Medium</td>
+			<td>Medium</td>
+			<td>Low</td>
+			<td>Low</td>
+		</tr>
+		<tr>
+			<td><b>Shotguns</b></td>
+			<td>Trench</td>
+			<td>Low</td>
+			<td>Low</td>
+			<td>High</td>
+			<td>Low</td>
+		</tr>
+		<tr>
+			<td><b>Assault Rifles</b></td>
+			<td>Crackler</td>
+			<td>Medium-High</td>
+			<td>Medium</td>
+			<td>Single</td>
+			<td>Medium-High</td>
+		</tr>
+		<tr>
+			<td><b>SMGs</b></td>
+			<td>Tosser</td>
+			<td>Medium-Low</td>
+			<td>Very High</td>
+			<td>Single</td>
+			<td>Low</td>
+		</tr>
+		<tr>
+			<td><b>Rifles</b></td>
+			<td>Stubber</td>
+			<td>Very High</td>
+			<td>Low</td>
+			<td>Single</td>
+			<td>Very High</td>
+		</tr>
+		<tr>
+			<td><b>Crossbows</b></td>
+			<td>Slinger</td>
+			<td>Varies</td>
+			<td>Varies</td>
+			<td>Low (Usually)</td>
+			<td>High (Usually)</td>
+		</tr>
+		<tr>
+			<td><b>Bioweapons</b></td>
+			<td>Puker</td>
+			<td>Varies</td>
+			<td>Varies</td>
+			<td>High (Usually)</td>
+			<td>High (Burst)</td>
+		</tr>
+		<tr>
+			<td><b>Pulse Weapons</b></td>
+			<td>Z9000</td>
+			<td>Varies</td>
+			<td>Varies</td>
+			<td>Varies</td>
+			<td>Varies</td>
+		</tr>
+		<tr>
+			<td><b>Medical Weapons</b></td>
+			<td>Jabber</td>
+			<td>High</td>
+			<td>Varies</td>
+			<td>Single</td>
+			<td>Low, over time</td>
+		</tr>
+	</tbody>
+</table>
+<hr>
+<p><h3>Pistols</h3><p>
+<p>Pistols are divided into three large categories: Fast, Accurate and Split.</p>
+<p>The <b>Fast Pistols</b> offer high fire rates with often low individual damage. Some of these, such as the <i>Terminator</i> or <i>Eraser</i>, have quirks that make them quite strong but unwieldy and unable to consistently deal high damage. Overall, this line of weapons is handy as a backup even later on.</p>
+<p>The <b>Accurate Pistols</b> offers higher power at the cost of somewhat low firing speed. These are highly accurate and can be used for long range engagements, and are a good option as backup alongside shotguns and the like.</p>
+<p><b>Split Pistols</b> fire several bullets per shot. This technically reduces the overall accuracy but provides a wider effective cone of fire.</p> 
+<p>The <b>Split</b> and <b>Accurate</b> routes merge into the <i>Ventilator</i>, which offers both options. It has very high power per shot and good accuracy, and can also fire its entire clip like the previous split shot pistols if necessary.</p>
+<hr>
+<p><h3>Shotguns</h3><p>
+<p><b>Shotguns</b> fire a wide spread of many bullets. Each bullet has low damage potential on its own, but shotguns are extremely powerful up close.</p>
+<p>Shotguns are further split into ones that shoot slower, but with much more power per shot (<i>Severance</i>), and automatic shotguns that fire quickly (<i>Albatross</i>).</p>
+<hr>
+<p><h3>Assault Rifles</h3><p>
+<p><b>Assault Rifles</b> are automatic weapons with comparatively high accuracy. They are designed to be used while stationary and most of them will lose accuracy while moving. They are characterised by above average fire rate and high per-shot damage. Some of the higher tier assault rifles are equipped with scopes as well.</p>
+<hr>
+<p><h3>Submachine Guns (SMGs)</h3><p>
+<p><b>SMGs</b> are a counterpart to assault rifles with a much faster firing rate on average but much lower accuracy. Unlike assault rifles, many of them are designed to work while on the move and get less accuracy debuffs while moving. While SMGs have lower per shot damage, the fire rate means that the overall potential damage output is higher.</p>
+<p>Some later tier SMGs are more balanced in this regard, losing some advantages while mitigating some downsides (<i>Reaper</i>).</p>
+<hr>
+<p><h3>Rifles</h3><p>
+<p><b>Rifles</b> are built for long range engagements, boasting high damage but very low fire rates. Most of them are equipped with a sniper scope to aid aiming. Deliberate aiming is key to these weapons.</p>
+<p>Some of these rifles are modified to fire more quickly, while dealing less damage on hit. These are more suitable for cases where getting a clear shot may not always be viable.</p>
+<hr>
+<p><h3>Crossbows</h3><p>
+<p><b>Crossbows</b> are primarily projectile weapons. Depending on the crossbow used these may have properties such as bouncing on surfaces, impaling through multiple targets or causing bleeding. Thus, crossbows are often hard to clearly define as a weapon type. Because all of these throw projectiles forward, they can pierce through anti-bullet measures such as forcefields. However measures to mitigate projectiles such as interceptors do exist.</p>
+<hr>
+<p><h3>Bioweapons</h3><p>
+<p><b>Bioweapons</b> are an offshoot of projectile crossbows with distinct characteristics. The projectiles fired by these weapons are repurposed zombie biotechnology and have the same characteristics as poison of zombies. These will melt enemies into flesh that can be picked up for more ammunition, as well as being suited for high burst damage. This is because zombie poison is rapidly healed after the enemy sustains damage from it.</p>
+<p>Because most bioweapons are built to fire many projectiles in a short timespan, they can overwhelm anti-projectile measures.</p>
+<hr>
+<p><h3>Pulse Weapons</h3><p>
+<p>Although <b>Pulse Weapons</b> share the same ammunition type, they are all very different from one another. The true potential of pulse weapons is that they utilise the upgrade system to its fullest. Pulse weapons can seem to fit into any of the other categories of weapon. However, they can upgrade to a variety of other pulse weapons, and this allows a much faster change between weapon types than using the other categories.</p>
+<p>There are many entry points into the pulse weapon line, from various different other weapon types. It can be beneficial to pivot using pulse weaponry between weapon types.</p>
+<hr>
+<p><h3>Medical Weapons</h3><p>
+<p><b>Medical Weapons</b> are dual-purpose weapons used to both heal allies and hurt enemies. Usually this is done by overdosing the opponent and causing damage over time. Some medical weapons fire projectiles while others simply fire standard bullets. However, they can all be used to heal allies in one way or another.</p>
+<p>Medical Weapons, much like medical kits, can be used to remove harmful status effects from allies, given that the amount healed is sufficiently large.</p>
+]]

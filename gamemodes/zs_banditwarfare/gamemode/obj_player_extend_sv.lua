@@ -69,12 +69,53 @@ function meta:FakeDeath(sequenceid, modelscale, length)
 	return ent
 end
 
-function meta:ChangeTeam(teamid)
-	local oldteam = self:Team()
-	self:SetTeam(teamid)
-	if oldteam ~= teamid then
-		gamemode.Call("OnPlayerChangedTeam", self, oldteam, teamid)
+function meta:SetupHands( ply )
+	local oldhands = self:GetHands()
+	if IsValid(oldhands) then
+		oldhands:Remove()
 	end
+	local hands = ents.Create("zs_hands")
+	if hands:IsValid() then
+		hands:DoSetup(self, ply)
+		hands:Spawn()
+	end
+end
+
+function meta:RefreshPlayerModel()
+	local desiredname = self:GetInfo("cl_playermodel")
+	local randommodel = nil
+	if (self:Team() == TEAM_HUMAN) then
+		randommodel = GAMEMODE.RandomSurvivorModels[math.random(#GAMEMODE.RandomSurvivorModels)]
+	elseif (self:Team() == TEAM_BANDIT) then
+		randommodel = GAMEMODE.RandomBanditModels[math.random(#GAMEMODE.RandomBanditModels)]
+	else
+		randommodel = GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]
+	end
+	
+	
+	if #desiredname == 0 then
+		desiredname = randommodel
+	end
+	
+	local modelname = player_manager.TranslatePlayerModel(desiredname)
+	if table.HasValue(GAMEMODE.RestrictedModels, string.lower(modelname)) or (self:Team() == TEAM_HUMAN and table.HasValue(GAMEMODE.RandomBanditModels, string.lower(desiredname))) or (self:Team() == TEAM_BANDIT and table.HasValue(GAMEMODE.RandomSurvivorModels, string.lower(desiredname))) then
+		modelname = player_manager.TranslatePlayerModel(randommodel)
+	end
+	local lowermodelname = string.lower(modelname)
+	self:SetModel(modelname)
+	self:SetupHands()
+	-- Cache the voice set.
+	if GAMEMODE.VoiceSetTranslate[lowermodelname] then
+		self.VoiceSet = GAMEMODE.VoiceSetTranslate[lowermodelname]
+	elseif string.find(lowermodelname, "female", 1, true) then
+		self.VoiceSet = "female"
+	else
+		self.VoiceSet = "male"
+	end
+end
+
+function meta:ChangeTeam(teamid)
+	self:SetTeam(teamid)
 	self:CollisionRulesChanged()
 end
 
@@ -83,6 +124,14 @@ function meta:ProcessDamage(dmginfo)
 	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
 	local lasthitgroup = self:LastHitGroup()
 	if attacker:IsPlayer() then
+		if attacker ~= self then
+			local dmgtype = dmginfo:GetDamageType()
+			local head = (self:WasHitInHead())
+			net.Start( "zs_hitmarker" )
+				net.WriteBool( self:IsPlayer() )
+				net.WriteBool( head )
+			net.Send( attacker )
+		end
 		if attacker:LessPlayersOnTeam() and attackweapon and not attackweapon.NoScaleToLessPlayers and not attackweapon.IgnoreDamageScaling then
 			dmginfo:ScaleDamage(1.25)
 		end
@@ -102,6 +151,14 @@ function meta:ProcessDamage(dmginfo)
 	if self.DamageVulnerability then
 		dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageVulnerability)
 	end
+end
+
+function meta:WasHitInHead()
+	return self.m_LastHitInHead and CurTime() <= self.m_LastHitInHead + 0.1
+end
+
+function meta:SetWasHitInHead()
+	self.m_LastHitInHead = CurTime()
 end
 
 function meta:AddLifeBarricadeDamage(amount)
@@ -150,10 +207,6 @@ function meta:FloatingScore(victimorpos, effectname, frags, flags)
 			net.WriteUInt(flags, 8)
 		net.Send(self)
 	end
-end
-
-function meta:MarkAsBadProfile()
-	self.NoProfiling = true
 end
 
 function meta:CenterNotify(...)
@@ -244,12 +297,9 @@ local function RemoveSkyCade(groundent, timername)
 
 	for _, pl in pairs(player.GetAll()) do
 		if pl:Alive() and pl:GetGroundEntity() == groundent then
-			groundent:TakeDamage(3, groundent, groundent)
-			pl:ViewPunch(Angle(math.Rand(-25, 25), math.Rand(-25, 25), math.Rand(-25, 25)))
-			if math.random(9) == 1 then
-				groundent:EmitSound("npc/strider/creak"..math.random(4)..".wav", 65, math.random(95, 105))
-			end
-
+			groundent:TakeDamage(150, groundent, groundent)
+			pl:ViewPunch(Angle(math.Rand(-15, 15), math.Rand(-15, 15), math.Rand(-15, 15)))
+			groundent:EmitSound("physics/metal/metal_box_impact_hard"..math.random(3)..".wav", 80, 255)
 			return
 		end
 	end
@@ -269,32 +319,12 @@ function meta:PreventSkyCade()
 										endpos = start + checkoffset,
 										mins = groundent:OBBMins() * 0.85, maxs = groundent:OBBMaxs() * 0.85,
 										mask = MASK_SOLID_BRUSHONLY}).Hit then
-					self:MarkAsBadProfile()
-					timer.Create(timername, 0.25, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
+					timer.Create(timername, 0.5, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
 				end
-			end
-		elseif groundent.IsBarricadeObject then
-			local timername = "RemoveSkyCade"..tostring(groundent)
-			local start = groundent:WorldSpaceCenter()
-			if not timer.Exists(timername) and not util.TraceHull({start = start,
-									endpos = start + checkoffset,
-									mins = groundent:OBBMins() * 0.85, maxs = groundent:OBBMaxs() * 0.85,
-									mask = MASK_SOLID_BRUSHONLY}).Hit then
-				self:MarkAsBadProfile()
-				timer.Create(timername, 0.25, 0, function() RemoveSkyCade(groundent, timername) end) -- Oh dear.
 			end
 		end
 	end
 end
-
---[[function meta:CoupleWith(plheadcrab)
-	if self:GetZombieClassTable().Headcrab == plheadcrab:GetZombieClassTable().Name then
-		local status = self:GiveStatus("headcrabcouple")
-		if status:IsValid() then
-			status:SetCouple(plheadcrab)
-		end
-	end
-end]]
 
 function meta:FixModelAngles(velocity)
 	local eye = self:EyeAngles()
@@ -320,11 +350,18 @@ function meta:RemoveAllStatus(bSilent, bInstant)
 end
 
 function meta:PurgeStatusEffects()
+	for _, hook in pairs(ents.FindByClass("prop_meathook")) do
+		if hook:GetClass() == "prop_meathook" and hook:GetParent() == self then
+			hook.TicksLeft = 0
+		end
+	end
 	self:RemoveStatus("confusion", false, true)
 	self:RemoveStatus("ghoultouch", false, true)
 	self:RemoveStatus("bleed", false, true)
 	self:RemoveStatus("poisonrecovery", false, true)
 	self:RemoveStatus("tox", false, true)
+	self:RemoveStatus("stunned", false, true)
+	self:RemoveStatus("knockdown", false, true)
 end
 
 function meta:RemoveStatus(sType, bSilent, bInstant, sExclude)
@@ -347,7 +384,7 @@ end
 
 function meta:GetStatus(sType)
 	local ent = self["status_"..sType]
-	if ent and ent:IsValid() and ent.Owner == self then return ent end
+	if ent and ent:IsValid() and ent:GetOwner() == self then return ent end
 end
 
 function meta:GiveStatus(sType, fDie)

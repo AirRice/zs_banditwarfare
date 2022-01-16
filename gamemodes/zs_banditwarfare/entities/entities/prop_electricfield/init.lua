@@ -19,7 +19,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if CurTime() >= self.NextHurt then 
 		for _, pl in pairs(ents.FindInSphere(self:GetPos(), 68 )) do
 			if pl:IsPlayer() and owner:IsPlayer() and pl:Team() != owner:Team() and pl:Alive() then

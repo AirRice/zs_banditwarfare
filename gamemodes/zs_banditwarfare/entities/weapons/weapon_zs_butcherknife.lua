@@ -63,12 +63,12 @@ function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
 			local bleed = hitent:GetStatus("bleed")
 			if bleed and bleed:IsValid() then
 				bleed:AddDamage(self.MeleeDamage)
-				bleed.Damager = self.Owner
+				bleed.Damager = self:GetOwner()
 			else
 				local stat = hitent:GiveStatus("bleed")
 				if stat and stat:IsValid() then
 					stat:SetDamage(self.MeleeDamage)
-					stat.Damager = self.Owner
+					stat.Damager = self:GetOwner()
 				end
 			end
 		end

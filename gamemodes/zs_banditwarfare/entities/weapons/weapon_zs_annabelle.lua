@@ -18,15 +18,15 @@ SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "ar2"
 
-SWEP.ViewModel = "models/weapons/v_annabelle.mdl"
+SWEP.ViewModel = "models/weapons/c_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
-
+SWEP.UseHands = true
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
 SWEP.Primary.Damage = 40
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.85
+SWEP.Primary.Delay = 0.95
 SWEP.ReloadDelay = 0.5
 SWEP.Recoil = 2.24
 
@@ -59,7 +59,7 @@ end
 function SWEP:Reload()
 	if self:GetReloadTimer() > 0 then return end
 
-	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + math.max(self.ReloadDelay,self.Primary.Delay))
 		self:SetIsReloading(true)
 		self:SetReloadTimer(CurTime() + self.ReloadDelay)
@@ -81,7 +81,7 @@ function SWEP:Think()
 end
 
 function SWEP:DoReload()
-	if not (self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo)) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
+	if not (self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1()) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
 		self:StopReloading()
 		return
 	end
@@ -143,7 +143,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				if ent and ent:IsValid() then
 					local nearest = ent:NearestPoint(hitpos)
 					if TrueVisibleFilters(hitpos, nearest, dmginfo:GetInflictor(), ent) && ent != attacker then
-						ent:TakeSpecialDamage(dmginfo:GetDamage()/1.5, DMG_BULLET, attacker, dmginfo:GetInflictor(), nearest)
+						ent:TakeSpecialDamage(dmginfo:GetDamage()/2, DMG_BULLET, attacker, dmginfo:GetInflictor(), nearest)
 					end
 				end
 			end

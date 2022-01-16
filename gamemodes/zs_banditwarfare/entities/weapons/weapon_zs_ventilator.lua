@@ -48,7 +48,7 @@ SWEP.WorldModel = "models/weapons/w_pist_deagle.mdl"
 SWEP.UseHands = true
 
 SWEP.Primary.Damage = 45
-SWEP.Primary.BurstDamage = 15
+SWEP.Primary.BurstDamage = 18
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Delay = 0.25
 SWEP.Primary.KnockbackScale = 2

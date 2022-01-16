@@ -78,16 +78,16 @@ end]]
 local steeringratio = 0.8
 function SWEP:Attack(proj)
 	if proj:IsValid() and (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) then
-		self.Owner:EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
+		self:GetOwner():EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
 		self:TakeAmmo()
 	
-		local owner = self.Owner
+		local owner = self:GetOwner()
 		--owner:MuzzleFlash()
 		self:SendWeaponAnimation()
 		owner:DoAttackEvent()
 		proj.Twister = self
 		local projcenter = proj:GetPos()
-		local fireorigin = self.Owner:GetShootPos()
+		local fireorigin = self:GetOwner():GetShootPos()
 		local firevec = ( projcenter - fireorigin ):GetNormalized()
 		local ed = EffectData()
 			ed:SetFlags( 0x0003 ) --TRACER_FLAG_USEATTACHMENT + TRACER_FLAG_WHIZ
@@ -110,7 +110,7 @@ function SWEP:Attack(proj)
 				phys:SetVelocity(phys:GetVelocity()*0.25)
 				local dir = (aimvec*steeringratio+firevec*(1-steeringratio))
 				phys:AddVelocity(dir*2200)
-				proj:SetOwner(self.Owner)
+				proj:SetOwner(self:GetOwner())
 			else
 				proj:Remove()
 			end
@@ -128,11 +128,11 @@ function SWEP:Think()
 	end
 	if SERVER then
 	if (self.LastAttack + self.Primary.Delay*2 <= curTime ) and self:Clip1() > 0 then
-		local center = self.Owner:GetShootPos()
+		local center = self:GetOwner():GetShootPos()
 		for _, ent in ipairs(ents.FindInSphere(center, self.SearchRadius)) do
-			if (ent ~= self and !ent:IsPlayer() and ent:IsProjectile() and ent:GetMoveType() != MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self.Owner:IsPlayer() and ent:GetOwner():Team() == self.Owner:Team())) then
-				local dot = (ent:GetPos() - center):GetNormalized():Dot(self.Owner:GetAimVector())
-				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self.Owner)) then
+			if (ent ~= self and !ent:IsPlayer() and ent:IsProjectile() and ent:GetMoveType() != MOVETYPE_NONE and not (ent:GetOwner() and ent:GetOwner():IsPlayer() and self:GetOwner():IsPlayer() and ent:GetOwner():Team() == self:GetOwner():Team())) then
+				local dot = (ent:GetPos() - center):GetNormalized():Dot(self:GetOwner():GetAimVector())
+				if dot >= 0.5 and (LightVisible(center, ent:GetPos(), self, ent, self:GetOwner())) then
 					self:Attack(ent)
 					break
 				end

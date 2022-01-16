@@ -43,7 +43,7 @@ hook.Add("PostDrawTranslucentRenderables", "DrawDamage", function()
 	end
 end)
 
-local gravity = Vector(0, 0, -500)
+local gravity = Vector(0, 0, -100)
 
 function EFFECT:Init(data)
 	local pos = data:GetOrigin()

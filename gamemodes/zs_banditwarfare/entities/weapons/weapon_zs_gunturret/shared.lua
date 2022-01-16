@@ -49,7 +49,7 @@ function SWEP:Reload()
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -69,13 +69,13 @@ function SWEP:Think()
 		local count = self:GetPrimaryAmmoCount()
 		if count ~= self:GetReplicatedAmmo() then
 			self:SetReplicatedAmmo(count)
-			self.Owner:ResetSpeed()
+			self:GetOwner():ResetSpeed()
 		end
 	end
 end
 
 function SWEP:Deploy()
-	gamemode.Call("WeaponDeployed", self.Owner, self)
+	gamemode.Call("WeaponDeployed", self:GetOwner(), self)
 
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 

@@ -27,8 +27,8 @@ SWEP.UseHands = true
 SWEP.ReloadDelay = 0.45
 
 SWEP.Primary.Sound = Sound("Weapon_M3.Single")
-SWEP.Primary.Damage = 6
-SWEP.Primary.NumShots = 9
+SWEP.Primary.Damage = 7
+SWEP.Primary.NumShots = 10
 SWEP.Primary.Delay = 0.8
 SWEP.Recoil = 3
 SWEP.Primary.ClipSize = 6
@@ -57,7 +57,7 @@ end
 function SWEP:Reload()
 	if self:GetReloadTimer() > 0 then return end
 
-	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + math.max(self.ReloadDelay,self.Primary.Delay))
 		self:SetIsReloading(true)
 		self:SetReloadTimer(CurTime() + self.ReloadDelay)
@@ -71,9 +71,6 @@ function SWEP:Think()
 	if self:GetReloadTimer() > 0 and CurTime() >= self:GetReloadTimer() then
 		self:DoReload()
 	end
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
-	end
 	if self.BaseClass.Think then
 		self.BaseClass.Think(self)
 	end
@@ -82,7 +79,7 @@ function SWEP:Think()
 end
 
 function SWEP:DoReload()
-	if not (self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo)) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
+	if not (self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1()) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
 		self:StopReloading()
 		return
 	end

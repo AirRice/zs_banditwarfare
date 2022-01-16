@@ -18,7 +18,7 @@ function ENT:SetPlayer(pPlayer, bExists)
 		if bValid then
 			self:SetPos(pPlayer:GetPos() + Vector(0,0,16))
 		end
-		self.Owner = pPlayer
+		self:SetOwner(pPlayer)
 		pPlayer[self:GetClass()] = self
 		self:SetOwner(pPlayer)
 		self:SetParent(pPlayer)

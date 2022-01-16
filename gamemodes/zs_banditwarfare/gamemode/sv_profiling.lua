@@ -25,10 +25,10 @@ function GM:GetProfilerFilePreMade()
 	return self.ProfilerFolderPreMade.."/"..string.lower(game.GetMap())..".txt"
 end
 
-function GM:MapHasEnoughSigils(mapname)
+function GM:MapHasEnoughObjectives(mapname)
 	if file.Exists(self:GetProfilerFilePreMade(),"DATA") then
 		local nodes = Deserialize(file.Read(self:GetProfilerFilePreMade(), "DATA"))
-		if #self.ProfilerNodes >= self.MaxSigils then
+		if #self.ProfilerNodes >= self.MaxTransmitters then
 			return true
 		else
 			return false

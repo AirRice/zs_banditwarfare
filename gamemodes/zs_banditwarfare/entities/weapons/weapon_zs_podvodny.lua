@@ -3,7 +3,7 @@
 if CLIENT then
 	SWEP.TranslateName = "weapon_podvodny_name"
 	SWEP.TranslateDesc = "weapon_podvodny_desc"
-	SWEP.Slot = 2
+	SWEP.Slot = 3
 	SWEP.SlotPos = 0
 
 	SWEP.ViewModelFlip = false
@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()

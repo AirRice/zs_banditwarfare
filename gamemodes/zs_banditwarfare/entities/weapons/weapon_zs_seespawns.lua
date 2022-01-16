@@ -39,7 +39,7 @@ function SWEP:PrimaryAttack()
 	if self.NextPrimary > CurTime() then return end
 	if SERVER then
 		print("Person Position is: ")
-		print(self.Owner:GetPos())
+		print(self:GetOwner():GetPos())
 	end
 	self.NextPrimary = CurTime() + 1
 end
@@ -47,10 +47,10 @@ end
 function SWEP:SecondaryAttack()
 	if self.NextSecondary > CurTime() then return end
 	if SERVER then
-		if self.Owner and self.Owner:IsPlayer() and self.Owner:Team() == TEAM_BANDIT then
-			self.Owner:ChangeTeam(TEAM_HUMAN)
+		if self:GetOwner() and self:GetOwner():IsPlayer() and self:GetOwner():Team() == TEAM_BANDIT then
+			self:GetOwner():ChangeTeam(TEAM_HUMAN)
 		else
-			self.Owner:ChangeTeam(TEAM_BANDIT)
+			self:GetOwner():ChangeTeam(TEAM_BANDIT)
 		end
 		
 	end

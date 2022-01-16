@@ -33,7 +33,7 @@ SWEP.Primary.Ammo = "pistol"
 SWEP.Primary.DefaultClip = 90
 
 SWEP.ConeMax = 0.03
-SWEP.ConeMin = 0.005
+SWEP.ConeMin = 0.0025
 SWEP.Recoil = 0.75
 function SWEP:SecondaryAttack()
 end

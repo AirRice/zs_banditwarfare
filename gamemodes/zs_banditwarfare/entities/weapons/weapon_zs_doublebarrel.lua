@@ -36,9 +36,9 @@ SWEP.Base = "weapon_zs_base"
 
 SWEP.HoldType = "shotgun"
 
-SWEP.ViewModel = "models/weapons/v_annabelle.mdl"
+SWEP.ViewModel = "models/weapons/c_annabelle.mdl"
 SWEP.WorldModel = "models/weapons/w_annabelle.mdl"
-
+SWEP.UseHands = true
 SWEP.CSMuzzleFlashes = false
 
 SWEP.Primary.Sound = Sound("Weapon_Shotgun.Single")
@@ -66,20 +66,20 @@ SWEP.nextreloadfinish = 0
 function SWEP:Reload()
 	if self.reloading then return end
 
-	if self:GetNextReload() <= CurTime() and self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:GetNextReload() <= CurTime() and self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 		self.reloading = true
 		self.reloadtimer = CurTime() + self.ReloadDelay
 		self:SendWeaponAnim(ACT_VM_IDLE_TO_LOWERED)
-		self.Owner:SetAnimation( PLAYER_RELOAD )
-		self.Owner:DoReloadEvent()
+		self:GetOwner():SetAnimation( PLAYER_RELOAD )
+		self:GetOwner():DoReloadEvent()
 		self:SetNextReload(CurTime() + self:SequenceDuration())
 	end
 	self:SetIronsights(false)
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitSound("weapons/shotgun/shotgun_dbl_fire.wav")
 	local clip = self:Clip1()
@@ -97,11 +97,11 @@ function SWEP:Think()
 		self.reloadtimer = CurTime() + self.ReloadDelay
 		self:SendWeaponAnim(ACT_VM_RELOAD)
 
-		self.Owner:RemoveAmmo(1, self.Primary.Ammo, false)
+		self:GetOwner():RemoveAmmo(1, self.Primary.Ammo, false)
 		self:SetClip1(self:Clip1() + 1)
 		self:EmitSound("Weapon_Shotgun.Reload")
 
-		if self.Primary.ClipSize <= self:Clip1() or self.Owner:GetAmmoCount(self.Primary.Ammo) <= 0 or not self.Owner:KeyDown(IN_RELOAD) then
+		if self.Primary.ClipSize <= self:Clip1() or self:Ammo1() <= 0 or not self:GetOwner():KeyDown(IN_RELOAD) then
 			self.nextreloadfinish = CurTime() + self.ReloadDelay
 			self.reloading = false
 			self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -120,18 +120,18 @@ function SWEP:Think()
 		self:SendWeaponAnim(ACT_VM_IDLE)
 	end
 
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
+	if self:GetIronsights() and not self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetIronsights(false)
 	end
 	
-	if self:Clip1() <= 1 and self.Owner:KeyDown(IN_ATTACK2) then
+	if self:Clip1() <= 1 and self:GetOwner():KeyDown(IN_ATTACK2) then
 		self:SetNextSecondaryAttack(CurTime() + 0.25)
 		return false
 	end
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
 
 	if self:Clip1() <= 0 then
 		self:EmitSound("Weapon_Shotgun.Empty")

@@ -60,7 +60,7 @@ SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 SWEP.NailSize = 0.875
 function SWEP:CanPrimaryAttack()
-	if self.Owner:GetBarricadeGhosting() then return false end
+	if self:GetOwner():GetBarricadeGhosting() then return false end
 	if self:Clip1() < self.RequiredClip then
 		self:EmitSound("Weapon_Pistol.Empty")
 		self:SetNextPrimaryFire(CurTime() + math.max(0.25, self.Primary.Delay))
@@ -74,8 +74,8 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
-	local tr = owner:CompensatedMeleeTrace(128, self.NailSize, nil, nil)
-	if self.Owner:IsHolding() and self.Owner:AttemptNail(tr) then
+	local tr = self:GetOwner():CompensatedMeleeTrace(128, self.NailSize, nil, nil)
+	if self:GetOwner():IsHolding() and self:GetOwner():AttemptNail(tr) then
 		self:ShootNormalBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
 	else 
 		self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, self:GetCone())
@@ -88,7 +88,7 @@ function SWEP:ShootNormalBullets(dmg, numbul, cone)
 	self:SetConeAndFire()
 	self:DoRecoil()
 
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
 	owner:DoAttackEvent()

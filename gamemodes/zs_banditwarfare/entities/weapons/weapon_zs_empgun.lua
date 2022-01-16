@@ -75,18 +75,18 @@ SWEP.IronSightsPos = Vector(-6.5, 0, -0.65)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 
 function SWEP:Reload()
-	if self.Owner:IsHolding() then return end
+	if self:GetOwner():IsHolding() then return end
 
 	if self:GetIronsights() then
 		self:SetIronsights(false)
 	end
 	
 	if self:GetNextReload() <= CurTime() and self:DefaultReload(ACT_VM_RELOAD) then
-		self.Owner:GetViewModel():SetPlaybackRate(0.5)
+		self:GetOwner():GetViewModel():SetPlaybackRate(0.5)
 		self.IdleAnimation = CurTime() + self:SequenceDuration()*2+0.3
 		self:SetNextPrimaryFire(self.IdleAnimation)
 		self:SetNextReload(self.IdleAnimation+0.3)
-		self.Owner:DoReloadEvent()
+		self:GetOwner():DoReloadEvent()
 		if self.ReloadSound then
 			self:EmitSound(self.ReloadSound)
 		end
@@ -106,8 +106,8 @@ function BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	if IsValid(ent) then
 		if not ent:IsPlayer() then
-			if ent:GetClass() == "prop_obj_sigil" then
-				if (ent:GetSigilTeam() == TEAM_BANDIT or ent:GetSigilTeam() == TEAM_HUMAN) and attacker:IsPlayer() and ent:GetSigilTeam() ~= attacker:Team() and SERVER then
+			if ent:GetClass() == "prop_obj_transmitter" then
+				if (ent:GetTransmitterTeam() == TEAM_BANDIT or ent:GetTransmitterTeam() == TEAM_HUMAN) and attacker:IsPlayer() and ent:GetTransmitterTeam() ~= attacker:Team() and SERVER then
 					ent:DoStopComms()
 				end
 			elseif ent:GetClass() == "prop_ffemitterfield" then
@@ -138,15 +138,18 @@ function BulletCallback(attacker, tr, dmginfo)
 				--ent:TakeSpecialDamage(self.Primary.Damage*2.5, DMG_DISSOLVE, owner, self)
 			end
 		else
-            if SERVER then
-			local fwd = 500
-			local up = 100
-			local pushvel = tr.Normal * fwd
-            pushvel.z = math.max(pushvel.z, up)
-			--ent:KnockDown(3)
-            ent:SetGroundEntity(nil)
-            ent:SetLocalVelocity( ent:GetVelocity() + pushvel)
-            end
+			local invuln = ent:GetStatus("spawnbuff")
+			if not (invuln and invuln:IsValid()) then
+				if SERVER then
+					local fwd = 500
+					local up = 100
+					local pushvel = tr.Normal * fwd
+					pushvel.z = math.max(pushvel.z, up)
+					--ent:KnockDown(3)
+					ent:SetGroundEntity(nil)
+					ent:SetLocalVelocity( ent:GetVelocity() + pushvel)
+				end
+			end
 		end
 	end
 	GenericBulletCallback(attacker, tr, dmginfo)

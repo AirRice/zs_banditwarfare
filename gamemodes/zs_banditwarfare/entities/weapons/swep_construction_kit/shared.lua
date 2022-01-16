@@ -109,7 +109,7 @@ function SWEP:PrimaryAttack()
 		self:OpenMenu()
 	end
 	if game.SinglePlayer() then
-		self.Owner:SendLua("LocalPlayer():GetActiveWeapon():OpenMenu()")
+		self:GetOwner():SendLua("LocalPlayer():GetActiveWeapon():OpenMenu()")
 	end
 	
 end
@@ -122,7 +122,7 @@ function SWEP:SecondaryAttack()
 		self:OpenMenu()
 	end
 	if game.SinglePlayer() then
-		self.Owner:SendLua("LocalPlayer():GetActiveWeapon():OpenMenu()")
+		self:GetOwner():SendLua("LocalPlayer():GetActiveWeapon():OpenMenu()")
 	end
 	
 end
@@ -163,7 +163,7 @@ end
 function SWEP:SetThirdPerson( b )
 	self.dt.thirdperson = b
 	
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if (!IsValid(owner)) then owner = self.LastOwner end
 	if (!IsValid(owner)) then return end
 	

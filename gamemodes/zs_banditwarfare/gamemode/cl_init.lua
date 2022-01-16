@@ -1,5 +1,4 @@
 -- Sometimes persistent ones don't get created.
--- Sometimes persistent ones don't get created.
 local dummy = CreateClientConVar("_zs_dummyconvar", 1, false, false)
 local oldCreateClientConVar = CreateClientConVar
 function CreateClientConVar(...)
@@ -16,7 +15,7 @@ include("cl_targetid.lua")
 include("cl_postprocess.lua")
 
 include("vgui/dgamestate.lua")
-include("vgui/dsigilcounter.lua")
+include("vgui/dtransmittercounter.lua")
 include("vgui/dteamcounter.lua")
 include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
@@ -30,13 +29,11 @@ include("vgui/dexrotatedimage.lua")
 include("vgui/dexnotificationslist.lua")
 include("vgui/dexchanginglabel.lua")
 
-include("vgui/mainmenu.lua")
 include("vgui/pmainmenu.lua")
 include("vgui/poptions.lua")
 include("vgui/phelp.lua")
 include("vgui/pweapons.lua")
 include("vgui/pendboard.lua")
-include("vgui/psigils.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
 include("vgui/zshealtharea.lua")
@@ -164,9 +161,9 @@ end
 function GM:ClickedEndBoardPlayerButton(pl, button)
 end
 
-function GM:UpdateSigilTeamCounter(sigiltable)
-	if self.SigilCounterPanel and self.SigilCounterPanel:Valid() then
-		self.SigilCounterPanel:UpdateSigilTeams(sigiltable)
+function GM:UpdateTransmitterTeamCounter(objtable)
+	if self.TransmitterCounterPanel and self.TransmitterCounterPanel:Valid() then
+		self.TransmitterCounterPanel:UpdateTransmitterTeams(objtable)
 	end
 end
 
@@ -308,11 +305,6 @@ end
 local currentpower = 0
 local spawngreen = 0
 
-
---[[function GM:GetDynamicSpawning()
-	return not GetGlobalBool("DynamicSpawningDisabled", false)
-end]]
-
 function GM:TrackLastDeath()
 	if MySelf:Alive() then
 		self.LastTimeAlive = CurTime()
@@ -364,7 +356,9 @@ function GM:_Think()
 			end
 		end
 	end
-
+	if CurTime() >= self.LastHitMarker+self.HitMarkerLifeTime then
+		self.LastHitMarkerHeadshot = false
+	end
 	local myteam = MySelf:Team()
 	self:PlayBeats()
 	if myteam == TEAM_HUMAN or myteam == TEAM_BANDIT then
@@ -445,15 +439,15 @@ function GM:DrawPackUpBar(x, y, fraction, notowner, screenscale)
 	draw_SimpleText(notowner and CurTime() % 2 < 1 and translate.Format("requires_x_people", 4) or notowner and translate.Get("packing_others_object") or translate.Get("packing"), "ZSHUDFontSmall", x, y - draw_GetFontHeight("ZSHUDFontSmall") - 2, col, TEXT_ALIGN_CENTER)
 end
 local colLifeStats = Color(255, 0, 0, 255)
-local hitmarkeralpha = 255
-
+GM.LastHitMarker = 0
+GM.LastHitMarkerHeadshot = false
 net.Receive( "zs_hitmarker", function( iLen )
 	local IsPlayer = net.ReadBool() 
 	local head = net.ReadBool() 
 	if not IsPlayer then return end
 	
-	hitmarkeralpha = 255;
-
+	GAMEMODE.LastHitMarker = CurTime()
+	GAMEMODE.LastHitMarkerHeadshot = head
 	LocalPlayer():EmitSound("bandit/hitsound.wav", 500, 100, 1,CHAN_ITEM)
 end )
 
@@ -468,12 +462,15 @@ function GM:HumanHUD(screenscale)
 
 	if not self.RoundEnded then
 		if self:GetWave() == 0 and not self:GetWaveActive() then
-			local txth = draw_GetFontHeight("ZSHUDFontSmall")
-			draw_SimpleTextBlurry(translate.Get("waiting_for_players").." "..util.ToMinutesSeconds(math.max(0, self:GetWaveStart() - curtime)), "ZSHUDFontSmall", w * 0.5, h * 0.25, COLOR_GRAY, TEXT_ALIGN_CENTER)
+			local wavezerowait = math.max(0, self:GetWaveStart() - self.WaveIntermissionLength - curtime)
+			if wavezerowait > 0 then
+				local txth = draw_GetFontHeight("ZSHUDFontSmall")
+				draw_SimpleTextBlurry(translate.Get("waiting_for_players").." "..util.ToMinutesSeconds(math.max(0, self:GetWaveStart() - self.WaveIntermissionLength - curtime)), "ZSHUDFontSmall", w * 0.5, h * 0.25, COLOR_GRAY, TEXT_ALIGN_CENTER)
 
-			local y = h * 0.75 + txth * 2
+				local y = h * 0.75 + txth * 2
 
-			txth = draw_GetFontHeight("ZSHUDFontTiny")
+				txth = draw_GetFontHeight("ZSHUDFontTiny")
+			end
 		end
 
 		local drown = MySelf.status_drown
@@ -513,7 +510,16 @@ function GM:HumanHUD(screenscale)
 			y = y + th
 		end
 	end
-
+	local hitmarkeralpha = (math.Clamp(self.HitMarkerLifeTime+self.LastHitMarker-CurTime(), 0,self.HitMarkerLifeTime)/self.HitMarkerLifeTime)
+	if hitmarkeralpha > 0 then
+		local screen = Vector(ScrW() / 2, ScrH() / 2)
+		local nonred = self.LastHitMarkerHeadshot and 0 or 255
+		surface_SetDrawColor(255,nonred,nonred,255*hitmarkeralpha)
+		surface.DrawLine( screen.x - 35, screen.y - 35, screen.x - 25, screen.y - 25 )
+		surface.DrawLine( screen.x - 35, screen.y + 35, screen.x - 25, screen.y + 25 )
+		surface.DrawLine( screen.x + 35, screen.y - 35, screen.x + 25, screen.y - 25 )
+		surface.DrawLine( screen.x + 35, screen.y + 35, screen.x + 25, screen.y + 25 )
+	end
 	local obsmode = MySelf:GetObserverMode()
 	if obsmode ~= OBS_MODE_NONE then
 		self:ObserverHUD(obsmode)
@@ -561,16 +567,6 @@ function GM:_HUDPaint()
 			self:ObserverHUD(obsmode)
 		end
 	end
-	hitmarkeralpha = math.Approach( hitmarkeralpha, 0, 5 )
-	
-	local screen = Vector(ScrW() / 2, ScrH() / 2)
-	surface_SetDrawColor(255,255,255,hitmarkeralpha)
-	surface.DrawLine( screen.x - 35, screen.y - 35, screen.x - 25, screen.y - 25 )
-	surface.DrawLine( screen.x - 35, screen.y + 35, screen.x - 25, screen.y + 25 )
-	surface.DrawLine( screen.x + 35, screen.y - 35, screen.x + 25, screen.y - 25 )
-	surface.DrawLine( screen.x + 35, screen.y + 35, screen.x + 25, screen.y + 25 )
-	
-
 end
 
 function GM:ObserverHUD(obsmode)
@@ -595,11 +591,11 @@ function GM:ObserverHUD(obsmode)
 			draw_SimpleTextBlur(translate.Get("press_lmb_to_spawn"), "ZSHUDFontSmall", w * 0.5, h * 0.75, COLOR_DARKGREEN, TEXT_ALIGN_CENTER)
 		end
 	end
-	local space = texh + 8
+	local space = texh+4
 		draw_SimpleTextBlurry(translate.Get("press_rmb_to_cycle_targets"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space, COLOR_WHITE, TEXT_ALIGN_CENTER)
-		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*3, COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_duck_to_toggle_eyecam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space*2, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if MySelf:Team() == TEAM_SPECTATOR then
-		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 5, COLOR_WHITE, TEXT_ALIGN_CENTER)
+		draw_SimpleTextBlurry(translate.Get("press_jump_to_free_roam"), "ZSHUDFontSmall", w * 0.5, h * 0.75 + space * 3, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	end
 end
 local indicator_mat = Material("vgui/ico_friend_indicator_alone")
@@ -757,10 +753,10 @@ function GM:CreateVGUI()
 	self.GameStatePanel:SetSize(screenscale * 420, screenscale * 80)
 	self.GameStatePanel:ParentToHUD()
 
-	self.SigilCounterPanel = vgui.Create("DSigilCounter")
-	self.SigilCounterPanel:SetAlpha(220)
-	self.SigilCounterPanel:InvalidateLayout()
-	self.SigilCounterPanel:ParentToHUD()
+	self.TransmitterCounterPanel = vgui.Create("DTransmitterCounter")
+	self.TransmitterCounterPanel:SetAlpha(220)
+	self.TransmitterCounterPanel:InvalidateLayout()
+	self.TransmitterCounterPanel:ParentToHUD()
 	
 	self.TopNotificationHUD = vgui.Create("DEXNotificationsList")
 	self.TopNotificationHUD:SetAlign(RIGHT)
@@ -843,19 +839,19 @@ function GM:_HUDPaintBackground()
 			end
 		end
 	elseif self:IsTransmissionMode() then
-		for _, ent in pairs(ents.FindByClass("prop_obj_sigil")) do
+		for _, ent in pairs(ents.FindByClass("prop_obj_transmitter")) do
 			local uipos = ent:GetPos()+ent:GetAngles():Up()*30
 			if !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
 				local teamcolor = nil
-				if ent:GetSigilTeam() ~= nil then 
-					teamcolor = team.GetColor(ent:GetSigilTeam())
+				if ent:GetTransmitterTeam() ~= nil then 
+					teamcolor = team.GetColor(ent:GetTransmitterTeam())
 				end
 				local colr,colg,colb,cola = (teamcolor ~= nil and teamcolor or defaultcolor):Unpack()
 				local size = 24
 				local scrpos = uipos:ToScreen()
 				scrpos.x = math.Clamp(scrpos.x, size, ScrW() - size)
 				scrpos.y = math.Clamp(scrpos.y, size, ScrH() - size)
-				if MySelf:GetActiveWeapon().AdditionalSigilInfo then
+				if MySelf:GetActiveWeapon().AdditionalTransmitterInfo then
 					local text = math.ceil(MySelf:GetPos():Distance(ent:GetPos()))
 					local w, h = surface.GetTextSize(text)
 					draw.SimpleText(text, "ZSHUDFontSmallest", scrpos.x - size- w/2,scrpos.y - size - h/2)
@@ -894,7 +890,7 @@ hook.Add( "InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI )
 
 local function VoiceNotifyThink(pnl)
 	pnl.TeamCol = COLOR_DARKGRAY
-	if (pnl.ply:Team() == TEAM_BANDIT or pnl.ply:Team() == TEAM_HUMAN) then
+	if pnl.ply and pnl.ply:IsValid() and pnl.ply:IsPlayer() and (pnl.ply:Team() == TEAM_BANDIT or pnl.ply:Team() == TEAM_HUMAN) then
 		pnl.TeamCol = team.GetColor(pnl.ply:Team())
 	end
 	pnl.TeamCol = ColorAlpha( pnl.TeamCol, 190)
@@ -1124,22 +1120,36 @@ end
 local undomodelblend = false
 local undozombievision = false
 local matWhite = Material("models/debug/debugwhite")
+local matStealth = Material("models/props_lab/warp_sheet")
 function GM:_PrePlayerDraw(pl)
 	local shadowman = false
-
-	if pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then 
+	local myteam = MySelf:Team()
+	if myteam != pl:Team() and pl ~= MySelf and MySelf:Alive() and pl:Alive() and (pl:Team() == TEAM_BANDIT or pl:Team() == TEAM_HUMAN) then
+		local wep = pl:GetActiveWeapon()
+		if wep.m_IsStealthWeapon then
+			local blend = wep:GetStealthWepBlend()
+			render.SetBlend(blend)
+			if blend < 0.55 then
+				render.ModelMaterialOverride(matStealth)
+				shadowman = true
+				if blend < 0.3 then
+					render.ModelMaterialOverride(matWhite)
+					render.SetColorModulation(0.2, 0.2, 0.2)
+				end
+			end
+		end
+	elseif pl.status_overridemodel and pl.status_overridemodel:IsValid() and self:ShouldDrawLocalPlayer(MySelf) then 
 	-- We need to do this otherwise the player's real model shows up for some reason.
 		undomodelblend = true
 		render.SetBlend(0)
 	else
-		local myteam = MySelf:Team()
 		if myteam == pl:Team() and pl ~= MySelf and not self.MedicalAura and MySelf:Alive() then
 			local radius = self.TransparencyRadius
 			if radius > 0 then
 				local eyepos = EyePos()
 				local dist = pl:NearestPoint(eyepos):Distance(eyepos)
 				if dist < radius then
-					local blend = math.max((dist / radius) ^ 1.4, myteam == TEAM_HUMAN and 0.04 or 0.1)
+					local blend = math.max((dist / radius) ^ 1.4, (myteam == TEAM_HUMAN or myteam == TEAM_BANDIT) and 0.04 or 0.1)
 					render.SetBlend(blend)
 					if (myteam == TEAM_HUMAN or myteam == TEAM_BANDIT) and blend < 0.4 then
 						render.ModelMaterialOverride(matWhite)
@@ -1229,15 +1239,15 @@ function GM:EndRound(winner, nextmap)
 
 	local snd = nil
 	if winner == TEAM_BANDIT then
-		snd = "sound/music/bandit/music_banditwin_vrts.ogg"
+		snd = self.BanditWinSound
 	elseif winner == TEAM_HUMANS then
-		snd = "sound/music/bandit/music_humanwin_vrts.ogg"
+		snd = self.HumanWinSound
 	else
-		snd = "sound/music/bandit/music_lose.ogg"
+		snd = self.AllLoseSound
 	end
 	if snd then
 		timer.Simple(0.5, function()
- 			sound.PlayFile(snd,"noplay",function(channel, errId, errName)
+ 			sound.PlayFile("sound/"..snd,"noplay",function(channel, errId, errName)
  				if (!errId and IsValid(channel)) then
  					GAMEMODE.BeatsSoundChannel = channel
  					GAMEMODE.BeatsSoundChannel:SetVolume(GAMEMODE.BeatsVolume)
@@ -1382,7 +1392,11 @@ net.Receive("zs_insure_weapon", function(length)
 	local doMessage = net.ReadBool()
 	if doMessage then
 		local wepname = weapons.GetStored(wep).TranslateName and translate.Get(weapons.GetStored(wep).TranslateName)or wep
-		GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		if killicon.Get(wep) == killicon.Get("default") then
+			GAMEMODE:CenterNotify(COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		else
+			GAMEMODE:CenterNotify({killicon = wep}, " ", COLOR_PURPLE, translate.Get("weapon_insured")..": ", color_white, wepname)
+		end
 	end
 end)
 net.Receive("zs_remove_insured_weapon", function(length)
@@ -1464,12 +1478,12 @@ net.Receive("zs_honmention", function(length)
 	end
 end)
 
-net.Receive("zs_currentsigils", function(length)
-	local sigilteams = {}
-	for i=1, GAMEMODE.MaxSigils do
-		sigilteams[i] = net.ReadInt(4)
+net.Receive("zs_currenttransmitters", function(length)
+	local objteams = {}
+	for i=1, GAMEMODE.MaxTransmitters do
+		objteams[i] = net.ReadInt(4)
 	end
-	gamemode.Call("UpdateSigilTeamCounter",sigilteams)
+	gamemode.Call("UpdateTransmitterTeamCounter",objteams)
 end)
 
 net.Receive("zs_wavestart", function(length)
@@ -1493,7 +1507,7 @@ net.Receive("zs_wavestart", function(length)
 	elseif LocalPlayer():Team() == TEAM_HUMAN then
 		surface.PlaySound(humanintros[math.random(#humanintros)])
 	else
-		surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
+		surface_PlaySound("ambient/levels/streetwar/city_battle"..math.random(6, 9)..".wav")--"ambient/creatures/town_zombie_call1.wav"
 	end
 end)
 

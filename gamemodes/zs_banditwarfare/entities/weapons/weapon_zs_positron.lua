@@ -104,25 +104,23 @@ end
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	self.Owner:RemoveAmmo((self:GetLastHurtDmg() >= 15 and 3 or 1), self.Primary.Ammo, false)
-	if (!IsValid(self.Owner)) then
+	self:GetOwner():RemoveAmmo((self:GetLastHurtDmg() >= 15 and 3 or 1), self.Primary.Ammo, false)
+	if (!IsValid(self:GetOwner())) then
 		return
 	end
 	local recoil = self.Recoil
-	if SERVER then
-		--self.Owner:ViewPunch(Angle(math.Rand(-recoil * 3, 0), 0, 0))
-	else
-		local curAng = self.Owner:EyeAngles()
+	if !SERVER then
+		local curAng = self:GetOwner():EyeAngles()
 		curAng.pitch = curAng.pitch - math.Rand(recoil * 3, 0)
 		curAng.yaw = curAng.yaw + math.Rand(-recoil*1.5, recoil*1.5)
 		curAng.Roll = 0
-		self.Owner:SetEyeAngles(curAng)
+		self:GetOwner():SetEyeAngles(curAng)
 	end
 end
 
 function SWEP:CanPrimaryAttack()
-	if self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then return false end
-	if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then return false end
+	if 0 >= self:Ammo1() then
 		self:EmitSound("buttons/combine_button_locked.wav")
 		self:SetNextPrimaryFire(CurTime() + 0.5)
 		return false
@@ -133,7 +131,7 @@ end
 
 
 function SWEP:Think()
-    if self.Owner:KeyReleased(IN_ATTACK) or not self.Owner:Alive() or self.Owner:Health() <= 0 then
+    if self:GetOwner():KeyReleased(IN_ATTACK) or not self:GetOwner():Alive() or self:GetOwner():Health() <= 0 then
 		self:StopSound( "Loop_Lepton_Fire" )
 		self:StopSound( "Loop_Lepton_Fire2" )
 		self:EmitSound("weapons/physcannon/physcannon_claws_close.wav")
@@ -141,8 +139,8 @@ function SWEP:Think()
 		self:SetLastHurtTarget(nil)
 		self:SetLastHurtDmg(0)
     end
-    if self.Owner:KeyDown(IN_ATTACK) then
-		if 0 >= self.Owner:GetAmmoCount(self.Primary.Ammo) or self.Owner:IsHolding() or self.Owner:GetBarricadeGhosting() then 
+    if self:GetOwner():KeyDown(IN_ATTACK) then
+		if 0 >= self:Ammo1() or self:GetOwner():IsHolding() or self:GetOwner():GetBarricadeGhosting() then 
 			self:SetFiringLaser( false )
 			self:StopSound( "Loop_Lepton_Fire" )
 			self:StopSound( "Loop_Lepton_Fire2" )
@@ -156,15 +154,15 @@ function SWEP:Think()
 		self:EmitSound( "Loop_Lepton_Fire2" )
 		local td = {}
 	
-		td.start = self.Owner:EyePos()
+		td.start = self:GetOwner():EyePos()
 		td.mask = MASK_SHOT
 		td.filter = {}
-		table.Add(td.filter, team.GetPlayers( self.Owner:Team()))
-		td.endpos = td.start + self.Weapon.Owner:EyeAngles():Forward()*10000
+		table.Add(td.filter, team.GetPlayers( self:GetOwner():Team()))
+		td.endpos = td.start + self:GetOwner():EyeAngles():Forward()*10000
 		table.Add(td.filter, {self})
-		self.Owner:LagCompensation(true)
+		self:GetOwner():LagCompensation(true)
 		local tr = util.TraceLine(td)
-		self.Owner:LagCompensation(false)
+		self:GetOwner():LagCompensation(false)
 		self.EndPos = tr.HitPos
         if tr.Hit then
 			self.EndPos = tr.HitPos
@@ -243,7 +241,7 @@ end
 
 function SWEP:ShootEffects()
     self:SendWeaponAnim( ACT_VM_SECONDARYATTACK )
-    self.Owner:SetAnimation( PLAYER_ATTACK1 )
+    self:GetOwner():SetAnimation( PLAYER_ATTACK1 )
 end
 
 if(CLIENT)then
@@ -291,15 +289,15 @@ end
 
 
 function SWEP:DrawLaser() 
-	if self.Owner ~= LocalPlayer() then
+	if self:GetOwner() ~= LocalPlayer() then
 	local td = {}
-		td.start = self.Weapon.Owner:EyePos()
+		td.start = self:GetOwner():EyePos()
 		td.mask = MASK_SHOT
 		td.filter = {}
-		table.Add(td.filter, {self.Weapon.Owner})
-		table.Add(td.filter, {self.Weapon.Owner:GetActiveWeapon()})
-		table.Add(td.filter, team.GetPlayers(self.Weapon.Owner:Team()))
-		td.endpos = td.start + self.Weapon.Owner:EyeAngles():Forward()*10000
+		table.Add(td.filter, {self:GetOwner()})
+		table.Add(td.filter, {self:GetOwner():GetActiveWeapon()})
+		table.Add(td.filter, team.GetPlayers(self:GetOwner():Team()))
+		td.endpos = td.start + self:GetOwner():EyeAngles():Forward()*10000
 		table.Add(td.filter, {self})
 	local tr = util.TraceLine(td)
 	if tr.Hit then self.EndPos = tr.HitPos end
@@ -308,11 +306,9 @@ function SWEP:DrawLaser()
     if not self.StartPos then return end
     if not self.EndPos then return end
 	local beamwide = 0.2 + 0.8*math.Clamp(self:GetLastHurtDmg()/self.Primary.Damage,0,1)
-    --self.Weapon:SetRenderBoundsWS( self.StartPos, self.EndPos )
 	local Beamspeed = (self.EndPos - self.StartPos):Length()/100
 	render.SetMaterial(Material("Effects/ar2_altfire1"))
 	render.DrawSprite( self.EndPos, 8, 8, Color(125,125,225,255))
-		--if((self.EndPos - self.StartPos):Length() >= 60) then self.EndPos = self.Weapon.Owner:EyePos() + self.Weapon.Owner:EyeAngles():Forward()*100 end
 	render.SetMaterial( Material("cable/physbeam") )  
 	render.DrawBeam( self.StartPos, self.EndPos, 20*beamwide, CurTime()*Beamspeed, CurTime()*Beamspeed-1, Color( 255, 255, 255, 255 ) )
 	render.SetMaterial( Material("cable/hydra") )  

@@ -47,7 +47,7 @@ function SWEP:PrimaryAttack()
 	self:SetNextReload(CurTime() + self.Primary.Delay*(shots + 1.5))
 	for i = 0, shots-1 do
 		timer.Simple(self.Primary.Delay * i, function()
-			if (self:IsValid() and self.Owner:Alive()) then
+			if (self:IsValid() and self:GetOwner():Alive()) then
 				self:EmitFireSound()
 				self:TakeAmmo()
 				self:ShootBullets(self.Primary.Damage, 1, self:GetCone())

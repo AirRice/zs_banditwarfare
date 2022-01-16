@@ -1,4 +1,4 @@
-SWEP.PrintName = "Sigil Placer"
+SWEP.PrintName = "Objective Placer"
 
 SWEP.ViewModel = "models/weapons/c_pistol.mdl"
 SWEP.WorldModel = "models/weapons/w_pistol.mdl"
@@ -16,13 +16,13 @@ SWEP.Secondary.Ammo = "none"
 
 function SWEP:Initialize()
 	if SERVER then
-		self:RefreshSigils()
+		self:RefreshObjectives()
 	end
 end
 
 function SWEP:Deploy()
 	if SERVER then
-		self:RefreshSigils()
+		self:RefreshObjectives()
 	end
 
 	return true
@@ -30,7 +30,7 @@ end
 
 function SWEP:Holster()
 	if SERVER then
-		for _, ent in pairs(ents.FindByClass("point_fakesigil")) do
+		for _, ent in pairs(ents.FindByClass("point_fakeobj")) do
 			ent:Remove()
 		end
 	end
@@ -39,7 +39,7 @@ function SWEP:Holster()
 end
 
 function SWEP:PrimaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -50,13 +50,13 @@ function SWEP:PrimaryAttack()
 	if tr.HitWorld and tr.HitNormal.z >= 0.8 then
 		table.insert(GAMEMODE.ProfilerNodes, tr.HitPos)
 
-		self:RefreshSigils()
+		self:RefreshObjectives()
 		GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
 	end
 end
 
 function SWEP:SecondaryAttack()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -73,12 +73,12 @@ function SWEP:SecondaryAttack()
 	end
 	GAMEMODE.ProfilerNodes = newpoints
 
-	self:RefreshSigils()
+	self:RefreshObjectives()
 	GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
 end
 
 function SWEP:Reload()
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	if not owner:IsSuperAdmin() then return end
 
 	owner:DoAttackEvent()
@@ -87,14 +87,14 @@ function SWEP:Reload()
 
 	if not self.StartReload then
 		self.StartReload = CurTime()
-		owner:ChatPrint("Keep holding reload to clear all pre-made sigil points.")
+		owner:ChatPrint("Keep holding reload to clear all pre-made objective points.")
 	end
 end
 
 if SERVER then
 function SWEP:Think()
 	if self.StartReload then
-		if not self.Owner:KeyDown(IN_RELOAD) then
+		if not self:GetOwner():KeyDown(IN_RELOAD) then
 			self.StartReload = nil
 			return
 		end
@@ -102,25 +102,25 @@ function SWEP:Think()
 		if CurTime() >= self.StartReload + 3 then
 			self.StartReload = nil
 
-			self.Owner:ChatPrint("Deleted all pre-made sigil points.")
+			self:GetOwner():ChatPrint("Deleted all pre-made objective points.")
 			GAMEMODE:DeleteProfilerPreMade()
-			self:RefreshSigils()
+			self:RefreshObjectives()
 		end
 	end
 end
 end
 
-function SWEP:RefreshSigils()
-	for _, ent in pairs(ents.FindByClass("point_fakesigil")) do
+function SWEP:RefreshObjectives()
+	for _, ent in pairs(ents.FindByClass("point_fakeobj")) do
 		ent:Remove()
 	end
-	for _, ent in pairs(ents.FindByClass("info_sigilnode")) do
+	for _, ent in pairs(ents.FindByClass("info_objnode")) do
 		table.insert(GAMEMODE.ProfilerNodes, ent:GetPos())
 		ent:Remove()
 		GAMEMODE:SaveProfilerPreMade(GAMEMODE.ProfilerNodes)
 	end
 	for _, point in pairs(GAMEMODE.ProfilerNodes) do
-		local ent = ents.Create("point_fakesigil")
+		local ent = ents.Create("point_fakeobj")
 		if ent:IsValid() then
 			ent:SetPos(point)
 			ent:Spawn()
@@ -128,9 +128,9 @@ function SWEP:RefreshSigils()
 	end
 end
 
-concommand.Add("zs_sigilplacer", function(sender)
-	if sender:IsValid() and sender:IsSuperAdmin() then
-		sender:Give("weapon_zs_sigilplacer")
+concommand.Add("zs_objectiveplacer", function(sender)
+	if sender:IsValid() and sender:IsSuperAdmin() and SERVER then
+		sender:Give("weapon_zs_objectiveplacer")
 	end
 end)
 
@@ -152,7 +152,7 @@ function ENT:DrawTranslucent()
 	local lp = LocalPlayer()
 	if lp:IsValid() then
 		local wep = lp:GetActiveWeapon()
-		if wep:IsValid() and wep:GetClass() == "weapon_zs_sigilplacer" then
+		if wep:IsValid() and wep:GetClass() == "weapon_zs_objectiveplacer" then
 			cam.IgnoreZ(true)
 			render.SetBlend(0.5)
 			render.SetColorModulation(1, 0, 0)
@@ -169,7 +169,7 @@ function ENT:DrawTranslucent()
 end
 end
 
-scripted_ents.Register(ENT, "point_fakesigil")
+scripted_ents.Register(ENT, "point_fakeobj")
 
 local ENT = {}
 
@@ -178,4 +178,4 @@ ENT.Type = "point"
 function ENT:Initialize()
 end
 
-scripted_ents.Register(ENT, "info_sigilnode")
+scripted_ents.Register(ENT, "info_objnode")

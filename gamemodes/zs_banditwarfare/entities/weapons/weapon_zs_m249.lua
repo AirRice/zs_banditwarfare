@@ -55,12 +55,12 @@ function SWEP:GetCone()
 	local basecone = self.ConeMin
 	local conediff = self.ConeMax - self.ConeMin + self.MovingConeOffset
 	
-	local multiplier = math.min(self.Owner:GetVelocity():Length() / self.WalkSpeed, 1)
-	if !self.Owner:OnGround() then
+	local multiplier = math.min(self:GetOwner():GetVelocity():Length() / self.WalkSpeed, 1)
+	if !self:GetOwner():OnGround() then
 		basecone = basecone * 1.2
 		multiplier = multiplier + 0.55
 	end
-	if not self.Owner:Crouching() then 
+	if not self:GetOwner():Crouching() then 
 		multiplier = multiplier - 0.1 
 	end
 	if self:GetIronsights() then 

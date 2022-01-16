@@ -3,7 +3,7 @@ AddCSLuaFile()
 if CLIENT then
 	SWEP.TranslateName = "weapon_inquisition_name"
 	SWEP.TranslateDesc = "weapon_inquisition_desc"
-	SWEP.Slot = 3
+	SWEP.Slot = 1
 	SWEP.SlotPos = 0
 
 	SWEP.ViewModelFOV = 60
@@ -65,9 +65,9 @@ function SWEP:PrimaryAttack()
 	self:SendWeaponAnimation()
 	for i = 0, self.Primary.NumShots-1 do
 		timer.Simple(math.min((self.Primary.Delay-0.4)/self.Primary.NumShots,0.1) * i, function()
-			if (self:IsValid() and self.Owner:Alive()) then
+			if (self:IsValid() and self:GetOwner():Alive()) then
 				self:EmitFireSound()	
-				self.Owner:DoAttackEvent()
+				self:GetOwner():DoAttackEvent()
 				self:ShootBullets(self.Primary.Damage, self:GetCone())
 			end
 		end)
@@ -77,7 +77,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:ShootBullets(dmg, cone)
-	local owner = self.Owner
+	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
 	if SERVER then
 		self:SetConeAndFire()

@@ -57,9 +57,9 @@ SWEP.ShowViewModel = false
 SWEP.ShowWorldModel = false
 
 SWEP.Primary.Sound = Sound("weapons/shotgun/shotgun_dbl_fire.wav")
-SWEP.Primary.Damage = 8
-SWEP.Primary.NumShots = 9
-SWEP.Primary.Delay = 0.95
+SWEP.Primary.Damage = 9
+SWEP.Primary.NumShots = 10
+SWEP.Primary.Delay = 0.9
 SWEP.ReloadDelay = 0.4
 SWEP.Recoil = 1.72
 SWEP.Primary.ClipSize = 5
@@ -79,10 +79,13 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 	local ent = tr.Entity
 	local phys = ent:GetPhysicsObject()
 	if ent:IsValid() and ent:IsPlayer() and ent:Team() ~= attacker:Team() and SERVER then
-		local pushvel = tr.Normal * 50
-		pushvel.z = math.max(pushvel.z, 10)
-		ent:SetGroundEntity(nil)
-		ent:SetLocalVelocity(ent:GetVelocity() + pushvel)
+		local invuln = ent:GetStatus("spawnbuff")
+		if not (invuln and invuln:IsValid()) then
+			local pushvel = tr.Normal * 50
+			pushvel.z = math.max(pushvel.z, 10)
+			ent:SetGroundEntity(nil)
+			ent:SetLocalVelocity(ent:GetVelocity() + pushvel)
+		end
 	elseif IsValid(phys) then
 		phys:AddVelocity(phys:GetVelocity() + tr.Normal * 5)
 	end
@@ -106,7 +109,7 @@ end
 function SWEP:Reload()
 	if self:GetReloadTimer() > 0 then return end
 
-	if self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo) then
+	if self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1() then
 		self:SetNextPrimaryFire(CurTime() + math.max(self.ReloadDelay,self.Primary.Delay))
 		self:SetIsReloading(true)
 		self:SetReloadTimer(CurTime() + self.ReloadDelay)
@@ -120,9 +123,6 @@ function SWEP:Think()
 	if self:GetReloadTimer() > 0 and CurTime() >= self:GetReloadTimer() then
 		self:DoReload()
 	end
-	if self:GetIronsights() and not self.Owner:KeyDown(IN_ATTACK2) then
-		self:SetIronsights(false)
-	end
 	if self.BaseClass.Think then
 		self.BaseClass.Think(self)
 	end
@@ -131,7 +131,7 @@ function SWEP:Think()
 end
 
 function SWEP:DoReload()
-	if not (self:Clip1() < self.Primary.ClipSize and 0 < self.Owner:GetAmmoCount(self.Primary.Ammo)) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
+	if not (self:Clip1() < self.Primary.ClipSize and 0 < self:Ammo1()) or self:GetOwner():KeyDown(IN_ATTACK) or (not self:GetIsReloading() and not self:GetOwner():KeyDown(IN_RELOAD)) then
 		self:StopReloading()
 		return
 	end

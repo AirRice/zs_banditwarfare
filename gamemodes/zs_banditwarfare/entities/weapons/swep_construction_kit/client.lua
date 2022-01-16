@@ -97,9 +97,9 @@ function SWEP:ClientInit()
 	
 	SCKDebug("Client init start")
 	
-	if (IsValid(self.Owner)) then
+	if (IsValid(self:GetOwner())) then
 		// init view model bone mods
-		local vm = self.Owner:GetViewModel()
+		local vm = self:GetOwner():GetViewModel()
 		if IsValid(vm) then
 			self:ResetBonePositions(vm)
 		end
@@ -175,7 +175,7 @@ function SWEP:CreateWeaponWorldModel()
 		if IsValid(self.world_model) then self.world_model:Remove() end
 		self.world_model = ClientsideModel(model, RENDERGROUP_TRANSLUCENT)
 		if (IsValid(self.world_model)) then
-			self.world_model:SetParent(self.Owner)
+			self.world_model:SetParent(self:GetOwner())
 			self.world_model:SetNoDraw(true)
 			self.cur_wmodel = model
 			if (self.world_model:LookupBone( "ValveBiped.Bip01_R_Hand" )) then
@@ -353,8 +353,8 @@ function SWEP:GetBoneOrientation( basetab, name, ent, bone_override, buildup )
 			pos, ang = m:GetTranslation(), m:GetAngles()
 		end
 		
-		if (IsValid(self.Owner) and self.Owner:IsPlayer() and 
-			ent == self.Owner:GetViewModel() and self.ViewModelFlip) then
+		if (IsValid(self:GetOwner()) and self:GetOwner():IsPlayer() and 
+			ent == self:GetOwner():GetViewModel() and self.ViewModelFlip) then
 			ang.r = -ang.r // Fixes mirrored models
 		end
 	
@@ -459,7 +459,7 @@ function SWEP:ViewModelDrawn()
 	//if true then return end
 	//SCKDebugRepeat( "SWEP:VMD", "Drawing viewmodel!" )
 	
-	local vm = self.Owner:GetViewModel()
+	local vm = self:GetOwner():GetViewModel()
 	if !IsValid(vm) then return end
 	
 	self:UpdateBonePositions(vm)
@@ -608,16 +608,16 @@ function SWEP:DrawWorldModel()
 
 	local bone_ent
 	
-	if (IsValid(self.Owner)) then
+	if (IsValid(self:GetOwner())) then
 		self:SetColor(Color(255,255,255,255))
 		self:SetRenderMode(0) 
 		wm:SetNoDraw(true)
-		if (self.Owner:GetActiveWeapon() != self.Weapon) then return end
-		wm:SetParent(self.Owner)
+		if (self:GetOwner():GetActiveWeapon() != self.Weapon) then return end
+		wm:SetParent(self:GetOwner())
 		if (self.ShowWorldModel) then
 			wm:DrawModel()
 		end
-		bone_ent = self.Owner
+		bone_ent = self:GetOwner()
 	else
 		// this only happens if the weapon is dropped, which shouldn't happen normally.
 		self:SetColor(Color(255,0,0,0))
@@ -636,8 +636,8 @@ function SWEP:DrawWorldModel()
 	
 	/* BASE CODE FOR NEW SWEPS */
 	/*self:DrawModel()
-	if (IsValid(self.Owner)) then
-		bone_ent = self.Owner
+	if (IsValid(self:GetOwner())) then
+		bone_ent = self:GetOwner()
 	else
 		// when the weapon is dropped
 		bone_ent = self
@@ -737,7 +737,7 @@ end
 function SWEP:Holster()
 	self.useThirdPerson = false
 	
-	local vm = self.Owner:GetViewModel()
+	local vm = self:GetOwner():GetViewModel()
 	if IsValid(vm) then
 		self:ResetBonePositions(vm)
 	end

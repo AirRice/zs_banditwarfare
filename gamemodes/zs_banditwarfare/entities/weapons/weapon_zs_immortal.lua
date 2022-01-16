@@ -48,9 +48,9 @@ SWEP.WorldModel = "models/weapons/w_357.mdl"
 SWEP.UseHands = true
 SWEP.ReloadSound = Sound("Weapon_AWP.ClipOut")
 SWEP.Primary.Sound = Sound("Weapon_Immortal.Single")
-SWEP.Primary.Damage = 40
+SWEP.Primary.Damage = 45
 SWEP.Primary.NumShots = 1
-SWEP.Primary.Delay = 0.8
+SWEP.Primary.Delay = 0.7
 SWEP.Recoil = 3
 SWEP.Primary.ClipSize = 4
 SWEP.Primary.Automatic = false
@@ -70,6 +70,6 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self:EmitFireSound()
 	self:TakeAmmo()
-	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self.Owner:Health()/self.Owner:GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
+	self:ShootBullets(self.Primary.Damage+self.Primary.Damage*math.Clamp(1-self:GetOwner():Health()/self:GetOwner():GetMaxHealth(),0,1), self.Primary.NumShots, self:GetCone())
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end

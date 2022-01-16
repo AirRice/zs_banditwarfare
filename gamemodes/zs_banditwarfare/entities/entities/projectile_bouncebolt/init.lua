@@ -55,7 +55,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		util.Decal("ExplosiveGunshot", vHitPos-vDirNormal, vHitPos+vDirNormal, self )
 	elseif eHitEntity:IsValid() then
 		eHitEntity:TakeDamage(math.floor((self.Damage or 25) * 1.5^self.Bounces) , owner, self)
-		if eHitEntity:IsPlayer() and owner:IsPlayer() and eHitEntity:Team() ~= self.Owner:Team() then
+		if eHitEntity:IsPlayer() and owner:IsPlayer() and eHitEntity:Team() ~= self:GetOwner():Team() then
 			eHitEntity:EmitSound("Weapon_Crossbow.BoltHitBody")
 			util.Blood(vHitPos, 30, vHitNormal, math.Rand(10,30), true)
 		end
@@ -91,7 +91,7 @@ end
 function ENT:PhysicsCollide(data, phys)
 	local ent = data.HitEntity
 	if ent:GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS then 
-		ent:TakeDamage(self.Damage or 25, self.Owner, self)
+		ent:TakeDamage(self.Damage or 25, self:GetOwner(), self)
 		self:SetAngles(data.OurOldVelocity:Angle())
 		self:SetVelocity(data.OurOldVelocity)
 		return 

@@ -60,14 +60,14 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		hitent:AddLegDamage(50)
 
 		if SERVER then
-			local ang = self.Owner:EyeAngles()
+			local ang = self:GetOwner():EyeAngles()
 			ang:RotateAroundAxis(ang:Forward(), 180)
 
 			local ent = ents.Create("prop_meathook")
 			if ent:IsValid() then
 				ent:SetPos(tr.HitPos)
 				ent:Spawn()
-				ent:SetOwner(self.Owner)
+				ent:SetOwner(self:GetOwner())
 
 				local followed = false
 				if hitent:GetBoneCount() > 1 then

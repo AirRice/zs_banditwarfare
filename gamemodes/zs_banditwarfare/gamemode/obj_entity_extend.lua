@@ -209,7 +209,7 @@ function meta:IsSameTeam(pl)
 		if nailowner:IsValid() and nailowner:IsPlayer() then
 			return self:GetNailedPropOwner():Team() == pl:Team()
 		else return false end
-	elseif self:GetClass() == "prop_obj_sigil" and (pl:Team() == self:GetSigilTeam()) then
+	elseif self:GetClass() == "prop_obj_transmitter" and (pl:Team() == self:GetTransmitterTeam()) then
 		return true
 	else
 		return false
