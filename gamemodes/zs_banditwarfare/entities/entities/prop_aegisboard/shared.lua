@@ -32,9 +32,9 @@ function ENT:ClearObjectOwner()
 	self:SetObjectOwner(NULL)
 end
 
-function ENT:HitByWrench(wep, owner, tr)
+--[[function ENT:HitByWrench(wep, owner, tr)
 	return true
-end
+end]]
 
 function ENT:CanBePackedBy(pl)
 	local owner = self:GetObjectOwner()

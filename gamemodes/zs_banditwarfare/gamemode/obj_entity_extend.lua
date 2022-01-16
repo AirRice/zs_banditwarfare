@@ -126,6 +126,21 @@ function meta:CollisionRulesChanged()
 	self.m_OldCollisionGroup = nil
 end
 
+function meta:HitByHammer(wep, pl, tr)
+	if not IsValid(pl) and pl:IsPlayer() then return end
+	local healstrength = GAMEMODE.NailHealthPerRepair * (pl.HumanRepairMultiplier or 1) * (wep.HealStrength or 1)
+	if self:IsNailed() and self:IsSameTeam(pl) then
+		local oldhealth = self:GetBarricadeHealth()
+		if oldhealth <= 0 or oldhealth >= self:GetMaxBarricadeHealth() or self:GetBarricadeRepairs() <= 0 then return end
+		self:SetBarricadeHealth(math.min(self:GetMaxBarricadeHealth(), self:GetBarricadeHealth() + math.min(self:GetBarricadeRepairs(), healstrength)))
+		local healed = self:GetBarricadeHealth() - oldhealth
+		self:SetBarricadeRepairs(math.max(self:GetBarricadeRepairs() - healed, 0))
+		gamemode.Call("PlayerRepairedObject", pl, self, healed, wep)
+		return true
+	end
+	return false
+end
+
 function meta:IsNailed()
 	if self:IsValid() then -- In case we're the world.
 		for _, nail in pairs(ents.FindByClass("prop_nail")) do

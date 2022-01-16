@@ -22,7 +22,7 @@ SWEP.MeleeSize = 0.875
 
 SWEP.WalkSpeed = SPEED_FASTEST
 
-SWEP.Primary.Delay = 0.45
+SWEP.Primary.Delay = 0.35
 
 SWEP.HitDecal = "Manhackcut"
 
@@ -46,7 +46,7 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("weapons/knife/knife_hit"..math.random(4)..".wav")
 end
 
-function SWEP:OnMeleeHit(hitent, hitflesh, tr)
+--[[function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() and hitent:IsPlayer() and not self.m_BackStabbing and math.abs(hitent:GetForward():Angle().yaw - self:GetOwner():GetForward():Angle().yaw) <= 100 then
 		self.m_BackStabbing = true
 		self.MeleeDamage = self.MeleeDamage * 2
@@ -59,7 +59,7 @@ function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
 
 		self.MeleeDamage = self.MeleeDamage / 2
 	end
-end
+end]]
 
 
 

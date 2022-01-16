@@ -57,44 +57,23 @@ end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() then
-		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr) then
-			return
-		end
-		if hitent.HitByWrench and hitent:HitByWrench(self, self:GetOwner(), tr) then
-			return
-		end
 		local didrepair = false
-		local healstrength = GAMEMODE.NailHealthPerRepair * (self:GetOwner().HumanRepairMultiplier or 1) * self.HealStrength
-		if hitent:IsNailed() and hitent:IsSameTeam(self:GetOwner()) then
-			local oldhealth = hitent:GetBarricadeHealth()
-			if oldhealth <= 0 or oldhealth >= hitent:GetMaxBarricadeHealth() or hitent:GetBarricadeRepairs() <= 0 then return end
-
-			hitent:SetBarricadeHealth(math.min(hitent:GetMaxBarricadeHealth(), hitent:GetBarricadeHealth() + math.min(hitent:GetBarricadeRepairs(), healstrength)))
-			local healed = hitent:GetBarricadeHealth() - oldhealth
-			hitent:SetBarricadeRepairs(math.max(hitent:GetBarricadeRepairs() - healed, 0))
-			self:PlayRepairSound(hitent)
-			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, healed, self)
+		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr) then
 			didrepair = true
-		elseif hitent:GetClass() == "prop_gunturret" and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() and hitent:GetObjectHealth() >= hitent:GetMaxObjectHealth() then 
-			local curammo = hitent:GetAmmo()
-			hitent:SetAmmo(curammo + 40)
-			hitent:EmitSound("npc/turret_floor/click1.wav")
-			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, 20, self)
+		elseif hitent.HitByWrench and hitent:HitByWrench(self, self:GetOwner(), tr) then
+			didrepair = true
 		elseif hitent.GetObjectHealth and 
 		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() or 
 		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self:GetOwner():Team()) then
 			local oldhealth = hitent:GetObjectHealth()
-			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 1 then return end
+			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 0.5 then return end
 			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength/2))
 			local healed = hitent:GetObjectHealth() - oldhealth
-			self:PlayRepairSound(hitent)
 			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, healed / 2, self)
-			didrepair = true
-		elseif hitent:GetClass() == "prop_obj_transmitter" and hitent:GetTransmitterTeam() == self:GetOwner():Team() and not hitent:GetCanCommunicate() then
-			hitent:SetTransmitterNextRestart(hitent:GetTransmitterNextRestart() - 3)
 			didrepair = true
 		end
 		if didrepair then
+			self:PlayRepairSound(hitent)
 			local effectdata = EffectData()
 				effectdata:SetOrigin(tr.HitPos)
 				effectdata:SetNormal(tr.HitNormal)
