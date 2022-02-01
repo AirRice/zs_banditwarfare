@@ -60,8 +60,6 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		local didrepair = false
 		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr) then
 			didrepair = true
-		elseif hitent.HitByWrench and hitent:HitByWrench(self, self:GetOwner(), tr) then
-			didrepair = true
 		elseif hitent.GetObjectHealth and 
 		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() or 
 		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self:GetOwner():Team()) then

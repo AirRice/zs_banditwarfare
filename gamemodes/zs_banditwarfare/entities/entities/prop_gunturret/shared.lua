@@ -280,7 +280,7 @@ function ENT:CanBePackedBy(pl)
 	return not owner:IsValid() or owner == pl or owner:Team() == pl:Team() or gamemode.Call("PlayerIsAdmin", pl)
 end
 
-function ENT:HitByWrench(wep, pl, tr)
+function ENT:HitByHammer(wep, pl, tr)
 	local owner = self:GetObjectOwner()
 	if not (IsValid(pl) and IsValid(owner) and owner:IsPlayer() and pl:IsPlayer() and owner:Team() == pl:Team()) then return end
 	if self:GetObjectHealth() >= self:GetMaxObjectHealth() then 

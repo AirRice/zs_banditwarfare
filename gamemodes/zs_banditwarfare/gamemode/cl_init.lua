@@ -975,10 +975,6 @@ end
 
 local roll = 0
 function GM:_CalcView(pl, origin, angles, fov, znear, zfar)
-	if pl.Confusion and pl.Confusion:IsValid() then
-		pl.Confusion:CalcView(pl, origin, angles, fov, znear, zfar)
-	end
-
 	if pl.KnockedDown and pl.KnockedDown:IsValid() then	
 		if self.DontDoRagdollEyes then
 			origin = pl:GetThirdPersonCameraPos(origin, angles)
@@ -1016,7 +1012,7 @@ function GM:_CalcView(pl, origin, angles, fov, znear, zfar)
 	local target = pl:GetObserverTarget()
 	if target and target:IsValid() then
 		local lasttarget = self.LastObserverTarget
-		if lasttarget and lasttarget:IsValid() and target ~= lasttarget then
+		if lasttarget and lasttarget:IsValid() and target ~= lasttarget and origin:Distance(self.LastObserverTargetPos) <= 800 then
 			if self.LastObserverTargetLerp then
 				if CurTime() >= self.LastObserverTargetLerp then
 					self.LastObserverTarget = nil
@@ -1042,43 +1038,77 @@ function GM:CalcViewTaunt(pl, origin, angles, fov, zclose, zfar)
 end
 
 local staggerdir = VectorRand():GetNormalized()
-local BHopTime = 0
-local WasPressingJump = false
 
 local function PressingJump(cmd)
 	return bit.band(cmd:GetButtons(), IN_JUMP) ~= 0
 end
 
-local function DontPressJump(cmd)
-	cmd:SetButtons(cmd:GetButtons() - IN_JUMP)
+local function PressingDuck(cmd)
+	return bit.band(cmd:GetButtons(), IN_DUCK) ~= 0
 end
 
+local function PressJump(cmd, press)
+	if press then
+		cmd:SetButtons(bit.bor(cmd:GetButtons(), IN_JUMP))
+	elseif PressingJump(cmd) then
+		cmd:SetButtons(cmd:GetButtons() - IN_JUMP)
+	end
+end
+
+local function PressDuck(cmd, press)
+	if press then
+		cmd:SetButtons(bit.bor(cmd:GetButtons(), IN_DUCK))
+	elseif PressingDuck(cmd) then
+		cmd:SetButtons(cmd:GetButtons() - IN_DUCK)
+	end
+end
+
+local TimeDuckHeld = 0
+local staggerdir = VectorRand():GetNormalized()
 function GM:_CreateMove(cmd)
 	if MySelf:IsPlayingTaunt() and MySelf:Alive() then
 		self:CreateMoveTaunt(cmd)
 		return
 	end
 
-	-- Disables bunny hopping to an extent.
-	if MySelf:GetLegDamage() >= 30 then
-		if PressingJump(cmd) then
-			DontPressJump(cmd)
+	-- Anti spaz out method A. Forces player to stay ducking until 0.5s after landing if they crouch in mid-air AND disables jumping during that time.
+	if MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT then
+		-- Forces duck to be held for 0.5s after pressing it if in mid-air
+		if MySelf:OnGround() then
+			TimeDuckHeld = 0
+		elseif PressingDuck(cmd) then
+			TimeDuckHeld = 0.9
+		elseif TimeDuckHeld > 0 then
+			TimeDuckHeld = TimeDuckHeld - FrameTime()
+			PressDuck(cmd, true)
 		end
-	elseif MySelf:OnGround() then
-		if CurTime() < BHopTime then
-			if PressingJump(cmd) then
-				DontPressJump(cmd)
-				WasPressingJump = true
+	end
+
+	local myteam = MySelf:Team()
+	if myteam == TEAM_HUMAN or myteam == TEAM_BANDIT then
+		--[[if MySelf:Alive() then
+			local maxhealth = MySelf:GetMaxHealth()
+			local threshold = maxhealth * 0.25
+			local health = MySelf:Health()
+			if (health <= threshold) then
+				local ft = FrameTime()
+				local healthth = (((threshold - health) / threshold) * 7)
+				staggerdir = (staggerdir + ft * 8 * VectorRand()):GetNormalized()
+
+				local ang = cmd:GetViewAngles()
+				local rate = ft * healthth
+
+				ang.pitch = math.NormalizeAngle(ang.pitch + staggerdir.z * rate)
+				ang.yaw = math.NormalizeAngle(ang.yaw + staggerdir.x * rate)
+				cmd:SetViewAngles(ang)
 			end
-		elseif WasPressingJump then
-			if PressingJump(cmd) then
-				DontPressJump(cmd)
-			else
-				WasPressingJump = false
-			end
-		end
-	else
-		BHopTime = CurTime() + 0.065
+		end]]
+	end
+	
+	local obsmode = MySelf:GetObserverMode()
+	local wep = MySelf:GetActiveWeapon()
+	if obsmode == OBS_MODE_NONE and wep.CreateMove then
+		wep:CreateMove(cmd) 
 	end
 end
 
@@ -1310,7 +1340,7 @@ function GM:PlayerStepSoundTime(pl, iType, bWalking)
 
 
 	if iType == STEPSOUNDTIME_NORMAL or iType == STEPSOUNDTIME_WATER_FOOT then
-		return 520 - pl:GetVelocity():Length()
+		return math.max(520 - pl:GetVelocity():Length(),150)
 		
 	end
 

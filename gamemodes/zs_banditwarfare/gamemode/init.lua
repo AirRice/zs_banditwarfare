@@ -327,6 +327,7 @@ function GM:ShowSpare2(pl)
 end
 
 function GM:SetupSpawnPoints()
+	-- This uses the same logic as in ZS, but zombie spawns are now bandit spawns instead.
 	local btab = ents.FindByClass("info_player_bandit")
 	btab = table.Add(btab, ents.FindByClass("info_player_zombie"))
 	btab = table.Add(btab, ents.FindByClass("info_player_rebel"))
@@ -625,6 +626,34 @@ function GM:ShuffleTeams(initial)
 	end
 end
 
+function GM:Move(pl, move)
+	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
+		if pl:GetBarricadeGhosting() then
+			move:SetMaxClientSpeed(64)
+		end
+		local wep = pl:GetActiveWeapon()
+		if wep.Move then
+			wep:Move(move) 
+		end
+	end
+	local legdamage = pl:GetLegDamage()
+	if legdamage > 0 then
+		local scale = 1 - math.min(1, legdamage/self.MaxLegDamage)
+		move:SetMaxClientSpeed(move:GetMaxClientSpeed() * scale)
+	end
+end
+
+function GM:FinishMove(pl, move)
+	-- Simple anti bunny hopping. Flag is set in OnPlayerHitGround
+	if pl.LandSlow then
+		pl.LandSlow = false
+		vel = move:GetVelocity()
+		vel.x = vel.x * 0.75
+		vel.y = vel.y * 0.75
+		move:SetVelocity(vel)
+	end
+end
+
 function GM:Think()
 	local time = CurTime()
 	
@@ -656,21 +685,6 @@ function GM:Think()
 					gamemode.Call("SetWaveStart", CurTime()+self.WaveIntermissionLength)
 				end
 			end
-			for _, pl in pairs(player.GetAllActive()) do
-				local numoutsidespawns = 0
-				local teamspawns = {}
-				teamspawns = team.GetValidSpawnPoint(pl:Team())
-				for _, ent in pairs(teamspawns) do
-					if ent:GetPos():Distance(pl:GetPos()) >= 156 and pl:Alive() then
-						numoutsidespawns = numoutsidespawns + 1
-					end
-				end
-				if numoutsidespawns >= #teamspawns then
-					pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
-					pl:SetAbsVelocity(Vector(0,0,0))
-					pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "before_wave_cant_go_outside_spawn"))
-				end
-			end
 		end
 	end
 	
@@ -683,8 +697,22 @@ function GM:Think()
 		if pl:GetBarricadeGhosting() then
 			pl:BarricadeGhostingThink()
 		end
-		if pl:Team() == TEAM_SPECTATOR then
+		if pl:IsSpectator() then
 			self:SpectatorThink(pl)
+		elseif not self.RoundEnded and not self:GetWaveActive() and not self:GetWaveStart() ~= -1 and self:GetWaveStart() > time then
+			local numoutsidespawns = 0
+			local teamspawns = {}
+			teamspawns = team.GetValidSpawnPoint(pl:Team())
+			for _, ent in pairs(teamspawns) do
+				if ent:GetPos():Distance(pl:GetPos()) >= 156 and pl:Alive() then
+					numoutsidespawns = numoutsidespawns + 1
+				end
+			end
+			if numoutsidespawns >= #teamspawns then
+				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+				pl:SetAbsVelocity(Vector(0,0,0))
+				pl:CenterNotify(COLOR_RED, translate.ClientGet(pl, "before_wave_cant_go_outside_spawn"))
+			end
 		end
 		if pl.m_PointQueue >= 1 and time >= pl.m_LastDamageDealt + 2 then
 			pl:PointCashOut((pl.m_LastDamageDealtPosition or pl:GetPos()) + Vector(0, 0, 32), FM_NONE)
@@ -2513,7 +2541,7 @@ end
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
 	--pl:RemoveSuit()
-	pl:RemoveStatus("confusion", false, true)
+	pl:PurgeStatusEffects()
 	if pl:GetMaterial() ~= "" then
 		pl:SetMaterial("")
 	end
@@ -2807,17 +2835,7 @@ function GM:WaveStateChanged(newstate)
 				ent:Destroy()
 			end
 		end
-		--[[local curwave = self:GetWave()
-		for _, ent in pairs(ents.FindByClass("logic_waves")) do
-			if ent.Wave == curwave or ent.Wave == -1 then
-				ent:Input("onwaveend", ent, ent, curwave)
-			end
-		end
-		for _, ent in pairs(ents.FindByClass("logic_waveend")) do
-			if ent.Wave == curwave or ent.Wave == -1 then
-				ent:Input("onwaveend", ent, ent, curwave)
-			end
-		end]]
+
 		timer.Simple(1, function() self:SetCurrentWaveWinner(nil) end)
 	end
 	gamemode.Call("OnWaveStateChanged")
