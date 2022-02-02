@@ -10,7 +10,7 @@ end
 
 function ENT:PlayerSet(pPlayer, bExists)
 	pPlayer.Confusion = self
-	pPlayer:SetDSP(31)
+	pPlayer:SetDSP(12)
 	self:SetDTFloat(0, CurTime())
 	self:SetDTFloat(1, self.DieTime)
 end

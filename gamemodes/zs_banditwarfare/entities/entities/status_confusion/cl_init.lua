@@ -48,9 +48,9 @@ function ENT:RenderScreenspaceEffects()
 	local power = self:GetPower()
 
 	local time = CurTime() * 1.5
-	local sharpenpower = power * 0.4
+	local sharpenpower = power * 0.2
 	DrawSharpen(sharpenpower, math.sin(time) * 128)
-	DrawMotionBlur(0.1 * power, 0.5 * power, 0.01)
+	DrawMotionBlur(0.1 * power, 0.3 * power, 0.01)
 	colModDimVision["$pp_colour_brightness"] = -power*0.15
 	DrawColorModify(colModDimVision)
 end
