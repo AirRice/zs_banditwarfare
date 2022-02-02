@@ -51,9 +51,6 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity)
 				if vHitPos:Distance(attach.Pos) <= 18 then
 					eHitEntity:PlayEyePoisonedSound()
 					local status = eHitEntity:GiveStatus("confusion")
-					if status then
-						status.EyeEffect = true
-					end
 				end
 			end
 		end
