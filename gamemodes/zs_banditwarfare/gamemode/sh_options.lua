@@ -179,6 +179,9 @@ GM:AddWeaponPrerequisite(item,"hunter")
 local item = GM:AddPointShopWeapon(3,"inferno", ITEMCAT_GUNS, 205, "weapon_zs_inferno")
 GM:AddWeaponPrerequisite(item,"stalker")
 
+local item = GM:AddPointShopWeapon(3,"silencedm4", ITEMCAT_GUNS, 255, "weapon_zs_m4_silenced")
+GM:AddWeaponPrerequisite(item,"stalker")
+
 local item = GM:AddPointShopWeapon(3,"arbalest",  ITEMCAT_GUNS, 200, "weapon_zs_arbalest")
 GM:AddWeaponPrerequisite(item,"podvodny")
 
@@ -223,22 +226,57 @@ GM:AddWeaponPrerequisite(item,"arbalest")
 
 --GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 
-GM:AddPointShopWeapon(nil,"crphmr", ITEMCAT_MELEE, 30, "weapon_zs_hammer").NoClassicMode = true
-GM:AddPointShopWeapon(nil,"crowbar", ITEMCAT_MELEE, 32, "weapon_zs_crowbar")
-GM:AddPointShopWeapon(nil,"stunbaton", ITEMCAT_MELEE, 35, "weapon_zs_stunbaton")
-GM:AddPointShopWeapon(nil,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
-GM:AddPointShopWeapon(nil,"butcher", ITEMCAT_MELEE, 35, "weapon_zs_butcherknife")
-GM:AddPointShopWeapon(nil,"sledgehammer", ITEMCAT_MELEE, 30, "weapon_zs_sledgehammer")
-GM:AddPointShopWeapon(nil,"zpplnk", ITEMCAT_MELEE, 20, "weapon_zs_plank")
-GM:AddPointShopWeapon(nil,"hook", ITEMCAT_MELEE, 23, "weapon_zs_hook")
+local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 25, "weapon_zs_hammer")
+item.NoClassicMode = true
+local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 30, "weapon_zs_wrench")
+item.NoClassicMode = true
+item.NoSampleCollectMode = true
+GM:AddPointShopWeapon(0,"zpplnk", ITEMCAT_MELEE, 10, "weapon_zs_plank")
+GM:AddPointShopWeapon(0,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
+GM:AddPointShopWeapon(0,"zslamp", ITEMCAT_MELEE, 10, "weapon_zs_lamp")
+GM:AddPointShopWeapon(0,"hook", ITEMCAT_MELEE, 28, "weapon_zs_hook")
 
---GM:AddPointShopWeapon(nil,"energysword", ITEMCAT_MELEE, 40, "weapon_zs_energysword")
---GM:AddPointShopWeapon(nil,"axe", ITEMCAT_MELEE, 25, "weapon_zs_axe")
---GM:AddPointShopWeapon(nil,"shovel", ITEMCAT_MELEE, 45, "weapon_zs_shovel")
---GM:AddPointShopItem(nil,"zpfryp", "후라이팬", nil, ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
---GM:AddPointShopItem(nil,"zpcpot", "냄비", nil, ITEMCAT_MELEE, 32, "weapon_zs_pot")
---GM:AddPointShopWeapon(nil,"pipe", ITEMCAT_MELEE, 35, "weapon_zs_pipe")
---
+local item = GM:AddPointShopWeapon(1,"breenbust", ITEMCAT_MELEE, 65, "weapon_zs_bust")
+GM:AddWeaponPrerequisite(item,"zpplnk")
+local item = GM:AddPointShopWeapon(1,"keyboard", ITEMCAT_MELEE, 50, "weapon_zs_keyboard")
+GM:AddWeaponPrerequisite(item,"zpplnk")
+local item = GM:AddPointShopWeapon(1,"crowbar", ITEMCAT_MELEE, 52, "weapon_zs_crowbar")
+GM:AddWeaponPrerequisite(item,"zpplnk")
+GM:AddWeaponPrerequisite(item,"zslamp")
+local item = GM:AddPointShopWeapon(1,"shovel", ITEMCAT_MELEE, 55, "weapon_zs_shovel")
+GM:AddWeaponPrerequisite(item,"zslamp")
+GM:AddWeaponPrerequisite(item,"zpplnk")
+local item = GM:AddPointShopWeapon(1,"axe", ITEMCAT_MELEE, 55, "weapon_zs_axe")
+GM:AddWeaponPrerequisite(item,"knife")
+GM:AddWeaponPrerequisite(item,"zslamp")
+local item = GM:AddPointShopWeapon(1,"butcher", ITEMCAT_MELEE, 55, "weapon_zs_butcherknife")
+GM:AddWeaponPrerequisite(item,"knife")
+
+local item = GM:AddPointShopWeapon(2,"extbaton", ITEMCAT_MELEE, 80, "weapon_zs_extendingbaton")
+GM:AddWeaponPrerequisite(item,"breenbust")
+GM:AddWeaponPrerequisite(item,"keyboard")
+local item = GM:AddPointShopWeapon(2,"sledgehammer", ITEMCAT_MELEE, 90, "weapon_zs_sledgehammer")
+GM:AddWeaponPrerequisite(item,"crowbar")
+GM:AddWeaponPrerequisite(item,"shovel")
+local item = GM:AddPointShopWeapon(2,"pipe", ITEMCAT_MELEE, 85, "weapon_zs_pipe")
+GM:AddWeaponPrerequisite(item,"crowbar")
+GM:AddWeaponPrerequisite(item,"breenbust")
+local item = GM:AddPointShopWeapon(2,"sawhack", ITEMCAT_MELEE, 80, "weapon_zs_sawhack")
+GM:AddWeaponPrerequisite(item,"axe")
+local item = GM:AddPointShopWeapon(2,"longsword", ITEMCAT_MELEE, 85, "weapon_zs_longsword")
+GM:AddWeaponPrerequisite(item,"butcher")
+
+local item = GM:AddPointShopWeapon(3,"megamasher", ITEMCAT_MELEE, 150, "weapon_zs_megamasher")
+GM:AddWeaponPrerequisite(item,"sledgehammer")
+local item = GM:AddPointShopWeapon(3,"stunbaton", ITEMCAT_MELEE, 135, "weapon_zs_stunbaton")
+GM:AddWeaponPrerequisite(item,"extbaton")
+local item = GM:AddPointShopWeapon(3,"energysword", ITEMCAT_MELEE, 145, "weapon_zs_energysword")
+GM:AddWeaponPrerequisite(item,"longsword")
+local item = GM:AddPointShopWeapon(3,"greataxe", ITEMCAT_MELEE, 140, "weapon_zs_greataxe")
+GM:AddWeaponPrerequisite(item,"sawhack")
+
+--GM:AddPointShopWeapon(nil,"zpfryp", ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
+--GM:AddPointShopWeapon(nil,"zpcpot", ITEMCAT_MELEE, 32, "weapon_zs_pot")
 
 GM:AddPointShopWeapon(nil,"barricadekit", ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
 local item = GM:AddPointShopWeapon(nil,"empgun", ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
@@ -332,7 +370,7 @@ GM.MapWhitelist = {
 	"cs_miami_css",
 	"cs_militia",
 	"cs_office",
-	--"de_aztec", This map may be too CT-sided at this current stage.
+	"de_aztec",
 	"de_cbble", 
 	"de_chateau",
 	"de_detroit_v2",
@@ -345,27 +383,20 @@ GM.MapWhitelist = {
 	"de_nuke",
 	"de_piranesi",
 	"de_port",
-	--"de_prodigy", Map is too small to really do a non-classic mode on.
+	--"de_prodigy", Map is too confusing for anything that isn't classic.
 	"de_school",
 	"de_tides",
 	"de_train",
 	--"zm_4ngry_quaruntine", Map is too small to really do a non-classic mode on.
 	"zm_ryan_valley02",
 	"zm_tx_highschoolbeta7_d_vh",
-	"zm_stab_aroundtown_v3c",
-	"zsb_minecraft_ricetown_b2",
-	"zsb_streetwar01a",
-	"zsb_hallways",
 	"zs_barren",
 	"zs_lockup_v2",
-	"zs_outpost_gold_v2",
 	"zs_ravine",
-	"zs_castle_age",
-	"zs_scrapmetal_v2_fixed",
-	"zs_airport_panic_bobpoblo2",
-	"zs_slugde_fixed",
-	"zs_trainstation",
-	"zs_urbandecay_v4"
+	"zs_slugde",
+	"zs_urbandecay_v4",
+	"zsb_streetwar02a",
+	"zsb_hallways"
 }
 GM.RandomSurvivorModels = {
 	"female01",

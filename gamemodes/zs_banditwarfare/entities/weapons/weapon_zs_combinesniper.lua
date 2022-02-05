@@ -117,9 +117,9 @@ end
 function SWEP:Think()
 	local owner = self:GetOwner()
 	if self:GetIsCharging() then
-		if owner:KeyReleased(IN_ATTACK) then
+		if owner:KeyReleased(IN_ATTACK) or owner:GetBarricadeGhosting() then
 			local nextshotdelay = 0.25
-			if self:GetChargePerc() > 0.2 then
+			if self:GetChargePerc() > 0.2 and not owner:GetBarricadeGhosting() then
 				self:TakeAmmo()
 				self:EmitFireSound()
 				self:ShootBullets(self.Primary.Damage*math.Clamp(self:GetChargePerc(), 0, 1), self.Primary.NumShots, self:GetCone())

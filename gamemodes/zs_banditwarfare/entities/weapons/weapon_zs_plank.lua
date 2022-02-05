@@ -51,16 +51,3 @@ end
 function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/flesh/flesh_impact_bullet"..math.random(5)..".wav")
 end
-
-function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() then
-		local combo = self:GetDTInt(2)
-		self:SetNextPrimaryFire(CurTime() + math.max(0.2, self.Primary.Delay * (1 - combo / 10)))
-
-		self:SetDTInt(2, combo + 1)
-	end
-end
-
-function SWEP:PostOnMeleeMiss(tr)
-	self:SetDTInt(2, 0)
-end

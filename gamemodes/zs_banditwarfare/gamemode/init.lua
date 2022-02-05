@@ -1025,7 +1025,7 @@ function GM:EndRound(winner)
 	end
 	
 	
-	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 then
+	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 and self.AutoModeChange then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
 			self:SetRoundMode(ROUNDMODE_CLASSIC)

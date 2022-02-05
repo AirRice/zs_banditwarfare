@@ -51,8 +51,9 @@ function SWEP:PlayHitSound()
 	self:EmitSound("physics/metal/metal_sheet_impact_bullet"..math.random(2)..".wav")
 end
 
-function SWEP:OnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() and hitent:Health() > self.MeleeDamage then
+function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
+	hitent:MeleeViewPunch(damage*0.5)
+	if hitent:Health() > self.MeleeDamage then
 		local status = hitent:GetStatus("spawnbuff")
 		if status and status:IsValid() then
 			return false
@@ -67,7 +68,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 			if ent:IsValid() then
 				ent:SetPos(tr.HitPos)
 				ent:Spawn()
-				ent:SetOwner(self:GetOwner())
+				ent:SetOwner(owner)
 
 				local followed = false
 				if hitent:GetBoneCount() > 1 then
@@ -84,7 +85,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 
 				ent:SetAngles(ang)
 			end
-			timer.Simple(0, function() self:GetOwner():StripWeapon(self:GetClass()) end)
+			timer.Simple(0, function() owner:StripWeapon(self:GetClass()) end)
 		end
 	end
 end

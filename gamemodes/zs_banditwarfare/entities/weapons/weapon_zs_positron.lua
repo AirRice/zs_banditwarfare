@@ -214,10 +214,13 @@ function SWEP:Think()
 end
 
 function SWEP:Deploy()
+	if self.BaseClass.Deploy then
+		self.BaseClass.Deploy(self)
+	end
     self:SetFiringLaser(false)
 	self:SetLastHurtTarget(nil)
 	self:SetLastHurtDmg(0)
-    return self.BaseClass.Deploy(self)
+    return true
 end
 
 function SWEP:SecondaryAttack()

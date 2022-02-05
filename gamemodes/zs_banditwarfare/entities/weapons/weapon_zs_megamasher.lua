@@ -36,7 +36,7 @@ SWEP.MeleeKnockBack = 150
 SWEP.Primary.Delay = 2.25
 
 SWEP.WalkSpeed = SPEED_SLOWEST * 0.6
-
+SWEP.SwingWalkSpeed = SPEED_FASTEST * 1.3
 SWEP.SwingRotation = Angle(60, 0, -80)
 SWEP.SwingOffset = Vector(0, -30, 0)
 SWEP.SwingTime = 1.33
@@ -59,13 +59,67 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 		effectdata:SetOrigin(tr.HitPos)
 		effectdata:SetNormal(tr.HitNormal)
 	util.Effect("explosion", effectdata)
+	for _, ent in pairs(ents.FindInSphere(tr.HitPos, 64)) do
+		if ent and ent:IsValid() and not ent == self:GetOwner() and not ent:IsPlayer() then
+			local nearest = ent:NearestPoint(tr.HitPos)
+			local ratio = 1
+			if nearest:Distance(tr.HitPos) > 32 then
+				ratio = 0.5+0.5*math.Clamp((nearest:Distance(tr.HitPos)-32)/64 ,0,1)
+			end
+			if TrueVisibleFilters(tr.HitPos, nearest, inflictor, ent) then
+				ent:TakeSpecialDamage(ratio * self.MeleeDamage * 0.25, DMG_BLAST, self:GetOwner(), self, nearest)
+			end
+		end
+	end
 	if IsValid(hitent) then
 		if not hitent:IsPlayer() and self:GetOwner():IsPlayer() then
 			if hitent:GetClass() == "prop_drone" or hitent:GetClass() == "prop_manhack" and not hitent:IsSameTeam(self:GetOwner()) and SERVER then
 				hitent:Destroy()
-			elseif (hitent:IsNailed() and not hitent:IsSameTeam(self:GetOwner())) or (hitent.IsBarricadeObject and not hitent:IsSameTeam(self:GetOwner()) and SERVER) then
+			elseif not hitent:IsSameTeam(self:GetOwner()) and SERVER and (hitent:IsNailed() or hitent.IsBarricadeObject) then
 				hitent:TakeSpecialDamage(math.max(hitent:GetBarricadeHealth() or self.MeleeDamage,500), DMG_DIRECT, self:GetOwner(), self, tr.HitPos)
 			end
 		end
+	end
+end
+
+function SWEP:Move(mv)
+	if self:IsSwinging() then
+		local ratio = math.Clamp((self:GetSwingEnd()-CurTime())/self.SwingTime,0,1)
+		local speed = self.WalkSpeed + (self.SwingWalkSpeed)*ratio
+		mv:SetForwardSpeed(10000)
+		mv:SetSideSpeed(mv:GetSideSpeed() * 0.05)
+		mv:SetMaxSpeed(speed)
+		mv:SetMaxClientSpeed(speed)	
+	end
+end
+
+function SWEP:StartSwinging()
+	self.m_LastViewAngles = self:GetOwner():EyeAngles()
+	self.BaseClass.StartSwinging(self)
+end
+
+function SWEP:StopSwinging()
+	self.m_LastViewAngles = nil
+	self.BaseClass.StopSwinging(self)
+end
+
+if not CLIENT then return end
+
+function SWEP:CreateMove(cmd)
+	if self.m_LastViewAngles and self:IsSwinging() then
+		local difflimit = 128
+		local maxdiff = FrameTime() * difflimit
+		local mindiff = -maxdiff
+		local originalangles = self.m_LastViewAngles
+		local viewangles = cmd:GetViewAngles()
+
+		local diff = math.AngleDifference(viewangles.yaw, originalangles.yaw)
+		if diff > maxdiff or diff < mindiff then
+			viewangles.yaw = math.NormalizeAngle(originalangles.yaw + math.Clamp(diff, mindiff, maxdiff))
+		end
+
+		self.m_LastViewAngles = viewangles
+
+		cmd:SetViewAngles(viewangles)
 	end
 end

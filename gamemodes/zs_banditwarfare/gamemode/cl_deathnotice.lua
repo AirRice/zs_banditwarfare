@@ -104,6 +104,7 @@ killicon.AddFont("weapon_zs_swissarmyknife", "zsdeathnoticecs", "j", color_white
 killicon.AddFont("weapon_zs_sprayersmg", "zsdeathnoticecs", "l", color_white)
 killicon.AddFont("weapon_zs_inferno", "zsdeathnoticecs", "e", color_white)
 killicon.AddFont("weapon_zs_m4", "zsdeathnoticecs", "w", color_white)
+killicon.AddFont("weapon_zs_m4_silenced", "zsdeathnoticecs", "w", color_white)
 killicon.AddFont("weapon_zs_m249","zsdeathnoticecs","z", color_white)
 killicon.AddFont("weapon_zs_reaper", "zsdeathnoticecs", "q", color_white)
 killicon.AddFont("weapon_zs_crackler", "zsdeathnoticecs", "t", color_white)

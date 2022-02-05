@@ -302,7 +302,9 @@ local ActIndex = {
 	[ "melee2" ]		= ACT_HL2MP_IDLE_MELEE2,
 	[ "passive" ]		= ACT_HL2MP_IDLE_PASSIVE,
 	[ "knife" ]			= ACT_HL2MP_IDLE_KNIFE,
-	[ "duel" ]      = ACT_HL2MP_IDLE_DUEL
+	[ "duel" ]      	= ACT_HL2MP_IDLE_DUEL,
+	[ "revolver" ]		= ACT_HL2MP_IDLE_REVOLVER,
+	[ "camera" ]		= ACT_HL2MP_IDLE_CAMERA
 }
 
 function SWEP:SetWeaponHoldType( t )
@@ -337,12 +339,12 @@ function SWEP:SetWeaponHoldType( t )
 	end
 	
 	-- these two aren't defined in ACTs for whatever reason
-	if t == "knife" || t == "melee2" then
+	if t == "knife" or t == "melee2" then
 		self.ActivityTranslate [ ACT_MP_CROUCH_IDLE ] = nil
 	end
 end
 
-SWEP:SetWeaponHoldType("pistol")
+SWEP:SetWeaponHoldType("melee")
 
 function SWEP:TranslateActivity( act )
 	if self:GetSwingEnd() ~= 0 and self.ActivityTranslateSwing[act] then

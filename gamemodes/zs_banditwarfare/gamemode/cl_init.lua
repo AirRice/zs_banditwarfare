@@ -975,6 +975,9 @@ end
 
 local roll = 0
 function GM:_CalcView(pl, origin, angles, fov, znear, zfar)
+	if pl.Stunned and pl.Stunned:IsValid() then
+		pl.Stunned:CalcView(pl, origin, angles, fov, znear, zfar)
+	end
 	if pl.KnockedDown and pl.KnockedDown:IsValid() then	
 		if self.DontDoRagdollEyes then
 			origin = pl:GetThirdPersonCameraPos(origin, angles)

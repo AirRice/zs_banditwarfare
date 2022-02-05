@@ -6,14 +6,16 @@ ENT.LifeTime = 1
 
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
-	if CLIENT then
-		hook.Add("RenderScreenspaceEffects", self, self.RenderScreenspaceEffects)
-		self.AmbientSound = CreateSound(self, "player/pl_pain6.wav")
-		self.AmbientSound:Play()
-	end
 	local owner = self:GetOwner()
 	if owner:IsValid() then
 		owner.Stunned = self
+	end
+	if CLIENT then
+		hook.Add("RenderScreenspaceEffects", self, self.RenderScreenspaceEffects)
+		self.AmbientSound = CreateSound(self, "player/pl_pain6.wav")
+		if owner == MySelf then
+			self.AmbientSound:Play()
+		end
 	end
 	self.DieTime = CurTime() + self.LifeTime
 end

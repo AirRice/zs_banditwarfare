@@ -33,10 +33,13 @@ function ENT:CalcClosePlayers()
 		if util.SkewedDistance(pl:GetPos(),self:GetPos(), 2.75) <= 128 then
 			if pl:IsPlayer() then
 				local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
-				if pl:Team() == TEAM_HUMAN and pl:Alive() then
-						hnum = hnum + (doubleSpeed and 2 or 1)
-				elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
-						bnum = bnum + (doubleSpeed and 2 or 1)
+				local skipPlayer = pl:GetActiveWeapon().SkipForCommsCalc
+				if not skipPlayer then
+					if pl:Team() == TEAM_HUMAN and pl:Alive() then
+							hnum = hnum + (doubleSpeed and 2 or 1)
+					elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
+							bnum = bnum + (doubleSpeed and 2 or 1)
+					end
 				end
 			elseif pl:GetClass() == "prop_drone" then
 				if pl:GetOwner():IsPlayer() and not table.HasValue(nearbyents,pl:GetOwner()) then 

@@ -7,6 +7,11 @@ cvars.AddChangeCallback("zsb_roundgamemode", function(cvar, oldvalue, newvalue)
 	end
 end)
 
+GM.AutoModeChange = CreateConVar("zsb_autoroundmodechange", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Allow automatic round gamemode change at the end of each map, if enough players are on the game."):GetBool()
+cvars.AddChangeCallback("zsb_autoroundmodechange", function(cvar, oldvalue, newvalue)
+	GAMEMODE.AutoModeChange = tonumber(newvalue) == 1
+end)
+
 GM.GibLifeTime = CreateConVar("zsb_giblifetime", "25", FCVAR_ARCHIVE, "Specifies how many seconds player gibs will stay in the world if not eaten or destroyed."):GetFloat()
 cvars.AddChangeCallback("zsb_giblifetime", function(cvar, oldvalue, newvalue)
 	GAMEMODE.GibLifeTime = tonumber(newvalue) or 1

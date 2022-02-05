@@ -12,7 +12,9 @@ function ENT:Initialize()
 
 	self.Seed = math.Rand(0, 10)
 	self.AmbientSound = CreateSound(self, "player/heartbeat1.wav")
-	self.AmbientSound:Play()
+	if owner == MySelf then
+		self.AmbientSound:Play()
+	end
 end
 
 function ENT:Draw()
