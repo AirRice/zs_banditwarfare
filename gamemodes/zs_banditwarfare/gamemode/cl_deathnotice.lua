@@ -238,7 +238,7 @@ killicon.Add("weapon_zs_energysword", "killicon/weapon_zs_energysword.png", colo
 --killicon.Add("weapon_zs_pot", "killicon/zs_pot", color_white)
 
 killicon.Add("weapon_zs_hammer", "killicon/weapon_zs_hammer2", color_white)
-killicon.Add("weapon_zs_electrohammer", "killicon/weapon_zs_hammer2", color_white)
+killicon.Add("weapon_zs_electrohammer", "killicon/weapon_zs_electrohammer", color_white)
 
 net.Receive("zs_pl_kill_pl", function(length)
 	local victim = net.ReadEntity()

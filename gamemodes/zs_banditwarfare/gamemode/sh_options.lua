@@ -228,16 +228,19 @@ GM:AddWeaponPrerequisite(item,"arbalest")
 
 
 
-local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 25, "weapon_zs_hammer")
+local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 35, "weapon_zs_hammer")
 item.NoClassicMode = true
-local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 30, "weapon_zs_wrench")
+local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 40, "weapon_zs_wrench")
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
 GM:AddPointShopWeapon(0,"zpplnk", ITEMCAT_MELEE, 10, "weapon_zs_plank")
 GM:AddPointShopWeapon(0,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
 GM:AddPointShopWeapon(0,"zslamp", ITEMCAT_MELEE, 10, "weapon_zs_lamp")
-GM:AddPointShopWeapon(0,"hook", ITEMCAT_MELEE, 28, "weapon_zs_hook")
+GM:AddPointShopWeapon(0,"hook", ITEMCAT_MELEE, 38, "weapon_zs_hook")
 
+local item = GM:AddPointShopWeapon(1,"electrohmr", ITEMCAT_MELEE, 85, "weapon_zs_electrohammer")
+GM:AddWeaponPrerequisite(item,"crphmr")
+item.NoClassicMode = true
 local item = GM:AddPointShopWeapon(1,"breenbust", ITEMCAT_MELEE, 65, "weapon_zs_bust")
 GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"keyboard", ITEMCAT_MELEE, 50, "weapon_zs_keyboard")
