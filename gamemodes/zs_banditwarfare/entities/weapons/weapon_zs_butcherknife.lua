@@ -27,12 +27,12 @@ SWEP.NoDroppedWorldModel = true
 --[[SWEP.BoxPhysicsMax = Vector(8, 1, 4)
 SWEP.BoxPhysicsMin = Vector(-8, -1, -4)]]
 
-SWEP.MeleeDamage = 12
+SWEP.MeleeDamage = 14
 SWEP.MeleeRange = 48
 SWEP.MeleeSize = 0.875
 SWEP.Primary.Delay = 0.35
 
-SWEP.WalkSpeed = SPEED_FASTEST
+SWEP.WalkSpeed = SPEED_FAST
 
 SWEP.UseMelee1 = true
 
@@ -41,6 +41,17 @@ SWEP.MissGesture = SWEP.HitGesture
 
 SWEP.HitDecal = "Manhackcut"
 SWEP.HitAnim = ACT_VM_MISSCENTER
+
+SWEP.MovementBonusResetDelay = 4
+SWEP.MovementBonusPerHit = 10
+SWEP.MovementBonusMaxHits = 20
+function SWEP:SetupDataTables()
+	self:NetworkVar("Float", 11, "LastEnemyHit")
+	self:NetworkVar("Int", 11, "HitAmount")
+	if self.BaseClass.SetupDataTables then
+		self.BaseClass.SetupDataTables(self)
+	end
+end
 
 function SWEP:PlaySwingSound()
 	self:EmitSound("weapons/knife/knife_slash"..math.random(2)..".wav", 72, math.Rand(85, 95))
@@ -55,22 +66,51 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav")
 end
 
-function SWEP:PostOnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() then
-		if hitent:Health() <= 0 then
-			hitent:Dismember(hitent:NearestDismemberableBone(tr.HitPos))
-		else
-			local bleed = hitent:GetStatus("bleed")
-			if bleed and bleed:IsValid() then
-				bleed:AddDamage(self.MeleeDamage)
-				bleed.Damager = self:GetOwner()
-			else
-				local stat = hitent:GiveStatus("bleed")
-				if stat and stat:IsValid() then
-					stat:SetDamage(self.MeleeDamage)
-					stat.Damager = self:GetOwner()
-				end
-			end
-		end
+function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
+	hitent:MeleeViewPunch(damage*0.1)
+	if self:GetHitAmount() < 20 then
+		self:SetHitAmount(self:GetHitAmount()+1)
+		self:SetLastEnemyHit(CurTime())
+		owner:ResetSpeed()
+	end
+end
+
+function SWEP:GetWalkSpeed()
+	return self.WalkSpeed + math.Clamp(self:GetHitAmount(),0,self.MovementBonusMaxHits)*self.MovementBonusPerHit
+end
+
+function SWEP:Think()
+	local curtime = CurTime()
+	local owner = self:GetOwner()
+	if self:GetLastEnemyHit() + self.MovementBonusResetDelay <= curtime and self:GetHitAmount() > 0 then
+		self:SetHitAmount(0)
+		owner:ResetSpeed()
+	end
+	self.BaseClass.Think(self)
+	self:NextThink(curtime)
+	return true
+end
+
+if not CLIENT then return end
+
+local texGradDown = surface.GetTextureID("VGUI/gradient_down")
+function SWEP:DrawHUD()
+	local scrW = ScrW()
+	local scrH = ScrH()
+	local width = 200
+	local height = 30
+	local x, y = ScrW() - width - 32, ScrH() - height - 72
+	local ratio = math.Clamp((CurTime()-self:GetLastEnemyHit())/self.MovementBonusResetDelay,0,1) 
+	if ratio > 0 and self:GetHitAmount() > 0 then
+		surface.SetDrawColor(5, 5, 5, 180)
+		surface.DrawRect(x, y, width, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.SetTexture(texGradDown)
+		surface.DrawTexturedRect(x, y, width*ratio, height)
+		surface.SetDrawColor(255, 0, 0, 180)
+		surface.DrawOutlinedRect(x - 1, y - 1, width + 2, height + 2)
+	end
+	if self.BaseClass.DrawHUD then
+		self.BaseClass.DrawHUD(self)
 	end
 end

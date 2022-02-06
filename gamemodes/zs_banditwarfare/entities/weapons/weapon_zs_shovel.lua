@@ -26,7 +26,7 @@ SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel = "models/props_junk/shovel01a.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 57
+SWEP.MeleeDamage = 70
 SWEP.MeleeRange = 68
 SWEP.MeleeSize = 1.5
 SWEP.MeleeKnockBack = 40
@@ -52,3 +52,28 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("physics/body/body_medium_break"..math.random(2, 4)..".wav")
 end
 
+function SWEP:OnMeleeHit(hitent, hitflesh, tr)
+	if tr.HitWorld and (tr.MatType == MAT_DIRT or tr.MatType == MAT_SNOW  or tr.MatType == MAT_SAND  or tr.MatType == MAT_GRASS) then
+		local found = false
+		local perc = math.random(10)
+		if perc == 1 then
+			if SERVER then
+				self:EmitSound("npc/antlion/digup1.wav",50,math.Rand(160,200),0.25,CHAN_AUTO + 21)
+				local ent = ents.Create("prop_ammobag")
+				if ent:IsValid() then
+					ent:SetPos(self:GetOwner():GetShootPos())
+					ent:SetOwner(self:GetOwner())
+					ent:Spawn()
+					ent:EmitSound("WeaponFrag.Throw")
+					local phys = ent:GetPhysicsObject()
+					if phys:IsValid() then
+						phys:Wake()
+						phys:AddAngleVelocity(VectorRand() * 5)
+						phys:SetVelocityInstantaneous(self:GetOwner():GetAimVector() * 340)
+					end
+				end
+			end
+		end
+		self:EmitSound("npc/antlion/digdown1.wav",50,math.Rand(160,200),0.3,CHAN_AUTO + 20)
+	end
+end

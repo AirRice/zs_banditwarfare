@@ -85,10 +85,6 @@ local tColorModHuman = {
 
 local redview = 0
 function GM:_RenderScreenspaceEffects()
-	if MySelf.Confusion and MySelf.Confusion:IsValid() then
-		MySelf.Confusion:RenderScreenSpaceEffects()
-	end
-
 	if self.DrawPainFlash and self.HurtEffect > 0 then
 		DrawSharpen(1, math_min(6, self.HurtEffect * 3))
 	end

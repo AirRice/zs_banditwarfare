@@ -103,7 +103,7 @@ function meta:RefreshPlayerModel()
 	end
 	local lowermodelname = string.lower(modelname)
 	self:SetModel(modelname)
-	self:SetupHands()
+	self:SetupHands(self)
 	-- Cache the voice set.
 	if GAMEMODE.VoiceSetTranslate[lowermodelname] then
 		self.VoiceSet = GAMEMODE.VoiceSetTranslate[lowermodelname]
@@ -146,6 +146,9 @@ function meta:ProcessDamage(dmginfo)
 				dmginfo:ScaleDamage(0.4)
 			end
 			self:AddBodyArmor(dmginfo:GetDamage()*-ratio)
+		end
+		if self:GetActiveWeapon() and IsValid(self:GetActiveWeapon()) and self:GetActiveWeapon().ProcessDamage then
+			self:GetActiveWeapon():ProcessDamage(dmginfo)
 		end
 	end
 	if self.DamageVulnerability then
@@ -356,7 +359,7 @@ function meta:PurgeStatusEffects()
 		end
 	end
 	self:RemoveStatus("confusion", false, true)
-	self:RemoveStatus("ghoultouch", false, true)
+	self:RemoveStatus("marked", false, true)
 	self:RemoveStatus("bleed", false, true)
 	self:RemoveStatus("poisonrecovery", false, true)
 	self:RemoveStatus("tox", false, true)

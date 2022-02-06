@@ -96,12 +96,15 @@ SWEP.LastShotTime = 0
 SWEP.DuringReload = false
 
 function SWEP:Deploy()
+	if self.BaseClass.Deploy then
+		self.BaseClass.Deploy(self)
+	end
 	self.BarrelAligned = true
 	self.LastBarrelAngle = 0
 	self.BarrelAngleTarget = 0
 	self.LastShotTime = 0
 	self.DuringReload = false
-	return self.BaseClass.Deploy(self)
+	return true
 end
 
 function SWEP:ShootBullets(dmg, numbul, cone)

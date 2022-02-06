@@ -8,6 +8,10 @@ function ENT:Think()
 end
 
 function ENT:AcceptInput(name, activator, caller, args)
+	name = string.lower(name)
+	if string.sub(name, 1, 2) == "on" then
+		self:FireOutput(name, activator, caller, args)
+	end
 end
 
 function ENT:KeyValue(key, value)

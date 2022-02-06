@@ -14,8 +14,8 @@ SWEP.UseHands = true
 
 SWEP.HoldType = "melee"
 
-SWEP.MeleeDamage = 20
-SWEP.StunDamage = 20
+SWEP.MeleeDamage = 45
+SWEP.StunDamage = 10
 SWEP.MeleeRange = 49
 SWEP.MeleeSize = 1.5
 SWEP.Primary.Delay = 0.9
@@ -38,12 +38,11 @@ function SWEP:PlayHitFleshSound()
 	self:EmitSound("Weapon_StunStick.Melee_Hit")
 end
 
-function SWEP:OnMeleeHit(hitent, hitflesh, tr)
-	if hitent:IsValid() and hitent:IsPlayer() then
-		hitent:AddLegDamage(self.StunDamage)
-		local invuln = hitent:GetStatus("spawnbuff")
-		if not (invuln and invuln:IsValid()) then
-			hitent:GiveStatus("stunned", 0.3)
-		end
+function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
+	hitent:MeleeViewPunch(damage*0.1)
+	hitent:AddLegDamage(self.StunDamage)
+	local invuln = hitent:GetStatus("spawnbuff")
+	if not (invuln and invuln:IsValid()) then
+		hitent:GiveStatus("stunned", 0.3)
 	end
 end

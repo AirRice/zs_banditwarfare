@@ -7,7 +7,7 @@ function EFFECT:Init(data)
 
 	local maxbound = Vector(3, 3, 3)
 	local minbound = maxbound * -1
-	for i=1, 5 do
+	for i=1, 8 do
 		local dir = (norm * 2 + VectorRand()) / 3
 		dir:Normalize()
 
@@ -21,7 +21,7 @@ function EFFECT:Init(data)
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:SetMaterial("rock")
-				phys:ApplyForceOffset(ent:GetPos() + VectorRand() * 5, dir * math.Rand(300, 800))
+				phys:ApplyForceOffset(ent:GetPos() + VectorRand() * 5, dir * math.Rand(100, 400))
 			end
 
 			SafeRemoveEntityDelayed(ent, math.Rand(6, 10))

@@ -3,22 +3,21 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+function ENT:Initialize()
+	self.BaseClass.Initialize(self)
+	self.DieTime = CurTime() + self.LifeTime
+end
+
 function ENT:PlayerSet(pPlayer, bExists)
 	pPlayer.Confusion = self
-	pPlayer:SetDSP(7)
-
-	if self:GetStartTime() == 0 then
-		self:SetStartTime(CurTime())
-	end
-
-	if self:GetEndTime() == 0 then
-		self:SetEndTime(CurTime() + self.Time or 1)
-	end
+	pPlayer:SetDSP(12)
+	self:SetDTFloat(0, CurTime())
+	self:SetDTFloat(1, self.DieTime)
 end
 
 function ENT:Think()
 	local owner = self:GetOwner()
-	if CurTime() >= self:GetEndTime() or self.EyeEffect and owner:IsValid() and owner:WaterLevel() >= 3 then
+	if CurTime() >= self:GetDTFloat(1) then
 		self:Remove()
 	end
 end

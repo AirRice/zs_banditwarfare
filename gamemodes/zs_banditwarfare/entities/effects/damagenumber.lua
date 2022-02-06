@@ -50,7 +50,7 @@ function EFFECT:Init(data)
 	local amount = data:GetMagnitude()
 	local Type = data:GetScale()
 
-	local vel = VectorRand()
+	local vel = VectorRand() * 0.3
 	vel.z = math.Rand(0.7, 0.98)
 	vel:Normalize()
 

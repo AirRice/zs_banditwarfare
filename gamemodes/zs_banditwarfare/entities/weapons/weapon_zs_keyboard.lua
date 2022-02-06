@@ -45,3 +45,10 @@ SWEP.SwingHoldType = "grenade"
 function SWEP:PlayHitSound()
 	self:EmitSound("weapons/melee/keyboard/keyboard_hit-0"..math.random(4)..".ogg")
 end
+
+function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
+	hitent:MeleeViewPunch(damage*0.1)
+	if hitent:Team() ~= owner:Team() then
+		hitent:GiveStatus("marked",10)
+	end
+end

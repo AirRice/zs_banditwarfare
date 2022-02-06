@@ -16,12 +16,12 @@ SWEP.ViewModel = "models/weapons/v_sledgehammer/c_sledgehammer.mdl"
 SWEP.WorldModel = "models/weapons/w_sledgehammer.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 70
+SWEP.MeleeDamage = 80
 SWEP.MeleeRange = 64
 SWEP.MeleeSize = 1.75
 SWEP.MeleeKnockBack = 70
 
-SWEP.Primary.Delay = 1.3
+SWEP.Primary.Delay = 1.15
 
 SWEP.WalkSpeed = SPEED_SLOWEST
 

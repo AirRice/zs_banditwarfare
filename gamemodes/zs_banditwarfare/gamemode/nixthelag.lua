@@ -7,7 +7,7 @@ hook.Add("Initialize", "NixTheLag", function()
 	hook.Remove("PlayerTick", "TickWidgets")
 
 	if SERVER then
-		-- Forget what this is but probably retarded.
+
 		if timer.Exists("CheckHookTimes") then
 			timer.Remove("CheckHookTimes")
 		end
