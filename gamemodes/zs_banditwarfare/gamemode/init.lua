@@ -1252,7 +1252,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl:SetWeapon1(primaryguns[math.random(#primaryguns)])
 	pl:SetWeapon2(secondaryguns[math.random(#secondaryguns)])
 	pl:SetWeaponToolslot("weapon_zs_enemyradar")
-	pl:SetWeaponMelee("weapon_zs_swissarmyknife")
+	pl:SetWeaponMelee(meleeslot[math.random(#meleeslot)])
 	if self:IsClassicMode() then
 		table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
 		table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
