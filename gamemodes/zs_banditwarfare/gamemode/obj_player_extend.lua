@@ -217,7 +217,7 @@ end
 
 function meta:KnockDown(time)
 	if self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT then
-		self:GiveStatus("knockdown", time or 3)
+		self:GiveStatus("knockdown", time or 2)
 	end
 end
 
