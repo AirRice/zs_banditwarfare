@@ -110,7 +110,7 @@ function SWEP:Think()
 			end
 			self:SetChargePerc(0)
 			self:SetIsCharging(false)
-			self:SetNextPrimaryFire(CurTime() + self.ChargeDelay/2)
+			self:SetNextPrimaryFire(CurTime())
 			self:SetNextSecondaryFire(CurTime() + self.ChargeDelay/2)
 		elseif self:GetChargePerc() < 1 then
 			if self.LastCharge <= CurTime() then
