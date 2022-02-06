@@ -1143,7 +1143,11 @@ local secondaryguns = {
 	"weapon_zs_battleaxe",
 	"weapon_zs_slinger"
 }
-
+local meleeslot = {
+	"weapon_zs_swissarmyknife",
+	"weapon_zs_lamp",
+	"weapon_zs_plank"
+}
 function GM:PlayerInitialSpawnRound(pl)
 	pl:SprintDisable()
 	--pl:RemoveSuit()
