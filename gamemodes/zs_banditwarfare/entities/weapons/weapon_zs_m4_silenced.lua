@@ -139,7 +139,7 @@ if CLIENT then
 			surface.SetDrawColor(155, 155, 155, 180)
 			surface.DrawOutlinedRect(x, y, wid, hei)
 
-			draw.DrawText( "STEALTH", "ZSHUDFontSmallestNS", x+wid/2, y, COLOR_GRAY, TEXT_ALIGN_CENTER )
+			draw.DrawText( translate.Get( "weapon_stalkersilenced_stealthmeter" ), "ZSHUDFontSmallestNS", x+wid/2, y, COLOR_GRAY, TEXT_ALIGN_CENTER )
 		end
 		self.BaseClass.DrawHUD(self)	
 	end
