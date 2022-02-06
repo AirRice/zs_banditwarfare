@@ -28,15 +28,15 @@ SWEP.ViewModel = "models/weapons/v_sledgehammer/c_sledgehammer.mdl"
 SWEP.WorldModel = "models/weapons/w_sledgehammer.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 100
+SWEP.MeleeDamage = 150
 SWEP.MeleeRange = 75
 SWEP.MeleeSize = 4
 SWEP.MeleeKnockBack = 150
 
 SWEP.Primary.Delay = 2.25
 
-SWEP.WalkSpeed = SPEED_SLOWEST * 0.6
-SWEP.SwingWalkSpeed = SPEED_FASTEST * 1.3
+SWEP.WalkSpeed = SPEED_SLOWEST * 0.5
+SWEP.SwingWalkSpeed = SPEED_FASTEST * 1.5
 SWEP.SwingRotation = Angle(60, 0, -80)
 SWEP.SwingOffset = Vector(0, -30, 0)
 SWEP.SwingTime = 1.33
@@ -86,7 +86,7 @@ function SWEP:Move(mv)
 	if self:IsSwinging() then
 		local ratio = math.Clamp((self:GetSwingEnd()-CurTime())/self.SwingTime,0,1)
 		local speed = self.WalkSpeed + (self.SwingWalkSpeed)*ratio
-		mv:SetForwardSpeed(10000)
+		--mv:SetForwardSpeed(10000)
 		mv:SetSideSpeed(mv:GetSideSpeed() * 0.05)
 		mv:SetMaxSpeed(speed)
 		mv:SetMaxClientSpeed(speed)	
@@ -107,7 +107,7 @@ if not CLIENT then return end
 
 function SWEP:CreateMove(cmd)
 	if self.m_LastViewAngles and self:IsSwinging() then
-		local difflimit = 128
+		local difflimit = 256
 		local maxdiff = FrameTime() * difflimit
 		local mindiff = -maxdiff
 		local originalangles = self.m_LastViewAngles

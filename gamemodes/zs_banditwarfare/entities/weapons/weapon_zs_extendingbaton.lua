@@ -29,7 +29,7 @@ SWEP.ShowWorldModel = false
 
 SWEP.HoldType = "melee"
 
-SWEP.MeleeDamage = 20
+SWEP.MeleeDamage = 30
 SWEP.MeleeRange = 55
 SWEP.MeleeSize = 1.5
 SWEP.Primary.Delay = 0.65
@@ -85,7 +85,7 @@ if CLIENT then
 
 		local curtime = CurTime()
 		local deploystart = self:GetDeployStartTime()
-		local deployanimtime = 0.35
+		local deployanimtime = 0.5
 		if curtime < deploystart+deployanimtime then
 			local lowertime = math.min(curtime - deploystart,deployanimtime)
 			local delta = math.Clamp(lowertime/ deployanimtime, 0, 1)

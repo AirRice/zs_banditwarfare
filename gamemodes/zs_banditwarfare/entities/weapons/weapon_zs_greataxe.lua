@@ -35,7 +35,7 @@ SWEP.UseHands = true
 
 SWEP.HoldType = "melee"
 
-SWEP.MeleeDamage = 80
+SWEP.MeleeDamage = 75
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 1.5
 SWEP.Primary.Delay = 1
@@ -86,10 +86,14 @@ end
 
 function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 	hitent:MeleeViewPunch(damage*0.1)
-	if hitent:WouldDieFrom(damage, dmginfo:GetDamagePosition()) then
-		self:SetDefenseStacks(math.max(self:GetDefenseStacks()+3,self.MaxDefenseStacks))
-	else
-		self:SetDefenseStacks(math.max(self:GetDefenseStacks()+1,self.MaxDefenseStacks))		
+	if SERVER then
+		if hitent:WouldDieFrom(damage, dmginfo:GetDamagePosition()) then
+			self:SetDefenseStacks(math.min(self:GetDefenseStacks()+3,self.MaxDefenseStacks))
+			self:EmitSound("common/warning.wav", 75, math.random(55, 75),0.5,CHAN_AUTO+21)
+		else
+			self:SetDefenseStacks(math.min(self:GetDefenseStacks()+1,self.MaxDefenseStacks))	
+			self:EmitSound("common/warning.wav", 75, math.random(55, 75),0.5,CHAN_AUTO+21)		
+		end
 	end
 end
 
@@ -110,7 +114,7 @@ function SWEP:ProcessDamage(dmginfo)
 				effectdata:SetAngles((center - hitpos):Angle())
 				effectdata:SetEntity(owner)
 			util.Effect("shadedeflect", effectdata, true, true)
-			self:SetDefenseStacks(math.min(self:GetDefenseStacks()-1,0))
+			self:SetDefenseStacks(math.max(self:GetDefenseStacks()-1,0))
 		end
 	end
 end

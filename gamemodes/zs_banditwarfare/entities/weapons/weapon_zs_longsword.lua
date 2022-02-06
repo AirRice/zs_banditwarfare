@@ -40,7 +40,7 @@ SWEP.ShowViewModel = false
 SWEP.UseHands = true
 SWEP.HitDecal = "Manhackcut"
 
-SWEP.MeleeDamage = 24
+SWEP.MeleeDamage = 35
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 4
 

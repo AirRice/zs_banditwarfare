@@ -213,7 +213,7 @@ function meta:GetNailedPropOwner()
 end
 
 function meta:IsSameTeam(pl)
-	if not pl:IsPlayer() then return end
+	if not (pl and IsValid(pl) and pl:IsPlayer()) then return end
 	if self.GetOwner and self:GetOwner() ~= nil and self:GetOwner():IsPlayer() then
 		return self:GetOwner():Team() == pl:Team()
 	elseif self.IsBarricadeObject and self.GetObjectOwner and self:GetObjectOwner() ~= nil and self:GetObjectOwner():IsPlayer() then

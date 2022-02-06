@@ -25,11 +25,11 @@ SWEP.ViewModel = "models/weapons/c_stunstick.mdl"
 SWEP.WorldModel = "models/props_canal/mattpipe.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 50
+SWEP.MeleeDamage = 60
 SWEP.MeleeRange = 50
 SWEP.MeleeSize = 1.15
 
-SWEP.Primary.Delay = 1.45
+SWEP.Primary.Delay = 0.95
 SWEP.MeleeKnockBack = 0
 SWEP.DefaultMeleeKnockBack = 0
 SWEP.UseMelee1 = true
@@ -78,6 +78,14 @@ end
 
 function SWEP:PlayHitSound()
 	self:EmitSound("physics/metal/metal_canister_impact_hard"..math.random(3)..".wav", 75, math.random(115, 125))
+end
+
+function SWEP:Move(mv)
+	if self:GetIsCharging() and self:GetChargePerc() >= 1 and mv:KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
+		mv:SetMaxSpeed(self.WalkSpeed*0.25)
+		mv:SetMaxClientSpeed(self.WalkSpeed*0.25)	
+		mv:SetSideSpeed(mv:GetSideSpeed() * 0.25)
+	end
 end
 
 function SWEP:Think()

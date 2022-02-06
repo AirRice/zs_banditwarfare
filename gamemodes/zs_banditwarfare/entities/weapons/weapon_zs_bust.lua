@@ -30,7 +30,7 @@ SWEP.ViewModel = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel = "models/weapons/w_crowbar.mdl"
 SWEP.UseHands = true
 
-SWEP.MeleeDamage = 58
+SWEP.MeleeDamage = 43
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 1.4
 
