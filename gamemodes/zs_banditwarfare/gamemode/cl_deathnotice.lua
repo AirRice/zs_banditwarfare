@@ -170,6 +170,9 @@ killicon.Add("projectile_tinyarrow", "killicon/weapon_zs_inquisition", color_whi
 
 killicon.Add("weapon_zs_ioncannon", "killicon/weapon_zs_ioncannon", color_white)
 
+killicon.Add("weapon_zs_lamp", "killicon/weapon_zs_lamp", color_white)
+killicon.Add("weapon_zs_longsword", "killicon/weapon_zs_longsword", color_white)
+
 killicon.Add("weapon_zs_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("prop_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("weapon_zs_manhackcontrol", "killicon/weapon_zs_manhack", color_white)
@@ -208,19 +211,24 @@ killicon.Add("weapon_zs_trenchshotgun", "killicon/weapon_zs_trenchshotgun", colo
 killicon.Add("weapon_zs_ventilator", "killicon/weapon_zs_ventilator", color_white)
 killicon.Add("weapon_zs_waraxe", "killicon/weapon_zs_waraxe", color_white)
 killicon.Add("weapon_zs_whirlwind", "killicon/weapon_zs_whirlwind", color_white)
+killicon.Add("weapon_zs_wrench", "killicon/weapon_zs_wrench", color_white)
 killicon.Add("weapon_zs_z9000", "killicon/weapon_zs_z9000", color_white)
 
 killicon.Add("weapon_zs_backdoor", "killicon/weapon_zs_detpack2", color_white)
+killicon.Add("weapon_zs_boardpack", "killicon/weapon_zs_boardpack", color_white)
+killicon.Add("weapon_zs_bust", "killicon/weapon_zs_bust", color_white)
+killicon.Add("weapon_zs_extendingbaton", "killicon/weapon_zs_extendingbaton", color_white)
+killicon.Add("weapon_zs_greataxe", "killicon/weapon_zs_greataxe", color_white)
 
 killicon.Add("weapon_zs_enemyradar", "killicon/weapon_zs_tv.png", color_white)
 killicon.Add("weapon_zs_signalbooster", "killicon/weapon_zs_tv.png", color_white)
 
 killicon.Add("weapon_zs_hook", "killicon/weapon_zs_hook2", color_white)
 killicon.Add("weapon_zs_axe", "killicon/weapon_zs_axe", color_white)
-killicon.Add("weapon_zs_sawhack", "killicon/weapon_zs_axe", color_white)
+killicon.Add("weapon_zs_sawhack", "killicon/weapon_zs_sawhack", color_white)
 killicon.Add("weapon_zs_pipe", "killicon/weapon_zs_pipe", color_white)
 killicon.Add("weapon_zs_sledgehammer", "killicon/weapon_zs_sledgehammer", color_white)
-killicon.Add("weapon_zs_megamasher", "killicon/weapon_zs_sledgehammer", color_white)
+killicon.Add("weapon_zs_megamasher", "killicon/weapon_zs_megamasher", color_white)
 killicon.Add("weapon_zs_shovel", "killicon/weapon_zs_shovel", color_white)
 killicon.Add("weapon_zs_plank", "killicon/weapon_zs_plank", color_white)
 killicon.Add("weapon_zs_keyboard", "killicon/weapon_zs_keyboard", color_white)

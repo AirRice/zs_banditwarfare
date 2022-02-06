@@ -226,6 +226,8 @@ GM:AddWeaponPrerequisite(item,"arbalest")
 
 --GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
 
+
+
 local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 25, "weapon_zs_hammer")
 item.NoClassicMode = true
 local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 30, "weapon_zs_wrench")
@@ -268,6 +270,7 @@ GM:AddWeaponPrerequisite(item,"butcher")
 
 local item = GM:AddPointShopWeapon(3,"megamasher", ITEMCAT_MELEE, 150, "weapon_zs_megamasher")
 GM:AddWeaponPrerequisite(item,"sledgehammer")
+GM:AddWeaponPrerequisite(item,"pipe")
 local item = GM:AddPointShopWeapon(3,"stunbaton", ITEMCAT_MELEE, 135, "weapon_zs_stunbaton")
 GM:AddWeaponPrerequisite(item,"extbaton")
 local item = GM:AddPointShopWeapon(3,"energysword", ITEMCAT_MELEE, 145, "weapon_zs_energysword")

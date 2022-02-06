@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "killicon/weapon_zs_sawhack"
+	"$basetexture" "killicon/weapon_zs_boardpack"
 	"$nolod" 1
 	"$nomip" 1
 	"$ignorez" 1
