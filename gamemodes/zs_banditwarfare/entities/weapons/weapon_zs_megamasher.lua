@@ -87,7 +87,7 @@ function SWEP:Move(mv)
 		local ratio = math.Clamp((self:GetSwingEnd()-CurTime())/self.SwingTime,0,1)
 		local speed = self.WalkSpeed + (self.SwingWalkSpeed)*ratio
 		--mv:SetForwardSpeed(10000)
-		mv:SetSideSpeed(mv:GetSideSpeed() * 0.05)
+		--mv:SetSideSpeed(mv:GetSideSpeed() * 0.05)
 		mv:SetMaxSpeed(speed)
 		mv:SetMaxClientSpeed(speed)	
 	end
