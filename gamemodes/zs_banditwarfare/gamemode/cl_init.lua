@@ -1533,12 +1533,14 @@ net.Receive("zs_wavestart", function(length)
 		GAMEMODE:CenterNotify({killicon = "default"}, {font = "ZSHUDFont"}, " ", COLOR_RED, translate.Format("wave_x_has_begun", wave), {killicon = "default"})
 	end
 	local banditintros = {"npc/combine_soldier/vo/containmentproceeding.wav", "npc/combine_soldier/vo/stayalertreportsightlines.wav", "npc/combine_soldier/vo/extractorislive.wav","npc/combine_soldier/vo/readyweaponshostilesinbound.wav","npc/overwatch/radiovoice/recalibratesocioscan.wav","npc/overwatch/radiovoice/beginscanning10-0.wav" }
-	local humanintros = {"vo/npc/male01/leadtheway01.wav", "vo/canals/matt_goodluck.wav", "vo/npc/Barney/ba_letsdoit.wav","vo/trainyard/ba_goodluck01.wav","vo/Streetwar/Alyx_gate/al_readywhenyou.wav"}	
-	if LocalPlayer():Team() == TEAM_BANDIT then
-	--surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
-		surface.PlaySound(banditintros[math.random(#banditintros)])
-	elseif LocalPlayer():Team() == TEAM_HUMAN then
-		surface.PlaySound(humanintros[math.random(#humanintros)])
+	local humanintros = {"vo/npc/male01/leadtheway01.wav", "vo/canals/matt_goodluck.wav", "vo/npc/Barney/ba_letsdoit.wav","vo/trainyard/ba_goodluck01.wav","vo/Streetwar/Alyx_gate/al_readywhenyou.wav"}
+	if LocalPlayer() and IsValid(LocalPlayer()) and LocalPlayer():IsPlayer() then
+		if LocalPlayer():Team() == TEAM_BANDIT then
+		--surface_PlaySound("ambient/creatures/town_zombie_call1.wav")
+			surface.PlaySound(banditintros[math.random(#banditintros)])
+		elseif LocalPlayer():Team() == TEAM_HUMAN then
+			surface.PlaySound(humanintros[math.random(#humanintros)])
+		end
 	else
 		surface_PlaySound("ambient/levels/streetwar/city_battle"..math.random(6, 9)..".wav")--"ambient/creatures/town_zombie_call1.wav"
 	end

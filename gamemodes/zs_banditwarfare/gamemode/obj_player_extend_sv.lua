@@ -82,7 +82,6 @@ function meta:SetupHands( ply )
 end
 
 function meta:RefreshPlayerModel()
-	local desiredname = self:GetInfo("cl_playermodel")
 	local randommodel = nil
 	if (self:Team() == TEAM_HUMAN) then
 		randommodel = GAMEMODE.RandomSurvivorModels[math.random(#GAMEMODE.RandomSurvivorModels)]
@@ -92,7 +91,7 @@ function meta:RefreshPlayerModel()
 		randommodel = GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]
 	end
 	
-	
+	local desiredname = self:GetInfo("cl_playermodel")	
 	if #desiredname == 0 then
 		desiredname = randommodel
 	end
