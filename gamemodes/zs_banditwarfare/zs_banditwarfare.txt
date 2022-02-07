@@ -4,6 +4,7 @@
 	"title"				"ZS:Bandit Warfare"
 	"maps"				"^cs_|^de_|^zs_|^zm_|^zsb_"
 	"category"			"pvp"
+	"workshopid"    "2744583080"
 	"menusystem"		"1"
 
 	"author_name"		"airrice"
