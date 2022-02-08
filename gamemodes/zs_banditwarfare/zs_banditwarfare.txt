@@ -28,6 +28,37 @@
 			"type"		"Numeric"
 			"default"	"9"
 		}
+		3
+		{
+			"name"		"zsb_roundgamemode"
+			"text"		"zsb_round_gamemode"
+			"help"		"Gamemode for the round. 0 = Transmission mode, 1 = Collection mode, 2 = kill everyone to win mode."
+			"type"		"Numeric"
+			"default"	"2"
+		}
+		4
+		{
+			"name"		"zsb_autoroundmodechange"
+			"text"		"zsb_auto_roundmode_change"
+			"help"		"Allow automatic round gamemode change at the end of each map, if enough players are on the game."
+			"type"		"CheckBox"
+			"default"	"1"
+		}
+		5
+		{
+			"name"		"zsb_maxpropsinbarricade"
+			"text"		"zsb_max_props_in_barricade"
+			"help"		"Limits the amount of props that can be in one 'contraption' of nails."
+			"type"		"Numeric"
+			"default"	"8"
+		}
+		6
+		{
+			"name"		"zsb_nailhealthperrepair"
+			"text"		"zsb_nail_health_per_repair"
+			"help"		"How much health a nail gets when being repaired."
+			"type"		"Numeric"
+			"default"	"50"
+		}
 	}
 }
-
