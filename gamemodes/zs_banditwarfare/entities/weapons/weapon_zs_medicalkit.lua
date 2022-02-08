@@ -61,7 +61,8 @@ function SWEP:PrimaryAttack()
 	local owner = self:GetOwner()
 
 	owner:LagCompensation(true)
-	local ent = owner:MeleeTrace(32, 2).Entity
+	local meleetr = owner:MeleeTrace(32, 2,nil,nil,true)
+	local ent = meleetr.Entity
 	owner:LagCompensation(false)
 
 	if ent and ent:IsValid() and ent:IsPlayer() and ent:Team() == owner:Team() and ent:Alive() and gamemode.Call("PlayerCanBeHealed", ent) then

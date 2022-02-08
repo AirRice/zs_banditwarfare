@@ -512,6 +512,14 @@ local function MeleeTraceFilter(ent)
 	return true
 end
 
+local function MeleeTraceFilterHitTeam(ent)
+	if temp_pen_ents[ent] then
+		return false
+	end
+
+	return ent ~= temp_attacker
+end
+
 local function SimpleTraceFilter(ent)
 	if ent.IgnoreTraces or ent:IsPlayer() then
 		return false
@@ -526,7 +534,7 @@ end
 
 local melee_trace = {filter = MeleeTraceFilter, mask = MASK_SOLID, mins = Vector(), maxs = Vector()}
 
-function meta:MeleeTrace(distance, size, start, dir, override_mask)
+function meta:MeleeTrace(distance, size, start, dir, hit_team_members, override_mask, override_filter)
 	start = start or self:GetShootPos()
 	dir = dir or self:GetAimVector()
 
@@ -543,7 +551,7 @@ function meta:MeleeTrace(distance, size, start, dir, override_mask)
 	melee_trace.maxs.x = size
 	melee_trace.maxs.y = size
 	melee_trace.maxs.z = size
-	melee_trace.filter = MeleeTraceFilter
+	melee_trace.filter = hit_team_members and MeleeTraceFilterHitTeam or MeleeTraceFilter
 
 	tr = util.TraceLine(melee_trace)
 
@@ -563,12 +571,12 @@ local function InvalidateCompensatedTrace(tr, start, distance)
 	end
 end
 
-function meta:CompensatedMeleeTrace(distance, size, start, dir)
+function meta:CompensatedMeleeTrace(distance, size, start, dir, hit_team_members)
 	start = start or self:GetShootPos()
 	dir = dir or self:GetAimVector()
 
 	self:LagCompensation(true)
-	local tr = self:MeleeTrace(distance, size, start, dir)
+	local tr = self:MeleeTrace(distance, size, start, dir, hit_team_members)
 	self:LagCompensation(false)
 
 	InvalidateCompensatedTrace(tr, start, distance)
@@ -576,12 +584,12 @@ function meta:CompensatedMeleeTrace(distance, size, start, dir)
 	return tr
 end
 
-function meta:CompensatedPenetratingMeleeTrace(distance, size, start, dir)
+function meta:CompensatedPenetratingMeleeTrace(distance, size, start, dir, hit_team_members)
 	start = start or self:GetShootPos()
 	dir = dir or self:GetAimVector()
 
 	self:LagCompensation(true)
-	local t = self:PenetratingMeleeTrace(distance, size, start, dir)
+	local t = self:PenetratingMeleeTrace(distance, size, start, dir, hit_team_members)
 	self:LagCompensation(false)
 
 	for _, tr in pairs(t) do
