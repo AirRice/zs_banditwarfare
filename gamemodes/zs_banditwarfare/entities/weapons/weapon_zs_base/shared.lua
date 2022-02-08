@@ -380,7 +380,12 @@ end
 
 function SWEP:SendWeaponAnimation()
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
-	self:GetOwner():GetViewModel():SetPlaybackRate(self.FireAnimSpeed)
+	local owner = self:GetOwner()
+	local vm = owner:GetViewModel()
+	
+	if (vm:IsValid()) then
+		vm:SetPlaybackRate(self.FireAnimSpeed)
+	end
 end
 
 function SWEP:SetConeAndFire()
@@ -404,6 +409,234 @@ function SWEP:SetConeAndFire()
 	end)
 end
 
+--[[
+	Client-side hitscan logic start
+
+	DMGINFO STRUCTURE: 
+	{
+		AmmoType: number,
+		Attacker: Entity,
+		BaseDamage: number,
+		Damage: number,
+		DamageBonus: number,
+		DamageCustom: number,
+		DamageForce: vector,
+		DamagePosition: vector,
+		DamageType: number,
+		Inflictor: Entity,
+		MaxDamage: number,
+		ReportedPosition: vector,
+	}
+]]
+
+function DamageInfoToTable(dmginfo)
+	local tbl = {
+		AmmoType = dmginfo:GetAmmoType(),
+		Attacker = dmginfo:GetAttacker(),
+		BaseDamage = dmginfo:GetBaseDamage(),
+		Damage = dmginfo:GetDamage(),
+		DamageBonus = dmginfo:GetDamageBonus(),
+		DamageCustom = dmginfo:GetDamageCustom(),
+		DamageForce = dmginfo:GetDamageForce(),
+		DamagePosition = dmginfo:GetDamagePosition(),
+		DamageType = dmginfo:GetDamageType(),
+		Inflictor = dmginfo:GetInflictor(),
+		MaxDamage = dmginfo:GetMaxDamage(),
+		ReportedPosition = dmginfo:GetReportedPosition(),
+	}
+
+	return tbl
+end
+
+function ClientSideBulletCallback(attacker, tr, dmginfo)
+	if (!IsFirstTimePredicted()) then return end
+
+	local wep = attacker:GetActiveWeapon()
+
+	local tblDmgInfo = DamageInfoToTable(dmginfo)
+
+	net.Start("bw_fire")
+		net.WriteEntity(attacker)
+		net.WriteEntity(wep)
+		-- Sending dmginfo
+		net.WriteFloat(tblDmgInfo.AmmoType)
+		net.WriteEntity(tblDmgInfo.Attacker)
+		net.WriteFloat(tblDmgInfo.BaseDamage)
+		net.WriteFloat(tblDmgInfo.Damage)
+		net.WriteFloat(tblDmgInfo.DamageBonus)
+		net.WriteFloat(tblDmgInfo.DamageCustom)
+		net.WriteVector(tblDmgInfo.DamageForce)
+		net.WriteVector(tblDmgInfo.DamagePosition)
+		net.WriteFloat(tblDmgInfo.DamageType)
+		net.WriteEntity(tblDmgInfo.Inflictor)
+		net.WriteFloat(tblDmgInfo.MaxDamage)
+		net.WriteVector(tblDmgInfo.ReportedPosition)
+		-- Sending TraceResult
+		net.WriteEntity(tr.Entity)
+		net.WriteFloat(tr.Fraction)
+		net.WriteFloat(tr.FractionLeftSolid)
+		net.WriteBool(tr.Hit)
+		net.WriteFloat(tr.HitBox)
+		net.WriteFloat(tr.HitGroup)
+		net.WriteBool(tr.HitNoDraw)
+		net.WriteBool(tr.HitNonWorld)
+		net.WriteVector(tr.HitNormal)
+		net.WriteVector(tr.HitPos)
+		net.WriteBool(tr.HitSky)
+		net.WriteString(tr.HitTexture)
+		net.WriteBool(tr.HitWorld)
+		net.WriteFloat(tr.MatType)
+		net.WriteVector(tr.Normal)
+		net.WriteFloat(tr.PhysicsBone)
+		net.WriteVector(tr.StartPos)
+		net.WriteFloat(tr.SurfaceProps)
+		net.WriteBool(tr.StartSolid)
+		net.WriteBool(tr.AllSolid)
+		net.WriteFloat(tr.SurfaceFlags)
+		net.WriteFloat(tr.DispFlags)
+		net.WriteFloat(tr.Contents)
+	net.SendToServer()
+	
+	-- Do animiation client-side
+	wep:SendWeaponAnimation()
+	attacker:DoAttackEvent()
+end
+
+if (SERVER) then
+	util.AddNetworkString("bw_fire")
+
+	-- Server-side bullet callback from client-side hitscan
+	net.Receive("bw_fire", function(len, pl)
+		if (!IsFirstTimePredicted()) then return end
+
+		-- Reading networked data
+		local attacker = net.ReadEntity()
+		local wep = net.ReadEntity()
+		local tblDmgInfo = {
+			AmmoType = net.ReadFloat(),
+			Attacker = net.ReadEntity(),
+			BaseDamage = net.ReadFloat(),
+			Damage = net.ReadFloat(),
+			DamageBonus = net.ReadFloat(),
+			DamageCustom = net.ReadFloat(),
+			DamageForce = net.ReadVector(),
+			DamagePosition = net.ReadVector(),
+			DamageType = net.ReadFloat(),
+			Inflictor = net.ReadEntity(),
+			MaxDamage = net.ReadFloat(),
+			ReportedPosition = net.ReadVector(),
+		}
+
+		-- Deserializing TraceResult
+		local tr = {
+			Entity = net.ReadEntity(),
+			Fraction = net.ReadFloat(),
+			FractionLeftSolid = net.ReadFloat(),
+			Hit = net.ReadBool(),
+			HitBox = net.ReadFloat(),
+			HitGroup = net.ReadFloat(),
+			HitNoDraw = net.ReadBool(),
+			HitNonWorld = net.ReadBool(),
+			HitNormal = net.ReadVector(),
+			HitPos = net.ReadVector(),
+			HitSky = net.ReadBool(),
+			HitTexture = net.ReadString(),
+			HitWorld = net.ReadBool(),
+			MatType = net.ReadFloat(),
+			Normal = net.ReadVector(),
+			PhysicsBone = net.ReadFloat(),
+			StartPos = net.ReadVector(),
+			SurfaceProps = net.ReadFloat(),
+			StartSolid = net.ReadBool(),
+			AllSolid = net.ReadBool(),
+			SurfaceFlags = net.ReadFloat(),
+			DispFlags = net.ReadFloat(),
+			Contents = net.ReadFloat(),
+		}
+
+		if (!wep or !attacker or !wep:IsValid() or !attacker:IsValid()) then return end
+
+		-- Start knockbacks
+		wep:StartBulletKnockback()
+		-- Do animation server-side
+		wep:SendWeaponAnimation()
+		attacker:DoAttackEvent()
+
+		-- Unpack the damage info
+		local dmginfo = DamageInfo()
+		dmginfo:SetDamage(tblDmgInfo.Damage)
+		dmginfo:SetDamageForce(tblDmgInfo.DamageForce)
+		dmginfo:SetDamagePosition(tblDmgInfo.DamagePosition)
+		dmginfo:SetDamageType(tblDmgInfo.DamageType)
+		dmginfo:SetAttacker(tblDmgInfo.Attacker)
+		dmginfo:SetInflictor(tblDmgInfo.Inflictor)
+		dmginfo:SetMaxDamage(tblDmgInfo.MaxDamage)
+		dmginfo:SetReportedPosition(tblDmgInfo.ReportedPosition)
+		dmginfo:SetDamageCustom(tblDmgInfo.DamageCustom)
+		dmginfo:SetDamageBonus(tblDmgInfo.DamageBonus)
+		dmginfo:SetBaseDamage(tblDmgInfo.BaseDamage)
+		dmginfo:SetAmmoType(tblDmgInfo.AmmoType)
+
+		if (tr.Entity:IsPlayer()) then
+			hook.Call("ScalePlayerDamage", GAMEMODE, tr.Entity, tr.HitGroup, dmginfo)
+		end
+		
+		if (tr.Entity:IsValid()) then
+			tr.Entity:TakeDamageInfo(dmginfo)
+		end
+
+		-- Do the generic bullet callback for processing knockbacks or whatever
+		GenericBulletCallback(attacker, tr, dmginfo)
+
+		-- Data collections
+		if attacker and attacker:IsValid() and attacker:IsPlayer() and wep.IsFirearm then
+			attacker.ShotsFired = attacker.ShotsFired + 1
+			attacker.LastShotWeapon = wep:GetClass()
+		end
+
+		-- Do and end knockbacks
+		wep:DoBulletKnockback(wep.Primary.KnockbackScale * 0.05) // Server-side
+		wep:EndBulletKnockback()
+
+		attacker:FireBullets({
+			Attacker = NULL,
+			Damage = 0,
+			Force = vector_origin,
+			Num = 1,
+			Src = tr.StartPos,
+			Dir = (tr.HitPos - tr.StartPos):GetNormalized(),
+			Tracer = 1,
+			Spread = Vector(0, 0, 0),
+			TracerName = wep.TracerName or "Tracer",
+			Callback = nil,
+		})
+	end)
+end
+--[[
+	Client-side hitscan logic end
+]]
+
+// <param name="owner">SWEP owner. if null, run SWEP:GetOwner()</param>
+function SWEP:ShootCSBullets(owner, dmg, numbul, cone)
+	if (CLIENT) then
+		if (!IsFirstTimePredicted()) then return end
+
+		owner = owner or self:GetOwner()
+
+		owner:FireBullets({
+			Num = numbul, 
+			Src = owner:GetShootPos(), 
+			Dir = owner:GetAimVector(), 
+			Spread = Vector(cone, cone, 0), 
+			Tracer = 0, 
+			TracerName = self.TracerName, 
+			Force = dmg * 0.1, 
+			Damage = dmg, 
+			-- Callback = self.BulletCallback
+			Callback = ClientSideBulletCallback
+		})
+	end
+end
 
 SWEP.BulletCallback = GenericBulletCallback
 function SWEP:ShootBullets(dmg, numbul, cone)	
@@ -412,20 +645,24 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 
 	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
-	self:SendWeaponAnimation()
-	owner:DoAttackEvent()
-	
-	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
-		owner.ShotsFired = owner.ShotsFired + numbul
-		owner.LastShotWeapon = self:GetClass()
-	end
+
+	self:ShootCSBullets(owner, dmg, numbul, cone)
 	self:DoSelfKnockBack(1)
-	self:StartBulletKnockback()
-	if IsFirstTimePredicted() then
-		owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
-	end
-	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	self:EndBulletKnockback()
+
+	-- self:SendWeaponAnimation() // Shared
+	-- owner:DoAttackEvent() // Shared
+	
+	-- if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
+	-- 	owner.ShotsFired = owner.ShotsFired + numbul
+	-- 	owner.LastShotWeapon = self:GetClass()
+	-- end
+	-- self:DoSelfKnockBack(1) // Server-side
+	-- self:StartBulletKnockback() // Server-side
+	-- if IsFirstTimePredicted() then
+	-- 	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
+	-- end
+	-- self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05) // Server-side
+	-- self:EndBulletKnockback() // Server-side
 end
 
 function SWEP:DoSelfKnockBack(scale)

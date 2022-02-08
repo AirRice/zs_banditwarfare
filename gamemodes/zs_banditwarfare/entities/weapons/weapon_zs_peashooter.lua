@@ -40,19 +40,41 @@ SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
+SWEP.NextShoot = 0
+SWEP.ShotRemains = 0
+
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	local shots = math.min(self:Clip1(),self.Primary.NumShots)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*(shots + 1.5))
 	self:SetNextReload(CurTime() + self.Primary.Delay*(shots + 1.5))
-	for i = 0, shots-1 do
-		timer.Simple(self.Primary.Delay * i, function()
-			if (self:IsValid() and self:GetOwner():Alive()) then
-				self:EmitFireSound()
-				self:TakeAmmo()
-				self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
-			end
-		end)
-	end
+
+	self.ShotRemains = shots
+
+	-- for i = 0, shots-1 do
+	-- 	timer.Simple(self.Primary.Delay * i, function()
+	-- 		if (self:IsValid() and self:GetOwner():Alive()) then
+	-- 			self:EmitFireSound()
+	-- 			self:TakeAmmo()
+	-- 			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+	-- 		end
+	-- 	end)
+	-- end
 	self.IdleAnimation = CurTime() + self:SequenceDuration()		
+end
+
+function SWEP:Think()
+	self.BaseClass.Think(self)
+	
+	if (!IsFirstTimePredicted()) then return end
+
+	if (self:GetNextPrimaryFire() > CurTime() and self.ShotRemains > 0) then
+		if (self.NextShoot < CurTime()) then
+			self.NextShoot = CurTime() + self.Primary.Delay
+			self:EmitFireSound()
+			self:TakeAmmo()
+			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+			self.ShotRemains = math.max(1, self.ShotRemains) - 1
+		end
+	end
 end
