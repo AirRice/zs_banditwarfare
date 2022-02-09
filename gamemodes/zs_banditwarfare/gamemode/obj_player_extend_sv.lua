@@ -124,7 +124,6 @@ function meta:ProcessDamage(dmginfo)
 	local lasthitgroup = self:LastHitGroup()
 	if attacker:IsPlayer() then
 		if attacker ~= self then
-			local dmgtype = dmginfo:GetDamageType()
 			local head = (self:WasHitInHead())
 			net.Start( "zs_hitmarker" )
 				net.WriteBool( self:IsPlayer() )

@@ -228,6 +228,53 @@ function TrueVisible(posa, posb, filter)
 	return not util.TraceLine({start = posa, endpos = posb, filter = filt, mask = MASK_SHOT}).Hit
 end
 
+function util.DoBulletEffects(shooter,wep,bullet_tr,tracername,dmg,hitwater,waterpos,waternormal,slime,recipientfilter)
+	if not (shooter and IsValid(shooter) and shooter:IsPlayer()) then return end
+	if not (wep and IsValid(wep) and wep:IsWeapon()) then return end
+	if not bullet_tr then return end
+	
+	local ent = bullet_tr.Entity
+	if IsFirstTimePredicted() then
+		local effectdata = EffectData()
+		effectdata:SetOrigin(bullet_tr.HitPos)
+		effectdata:SetStart(shooter:GetShootPos())
+		effectdata:SetNormal(bullet_tr.HitNormal)
+		if hitwater then
+			-- We may not impact, but we DO need to affect ragdolls on the client
+			util.Effect("RagdollImpact", effectdata,true,recipientfilter)
+			local edata = EffectData()
+			edata:SetOrigin(waterpos)
+			edata:SetNormal(waternormal)
+			edata:SetScale(math.Clamp(dmg * 0.25, 5, 30))
+			edata:SetFlags(slime)
+			util.Effect("gunshotsplash", edata, true, recipientfilter)
+		elseif not bullet_tr.HitSky and bullet_tr.Fraction < 1 then
+			effectdata:SetSurfaceProp(bullet_tr.SurfaceProps)
+			effectdata:SetDamageType(DMG_BULLET)
+			effectdata:SetHitBox(bullet_tr.HitBox)
+			effectdata:SetEntity(ent)
+			util.Effect("Impact", effectdata, true, recipientfilter)
+		end
+		
+		if ent and ent:IsValid() and ent:IsPlayer() then
+			effectdata:SetColor(0)
+			effectdata:SetScale(dmg)
+			util.Effect("BloodImpact", effectdata, true, recipientfilter)
+		end
+		
+		if shooter:IsPlayer() and wep:IsValid() then
+			effectdata:SetFlags( 0x0003 ) --TRACER_FLAG_USEATTACHMENT + TRACER_FLAG_WHIZ
+			effectdata:SetEntity(wep)
+			effectdata:SetAttachment(1)
+		else
+			effectdata:SetEntity(shooter)
+			effectdata:SetFlags( 0x0001 ) -- TRACER_FLAG_WHIZ
+		end
+		effectdata:SetScale(5000) -- Tracer travel speed
+		util.Effect(tracername or "Tracer", effectdata, true, recipientfilter)
+	end
+end
+
 function TrueVisibleFilters(posa, posb, ...)
 	local filt = ents.FindByClass("projectile_*")
 	filt = table.Add(filt, player.GetAll())

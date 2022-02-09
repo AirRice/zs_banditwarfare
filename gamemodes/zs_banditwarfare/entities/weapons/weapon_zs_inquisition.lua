@@ -59,30 +59,59 @@ SWEP.Recoil = 0.8
 
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 SWEP.ReloadSpeed = 0.9
+
+function SWEP:SetupDataTables()
+	self:NetworkVar( "Int" , 10 , "RemainingShots" )
+	self:NetworkVar( "Float" , 9 , "NextIqstnFire" )
+	if self.BaseClass.SetupDataTables then
+		self.BaseClass.SetupDataTables(self)
+	end
+end
+
+function SWEP:Initialize()
+	self:SetRemainingShots(0)
+	self:SetNextIqstnFire(0)
+	self.BaseClass.Initialize(self)
+end
+
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:TakeAmmo()
 	self:SendWeaponAnimation()
-	for i = 0, self.Primary.NumShots-1 do
-		timer.Simple(math.min((self.Primary.Delay-0.4)/self.Primary.NumShots,0.1) * i, function()
-			if (self:IsValid() and self:GetOwner():Alive()) then
-				self:EmitFireSound()	
-				self:GetOwner():DoAttackEvent()
-				self:ShootBullets(self.Primary.Damage, self:GetCone())
-			end
-		end)
-	end
+	self:SetRemainingShots(self.Primary.NumShots)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end
 
-function SWEP:ShootBullets(dmg, cone)
+function SWEP:Think()	
+	local curtime = CurTime()
+	local firedelay = math.min((self.Primary.Delay-0.4)/self.Primary.NumShots,0.1)
+	if (self:GetNextPrimaryFire() > curtime and self:GetRemainingShots() > 0) then
+		if (self:GetNextIqstnFire() < curtime) then
+			self:EmitFireSound()
+			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+			self:GetOwner():DoAttackEvent()
+			self:SetRemainingShots(self:GetRemainingShots()-1)
+			self:SetNextIqstnFire(curtime + firedelay)
+		end
+	end
+	
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
+	end
+end
+
+function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self:GetOwner()
 	--owner:MuzzleFlash()
-	if SERVER then
-		self:SetConeAndFire()
-	end
+	self:SetConeAndFire()
 	self:DoRecoil()
+	
+	-- Do animations
+	if IsFirstTimePredicted() then
+		owner:DoAttackEvent()
+	end
+	
 	if CLIENT then return end
 
 	local aimvec = owner:GetAimVector()
@@ -103,4 +132,3 @@ function SWEP:ShootBullets(dmg, cone)
 		end
     end
 end
-   
