@@ -79,7 +79,7 @@ function SWEP:Think()
 		if (self:GetNextPshtrFire() < curtime) then
 			self:EmitFireSound()
 			self:TakeAmmo()
-			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+			self:ShootCSBullets(self:GetOwner(), self.Primary.Damage, 1, self:GetCone())
 			self:SetRemainingShots(self:GetRemainingShots()-1)
 			self:SetNextPshtrFire(curtime + self.Primary.Delay)
 		end
