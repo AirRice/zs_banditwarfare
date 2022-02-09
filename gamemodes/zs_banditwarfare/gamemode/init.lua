@@ -1204,6 +1204,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	
 	pl.SpawnedTime = CurTime()
 	if pl:GetInfo("zsb_spectator") == "1" then
+		pl:Flashlight(false)
 		pl:ChangeTeam(TEAM_SPECTATOR)
 		pl:StripWeapons()
 		pl:Spectate( OBS_MODE_ROAMING )
@@ -2752,6 +2753,7 @@ function GM:WaveStateChanged(newstate)
 			local teamspawns = {}
 			teamspawns = team.GetValidSpawnPoint(pl:Team())
 			if pl:GetInfo("zsb_spectator") == "1" then
+				pl:Flashlight(false)
 				if pl:Team() != TEAM_SPECTATOR then
 					pl:ChangeTeam(TEAM_SPECTATOR)
 				end
