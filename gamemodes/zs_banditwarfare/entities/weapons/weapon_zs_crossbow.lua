@@ -92,7 +92,7 @@ function SWEP:PrimaryAttack()
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocityInstantaneous(owner:GetAimVector() * 2800)
+				phys:SetVelocityInstantaneous(owner:GetAimVector() * 10000)
 			end
 		end
 	end
