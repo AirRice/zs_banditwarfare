@@ -27,14 +27,14 @@ SWEP.WorldModel = "models/props_junk/meathook001a.mdl"
 SWEP.UseHands = true
 
 SWEP.MeleeDamage = 10
-SWEP.MeleeRange = 50
+SWEP.MeleeRange = 65
 SWEP.MeleeSize = 1.15
 
 SWEP.HitGesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE
 SWEP.MissGesture = SWEP.HitGesture
 SWEP.Primary.Delay = 1.3
 SWEP.SwingRotation = Angle(30, -30, -30)
-SWEP.SwingTime = 0.85
+SWEP.SwingTime = 0.45
 SWEP.SwingHoldType = "grenade"
 
 SWEP.IsConsumable = true
@@ -63,6 +63,12 @@ function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 		if SERVER then
 			local ang = self:GetOwner():EyeAngles()
 			ang:RotateAroundAxis(ang:Forward(), 180)
+
+			local startPos = owner:GetShootPos()
+
+			local endPos = startPos + ang:Forward() * self.MeleeRange
+
+			local tr = util.TraceHull({start = startPos, endpos = endPos, filter = owner, mins = Vector(-self.MeleeSize, -self.MeleeSize, -self.MeleeSize), maxs = Vector(self.MeleeSize, self.MeleeSize, self.MeleeSize)})
 
 			local ent = ents.Create("prop_meathook")
 			if ent:IsValid() then

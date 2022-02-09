@@ -61,7 +61,19 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		if eHitEntity:IsPlayer() and owner:IsPlayer() and eHitEntity:Team() ~= self:GetOwner():Team() then
 			eHitEntity:EmitSound("Weapon_Crossbow.BoltHitBody")
 			util.Blood(vHitPos, 30, vHitNormal, math.Rand(10,30), true)
+
+			local physData = self.PhysicsData
+
+			local tr = util.TraceLine({start=vHitPos + vDirNormal * -16, endpos=vHitPos + vDirNormal * 16, filter = self, mask = MASK_SHOT_HULL})
+
+			if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) then
+				self.Damage = self.Damage * (self.HeadDamageMultiplier or 2)
+				eHitEntity:SetLastHitGroup(HITGROUP_HEAD)
+				eHitEntity:SetWasHitInHead()
+			end
 		end
+		
+		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 		self:Fire("kill", "", 0)
 	end
 	self:EmitSound("Weapon_Crossbow.BoltHitWorld")

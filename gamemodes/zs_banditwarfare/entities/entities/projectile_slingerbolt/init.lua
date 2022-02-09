@@ -33,6 +33,7 @@ function ENT:Think()
 	local parent = self:GetParent()
 	if parent:IsValid() and parent:IsPlayer() and not parent:Alive() then
 		self:Remove()
+		return
 	end
 end
 
@@ -55,14 +56,25 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		edata:SetScale(1)
 		edata:SetMagnitude(2)
     util.Effect("ElectricSpark", edata)
+	
 	if eHitEntity:IsWorld() then
 		util.Decal("ExplosiveGunshot", vHitPos-vDirNormal, vHitPos+vDirNormal, self )
 	elseif eHitEntity:IsValid() then
-		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
-		if eHitEntity:IsPlayer() and owner:IsPlayer() and eHitEntity:Team() ~= self:GetOwner():Team() then
+		if (eHitEntity:IsPlayer() or (eHitEntity.IsBot and eHitEntity:IsBot())) and owner:IsPlayer() and eHitEntity:Team() ~= self:GetOwner():Team() then
+			local physData = self.PhysicsData
+
+			local tr = util.TraceLine({start=vHitPos + vDirNormal * -16, endpos=vHitPos + vDirNormal * 16, filter = self, mask = MASK_SHOT_HULL})
+
+			if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) then
+				self.Damage = self.Damage * (self.HeadDamageMultiplier or 2)
+				eHitEntity:SetLastHitGroup(HITGROUP_HEAD)
+				eHitEntity:SetWasHitInHead()
+			end
+
 			eHitEntity:EmitSound("Weapon_Crossbow.BoltHitBody")
 			util.Blood(vHitPos, 30, vHitNormal, math.Rand(10,30), true)
 		end
+		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 		self:Fire("kill", "", 0)
 	end
 	self:EmitSound("Weapon_Crossbow.BoltHitWorld")

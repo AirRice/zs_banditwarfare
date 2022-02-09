@@ -92,9 +92,10 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	local shooter = attacker:GetOwner()
-	local wep = attacker
+	local shooter = attacker
+	local wep = attacker:GetWeapon("weapon_zs_medicrifle")
 	dmginfo:SetAttacker(shooter)
+	print(shooter, attacker, wep)
 	if ent:IsPlayer() and SERVER then
 		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
 			if ent:Team() ~= shooter:Team() then
@@ -117,7 +118,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				dmginfo:SetDamage(0)
 				ent:GiveStatus("healdartboost").DieTime = CurTime() + 5
 				ent:EmitSound("items/medshot4.wav")
-				local toheal = attacker.Heal
+				local toheal = wep.Heal
 				if tr.HitGroup == HITGROUP_HEAD then
 					toheal = toheal * 1.5
 				end
@@ -142,10 +143,10 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.LastShotWeapon = self:GetClass()
 	end
 	
-	self:StartBulletKnockback()
-	self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
-	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	self:EndBulletKnockback()
+	-- self:StartBulletKnockback()
+	self:ShootCSBullets(owner, dmg, numbul, cone, true)
+	-- self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+	-- self:EndBulletKnockback()
 end
 
 function SWEP:Deploy()
