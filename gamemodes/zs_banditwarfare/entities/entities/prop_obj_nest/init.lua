@@ -47,8 +47,12 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:Destroy()
+	local currentPlayerCount = math.min(table.Count(player.GetAll()), 6)
+
+	local adder = GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountNest * (1 - currentPlayerCount / 6)
+
 	self.Destroyed = true
-	self:DropSample(10)
+	self:DropSample(10 + adder)
 	local pos = self:WorldSpaceCenter()
 
 	local effectdata = EffectData()
