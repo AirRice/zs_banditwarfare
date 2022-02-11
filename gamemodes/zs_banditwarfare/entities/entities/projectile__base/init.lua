@@ -100,7 +100,7 @@ function ENT:DoPlayerHit(ent, dmg, pos, normal, vel)
 	local owner = self:GetOwner()
 	if not (ent and ent:IsValid() and ent:IsPlayer() and owner and owner:IsPlayer() and ent:Team() ~= owner:Team()) then return end
 	ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
-	util.Blood(pos, 30, normal, math.Rand(10,30), true)
+	util.Blood(pos, math.Clamp(math.floor(dmg*0.3),0,30), normal, math.Rand(10,30), true)
 	temp_me = self
 	myteammates = self:GetOwner():IsPlayer() and team.GetPlayers(self:GetOwner():Team()) or {}
 
@@ -124,6 +124,7 @@ function ENT:DoPlayerHit(ent, dmg, pos, normal, vel)
 	for _, trace in pairs(trs) do
 		if trace.Hit and trace.Entity == ent then
 			ent:DispatchProjectileTraceAttack(dmg, trace, owner, self)
+			ent:SetVelocity(velnorm*dmg)
 			return true
 		end
 	end

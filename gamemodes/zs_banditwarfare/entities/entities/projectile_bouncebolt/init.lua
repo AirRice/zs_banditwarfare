@@ -66,7 +66,7 @@ function ENT:Think()
 		local ent = self.Touched.Entity
 		if (ent and ent:IsValid() and ent:IsPlayer() and self:GetOwner() and self:GetOwner():IsPlayer() and self:GetOwner():Team() ~= ent:Team()) then
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
-			util.Blood(ent:WorldSpaceCenter(), 10, -self:GetForward(), math.Rand(10, 30), true)
+			util.Blood(ent:WorldSpaceCenter(), math.min(10*(self.Bounces+1),30), -self:GetForward(), math.Rand(10, 30), true)
 			ent:DispatchProjectileTraceAttack(processed_dmg, self.Touched, self:GetOwner(), self)
 		end
 		self.DieTime = CurTime()

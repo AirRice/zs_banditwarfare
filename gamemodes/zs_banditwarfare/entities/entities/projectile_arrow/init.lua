@@ -49,22 +49,29 @@ function ENT:PhysicsUpdate(phys)
 			local ahead = (vel:LengthSqr() * FrameTime()) / 1200
 			local fwd = velnorm * ahead
 			local start = self:GetPos() - fwd
-
+			local side = vel:Angle():Right() * 5
 			
 			local proj_trace = {mask = MASK_SHOT, filter = ArrowFilter}
 
-			proj_trace.start = start
-			proj_trace.endpos = start + fwd
+			proj_trace.start = start - side
+			proj_trace.endpos = start - side + fwd
 
 			local tr = util.TraceLine(proj_trace)
+			
+			proj_trace.start = start + side
+			proj_trace.endpos = start + side + fwd
 
-			if tr.Hit and not self.Touched[tr.Entity] then
-				local ent = tr.Entity
-				if ent ~= self:GetOwner() and (ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and ent:Alive()) then
-					self.Touched[ent] = tr
-					table.insert(self.HurtOrder,self.LastHitNum,ent)
-					temp_pen_ents[ent] = true
-					self.LastHitNum = self.LastHitNum + 1
+			local tr2 = util.TraceLine(proj_trace)
+			for _, trace in pairs({tr,tr2}) do
+				if trace.Hit and not self.Touched[trace.Entity] then
+					local ent = trace.Entity
+					if ent ~= self:GetOwner() and (ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and ent:Alive()) then
+						self.Touched[ent] = trace
+						table.insert(self.HurtOrder,self.LastHitNum,ent)
+						temp_pen_ents[ent] = true
+						self.LastHitNum = self.LastHitNum + 1
+						break
+					end
 				end
 			end
 		end
