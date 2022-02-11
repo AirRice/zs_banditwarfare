@@ -99,11 +99,13 @@ function SWEP:DoRecoil()
 	if SERVER then
 		self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 	else
-		local curAng = self:GetOwner():EyeAngles()
-		curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
-		curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
-		curAng.Roll = 0
-		self:GetOwner():SetEyeAngles(curAng)
+		if (IsFirstTimePredicted()) then
+			local curAng = self:GetOwner():EyeAngles()
+			curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
+			curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
+			curAng.Roll = 0
+			self:GetOwner():SetEyeAngles(curAng)
+		end
 	end
 end
 
@@ -608,21 +610,10 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 	end
 	
 	local dir = owner:GetAimVector()
+	local spread_ang = math.deg(math.asin(cone))
 	base_ang = dir:Angle()
 	for i=0, numbul - 1 do
-		if (cone > 0) then
-			temp_angle:Set(base_ang)
-			temp_angle:RotateAroundAxis(
-				temp_angle:Forward(),
-				util.SharedRandom("bulletrotate" .. i, 0, 360)
-			)
-			temp_angle:RotateAroundAxis(
-				temp_angle:Up(),
-				util.SharedRandom("bulletangle" .. i, -cone, cone)
-			)
-			dir = temp_angle:Forward()
-		end
-
+		dir = CircularGaussianSpread(dir, Vector(cone, cone, 0))
 		bullet_trace.endpos = owner:GetShootPos() + dir * max_dist
 		if CLIENT and IsFirstTimePredicted() then
 			local bullet_tr = util.TraceLine(bullet_trace)
@@ -684,9 +675,6 @@ end
 	Client-side hitscan logic end
 ]]
 function SWEP:DoSelfKnockBack(scale)
-	if (!IsFirstTimePredicted()) then
-		return
-	end
 	local owner = self:GetOwner()
 	scale = scale or 1
 	if owner and owner:IsValid() and owner:IsPlayer() then

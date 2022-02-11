@@ -321,6 +321,23 @@ function CosineInterpolation(y1, y2, mu)
 	return y1 * (1 - mu2) + y2 * mu2
 end
 
+function CircularGaussianSpread(vecDir, vecSpread)
+	local x, y, z;
+	
+	local flatness = 0.5
+
+	repeat
+		x = math.Rand(-1,1) * flatness + math.Rand(-1,1) * (1 - flatness);
+		y = math.Rand(-1,1) * flatness + math.Rand(-1,1) * (1 - flatness);
+		z = x*x+y*y;
+	until z <= 1
+	local vecRight = vecDir:Angle():Right()
+	local vecUp = vecDir:Angle():Up()
+	vecResult = vecDir + x * vecSpread.x * vecRight + y * vecSpread.y * vecUp;
+
+	return vecResult;
+end
+
 function string.AndSeparate(list)
 	local length = #list
 	if length <= 0 then return "" end

@@ -275,6 +275,28 @@ function meta:Give(weptype)
 	return ret
 end
 
+function meta:DispatchProjectileTraceAttack(dmg, tr, attacker, inflictor)
+	dmg = dmg or 0
+	if dmg <= 0 then return end
+	if not (tr and tr.HitPos and tr.Hit and tr.HitGroup) then return end
+	
+	local damageinfo = DamageInfo()
+	damageinfo:SetDamageType(DMG_BULLET)
+	damageinfo:SetDamage(dmg)
+	damageinfo:SetDamagePosition(tr.HitPos)
+	damageinfo:SetAttacker(attacker)
+	damageinfo:SetInflictor(inflictor)
+	
+	if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) then
+		self:SetLastHitGroup(HITGROUP_HEAD)
+		self:SetWasHitInHead()
+	end
+	self:DispatchTraceAttack(damageinfo, tr)
+	if vel and attacker:IsPlayer() and attacker ~= self then
+		self:SetLocalVelocity(vel)
+	end
+end
+
 function meta:UpdateLegDamage()
 	net.Start("zs_legdamage")
 		net.WriteFloat(self.LegDamage)
@@ -458,7 +480,6 @@ function meta:CreateRagdoll()
 		self:OldCreateRagdoll()
 	end
 end
-
 
 function meta:DropActiveWeapon()
 	local vPos = self:GetPos()

@@ -1,4 +1,10 @@
 ENT.Type = "anim"
+ENT.m_IsProjectile = true
+ENT.LifeTime = 30
+ENT.DieTime = 0
+
+ENT.m_bboxMins = Vector(-4,-0.02,-0.02)
+ENT.m_bboxMaxs = Vector(8, 0.02, 0.02)
 function ENT:ShouldNotCollide(ent)
 	return ent:IsPlayer() and self:GetOwner():IsPlayer() and ent:Team() == self:GetOwner():Team()
 end
