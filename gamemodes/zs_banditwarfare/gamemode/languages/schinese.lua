@@ -12,7 +12,7 @@ LANGUAGE.teamname_bandit							= "土匪"
 LANGUAGE.teamname_human								= "求生者"
 LANGUAGE.teamname_spectator							= "观察者"
 LANGUAGE.deathmatch_mode							= "死亡竞赛"
-LANGUAGE.sample_collect_mode						= "收集模式"
+LANGUAGE.sample_collect_mode						= "采集模式"
 LANGUAGE.transmission_mode							= "传输模式"
 LANGUAGE.win										= "%s 胜利"
 LANGUAGE.draw										= "平局"
@@ -37,9 +37,9 @@ LANGUAGE.back_button								= "返回"
 LANGUAGE.consumables_purchase_button				= "购买消耗品"
 
 
-LANGUAGE.option_no_floating_scores					= "Do not show points floaters"
+LANGUAGE.option_no_floating_scores					= "不显示弹出文本"
 LANGUAGE.option_show_team_indicators				= "显示友方团队方位"
-LANGUAGE.option_enable_killstreak_sounds			= "Enable killstreak sounds"
+LANGUAGE.option_enable_killstreak_sounds			= "启用连杀音效"
 LANGUAGE.option_spectator_mode						= "观察者模式（下一波生效）"
 LANGUAGE.option_hide_most_of_hud					= "电影模式（隐藏大多数 HUD 元素）"
 LANGUAGE.option_simple_score_board					= "简化计分板（隐藏点数）"
@@ -69,233 +69,233 @@ LANGUAGE.less_players_points_added					= "你的团队人数减少了，你获�
 LANGUAGE.teambalance_shuffle_in_5_seconds			= "为保持平衡，团队将在 5 秒后重新分配。"
 
 LANGUAGE.weapon_aegiskit_name						= "“宙斯盾”路障工具包"
-LANGUAGE.weapon_aegiskit_desc						= "An easy-to-use kit for installing planks.\nCan automatically place planks parallel to most static surfaces."
-LANGUAGE.weapon_boardpack_name 						= "Pack of boards"
-LANGUAGE.weapon_boardpack_desc 						= "Several boards held together. \nUseful as props for barricading when there are no other props around.\nRequires a separate tool for installation such as a hammer or nailgun."
-LANGUAGE.weapon_detpack_name 						= "Remote Detonated C4"
-LANGUAGE.weapon_detpack_desc 						= "A plastic explosive that can be detonated remotely after placement. \nRequires careful usage due to its extremely large blast radius."
-LANGUAGE.weapon_detpackremote_name 					= "C4 炸药"
-LANGUAGE.weapon_detpackremote_desc 					= "A remote that can be used to detonate explosives that have been placed down."
-LANGUAGE.weapon_ffield_name							= "Forcefield Emitter"
-LANGUAGE.weapon_ffield_desc 						= "Upon placement, projects an energy field directly outwards.\nThis forcefield can block bullets, but humans, props and other projectiles can pass through. \nThe forcefield itself is immune to damage; The emitter is still vulnerable."
-LANGUAGE.weapon_spotlamp_name						= "Point Defence Lamp"
-LANGUAGE.weapon_spotlamp_desc						= "This lamp-shaped device is actually a handy tool for defending against projectiles. \nIt will intercept and remove all projectiles within its cone of light. \nHowever, it will intercept both enemy and allies' projectiles, and will take slight damage with every interception requiring constant upkeep."
+LANGUAGE.weapon_aegiskit_desc						= "一个易于使用的工具，用于安装木板。\n可以自动将木板并列放置于大多数的静态表面。"
+LANGUAGE.weapon_boardpack_name 						= "一堆木板"
+LANGUAGE.weapon_boardpack_desc 						= "几块木板。\n当周围没有其他物品时，可用作路障道具。\n安装时需要单独的工具，如锤子或射钉枪。"
+LANGUAGE.weapon_detpack_name 						= "遥控引爆 C4"
+LANGUAGE.weapon_detpack_desc 						= "放置后可以远程引爆的塑料炸药。\n由于其爆炸半径非常大，因此需要小心使用。"
+LANGUAGE.weapon_detpackremote_name 					= "C4 炸弹遥控器"
+LANGUAGE.weapon_detpackremote_desc 					= "可以用来引爆放下的炸药的遥控器。"
+LANGUAGE.weapon_ffield_name							= "力场发生器"
+LANGUAGE.weapon_ffield_desc 						= "放置后，直接向外投射能量场。\n这个力场可以阻挡子弹，但人、物品和其他投射物可以通过。\n力场本身不受伤害；但发生器十分脆弱。"
+LANGUAGE.weapon_spotlamp_name						= "定点防御装置"
+LANGUAGE.weapon_spotlamp_desc						= "这个灯形的装置实际上是一个防御投射物的便捷工具。\n它将拦截并移除其照明范围内的所有投射物。\n不过，它将同时拦截敌方和队友的投射物，并且每次拦截都会受到轻微的损伤，需要持续的维护。"
 LANGUAGE.weapon_hegrenade_name 						= "手雷"
 LANGUAGE.weapon_hegrenade_desc 						= "最基础的破片手榴弹。投出 1.5 秒后爆炸。\n巧妙地运用它可以同时对多个敌人造成大量伤害。"
 LANGUAGE.weapon_gunturret_name 						= "自动炮塔"
-LANGUAGE.weapon_gunturret_desc						= "This turret will automatically search for targets in front of it to shoot at.\nInvaluable in fortifying strategically important areas.\nContains 150 bullets by default, and can be rearmed by hitting them with a carpenter's hammer."
-LANGUAGE.weapon_carphammer_name						= "Carpenter's Hammer"
-LANGUAGE.weapon_carphammer_desc						= "This otherwise lackluster melee weapon can be used in a stunningly numerous amount of ways.\n It is primarily used to nail in props to build barricades and other structures.\nCan also be used to fix friendly structures such as turrets as well as replenishing their ammo by hitting them.\nCan also be used to counteract EMP effects on transmitters.\nPrimary attack: Repair/attack\nSecondary attack: Nail in prop\nReload: Remove nail"
-LANGUAGE.weapon_electrohammer_name					= "Electro Hammer"
-LANGUAGE.weapon_electrohammer_desc					= "This is a modified carpenter's hammer that swings faster and is more effective.\n It is primarily used to nail in props to build barricades and other structures.\nCan also be used to fix friendly structures such as turrets as well as replenishing their ammo by hitting them.\nCan also be used to counteract EMP effects on transmitters.\nPrimary attack: Repair/attack\nSecondary attack: Nail in prop\nReload: Remove nail"
+LANGUAGE.weapon_gunturret_desc						= "该炮塔将自动搜索前方目标进行射击。\n在加强重要战略区域方面非常重要。\n默认情况下，它拥有 150 颗子弹，可以用木匠锤敲击它们来重新装填。"
+LANGUAGE.weapon_carphammer_name						= "木匠锤"
+LANGUAGE.weapon_carphammer_desc						= "这种看似平淡无奇的近战武器可以用来做很多事情。\n主要用于固定物品，建造路障和其他结构。\n还可用于修复炮塔等友军建筑，以及通过打击来补充弹药。\n还可用于抵消 EMP 对发射器的影响。\n主要攻击键：修理/攻击\n次要攻击键：固定物品\n换弹键：移除钉子"
+LANGUAGE.weapon_electrohammer_name					= "电击锤"
+LANGUAGE.weapon_electrohammer_desc					= "这是一种改良的木匠锤，挥动更快，效率更高。\n主要用于固定物品，建造路障和其他结构。\n还可用于修复炮塔等友军建筑，以及通过打击来补充弹药。\n还可用于抵消 EMP 对发射器的影响。\n主要攻击键：修理/攻击\n次要攻击键：固定物品\n换弹键：移除钉子"
 
-LANGUAGE.weapon_arbalest_name						= "'Arbalest' Crossbow"
-LANGUAGE.weapon_arbalest_desc						= "A crossbow firing specialised hard-tipped bolts. These bolts will bounce off any solid surface. \nEvery time the bolt bounces, it will do 1.5 times more damage when it eventually hits an enemy."
+LANGUAGE.weapon_arbalest_name						= "“自走”十字弩"
+LANGUAGE.weapon_arbalest_desc						= "一种发射特殊硬头弩箭的十字弩。这些弩箭会在任何固体表面上反弹。\n每次弩箭反弹，当它最终击中敌人时，伤害会提升 1.5 倍。"
 LANGUAGE.weapon_albatross_name						= "“信天翁”霰弹枪"
-LANGUAGE.weapon_albatross_desc						= "A Drum magazine-fed shotgun modified to fire in full auto. Can be extremely useful in close quarters, but the reload speed must be considered."
+LANGUAGE.weapon_albatross_desc						= "一种改进为全自动射击的鼓式弹匣霰弹枪。在近距离内可能非常有用，但必须考虑装填弹药的速度。"
 LANGUAGE.weapon_ammokit_name 						= "弹药盒"
-LANGUAGE.weapon_ammokit_desc						= "A box holding several bags full of ammunition. Can be used to throw said bags forward.\nThese bags will replenish the ammunition of whatever weapon you or your teammates are holding if picked up."
+LANGUAGE.weapon_ammokit_desc						= "一个装有几袋弹药的盒子。可用于向前投掷弹药袋。\n这些弹药袋可以补充你或你的队友所持有的任何武器的弹药。"
 LANGUAGE.weapon_annabelle_name						= "“安娜贝尔”步枪"
-LANGUAGE.weapon_annabelle_desc						= "This hunting rifle's bullets have been modified to fragment on impact.\nUpon impacting a wall, these fragments will damage nearby targets within a small radius."
-LANGUAGE.weapon_axe_name							= "Wood Axe"
-LANGUAGE.weapon_axe_desc							= "A decently powerful melee weapon. Relatively slow to swing."
-LANGUAGE.weapon_backdoor_name 						= "Comms Backdoor"
-LANGUAGE.weapon_backdoor_desc 						= "One-time-use tool for hacking. Can be used while looking at an enemy-controlled transmitter to hack it.\nUpon hacking completion the enemy's current transmission will be partially corrupted setting back their progress, and the transmitter will immediately come under your control."
+LANGUAGE.weapon_annabelle_desc						= "这把猎枪的子弹经过改装，可以在受到冲击时碎裂。\n在冲击墙壁时，这些子弹的碎片会在较小的半径内损坏附近的目标。"
+LANGUAGE.weapon_axe_name							= "木斧"
+LANGUAGE.weapon_axe_desc							= "一种威力相当强大的近战武器。挥动速度相对较慢。"
+LANGUAGE.weapon_backdoor_name 						= "通信后门"
+LANGUAGE.weapon_backdoor_desc 						= "一次性的黑客工具。可以在看着被敌人控制的发射器时使用。\n一旦黑客攻击完成，敌人当前的传输将部分损坏，阻碍他们的进程，并且你将立刻控制被黑的发射器。"
 LANGUAGE.weapon_battleaxe_name 						= "“战斧”手枪"
-LANGUAGE.weapon_battleaxe_desc 						= "An accurate and relatively powerful pistol with a low fire rate."
+LANGUAGE.weapon_battleaxe_desc 						= "一种精确且相对强大的低射速手枪。"
 LANGUAGE.weapon_bioticrifle_name					= "“黑蟹”生化步枪"
-LANGUAGE.weapon_bioticrifle_desc					= "A rifle that fires pellets of refined poison from headcrabs.\nIf the pellet hits an enemy in the head they will suffer from temporary confusion.\nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_bioticrifle_desc					= "一支发射从剧毒猎头蟹身上精炼毒素制成的子弹的步枪。\n如果子弹击中敌人的头部，他们会暂时陷入混乱。\n僵尸毒物会立即对人类目标造成伤害，但会迅速恢复。\n被这种毒物杀死的敌人会掉落生化物质，可以用作这种武器的弹药。"
 LANGUAGE.weapon_bioticshotgun_name					= "“呕吐”生化霰弹枪"
-LANGUAGE.weapon_bioticshotgun_desc					= "This modified shotgun fires a stream of bile akin to those of zombies. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_bioticshotgun_desc					= "这种经过改装的霰弹枪会射出类似于僵尸的胆汁。\n僵尸毒物会立即对人类目标造成伤害，但会迅速恢复。\n被这种毒物杀死的敌人会掉落生化物质，可以用作这种武器的弹药。"
 LANGUAGE.weapon_bioticsmg_name					    = "“骨髓”生化冲锋枪"
-LANGUAGE.weapon_bioticsmg_desc						= "This modified SMG fires pellets of concentrated zombie flesh rapidly. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
-LANGUAGE.weapon_blightcaster_name					= "Blight Caster"
-LANGUAGE.weapon_blightcaster_desc					= "This living weapon fires a massive rib forwards at high speeds, causing heavy knockback on a target alongside poison damage.\nThe rib will embed in the target, exploding 3 seconds later for wide area poison damage as well. \nZombie poison will apply immediate damage to human targets but will quickly heal back up.\nEnemies killed by this poison will drop biomaterial which can be used as ammunition for this weapon."
+LANGUAGE.weapon_bioticsmg_desc						= "这种改良的冲锋枪可以快速发射浓缩僵尸肉的弹丸。\n僵尸毒物会立即对人类目标造成伤害，但会迅速恢复。\n被这种毒物杀死的敌人会掉落生化物质，可以用作这种武器的弹药。"
+LANGUAGE.weapon_blightcaster_name					= "疫病传播者"
+LANGUAGE.weapon_blightcaster_desc					= "这种活体武器以高速向前发射一根巨大的肋骨，对目标造成强力的击退和毒物伤害。\n肋骨将嵌入目标，3 秒后爆炸造成广域毒物伤害。\n僵尸毒物会立即对人类目标造成伤害，但会迅速恢复。\n被这种毒物杀死的敌人会掉落生化物质，可以用作这种武器的弹药。"
 	
 LANGUAGE.weapon_blitzrifle_name						= "“闪击”突击步枪"
-LANGUAGE.weapon_blitzrifle_desc						= "An assault rifle with an attached high-magnification scope.\n Fires high caliber bullets that do a great deal of damage at a manageable recoil and spread."
-LANGUAGE.weapon_boomstick_name						= "Boomstick"
-LANGUAGE.weapon_boomstick_desc						= "This legendary shotgun can hold 4 shells in its chamber at once, which are all fired at the same time.\nThe gun is so powerful that even the shooters themselves are knocked out for a considerable length of time upon firing."
+LANGUAGE.weapon_blitzrifle_desc						= "带有高倍瞄准镜的突击步枪。\n发射大口径子弹，以可控的后坐力和扩散造成巨大伤害。"
+LANGUAGE.weapon_boomstick_name						= "爆破棍"
+LANGUAGE.weapon_boomstick_desc						= "这把传说中的猎枪可以在弹膛内同时装填 4 发子弹，同时发射。\n这种枪的威力如此之大，以至于射击者自己在射击时也会被击昏相当长的时间。"
 LANGUAGE.weapon_bulletstorm_name					= "“枪林弹雨”冲锋枪"
-LANGUAGE.weapon_bulletstorm_desc					= "A High-capacity SMG that can lay down a sustained hail of bullets. Very inaccurate and must be used with vigilance, but the recoil is more easily handled than most smgs."
+LANGUAGE.weapon_bulletstorm_desc					= "一种高容量冲锋枪，可以持续发射大量子弹。非常不精确，必须小心使用，但后坐力比大多数冲锋枪更容易控制。"
 LANGUAGE.weapon_meatcleaver_name					= "屠刀"
-LANGUAGE.weapon_meatcleaver_desc					= "A sharp knife originally used for cutting bone and sinew. \nHitting an enemy will give a slight speed bonus to the wielder, which stacks up to 20 times (+10 movement speed per hit). \nThis bonus is reset after 4 seconds of not hitting an enemy."
+LANGUAGE.weapon_meatcleaver_desc					= "最初用于切割骨头和肌肉的锋利的刀。\n击中敌人会使持用者获得轻微的速度加成，最多叠加 20 倍（每次命中 +10 移动速度）。\n在没有击中敌人 4 秒后重置。"
 LANGUAGE.weapon_crackler_name						= "“粉碎者”突击步枪"
-LANGUAGE.weapon_crackler_desc						= "An accurate assault rifle with low recoil. This is an older model that fires relatively low caliber rounds."
+LANGUAGE.weapon_crackler_desc						= "低后坐力的精确突击步枪。这是一支发射低口径子弹的旧型号步枪。"
 LANGUAGE.weapon_impalercbow_name					="“穿刺者”十字弩"
-LANGUAGE.weapon_impalercbow_desc					= "Fires superheated crossbow bolts at a high speed. \nThis bolt will pierce through several enemies dealing consecutively less damage as more enemies are pierced."
+LANGUAGE.weapon_impalercbow_desc					= "高速发射超热的弩箭。\n随着越多的敌人被刺穿，造成的伤害将越来越少。"
 LANGUAGE.weapon_crowbar_name						= "撬棍"
-LANGUAGE.weapon_crowbar_desc						= "A surprisingly useful melee weapon. \nWhen hitting an enemy barricade this weapon has a chance to immediately pull out a single nail."
-LANGUAGE.weapon_deagle_name 						= "'Zombie Drill' Pistol"
-LANGUAGE.weapon_deagle_desc							= "This pistol's high stopping power and accuracy lends itself well to even long-range engagements."
+LANGUAGE.weapon_crowbar_desc						= "一种非常有用的近战武器。\n当击中敌人的路障时，这种武器有机会立即拔出一颗钉子。"
+LANGUAGE.weapon_deagle_name 						= "“僵尸教官”手枪"
+LANGUAGE.weapon_deagle_desc							= "这种手枪的高拦截能力和精准度使其适合远程作战。"
 LANGUAGE.weapon_cowpoke_name						= "“牛仔”霰弹枪"
-LANGUAGE.weapon_cowpoke_desc						= "A double barreled shotgun that can fire both barrels at once. \nIts low capacity will leave users open for attack while reloading this weapon."
+LANGUAGE.weapon_cowpoke_desc						= "一种双管猎枪，可以双关齐发。\n它的低弹夹容量可以让使用者在重新装填这件武器时随时攻击。"
 LANGUAGE.weapon_capturedrone_name					= "无人机"
-LANGUAGE.weapon_capturedrone_desc					= "A remotely controllable surveillance drone.\nBesides reconaissance, it can also be used to remotely capture transmitters.\nUpon taking enough damage, the drone will explode, dealing damage to its surroundings."
+LANGUAGE.weapon_capturedrone_desc					= "一个可以远程遥控的监视无人机。\n除了侦察，它还可以用来远程占领发射器。\n一旦受到足够的伤害，无人机就会爆炸，对周围环境造成伤害。"
 LANGUAGE.weapon_capturedroneremote_name				= "无人机控制器"
-LANGUAGE.weapon_capturedroneremote_desc				= "Can be used to control drones remotely"
-LANGUAGE.weapon_empgun_name							= "EMP Gun"
-LANGUAGE.weapon_empgun_desc							= "A specialised tool that causes an EMP blast. \nThe shots fired by this weapon can destroy turrets, manhacks, or other deployables instantly.\nThis also includes barriades, for which the EMP blast will destroy all nails on the target prop. \nThe shot can also temporarily disable transmitters controlled by the enemy to hinder their transmission."
+LANGUAGE.weapon_capturedroneremote_desc				= "可用于远程控制无人机"
+LANGUAGE.weapon_empgun_name							= "EMP 发生器"
+LANGUAGE.weapon_empgun_desc							= "可以引起一次电磁脉冲爆炸的专用工具。\n这种武器发射的炮弹可以瞬间摧毁炮塔、飞锯或其他可部署武器。\n这也包括路障，EMP爆炸将摧毁目标道具上的所有钉子。\nEMP 冲击波还可以暂时禁用敌人占领的发射器，以阻止其传输。"
 LANGUAGE.weapon_endershotgun_name					= "“终末”霰弹枪"
-LANGUAGE.weapon_endershotgun_desc					= "An automatic shotgun that can fire many shells in a short timespan. Many legends of its power at close ranges have been told over the years."
-LANGUAGE.weapon_enemyradar_name						= "Biometric Scanner"
-LANGUAGE.weapon_enemyradar_desc						= "Exceedingly important in tracking enemy movement, this tool will send out a ping that displays all enemies' current locations.\nThe scan can also display any zombie nests that may exist. \nThe ping will update every 15 seconds."
+LANGUAGE.weapon_endershotgun_desc					= "能在短时间内发射多枚弹丸的自动霰弹枪。多年来，人们讲述了许多关于它在近距离情况下巨大威力的传说。"
+LANGUAGE.weapon_enemyradar_name						= "生物扫描仪"
+LANGUAGE.weapon_enemyradar_desc						= "这个工具在追踪敌人动向时非常重要，它会发出一个声波，显示所有敌人的当前位置。\n扫描仪还可以显示任何可能存在的僵尸巢穴。\n声波每 15 秒钟更新一次。"
 LANGUAGE.weapon_energysword_name					= "能量剑"
-LANGUAGE.weapon_energysword_desc					= "A combine blade that cuts down enemies using dark energy.\nThis energy will pierce through armor.\nThe secondary attack will perform a charge attack, propelling the user forward along the ground. \n The user will slowly gain speed, starting out slow and eventually reaching very fast speeds. The user has less sideways control and view rotation in the middle of this charge."
+LANGUAGE.weapon_energysword_desc					= "使用暗能切割敌人的联合军刀片。\n这种能量会穿透防弹衣。\n次要攻击将进行冲锋攻击，推动使用者沿地面向前移动。\n使用者将慢慢加速，开始时速度很慢，最终达到非常快的速度。使用者在冲刺的过程中可以较轻微的转向和旋转视图。"
 LANGUAGE.weapon_eraser_name							= "“橡皮擦”手枪"
-LANGUAGE.weapon_eraser_desc							= "An uniquely built tactical pistol that deals more damage the less rounds are remaining in its magazine.\nThe final bullet in the magazine will deal up to three times its normal damage."
+LANGUAGE.weapon_eraser_desc							= "一种独特的战术手枪，弹匣中剩余的子弹越少，造成的伤害就越大。\n弹匣中的最后一颗子弹将造成高达其正常伤害三倍的伤害。"
 LANGUAGE.weapon_flashbang_name						= "闪光弹"
-LANGUAGE.weapon_flashbang_desc						= "A flashbang that will explode 1.5 seconds after being thrown. \nPlayers looking at the flashbang when it explodes will be temporarily blinded, with a 25% chance of also being temporarily incapacitated."
+LANGUAGE.weapon_flashbang_desc						= "在投掷 1.5 秒后会爆炸，发出闪光。\n当闪光弹爆炸时，看见闪光的玩家将暂时失明，并且有 25% 的几率暂时丧失行动能力。"
 LANGUAGE.weapon_convalescence_name					= "“疗养”医用步枪"
-LANGUAGE.weapon_convalescence_desc					= "A rifle that fires a bullet that can both heal allies and hurt enemies with continuous toxic damage. Has a scope to help with long range healing.\nHitting friendly targets in their heads will heal more at once."
+LANGUAGE.weapon_convalescence_desc					= "一种能发射治疗弹的步枪，既能治愈盟友，又能持续伤害敌人。拥有一个瞄准镜，有助于远程治疗。\n击中友军的头部可以立刻治疗他们。"
 LANGUAGE.weapon_crossfire_name						= "“交叉火力”手枪"
-LANGUAGE.weapon_crossfire_desc						= "Each bullet fired by this pistol will split into three upon leaving the barrel.\nThe pistol has a low capacity, but can prove to be very effective in the hands of a skilled user."
+LANGUAGE.weapon_crossfire_desc						= "这把手枪发射的每一颗子弹在离开枪管时都会分裂成三颗。\n手枪的弹夹容量很小，但在熟练的使用者手中可以发挥巨大的作用。"
 LANGUAGE.weapon_grenadelauncher_name				= "榴弹发射器"
-LANGUAGE.weapon_grenadelauncher_desc				= "This weapon will fire special fragment grenades that explode on impact. These do substantial damage to structures and deployed tools, but are ineffective against living targets."
-LANGUAGE.weapon_turretcontrol_name					= "Turret Manual Remote"
-LANGUAGE.weapon_turretcontrol_desc					= "This tool can be used to manually control turrets and direct their fire at specified targets."
-LANGUAGE.weapon_meathook_name						= "Meat Hook"
-LANGUAGE.weapon_meathook_desc						= "Upon hitting an enemy with this hook, it will become embedded in them and deal constant damage.\nThe wielder will lose control of the weapon while it is embedded."
+LANGUAGE.weapon_grenadelauncher_desc				= "这种武器会发射特殊破片榴弹，在撞击物体时爆炸。这些武器会对防御结构和部署的工具造成严重伤害，但对活体目标无效。"
+LANGUAGE.weapon_turretcontrol_name					= "炮塔手动遥控器"
+LANGUAGE.weapon_turretcontrol_desc					= "该工具可用于手动控制炮塔，并让炮塔向指定目标开火。"
+LANGUAGE.weapon_meathook_name						= "肉钩"
+LANGUAGE.weapon_meathook_desc						= "当用这个钩子击中敌人时，它会嵌入敌人体内并造成持续的伤害。\n钩子嵌入时，被肉钩击中的人将失去对武器的控制。"
 LANGUAGE.weapon_hunter_name							= "“猎人”步枪"
-LANGUAGE.weapon_hunter_desc							= "A sniper rifle firing very high caliber rounds. The magazine only holds one round, but the shot is extremely powerful.\nThe shot is powerful enough to kill outright if it connects with the head."
+LANGUAGE.weapon_hunter_desc							= "发射高口径子弹的狙击步枪。弹匣只有一发子弹，但伤害非常大。\n如果子弹命中头部，它的威力足以直接致命。"
 LANGUAGE.weapon_injector_name						= "“叽叽喳喳”喷射枪"
-LANGUAGE.weapon_injector_desc						= "A short range medical injector gun. Can heal allies or harm an enemy with a lethal dosage that acts slowly in close quarters, and will automatically lock onto the closest target. Cannot fire unless in range."
+LANGUAGE.weapon_injector_desc						= "一种短射程医用注射枪。可以用大剂量治疗队友或伤害敌人，可以在近距离内缓慢行动，并自动锁定最近的目标。除非在射程内，否则不能开火。"
 LANGUAGE.weapon_immortal_name						= "“不朽”手枪"
-LANGUAGE.weapon_immortal_desc						= "This revolver has been enhanced with combine technology. \nThe shots made by this pistol will deal up to two times its original damage depending on how hurt the wielder is."
+LANGUAGE.weapon_immortal_desc						= "这款左轮手枪采用联合军的技术进行了改进。\n根据使用者的受伤程度，这把手枪的射击伤害可达原来的两倍。"
 LANGUAGE.weapon_inferno_name						= "“炼狱”突击步枪"
-LANGUAGE.weapon_inferno_desc						= "This gun is accurate even compared to other rifles. It is also equipped with a magnifying scope, making it very useful for long range engagements."
+LANGUAGE.weapon_inferno_desc						= "这把枪甚至比其他步枪都精确。它还配备了一个瞄准镜，对远程作战非常有用。"
 LANGUAGE.weapon_inquisition_name					= "“审判”十字弩"
-LANGUAGE.weapon_inquisition_desc					= "A pistol-style crossbow modified to split a crossbow bolt into three and fire them each consecutively."
+LANGUAGE.weapon_inquisition_desc					= "一种手枪式弩，经过改装，可以将弩箭一分为三，并连续发射。"
 LANGUAGE.weapon_ioncannon_name						= "离子炮"
-LANGUAGE.weapon_ioncannon_desc						= "A futuristic firearm which fires several streams of pulse energy.\nIts accuracy improves as it fires, but due to its low magazine size it is hard to keep accurate for long."
+LANGUAGE.weapon_ioncannon_desc						= "一种能发射多股脉冲能量的未来主义武器。\n它的精准度随着发射而提高，但由于弹匣容量较小，很难长时间保持精准。"
 LANGUAGE.weapon_kalashnikov_name					= "“卡拉什”突击步枪"
-LANGUAGE.weapon_kalashnikov_desc					= "This rifle gets much more inaccurate during continuous fire compared to other assault rifles, but its high power is almost unmatched."
+LANGUAGE.weapon_kalashnikov_desc					= "与其他突击步枪相比，这种步枪在连续射击中精准度更低，但它的高威力几乎是无与伦比的。"
 LANGUAGE.weapon_stalker_name						= "“潜行者”突击步枪"
-LANGUAGE.weapon_stalker_desc						= "An all-rounder rifle with good accuracy and firing speed, this firearm is a good choice for many types of engagements."
+LANGUAGE.weapon_stalker_desc						= "这是一种全方位都很优秀的步枪，具有良好的精度和射击速度，是多种作战方式的理想选择。"
 LANGUAGE.weapon_stalkersilenced_name				= "“追击者”突击步枪"
-LANGUAGE.weapon_stalkersilenced_desc				= "A modified 'Stalker' rifle with added stealth technology for covert operations. Standing still while holding the weapon will slowly engage a stealth field that cloaks the wielder.\nThe stealth field is quickly removed when firing or moving at high speeds."
+LANGUAGE.weapon_stalkersilenced_desc				= "“潜行者”突击步枪的改良版，增加了用于秘密行动的隐形技术。拿着武器静止不动会慢慢进入隐形状态。\n当射击或高速移动时，隐形状态会迅速消失。"
 LANGUAGE.weapon_stalkersilenced_stealthmeter		= "潜行"
 
 LANGUAGE.weapon_ricochet_name						= "“跳弹”手枪"
-LANGUAGE.weapon_ricochet_desc 						= "This revolver uses specially hardened bullets that can ricochet off walls and buildings. \nThese bullets will deal 1.5 times its original damage when hitting an enemy after bouncing off a surface."
+LANGUAGE.weapon_ricochet_desc 						= "这把左轮手枪使用特别硬化的子弹，可以在墙壁和建筑物之间弹跳。\n这些子弹在弹离地面后击中敌人时，会造成 1.5 倍伤害。"
 
-LANGUAGE.weapon_buststick_name						= "Bust on a Stick"
-LANGUAGE.weapon_buststick_desc						= "This melee weapon has been fashioned out of a marble bust and a stick affixed to it. \nWhen someone is hit with this weapon, they suffer a concussion making them confused for 20 seconds. \nThe bust also breaks after the first impact, dealing 50% more damage as slash damage from then on."
-LANGUAGE.weapon_greataxe_name						= "Crescent Axe"
-LANGUAGE.weapon_greataxe_desc						= "This massive axe gives some protection against bullets to the wielder. \nThe weapon starts with 10 defense stacks. Each time the wielder is shot while holding the axe, a defense stack will be spent to reduce the damage taken by 50%.\nHitting an enemy adds one defense stack, and killing an enemy adds 3 defense stacks.\nThis takes effect after body armor."
-LANGUAGE.weapon_greatexe_defensestacks				= "DEFENSE STACKS"
+LANGUAGE.weapon_buststick_name						= "手杖上的半身像"
+LANGUAGE.weapon_buststick_desc						= "这种近战武器由大理石半身像和一根棍子制成。\n当有人被这种武器击中时，他们会遭受脑震荡，并使他们陷入混乱 20 秒。\n半身像在第一次撞击后会破裂，从那时起造成的伤害比刀砍伤害还要多 50%。"
+LANGUAGE.weapon_greataxe_name						= "月牙斧"
+LANGUAGE.weapon_greataxe_desc						= "这把巨大的斧头为持用者提供了一些抵挡子弹的保护。\n武器一开始有 10 层防御效果。每次使用者在拿着斧头时被击中，武器会消耗一层防御效果来减少 50% 的伤害。\n击中敌人会增加一层防御效果，杀死敌人会增加三层防御效果。\n此效果会在防弹衣用完之后生效。"
+LANGUAGE.weapon_greatexe_defensestacks				= "格挡"
 LANGUAGE.weapon_lampmelee_name						= "落地灯"
-LANGUAGE.weapon_lampmelee_desc						= "This lamp makes for a good melee weapon. It is relatively slow to swing, but plenty powerful."
-LANGUAGE.weapon_mechanicwrench_name					= "Mechanic's Wrench"
-LANGUAGE.weapon_mechanicwrench_desc					= "This wrench is a saboteur's favorite. Hitting an enemy transmitter with a wrench will stop its communication. However, one cannot capture transmitters with a wrench in hand."
-LANGUAGE.weapon_longsword_name						= "Longsword"
-LANGUAGE.weapon_longsword_desc						= "A medieval weapon. The wielder can perform a great lunge by charging one up with the secondary attack. The distance travelled differs based on how long the lunge was charged for.\nThe wielder is slow while charging up the lunge."
+LANGUAGE.weapon_lampmelee_desc						= "这盏灯是很好的近战武器。它的挥动速度相对较慢，但威力很大。"
+LANGUAGE.weapon_mechanicwrench_name					= "机械师扳手"
+LANGUAGE.weapon_mechanicwrench_desc					= "这把扳手是破坏者的最爱。用扳手击打敌人的发射器将停止他们的通信。然而，人们无法用扳手占领发射器。"
+LANGUAGE.weapon_longsword_name						= "长剑"
+LANGUAGE.weapon_longsword_desc						= "中世纪的武器。使用者可以用第二攻击方式来向敌人冲刺。所走的距离根据冲刺的时间长短而有所不同。\n使用者在冲刺时动作缓慢。"
 LANGUAGE.weapon_keyboard_name						= "键盘"
-LANGUAGE.weapon_keyboard_desc						= "Hitting people with a keyboard will make them temporarily more subsceptible to damage, taking 30% more. This lasts for 10 seconds."
-LANGUAGE.weapon_sawhack_name						= "Sawhack"
-LANGUAGE.weapon_sawhack_desc						= "A melee weapon created by replacing the blade of an axe with a rotating sawblade.\nCauses deep cuts in enemies which will bleed for more damage over time."
-LANGUAGE.weapon_telescopic_baton_name				= "Telescopic Baton"
-LANGUAGE.weapon_telescopic_baton_desc				= "A lightweight weapon useful for quick strikes. The more times the wielder hits an enemy in succession, the faster they can swing this weapon."
+LANGUAGE.weapon_keyboard_desc						= "用键盘击打人会使他们暂时更容易受到伤害，额外受到 30% 的伤害。持续 10 秒。"
+LANGUAGE.weapon_sawhack_name						= "萨哈克之锯"
+LANGUAGE.weapon_sawhack_desc						= "一种近战武器，用旋转的锯片代替斧头的刀刃。\n在敌人身上造成深深的伤口并导致流血，随着时间的推移造成更多的伤害。"
+LANGUAGE.weapon_telescopic_baton_name				= "伸缩式警棍"
+LANGUAGE.weapon_telescopic_baton_desc				= "一种用于快速打击的轻型武器。使用者连续击中敌人的次数越多，他们挥动武器的速度就越快。"
 
 LANGUAGE.weapon_m249_name							= "“链锯”M249"
-LANGUAGE.weapon_m249_desc							= "With a massive 200 round box magazine, this machine gun lays down a barrage of constant, albeit individually small caliber fire. \nFiring this weapon while moving will result in a massive accuracy decrease."
+LANGUAGE.weapon_m249_desc							= "这门机枪拥有一个巨大的 200 发弹匣，可以连续不断地发射子弹，尽管每颗子弹的口径都很小。\n这种武器在移动时射击会导致精准度大幅降低。"
 LANGUAGE.weapon_manhack_name						= "飞锯"
-LANGUAGE.weapon_manhack_desc						= "A short-range attack drone equipped with razor sharp blades.\nCan be used to remotely attack enemies via slicing them apart, but has low health and requires skill to use effectively."
-LANGUAGE.weapon_manhackcontrol_name					= "Manhack Remote"
-LANGUAGE.weapon_manhackcontrol_desc					= "A remote controller used to maneuver a manhack remotely."
+LANGUAGE.weapon_manhack_desc						= "配备锋利刀片的短程攻击无人机。\n可以通过远程遥控来切割敌人，但生命值较低，需要有一定的技巧才能有效使用。"
+LANGUAGE.weapon_manhackcontrol_name					= "飞锯遥控器"
+LANGUAGE.weapon_manhackcontrol_desc					= "用于远程操纵飞锯的遥控器。"
 LANGUAGE.weapon_medikit_name						= "医疗包"
-LANGUAGE.weapon_medikit_desc						= "A small first aid kit equipped with various medical supplies.\nCan be used to efficiently and quickly heal teammates.\nThe secondary attack is used to heal the wielder, but this will make the kit unavailable to heal teammates for a while."
+LANGUAGE.weapon_medikit_desc						= "配备各种医疗用品的小型急救箱。\n可用于高效快速地治疗队友。\n第二攻击方式用于治疗使用者，但这将使医疗包暂时无法用于治疗队友。"
 LANGUAGE.weapon_medigun_name						= "“救世主”医疗枪"
-LANGUAGE.weapon_medigun_desc						= "Fires projectiles that can heal teammates from afar.\nHitting enemies will apply a lethal dosage and cause continuous toxic damage for a moment."
-LANGUAGE.weapon_megamasher_name						= "Megamasher"
-LANGUAGE.weapon_megamasher_desc						= "A melee weapon built using a substantial amount of metal salvage.\nExceptionally heavy and slow to use, but no weapons come close to its sheer destructive power.\nThe wielder is able to temporarily quickly move forwards while swinging the weapon.\nEspecially effective against barricades."
+LANGUAGE.weapon_medigun_desc						= "发射投射物，可以治愈远处的队友。\n击中敌人将使用致命剂量，并在一段时间内造成持续毒性伤害。"
+LANGUAGE.weapon_megamasher_name						= "“大杂烩”"
+LANGUAGE.weapon_megamasher_desc						= "用大量金属碎片制造的近战武器。\n非常沉重，使用的时候速度非常慢，但没有任何武器接近其绝对的破坏力。\n使用者可以在挥动武器时暂时快速向前移动。\n对路障特别有效。"
 LANGUAGE.weapon_nailgun_name						= "射钉枪"
-LANGUAGE.weapon_nailgun_desc						= "Fires nails at an extremely high speed.\nFiring this weapon while looking at a prop will nail it at the impact spot similar to a hammer.\nNails will be reusable if hitting solid surfaces such as walls and floors.\nFired nails are treated as bullets, and will be blocked by force fields. They will not be affected by any anti-projectile mechanisms."
+LANGUAGE.weapon_nailgun_desc						= "以极高的速度发射钉子。\n在瞄准物品的时候发射，会让钉子在着陆点固定，类似于锤子固定的效果。\n如果钉子碰到墙壁和地板等固体表面，可以重复使用。\n被点燃的钉子被视为子弹，会被力场阻挡。但它们不会受到任何投射物防御措施的影响。"
 LANGUAGE.weapon_neutrinoLMG_name					= "“中微子”脉冲轻机枪"
-LANGUAGE.weapon_neutrinoLMG_desc					= "Fires bolts of pulse energy. Fires slowly, but gets faster the more shots are fired in a single volley.\nTakes ammo directly from the ammo pool, without having to be reloaded."
+LANGUAGE.weapon_neutrinoLMG_desc					= "发射脉冲能量。射速缓慢，但一次性射击的越多，射速就越快。\n武器直接从弹药仓中获取弹药，因此无需重新装填。"
 LANGUAGE.weapon_positron_name						= "“阳电子”光束加农炮"
-LANGUAGE.weapon_positron_desc						= "Fires a beam of charged positrons. The beam is weak upon first coming in contact with an enemy, but charges up in power the longer it stays on a single target.\n Deals triple damage to barricades and the like. \nTakes ammo directly from the ammo pool, without having to be reloaded."
+LANGUAGE.weapon_positron_desc						= "发射一束带电荷的正电子。光束在第一次与敌人接触时很弱，但在单个目标上停留的时间越长，它的力量就越大。\n对路障等结构会造成三倍伤害。\nn武器直接从弹药仓中获取弹药，因此无需重新装填。"
 LANGUAGE.weapon_owenspistol_name					= "“欧文斯”手枪"
-LANGUAGE.weapon_owenspistol_desc					= "This pistol will fire rounds that split into two upon leaving the barrel.\nRelatively inaccurate for a pistol, it is most effective at close ranges."
+LANGUAGE.weapon_owenspistol_desc					= "这把手枪的子弹在离开枪管时会一分为二。\n对于手枪来说相对不准确，它在近距离内最有效。"
 LANGUAGE.weapon_peashooterpistol_name				= "“豌豆射手”手枪"
-LANGUAGE.weapon_peashooterpistol_desc				= "A semi-automatic pistol set to fire at 3-round bursts. The rounds have a small caliber but the pistol can sustain a constant stream of fire."
+LANGUAGE.weapon_peashooterpistol_desc				= "一种半自动手枪，3 连发。子弹的口径很小，但手枪可以持续不断地射击。"
 LANGUAGE.weapon_leadpipe_name						= "水管"
-LANGUAGE.weapon_leadpipe_desc						= "A heavy and sturdy blunt weapon. Hitting an enemy with it will cause their aim to be thrown off. \nThe secondary attack lets the wielder charge up for a very strong swing that deals a large amount of knockback and damage, depending on how long it was charged up for."
-LANGUAGE.weapon_palliator_name						= "'Palliator' Medical Beamer"
-LANGUAGE.weapon_palliator_desc						= "This weapon emits medical energy in the form of a beam, automatically locking onto a selected target within range. It will heal the target if they are an ally, or hurt and slow them if they are an enemy.\nPrimary attack: Lock in target\nSecondary attack: Cancel target"
+LANGUAGE.weapon_leadpipe_desc						= "一种沉重而结实的钝武器。用它打击敌人可以使他们难以瞄准。\n第二攻击方式让使用者向前冲刺并且蓄力挥动水管，造成大量击退效果和伤害，击退效果和伤害取决于冲刺的时间长短。"
+LANGUAGE.weapon_palliator_name						= "“姑息医生”医疗光束"
+LANGUAGE.weapon_palliator_desc						= "这种武器以光束的形式发射医疗能量，自动锁定射程内的选定目标。如果目标是队友，它会治愈目标；如果目标是敌人，它会伤害并减缓目标。\n主要攻击键：锁定目标\n次要攻击键：取消目标"
 LANGUAGE.weapon_palliator_attacking_x				= "正在攻击 %s"
 LANGUAGE.weapon_palliator_healing_x					= "正在治疗 %s"
 
 LANGUAGE.weapon_plankmelee_name						= "木板"
 LANGUAGE.weapon_plankmelee_desc						= "由一块木板组成的十分简易的近战武器。可以快速的挥动。"
-LANGUAGE.weapon_podvodny_name						= "'Podvodny' Flechette rifle"
-LANGUAGE.weapon_podvodny_desc						= "A terrifying weapon that fires flechettes that will cause heavy bleeding on the target.\n 75% of its damage is dealt as bleed damage over time."
-LANGUAGE.weapon_practicion_name						= "'Practicion' Medical Rifle"
-LANGUAGE.weapon_practicion_desc						= "A firearm that utilises medical supplies. Causes overdoses that deal continuous toxic damage.\nHitting friendly targets will heal them slightly every hit. Hitting them in the head will heal more at once."
-LANGUAGE.weapon_adonispulse_name					= "'Adonis' Pulse Rifle"
-LANGUAGE.weapon_adonispulse_desc					= "A powerful assault rifle utilising pulse energy.\nHas a slow rate of fire, but has very low recoil.\nSlows down enemies that are hit by the shot."
-LANGUAGE.weapon_reaperUMP_name						= "'Reaper' SMG"
-LANGUAGE.weapon_reaperUMP_desc						= "This SMG is comparable to high caliber assault weaponry in its stopping power, but its accuracy is still quite poor much like other SMGs."
-LANGUAGE.weapon_redeemer_name						= "'Redeemer' Dual Pistols"
-LANGUAGE.weapon_redeemer_desc						= "Two fast-firing semi automatic pistols. With a combined total of 30 rounds in their magazines this pair of pistols can even go up against some heavier weaponry."
-LANGUAGE.weapon_renegade_name						= "'Renegade' Pulse Sniper"
-LANGUAGE.weapon_renegade_desc						= "An antimaterial rifle utilising pulse ammunition. \nUpon impact, a high voltage electric field is generated at the hit location. \nThis field deals a constant amount of small damage to players and barricades within its radius until it dissipates."
-LANGUAGE.weapon_helvetica_name						= "'Helvetica' Rifle"
-LANGUAGE.weapon_helvetica_desc						= "A Marksman's Rifle that deals a set amount of damage, piercing body armor.\nIts damage stays constant and is not affected by headshots or other buffs."
-LANGUAGE.weapon_severance_name						= "'Severance' Shotgun"
-LANGUAGE.weapon_severance_desc						= "A shotgun firing powerful large bore ammunition. The force of the blast can push its target with a considerable force."
-LANGUAGE.weapon_shovel_name							= "Shovel"
-LANGUAGE.weapon_shovel_desc							= "A sturdy shovel that is also useful for digging. \nHitting the ground (dirt, sand, or snow) with this weapon has a 10% chance to dig up an ammo bag."
-LANGUAGE.weapon_signalbooster_name					= "Signal Booster"
-LANGUAGE.weapon_signalbooster_desc					= "Holding this weapon in your hand will allow you to capture transmitters at double the speed. \nIt also shows the distance to each transmitter."
-LANGUAGE.weapon_silencer_name						= "'Silencer' Machine Pistol"
-LANGUAGE.weapon_silencer_desc						= "An automatic pistol with an exceptionally fast rate of fire. \nCan easily dispatch any enemy up close, but individual bullets have a very low caliber. The gun also suffers from low accuracy when continuously being fired."
-LANGUAGE.weapon_sledgehammer_name					= "Sledgehammer"
-LANGUAGE.weapon_sledgehammer_desc					= "A heavy blunt melee weapon that is slow to swing. \nDeals heavy knockback and damage, especially to barricades, to which it deals 3 times the normal damage."
-LANGUAGE.weapon_slinger_name						= "'Slinger' Bolt Pistol"
-LANGUAGE.weapon_slinger_desc						= "A modified pistol that launches a single crossbow bolt. \nMust reload after every shot, but the bolt does deal considerable damage."
-LANGUAGE.weapon_tinyslug_name						= "'Tiny' Slug Rifle"
-LANGUAGE.weapon_tinyslug_desc						= "This heavily modified firearm is a formidable sniper rifle. \nEquipped with a very large caliber, its stopping power is unrivaled."
+LANGUAGE.weapon_podvodny_name						= "“波德沃尼”钢矛步枪"
+LANGUAGE.weapon_podvodny_desc						= "一种可怕的武器，可以发射爆裂钢矛，会导致目标获得严重流血效果。\n随着时间的推移，它的总伤害的 75% 将会作为流血效果处理。"
+LANGUAGE.weapon_practicion_name						= "“实习”医用步枪"
+LANGUAGE.weapon_practicion_desc						= "使用医疗用品的武器。通过过量使用药物，造成持续的毒性伤害。\n每次命中友军目标都会对其进行轻微的治疗。击中他们的头部会立刻治疗。"
+LANGUAGE.weapon_adonispulse_name					= "“阿多尼斯”脉冲步枪"
+LANGUAGE.weapon_adonispulse_desc					= "利用脉冲能量的强力突击步枪。\n射速较慢，但后坐力很低。\n减慢被子弹击中的敌人的速度。"
+LANGUAGE.weapon_reaperUMP_name						= "“收割者”冲锋枪"
+LANGUAGE.weapon_reaperUMP_desc						= "这种冲锋枪的拦截能力可以与高口径突击武器媲美，但其精准度仍然很低，与其他冲锋枪非常相似。"
+LANGUAGE.weapon_redeemer_name						= "“救赎者”双持手枪"
+LANGUAGE.weapon_redeemer_desc						= "两支快速发射的半自动手枪。在弹匣里总共有 30 发子弹的情况下，这把手枪甚至可以对抗一些更重型的武器。"
+LANGUAGE.weapon_renegade_name						= "“叛徒”脉冲狙击枪"
+LANGUAGE.weapon_renegade_desc						= "使用脉冲弹药的反物质步枪。\n碰撞时，会在碰撞位置产生高压电场。\n该电场会对其半径范围内的玩家和路障造成持续的轻微伤害，直到电场消失。"
+LANGUAGE.weapon_helvetica_name						= "“赫尔维蒂亚”步枪"
+LANGUAGE.weapon_helvetica_desc						= "能造成一定伤害的精准步枪，可以穿透防弹衣。\n它的伤害是恒定的，不受爆头或其他增益效果的影响。"
+LANGUAGE.weapon_severance_name						= "“断绝”霰弹枪"
+LANGUAGE.weapon_severance_desc						= "发射强力大口径弹药的霰弹枪。爆发的力量能以相当大的力量推动目标。"
+LANGUAGE.weapon_shovel_name							= "铲子"
+LANGUAGE.weapon_shovel_desc							= "一种结实的铲子，对挖掘也很有用。\n用这种武器击中地面（泥土、沙子或雪）有 10% 的几率挖出一袋弹药袋。"
+LANGUAGE.weapon_signalbooster_name					= "信号增幅器"
+LANGUAGE.weapon_signalbooster_desc					= "手里拿着这个武器，你可以以双倍的速度占领发射器。\n它还会显示到每个发射器的距离。"
+LANGUAGE.weapon_silencer_name						= "“消音”机枪型手枪"
+LANGUAGE.weapon_silencer_desc						= "一种射速非常快的自动手枪。\n可以很容易地近距离击败任何敌人，但单个子弹的口径非常小。这种枪在连续发射时精度也很低。"
+LANGUAGE.weapon_sledgehammer_name					= "大锤"
+LANGUAGE.weapon_sledgehammer_desc					= "一种沉重而迟钝的近战武器，挥动速度缓慢。\n造成沉重的击退和伤害，尤其是对路障，其造成的伤害是正常伤害的 3 倍。"
+LANGUAGE.weapon_slinger_name						= "“斯林格”弩箭手枪"
+LANGUAGE.weapon_slinger_desc						= "一种改进的手枪，可以发射一枚弩箭。\n必须在每次射击后重新装弹，但弩箭确实会造成相当大的伤害。"
+LANGUAGE.weapon_tinyslug_name						= "“微型”弹头步枪"
+LANGUAGE.weapon_tinyslug_desc						= "这种经过大量改装的武器是一种强大的狙击步枪。\n它的口径非常大，毁灭性无与伦比。"
 
-LANGUAGE.weapon_fusilier_name						= "'Fusilier' Rifle"
-LANGUAGE.weapon_fusilier_desc						= "A semi automatic battle rifle that is highly accurate. \nAs it does not have a scope, careful deliberation of the user is key to utilising it."
+LANGUAGE.weapon_fusilier_name						= "“引信”步枪"
+LANGUAGE.weapon_fusilier_desc						= "一种高度精确的半自动战斗步枪。\n由于它没有瞄准镜，因此，深思熟虑地使用它是它的关键。"
 
-LANGUAGE.weapon_shredder_name						= "'Shredder' SMG"
-LANGUAGE.weapon_shredder_desc						= "This SMG is relatively accurate and has a lower recoil than most SMGs."
-LANGUAGE.weapon_smokegrenade_name					= "Smoke Grenade"
-LANGUAGE.weapon_smokegrenade_desc					= "Emits a thick smoke 2 seconds after being thrown. The smoke stays for a very long time and obscures vision, allowing strategic use."
-LANGUAGE.weapon_stubber_name						= "'Stubber' Rifle"
-LANGUAGE.weapon_stubber_desc						= "A bolt-action rifle with a magnifying scope. Its low reload speed and fire rate means careful aim is of the essence."
-LANGUAGE.weapon_stunstick_name						= "Stun Baton"
-LANGUAGE.weapon_stunstick_desc						= "Weaker than other melee weapons, but temporarily stuns the target and prevents them from taking action."
-LANGUAGE.weapon_sweeper_name						= "'Sweeper' Shotgun"
-LANGUAGE.weapon_sweeper_desc						= "A powerful pump action shotgun. Can be very devastating up close."
+LANGUAGE.weapon_shredder_name						= "“碎纸机”冲锋枪"
+LANGUAGE.weapon_shredder_desc						= "这种冲锋枪相对精准，并且后坐力比大多数冲锋枪都低。"
+LANGUAGE.weapon_smokegrenade_name					= "烟雾弹"
+LANGUAGE.weapon_smokegrenade_desc					= "在抛出 2 秒后发出浓烟。烟雾会停留很长时间，模糊视线，便于战略使用。"
+LANGUAGE.weapon_stubber_name						= "“斯塔伯”步枪"
+LANGUAGE.weapon_stubber_desc						= "一种带有瞄准镜的箭式步枪。其较慢的装填速度和射速体现了瞄准了再射的重要性。"
+LANGUAGE.weapon_stunstick_name						= "电击棒"
+LANGUAGE.weapon_stunstick_desc						= "比其他近战武器弱，但会暂时击昏目标并阻止其采取行动。"
+LANGUAGE.weapon_sweeper_name						= "“清扫者”霰弹枪"
+LANGUAGE.weapon_sweeper_desc						= "一把威力强大的霰弹枪。近距离内非常具有毁灭性。"
 LANGUAGE.weapon_combatknife_name					= "战术匕首"
 LANGUAGE.weapon_combatknife_desc					= "一把可以快速挥动的匕首。"
 LANGUAGE.weapon_terminator_name						= "“终结者”手枪"
-LANGUAGE.weapon_terminator_desc						= "A semi-automatic pistol that holds 6 rounds in each magazine. \nThe magazines are specially built such that hitting the enemy's head will automatically reload all rounds.\nCareful aim with this weapon will allow for a stream of very damaging fire, but missing will leave the wielder open for attack."
+LANGUAGE.weapon_terminator_desc						= "一种半自动手枪，每个弹匣可装 6 发子弹。\n弹匣是专门制造的，这样击中敌人的头部会自动重新装填所有子弹。\n使用这种武器时，专心瞄准可以照成极具破坏性的火力，但如果未命中，持用者将有可能受到敌人反击。"
 LANGUAGE.weapon_tommysmg_name						= "“汤米”冲锋枪"
-LANGUAGE.weapon_tommysmg_desc						= "Equipped with a 75-round drum magazine of a larger-than-normal caliber, this submachine gun can lay down an impressive amount of fire.\nIt is however held back by its slow reload speed and very inaccurate spread."
-LANGUAGE.weapon_tosser_name							= "'Tosser' SMG"
-LANGUAGE.weapon_tosser_desc							= "SMG with a 25-round capacity magazine. Has a decent rate of fire, but its low caliber and outdated design leaves much to be desired."
-LANGUAGE.weapon_trenchgun_name						= "'Trench' Shotgun"
-LANGUAGE.weapon_trenchgun_desc						= "A pump action shotgun holding 4 shells. It has a relatively high rate of fire for a pump shotgun, but deals less overall damage as well."
-LANGUAGE.weapon_sprayer_name						= "'Sprayer' SMG"
-LANGUAGE.weapon_sprayer_desc						= "This SMG has a large capacity magazine, but is extremely inaccurate.\nIt is most useful up close and personal."
-LANGUAGE.weapon_ventilator_name						= "'Ventilator' Pistol"
-LANGUAGE.weapon_ventilator_desc						= "This pistol has been extensively modified to fire very high caliber rounds. In addition, it can vent its entire clip forward like a shotgun dealing massive damage, albeit with a large spread, if the need arises.\n This causes the reload speed of the pistol to suffer heavy penalties, and must be used sparingly. \nPrimary Attack: Fire\nSecondary Attack:Vent clip"
-LANGUAGE.weapon_waraxe_name							= "'Waraxe' Pistol"
-LANGUAGE.weapon_waraxe_desc							= "A pistol firing rounds that split into four upon leaving the barrel.\nIt is more accurate than most shotguns making it viable at longer ranges as well."
-LANGUAGE.weapon_pulsepistol_name					= "'Z9000' Pulse Pistol"
-LANGUAGE.weapon_pulsepistol_desc					= "This is a pulse energy weapon. It cannot deal much damage, but slows down enemies considerably.\nThe internal machinery of this pistol is used as a basis for all other pulse weaponry."
-LANGUAGE.weapon_zeusrifle_name						= "'Zeus' Rifle"
-LANGUAGE.weapon_zeusrifle_desc						= "This Marksman's Rifle is fully automatic and remains accurate even while firing.\nIts high-magnification scope is also useful for taking out targets that are far away."
-LANGUAGE.weapon_whirlwind_name						= "'Whirlwind' Interceptor"
-LANGUAGE.weapon_whirlwind_desc						= "This gun charges its internal capacity automatically over time. \nIt will fire upon enemy projectiles located in front of the user automatically, reflecting them towards roughly where it is aimed at.\nLeaves a lot to be desired as a firearm, but its interception capabilities fill a valuable strategic niche."
-LANGUAGE.weapon_combinesniper_name					= "'Blockdown' Rifle"
-LANGUAGE.weapon_combinesniper_desc					= "This Combine-issued rifle uses an internal mechanism to charge its shots for impressive damage.\nPress and hold the attack button to charge up a shot, and release to fire.\nKeeping the weapon charged up for too long can lead to the mechanism backfiring and damaging the user."
-LANGUAGE.weapon_rupture_name						= "'Rupture' Pulse Crossbow"
-LANGUAGE.weapon_rupture_desc						= "This crossbow shoots specialised electrified bolts.\n The bolts do not do much damage when hitting an enemy outright, but the bolts will explode after a short delay after embedding into a surface.\nThe bolts will not explode if directly hitting an enemy."
+LANGUAGE.weapon_tommysmg_desc						= "这种冲锋枪配有一个 75 发子弹容量的圆鼓弹匣，可以提供大量火力。\n然而，由于其缓慢的装填速度和非常大的子弹扩散，它的使用体验并不理想。"
+LANGUAGE.weapon_tosser_name							= "“投掷者”冲锋枪"
+LANGUAGE.weapon_tosser_desc							= "具有 25 发弹药容量弹匣的冲锋枪。它的射速相当不错，但它的小口径和过时的设计仍会导致许多问题。"
+LANGUAGE.weapon_trenchgun_name						= "“战壕”霰弹枪"
+LANGUAGE.weapon_trenchgun_desc						= "一把装有 4 发弹药的泵式霰弹枪。它的射速相对较高，但总体伤害也较小。"
+LANGUAGE.weapon_sprayer_name						= "“喷雾器”冲锋枪"
+LANGUAGE.weapon_sprayer_desc						= "这个冲锋枪有一个大容量的弹夹，但非常不精准。\n在近距离十分有用。"
+LANGUAGE.weapon_ventilator_name						= "“吹风机”手枪"
+LANGUAGE.weapon_ventilator_desc						= "这种手枪经过广泛改装，可以发射大口径子弹。此外，如果需要的话，它可以像霰弹枪一样将整个弹夹向前射出，造成巨大的伤害，尽管范围很大。\n这将会导致严重的手枪重新装填惩罚，必须谨慎使用。\n主要攻击键：开火\n次要攻击键：发射弹夹内的全部子弹"
+LANGUAGE.weapon_waraxe_name							= "“雷霆之斧”手枪"
+LANGUAGE.weapon_waraxe_desc							= "在子弹离开枪管时会分裂成四颗。\n它比大多数霰弹枪更精确，因此在更远的射程中也能使用。"
+LANGUAGE.weapon_pulsepistol_name					= "Z9000 脉冲手枪"
+LANGUAGE.weapon_pulsepistol_desc					= "这是一种脉冲能量武器。它不会造成太大的伤害，但会大大减慢敌人的速度。\n这种手枪的内部机械装置被用作所有其他脉冲武器的基础。"
+LANGUAGE.weapon_zeusrifle_name						= "“宙斯”步枪"
+LANGUAGE.weapon_zeusrifle_desc						= "这把精准的步枪是全自动的，即使在射击时也能保持精准度。\n它的高倍率瞄准镜也有助于消灭远处的目标。"
+LANGUAGE.weapon_whirlwind_name						= "“旋风”拦截器"
+LANGUAGE.weapon_whirlwind_desc						= "这种枪会随着时间的推移自动充能。\n它会自动向位于使用者前方的敌人投射物开火，将其大致反射到准星瞄准的位置。\n作为一种武器，它还有很多需要改进的地方，但它的拦截能力填补了一个宝贵的战略空缺。"
+LANGUAGE.weapon_combinesniper_name					= "“封锁”步枪"
+LANGUAGE.weapon_combinesniper_desc					= "这种联合军步枪使用一种内部机制来对它的射击进行充能，以获得令人印象深刻的伤害。\n按住“攻击”键可对射击进行充能，然后松开以开火。\n长时间充能可能会导致爆炸，并对使用者造成伤害。"
+LANGUAGE.weapon_rupture_name						= "“断裂”脉冲十字弩"
+LANGUAGE.weapon_rupture_desc						= "这种十字弩发射特殊的带电弩箭。\n当直接击中敌人时，弩箭不会造成太大的伤害，但弩箭嵌入物体表面后会在短时间内爆炸。\n如果直接击中敌人，弩箭不会爆炸。"
 
 
 
@@ -313,8 +313,8 @@ LANGUAGE.shopitem_ammo_invalid						= "此武器不能装填弹药。"
 
 LANGUAGE.statusname_invuln							= "无敌"
 LANGUAGE.statusname_bodyarmor						= "防弹衣"
-LANGUAGE.statusname_poisonrecover					= "POISON RECOVERY"
-LANGUAGE.statusname_toxic							= "OVERDOSE"
+LANGUAGE.statusname_poisonrecover					= "解毒"
+LANGUAGE.statusname_toxic							= "上瘾"
 LANGUAGE.statusname_bleeding						= "流血"
 
 LANGUAGE.ammo_medical_energy						= "医疗能量"
@@ -329,46 +329,46 @@ LANGUAGE.hm_mosthelpful_name 						= "援助之手"
 LANGUAGE.hm_mosthelpful_desc 						= "%s 协助队友杀死了 %d 名敌人"
 LANGUAGE.hm_mostpurchases_name 						= "资本主义"
 LANGUAGE.hm_mostpurchases_desc 						= "%s 花费了共计 %d 点数购买物品。"
-LANGUAGE.hm_mosthacking_name 						= "Hack the Planet"
-LANGUAGE.hm_mosthacking_desc 						= "%s used backdoors to hack transmitters %d times."
+LANGUAGE.hm_mosthacking_name 						= "入侵地球"
+LANGUAGE.hm_mosthacking_desc 						= "%s 使用后门程序攻击了发射器 %d 次。"
 LANGUAGE.hm_mosthealing_name 						= "良医"
 LANGUAGE.hm_mosthealing_desc						= "%s 通过治疗了共计 %d 点的生命值来帮助队友。"
 LANGUAGE.hm_mostrepairing_name 						= "工程师"
 LANGUAGE.hm_mostrepairing_desc 						= "%s 修复了共计 %d 点的路障生命值。"
-LANGUAGE.hm_mosttransmission_name 					= "Comms Specialist"
-LANGUAGE.hm_mosttransmission_desc 					= "%s spent %d seconds of their time capturing transmitters."
-LANGUAGE.hm_warrior_name 							= "Close Quarters Battle"
-LANGUAGE.hm_warrior_desc							= "%s used melee weapons to kill %d enemies."
-LANGUAGE.hm_mostheadshots_name 						= "Headhunter"
-LANGUAGE.hm_mostheadshots_desc 						= "%s pierced %d of their enemies' heads."
-LANGUAGE.hm_barricadedestroyer_name 				= "Demolition Crew"
-LANGUAGE.hm_barricadedestroyer_desc					= "%s dealt a total of %d damage to barricades."
-LANGUAGE.hm_usefultoopposite_name 					= "Good Going, Genius"
-LANGUAGE.hm_usefultoopposite_desc 					= "%s was killed %d times by their enemies."
-LANGUAGE.hm_killstreaks_name 						= "Spec Ops"
-LANGUAGE.hm_killstreaks_desc 						= "%s was able to kill %d enemies in a single breath."
-LANGUAGE.hm_bestaim_name 							= "Sharpshooter"
-LANGUAGE.hm_bestaim_desc 							= "%s shoots away the competition with an accuracy of %d%%."
+LANGUAGE.hm_mosttransmission_name 					= "通信专家"
+LANGUAGE.hm_mosttransmission_desc 					= "%s 花费了 %d 秒的时间占领发射器。"
+LANGUAGE.hm_warrior_name 							= "近距离战斗"
+LANGUAGE.hm_warrior_desc							= "%s 使用近战武器杀死了 %d 名敌人。"
+LANGUAGE.hm_mostheadshots_name 						= "猎头人"
+LANGUAGE.hm_mostheadshots_desc 						= "%s 刺穿了 %d 名敌人的头部。"
+LANGUAGE.hm_barricadedestroyer_name 				= "拆迁队"
+LANGUAGE.hm_barricadedestroyer_desc					= "%s 对障碍物造成了总计 %d 点伤害。"
+LANGUAGE.hm_usefultoopposite_name 					= "干得好，天才"
+LANGUAGE.hm_usefultoopposite_desc 					= "%s 被敌人杀死了 %d 次。"
+LANGUAGE.hm_killstreaks_name 						= "特种部队"
+LANGUAGE.hm_killstreaks_desc 						= "%s 能够一口气杀死 %d 个敌人。"
+LANGUAGE.hm_bestaim_name 							= "神枪手"
+LANGUAGE.hm_bestaim_desc 							= "%s 以 %d%% 的精准度击败对手。"
 
-LANGUAGE.hm_expensive_name 							= "Luxury Goods"
-LANGUAGE.hm_expensive_desc 							= "%s made the most expensive purchase: their %s, at %d points."
-LANGUAGE.hm_mostsamples_name 						= "I'll Be Taking That One"
-LANGUAGE.hm_mostsamples_desc 						= "%s obtained a total of %d biosamples."
-LANGUAGE.hm_nestdestroyer_name 						= "Nest Removal Services"
-LANGUAGE.hm_nestdestroyer_desc 						= "%s destroyed %d zombie nests that were still lingering."
+LANGUAGE.hm_expensive_name 							= "奢侈品"
+LANGUAGE.hm_expensive_desc 							= "%s 完成了最昂贵的交易：他们的 %s，花费 %d 点数。"
+LANGUAGE.hm_mostsamples_name 						= "那个我要了"
+LANGUAGE.hm_mostsamples_desc 						= "%s 获得了共计 %d 个生化样本。"
+LANGUAGE.hm_nestdestroyer_name 						= "巢穴清除服务"
+LANGUAGE.hm_nestdestroyer_desc 						= "%s 摧毁了 %d 个留存的僵尸巢穴。"
 LANGUAGE.hm_sniperelite_name 						= "狙击精英"
 LANGUAGE.hm_sniperelite_desc 						= "%s 成功的杀死了一名 %d 单位距离之外的敌人。好枪法！"
-LANGUAGE.hm_survivor_name 							= "The Last Human"
-LANGUAGE.hm_survivor_desc 							= "%s survived through %d waves of battle. Maybe they thought this was Zombie Survival?"
+LANGUAGE.hm_survivor_name 							= "最后的人类"
+LANGUAGE.hm_survivor_desc 							= "%s 坚强的在 %d 波战斗后幸存下来。也许他们以为这是《僵尸生存》？"
 
 LANGUAGE.consecutive_kills							= " 连杀"
 LANGUAGE.cant_purchase_in_this_mode					= "无法在此模式下使用。"
 LANGUAGE.already_have_weapon						= "你已拥有此物品。"
 LANGUAGE.cant_use_in_classic_mode					= "无法在死亡竞技模式下使用。"
 LANGUAGE.nothing_for_this_ammo						= "你没有任何可以使用这种弹药的武器。"
-LANGUAGE.dont_own_prerequisite						= "You do not own the requirements for this."
+LANGUAGE.dont_own_prerequisite						= "你不满足此物品的要求。"
 LANGUAGE.weapon_has_no_upgrades						= "此武器不可升级。"
-LANGUAGE.weapon_has_no_prerequisites				= "This weapon has no predecessors."
+LANGUAGE.weapon_has_no_prerequisites				= "此武器不可回退。"
 LANGUAGE.cant_purchase_right_now					= "你现在不能购买这个。"
 LANGUAGE.dont_have_enough_points					= "没有足够点数。"
 LANGUAGE.weapon_is_not_owned						= "你只能修改你已购买的武器。"
@@ -400,7 +400,7 @@ LANGUAGE.switch_to_revert							= "切换至回退模式"
 LANGUAGE.tier_x										= "第 %d 层"
 LANGUAGE.button_help								= "帮助"
 LANGUAGE.button_buyammo								= "购买弹药"
-LANGUAGE.weapon_insured								= "Weapon Insured"
+LANGUAGE.weapon_insured								= "武器保险"
 
 LANGUAGE.disconnect_killed							= "%s 在被 %s 杀死后怒退。"
 LANGUAGE.nail_removed_by							= "%s 移除了 %s 的钉子。"
@@ -409,7 +409,7 @@ LANGUAGE.purchased_x_for_y_points					= "花费了 %d 点数购买了 %s！"
 LANGUAGE.will_appear_after_respawn					= "这将在重生后给予你。"
 
 LANGUAGE.samples_collected							= "样本收集：%s"
-LANGUAGE.that_life									= "That Life..."
+LANGUAGE.that_life									= "上一条命..."
 LANGUAGE.x_damage_to_barricades						= "对路障造成了 %d 点伤害"
 LANGUAGE.x_damage_to_enemies						= "对敌人造成了 %d 点伤害"
 LANGUAGE.x_kills									= "%d 击杀"
@@ -426,21 +426,21 @@ LANGUAGE.waiting_for_next_wave						= "等待下一波..."
 LANGUAGE.impossible									= "不可能。"
 LANGUAGE.trying_to_put_nails_in_glass				= "你不能把钉子锤入玻璃！"
 
-LANGUAGE.comms_interrupted							= "Comms Interrupted!"
-LANGUAGE.all_transmitters_taken_by_x						= "%s have taken all transmitters!"
-LANGUAGE.one_transmitter_taken_by_x						= "%s have taken a transmitter!"
-LANGUAGE.transmitter_comms_finished_by_x					= "%s have finished their transmission."
-LANGUAGE.transmitter_comms_tied							= "Both teams finished their transmissions."
-LANGUAGE.samples_finished_by_x						= "%s have collected enough samples."
-LANGUAGE.samples_tied								= "Both teams have collected enough samples."
-LANGUAGE.nest_destroyed_by_x				 		= "%s has destroyed a nest!"
-LANGUAGE.nest_spawned								= "A new zombie nest has appeared!"
-LANGUAGE.transmitter_comms_disrupted_x					= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
+LANGUAGE.comms_interrupted							= "传输中断！"
+LANGUAGE.all_transmitters_taken_by_x						= "%s 已占领全部发射器！"
+LANGUAGE.one_transmitter_taken_by_x						= "%s 占领了一个发射器！"
+LANGUAGE.transmitter_comms_finished_by_x					= "%s 已完成传输。"
+LANGUAGE.transmitter_comms_tied							= "两个团队均已完成传输。"
+LANGUAGE.samples_finished_by_x						= "%s 已收集足够的样本。"
+LANGUAGE.samples_tied								= "两个团队均已收集足够的样本。"
+LANGUAGE.nest_destroyed_by_x				 		= "%s 已摧毁一个僵尸巢穴！"
+LANGUAGE.nest_spawned								= "出现了一个新的僵尸巢穴！"
+LANGUAGE.transmitter_comms_disrupted_x					= "%s 的发射器被黑客攻击了！他们的传输被破坏了 5%%。"
 LANGUAGE.x_killed_all_enemies					    = "%s 已杀死全部敌人。"
 LANGUAGE.before_wave_cant_go_outside_spawn			= "在回合开始前你不能离开出生点！"
 LANGUAGE.you_have_died								= "你死了"
 LANGUAGE.you_were_killed_by_x						= "击杀者：%s"
-LANGUAGE.arsenal_upgraded							= "Obtained"
+LANGUAGE.arsenal_upgraded							= "已获得"
 LANGUAGE.final_wave									= "最后一波！"
 LANGUAGE.cant_do_that_in_classic_mode				= "你不能在死亡竞赛模式下这么做。"
 LANGUAGE.cant_use_x_in_classic_mode					= "你不能在死亡竞赛模式下使用 %s！"
@@ -452,8 +452,8 @@ LANGUAGE.wave_x_is_over								= "第 %d 波结束。"
 LANGUAGE.sudden_death_start							= "决胜局！第一支杀死所有敌人的队伍获胜！"
 LANGUAGE.sudden_death								= "决胜局"
 
-LANGUAGE.too_close_to_another_nail					= "You can't put a nail so close to another one."
-LANGUAGE.object_too_damaged_to_be_used				= "This object is too damaged to hammer back in."
+LANGUAGE.too_close_to_another_nail					= "你不能把钉子放得离另一个钉子这么近。"
+LANGUAGE.object_too_damaged_to_be_used				= "此物体损伤的太厉害，不能把钉子锤进去。"
 LANGUAGE.x_turned_on_noclip							= "%s 已开启穿墙模式。"
 LANGUAGE.x_turned_off_noclip						= "%s 已关闭穿墙模式。"
 
@@ -466,8 +466,8 @@ LANGUAGE.intermission								= "中场休息"
 LANGUAGE.breath										= "氧气"
 LANGUAGE.waiting_for_players						= "等待玩家..."
 LANGUAGE.requires_x_people							= "需要 %d 位玩家"
-LANGUAGE.packing_others_object						= "Packing up someone else's object"
-LANGUAGE.packing									= "Packing up"
+LANGUAGE.packing_others_object						= "把别人的东西打包起来"
+LANGUAGE.packing									= "打包"
 LANGUAGE.loading									= "载入中..."
 LANGUAGE.next_round_in_x							= "下一回合将在 %s 秒后开始"
 LANGUAGE.warning									= "警告！"
@@ -479,14 +479,14 @@ LANGUAGE.survivors_victory							= "求生者胜利"
 LANGUAGE.survivors_victory_desc						= "求生者将活着看到新的一天。"
 LANGUAGE.no_victory									= "平局"
 LANGUAGE.no_victory_desc							= "人类将在这场毫无意义的战争中灭亡。"
-LANGUAGE.honorable_mentions							= "Honorable Mentions"
+LANGUAGE.honorable_mentions							= "荣耀时刻"
 
 LANGUAGE.right_click_to_hammer_nail					= "右键单击敲入钉子。"
 LANGUAGE.nails_x									= "钉子：%d"
-LANGUAGE.resupply_box								= "Resupply"
+LANGUAGE.resupply_box								= "重新补给"
 LANGUAGE.integrity_x								= "生命值：%d%%"
-LANGUAGE.empty										= "EMPTY"
-LANGUAGE.manual_control								= "MANUAL OVERRIDE"
+LANGUAGE.empty										= "空"
+LANGUAGE.manual_control								= "手动控制"
 
 LANGUAGE.credits_window_title                       = "《僵尸生存：土匪战争》制作人员"
 LANGUAGE.credit_airrice                             = "Jooho “air rice” Lee"
@@ -496,7 +496,7 @@ LANGUAGE.credit_jetboom_desc                        = "《僵尸生存》制作�
 LANGUAGE.credit_zombiepanicsource                   = "《僵尸恐慌：起源》"
 LANGUAGE.credit_zombiepanicsource_desc              = "近战武器音效"
 LANGUAGE.credit_samuel                              = "Samuel"
-LANGUAGE.credit_samuel_desc                         = "Board Kit model"
+LANGUAGE.credit_samuel_desc                         = "木板工具包模型"
 LANGUAGE.credit_honsal                              = "honsal"
 LANGUAGE.credit_honsal_desc                         = "原版《僵尸生存》韩语翻译"
 LANGUAGE.credit_sunrust_community                   = "Benjy, The Darker One, Raox, Scott"
@@ -514,7 +514,7 @@ LANGUAGE.pointfloater_x_assisted                    = "%s（助攻）"
 LANGUAGE.pointfloater_x_assist                      = "%s（助攻）"
 
 LANGUAGE.pointfloater_x_kills                       = "%s 击杀"
-LANGUAGE.pointfloater_kill_killed                   = "杀死了"
+LANGUAGE.pointfloater_kill_killed                   = "击杀"
 
 LANGUAGE.stat_walkspeed								= "行走速度"
 LANGUAGE.stat_meleedmg 								= "近战伤害"
@@ -534,41 +534,41 @@ LANGUAGE.help_cat_tips								= "提示"
 LANGUAGE.help_cat_barricading						= "设置路障"
 LANGUAGE.help_cat_upgrades							= "升级"
 
-LANGUAGE.help_cont_introduction						= [[<p>An endless war has begun between antagonistic bandits and hardened survivors after the zombie apocalypse.</p><br>
+LANGUAGE.help_cont_introduction						= [[<p>僵尸末日后，敌对的土匪和坚强的求生者之间开始了一场无休止的战争。</p><br>
 <b>谁将活下去？</b> <br>
 <p><h3>在《土匪战争》中有三种游戏模式。</h3></p>
 <hr>
 
-<p>Points are obtained by doing various activities including killing enemies, assisting your teammates, or capturing transmitters. They are also given out after each round depending on the result of the last wave.</p>
+<p>通过各种行为获得点数，包括杀死敌人、协助队友或占领发射器。每回合结束后也会根据最后一波的结果发放点数。</p>
 ]]
 
 LANGUAGE.help_cont_introduction_transmission		=	[[<h2>传输模式</h2> <br>
-<p>In Transmission, you are tasked with controlling transmitters around the map in order to send a signal for reinforcements before the other team.</p>
-<p>Both teams have the same objective: to finish the transmission. If a team finishes the transmission first they win the wave. At the end of the game the team with more waves won wins overall.</p>
-<p>Once a wave begins, several transmitters appear around the map. If you stand next to a transmitter you slowly start to capture it. Having several team members near you in the capture zone increases the speed at which you capture it. Each transmitter is able to transmit 0.5% of the overall transmission progress every second while they are controlled.</p>
-<p>Remember that the transmitters are the most important thing in this mode! You cannot win if you do not control them, even if you kill members of the opposite team. Conversely, you will lose if the enemy controls transmitters for too long, even if you kill them all! There are several tools available to aid you in capturing them or preventing enemy control.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Unless you purchase weapons in your loadout before the wave starts, they will not be given to you immediately. However, every time you respawn you will spawn with all the weapons in your loadout.</p>
-<p>In Transmission you can use all special tools in the game. EMP guns can help you shut down an enemy transmitter, stopping them from transmitting temporarily. A backdoor may be used to immediately take over an enemy transmitter while reducing their progress. Drones can be used to capture transmitters remotely while protecting another side of the map.</p>]]
+<p>在传输模式中，你的任务是占领地图周围的发射器，以便在其他团队之前发送增援信号。</p>
+<p>两个团队都有相同的目标：完成传输。如果一个团队先完成传输，他们就会赢得这一波比赛。在游戏结束时，获胜波数较多的团队为总冠军。</p>
+<p>每一波开始，地图上就会出现几个发射器。如果你站在发射器旁边，你会慢慢开始占领它。在占领区内有越多团队成员在，就可以越快完成占领。每个发射器在被占领后，每秒能够传输总传输进度的 0.5%。</p>
+<p>记住，在这种模式下，发射器是最重要的！如果你不占领它们，你就无法获胜，即使你杀死了敌方玩家。相反，如果敌人占领发射器的时间过长，即使你将敌方玩家全部杀死，你也会失败！有几种工具可以帮助你占领发射器，或阻止敌人占领发射器。</p>
+<p>你可以通过按住 Garry's Mod 的菜单键（默认情况下为“Q”）打开武器配置菜单。在这个菜单中，你可以点击每个武器槽购买其他武器，用它替换槽中的武器。除非你在每一波开始前就购买好武器，否则它们不会立即提供给你。然而，每次你重生时，你都会带着所有你武器配置菜单中的武器重生。</p>
+<p>在传输模式中，你可以使用游戏内的所有特殊工具。EMP 发生器可以帮助你关闭敌人的发射器，暂时阻止他们传输。也有一些后门可以用来立即占领敌人的发射器，同时降低他们的进度。无人机可以让你在守卫地图另一侧的同时远程占领发射器。</p>]]
 
-LANGUAGE.help_cont_introduction_collection			=	[[<h2>收集模式</h2> <br>
-<p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
-<p>Both teams have the same objective: to add enough samples for the vaccine. If a team adds enough samples first they win the wave. At the end of the game the team with more waves won wins overall.</p>
-<p>Samples can be earned by killing enemies. If the killing blow was a headshot this will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
-<p>Every 30 seconds, a zombie nest may spawn randomly on the map. Finding and destroying them gives some points, as well as making them drop 10 samples.</p>
-<p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert the samples at a rate of 2 per second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
-<p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Unless you purchase weapons in your loadout before the wave starts, they will not be given to you immediately. However, every time you respawn you will spawn with all the weapons in your loadout.</p>
-<p>In Collection mode some tools and weapons are especially useful. Biometric scanners, alongside their usual purpose, displays any zombie nest locations as well. Bioweapon ammunition is readily dropped by zombie nests when they break, making these weapons especially useful in this mode.</p>
-<p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>]]
+LANGUAGE.help_cont_introduction_collection			=	[[<h2>采集模式</h2> <br>
+<p>采集模式需要两个团队采集尽可能多的血液样本，以获得潜在的僵尸病毒疫苗。</p>
+<p>两个团队都有相同的目标：为疫苗采集足够的样本。如果一个团队先采集到了足够的样本，他们就会赢得这一波比赛。在游戏结束时，获胜波数较多的团队为总冠军。</p>
+<p>通过杀死敌人可以获得样本。如果是爆头击杀，这将使他们掉落两倍的样本。如果他们拥有任何样本，他们死后都会掉落。</p>
+<p>每隔 30 秒，地图上可能会随机生成一个僵尸巢穴。找到并销毁它们会得到一些点数，并会掉落 10 个样本</p>
+<p>仅仅收集样本是不够的。你需要找到一个研究终端并将样本插入其中。站在研究终端附近会以每秒 2 个的速度自动插入样本，但如果终端半径内有敌人，则无法将样本插入终端。</p>
+<p>你可以通过按住 Garry's Mod 的菜单键（默认情况下为“Q”）打开武器配置菜单。在这个菜单中，你可以点击每个武器槽购买其他武器，用它替换槽中的武器。除非你在每一波开始前就购买好武器，否则它们不会立即提供给你。然而，每次你重生时，你都会带着所有你武器配置菜单中的武器重生。</p>
+<p>在收集模式下，一些工具和武器特别有用。生物扫描仪除了通常的用途外，还可以显示任何僵尸巢穴的位置。当僵尸巢穴被破坏时，它们很容易掉落生化武器的弹药，这使得生化武器在这种模式下特别有用。</p>
+<p>这种模式下，你与敌人近距离对战变得更有价值，因为远程狙击不会让你拿到样本！</p>]]
 
 LANGUAGE.help_cont_introduction_deathmatch			=	[[<h2>死亡竞赛模式</h2> <br>
-<p>In deathmatch mode there are no transmitters and the only objective is to kill the entire enemy team. You cannot use loadouts in this mode and everything is purchased using one simplified shop. Here, purchasing weapons and other tools will give them to you directly.</p>
-<p>With deathmatch the entire game is faster paced, most tools are unavailable, and you have less time to complete the objective (which is to kill all enemies). Fortunately, all purchases are 30% cheaper!</p>
-<p>You will also drop your weapons on death for the enemy to collect at their leisure, although there are specific circumstances:</p>
-<ul><li>Weapons that show up as blue are <strong>"Insured"</strong>: You will not lose them upon death.</li> 
-<li>Weapons will not be insured the first round you purchase them, but purchasing a weapon and surviving the following round holding it will insure them.</li>
-<li>This works similarly when regarding upgrades too: Weapons will not be insured the first round you upgrade to them, but if the previous tier was insured you will get that previous weapon back even if you die and lose the upgraded weapon.</li>
-<li>Consumables such as grenades or flashbangs, and tools such as force fields that you place into the world, will never be insured. You will lose these every time.</li>
-<li>Weapons you do not buy, such as those you get by picking them up from the ground, will never be insured. You cannot upgrade them or refund them for points either!</li>
+<p>在死亡竞赛模式下，没有发射器，唯一的目标是消灭整个敌方团队。你不能在这个模式下使用武器配置菜单，所有东西都要通过一个简化的商店购买。在这个模式下，购买的武器和其他工具会直接给予你。</p>
+<p>在死亡竞赛模式下，整个游戏的节奏更快，大多数工具都不可用，你完成目标（杀死所有敌人）的时间更短。幸运的是，所有物品都便宜 30%！</p>
+<p>你也会在死后掉落武器，可以让敌人在空闲时收集，尽管有以下特定情况：</p>
+<ul><li>显示为蓝色的武器是<strong>“上了保险的”</strong>：你不会在死亡后失去它们。</li> 
+<li>武器在你第一轮购买时不会被保险，但是购买了一件武器并在下一轮中存活下来，并且仍持有它就会被保险。</li>
+<li>这在升级时也同样适用：武器第一轮升级时不会被保险，但如果前一层有保险，即使你死亡并失去升级后的武器，你也会得到前一层的武器。</li>
+<li>手榴弹或闪光弹等消耗品，以及放置在世界上的力场等工具，将永远不会得到保险。你每次死亡都会失去这些。</li>
+<li>你未购买的武器，比如你从地上捡起的武器，永远不会得到保险。你也不能升级或把它们回退来获取点数！</li>
 </ul>]]
 
 
@@ -622,59 +622,59 @@ LANGUAGE.help_cont_keys					=
   </tr>
    <tr>
     <td>旋转</td>
-    <td>Left Alt</td>
-    <td>如果在那种物品的同时按住，可以旋转物品。</td>
+    <td>左 Alt</td>
+    <td>如果在拿着物品的同时按住，可以旋转物品。</td>
   </tr>
 </table>
 <br>
-<ul><li>Placable tools, such as turrets,forcefield emitters, and barricade kit boards are rotated with Reload/Alternate Fire (Default: R and Right Mouse respectively) and finally placed with the "Attack" key (Default: Left Mouse Button).</li> 
-<li>Press and hold Run (Default: Shift) to pack these placeables back up for later.</li>
-<li>Items with a blue light on them have no owner. You may take them for yourself by using them (Default: E).</li>
-<li>Press 'gmod_undo' (Default: Z) to enter phase mode for a while where you can phase through friendly barricaded props. "Suit Zoom" will let you indefinitely hold phase mode, but it is not bound by default and must be manually set to a key in your options menu.</li>
+<ul><li>那些可放置的工具，如炮塔、力场发生器和路障工具组里的木板，通过装填弹药/第二攻击方式键（默认按键分别为 R 键和鼠标右键）旋转，最后使用“攻击”键（默认按键：鼠标左键）放置。</li> 
+<li>按住奔跑键（默认按键：Shift）可将这些可放置的工具打包，以备以后使用。</li>
+<li>亮着蓝光的物品没有主人。你可以通过对他们按下使用键（默认按键：E）自己拿走。</li>
+<li>按撤消键（默认按键：Z）可以进入相位模式一段时间，这样你可以通过队友的路障。“防护衣缩放”键可以让你无限时长地保持相位模式，但默认情况下它没有绑定按键，因此你必须手动在选项菜单中为它绑定一个按键。</li>
 </ul>
 ]]
 
-LANGUAGE.help_cont_tips								= [[<p>Tips:
-<ul><li>You deal more damage to enemies when you are outnumbered - 25% more to be exact.</li>
-<li>More expensive weapons are generally more powerful, but it is crucial to manage your points and weapons.</li>
-<li>Even helping your teammates kill the enemy will net you points. Over half the points from the kill will go to the person who dealt the final blow, but since you do get some points out of helping your teammates, teamwork is very lucrative.</li>
-<li>Even the most expensive weapons will be less useful if you do not know how to make the most of them. Be sure to learn the weapons' special effects and general niche before jumping into a purchase.</li>
-<li>Force field barriers are impervious except for their base. shoot them in the base to destroy them.</li>
-<li>Scoring headshots mean more damage!</li>
-<li>There is a slowing down effect if you get hit in the leg. If an enemy is charging at you try shooting them in the knees.</li>
-<li>You do not collide nor deal damage to your teammates and can recognize them from the icon that appears over their heads.</li>
+LANGUAGE.help_cont_tips								= [[<p>提示：
+<ul><li>当你人数多于敌人时，你会对敌人造成更多的伤害————准确地说是提高了 25%。</li>
+<li>更昂贵的武器通常更强大，但合理分配你的点数和武器至关重要。</li>
+<li>即使帮助你的队友杀死敌人也会让你得到点数，但击杀点数中有超过一半的点数将被给予那个杀死敌人的人，但由于你确实从帮助队友中获得了一些点数，因此团队合作是非常有利可图的。</li>
+<li>如果你不知道如何充分利用它们，即使是最昂贵的武器也不会那么有用。在购买之前，一定要了解武器的特殊能力和一般属性。</li>
+<li>力场本身不受攻击影响，但力场发生器可被破坏。摧毁力场发生器就可以破坏力场。</li>
+<li>瞄准爆头意味着更高的伤害！</li>
+<li>如果你的腿被击中，会产生减速效果。因此如果敌人向你冲锋，请试着朝他们的膝盖开枪。</li>
+<li>你和队友之间没有碰撞体积，也不会对他们造成伤害，你可以通过他们头顶上的图标来辨认友方。</li>
 
-<li>Props that are nailed down will eventually explode when the nail's health reaches zero. There is no way to reuse props if this happens.</li>
+<li>当钉子的生命值为零时，被钉住的物品最终会爆炸。如果发生这种情况，就无法重复使用该物品。</li>
 
 </ul></p>
 ]]
-LANGUAGE.help_cont_barricading						= [[<p><h3>Barricades are an important aspect of gameplay that can change the tide of battle.</h3></p>
-<p>A well-built barricade and tight strategies will lead the team to victory.</p>
+LANGUAGE.help_cont_barricading						= [[<p><h3>路障是游戏的一个重要方面，可以改变战斗的走向。</h3></p>
+<p>建造良好的路障和制定严密的策略将带领团队走向胜利。</p>
 
-<p>Looking at a non-stationary prop and pressing the 'use' key (Default: E) will let you pick it up.<br>
-Pressing down the 'walk' key (Default: Alt) will let you rotate the prop by moving your mouse, and pressing the 'run' key (Default: Shift) will hold the prop down in place.<br>
-While holding the prop down, using the hammer's secondary attack or shooting the nailgun will nail the prop to whatever is behind it at the moment. Two props nailed together can move with each other, so to make a sturdy barricade props need to be nailed to stationary targets such as walls and floors.<br>
-Hitting the prop with a hammer will repair it. Holding down the 'run' key (Default: Shift) will display all nails' current healths, given that they are nailed down by friendly players or yourself.
-If a prop has been nailed down by mistake, or if you simply want to move the prop somewhere else, simply press the 'reload' key (Default:R) holding the hammer to pull out any nails placed by friendly players or yourself.
-The health of the barricade depends on the props' mass and volume. A large, heavy prop has more health than small props.</p>
+<p>看着一个未被固定的物品，按下“使用”键（默认按键：E）可以让你拿起它。<br>
+按下“行走”键（默认按键：左 Alt）可以通过移动鼠标来旋转物品，按下“奔跑”键（默认按键：Shift）可以将物品按在指定位置。<br>
+在按住物品的同时，使用锤子的第二攻击方式或射钉枪将物品钉在其背后的任何东西上。两个被钉在一起的物品可以一起移动，因此，为了建造坚固的路障，需要将物品钉在墙壁和地板等固定的地方。<br>
+用锤子敲击物品可以修复它。按住“奔跑”键（默认按键：Shift）将显示所有钉子的当前生命值，因为它们是由队友或你自己固定的。
+如果一个物品被错误地钉住了，或者如果你只是想把物品移到其他地方，只需按住“装填弹药”键（默认按键：R）就可以拔出友军或你自己放置的任何钉子。
+路障的生命值取决于物品的质量和体积。大而重的物品比小物品拥有更高的生命值。</p>
 <p></p>
 <hr>
-<p>The 'Aegis' Barricade kit is a tool to quickly place a barricade on sturdy static surfaces. By turning the red indicator which tells you where the planks will go, you can place the planks by simply firing the kit. The indicator will turn green if you can place down the plank.<br>
-Each plank placed down will use up one plank. These planks are different from nailed planks as they are treated like other placeables. Alongside turrets and forcefields, clever usage of these placeables alongside nailed barricades is a good way to build a sturdy barrier to control enemy movement.</p>
+<p>“宙斯盾”路障工具包是在坚固的静态表面上快速放置路障的工具。通过转动红色指示灯，来查看木板将放置哪里，你可以通过简单地使用工具包来放置木板。如果你能放置木板，指示灯就会变成绿色。<br>
+每放下一块木板，就会用掉一块木板。这些木板不同于固定的木板，因为它们被视为其他可放置材料。除了炮塔和力场，巧妙地将这些可放置物与固定的路障一起使用，是建造坚固的路障以控制敌人动向的好方法。</p>
 
-<p>Tips:
+<p>提示：
 <ul>
-<li>You can block pathways with heavy props but you won't be able to phase past them if they aren't nailed down. Remember to nail them down to finish the barricade!</li>
-<li>Large, heavy props are good for barricades as the barricade will have more health, as well as allowing for more space for nails. You can put up to three nails into one prop, and each nail will increase its health.</li>
-<li>Carpenter's Hammers are one of the most useful weapons ever. They can be used to build barricades, repair turrets and other placeables, restore turret ammunition, and even get rid of EMP effects on transmitters. An aspiring engineer should most certainly take one.</li>
-<li>Barricades cannot be repaired indefinitely. Past a certain threshold barricades cannot be repaired, and once a barricade prop's health goes down to zero, it will break after a short period, being unable to nail back down. In other words, props are the limiting factor of barricades.</li>
-<li>There are many methods of combating barricades. Weapons that deal AoE damage, such as explosives, can harm multiple props at once. Sledgehammers do more damage to barricades and placeable tools, and a crowbar can remove nails from barricades by hitting them. EMP guns can dissole all barricade nails entirely from a prop by shooting it.</li>
-<li>Leaving holes inside your barricades for shooting at enemies is a good way to keep attacking the enemy while giving yourself some cover. Building a barricade in a strategic location, such as to block off pathways, is a surefire way to gain a strategic edge over your opponents.</li>
+<li>你可以用沉重的道具堵住通道，但如果它们没有被钉住，你就无法在相位模式下通过它们。记住要把它们钉死才能完成路障！</li>
+<li>大而重的物品对于建造路障有好处，因为这样路障会有更多的生命值，并为钉子留出更多的空间。你可以在一个物品上钉上三颗钉子，每颗钉子都会增加它的生命值。</li>
+<li>木匠锤是有史以来最有用的武器之一。它们可以用来建造路障，修理炮塔和其他可放置物品，恢复炮塔弹药，甚至消除 EMP 对发射器的影响。一个有抱负的工程师当然应该拥有一个。</li>
+<li>路障不能无限期地修复。超过某个门槛时，路障无法修复，一旦路障物品的生命值降至零，它将在短时间内损坏，无法重新固定。换句话说，物品是路障的一大限制因素。</li>
+<li>对抗路障的方法有很多。造成群体伤害的武器，比如炸药，可以同时伤害多个物品。大锤对路障和可放置工具的破坏更大，撬棍可以通过敲击路障来清除路障上的钉子。EMP 发生器可以通过射击物品完全分解所有路障上的钉子。</li>
+<li>在你的路障内留下洞口来射击敌人是一个很好的方法，可以在给自己一些掩护的同时继续攻击敌人。在战略位置建立路障，比如封锁道路，是一个绝对可以获得战略优势的方法。</li>
 </ul></p>]]
 LANGUAGE.help_cont_upgrades							= [[
-<p><h3>The purchase system in ZS:Bandit Warfare is a tier-based system, where weaker weapons can be "upgraded" into stronger ones.</h3></p>
-<p>You can trade in previous weapons for a price and obtain a better one. Often these are straight improvements but some weapons have properties unique to them. You may also revert to a previous, weaker weapon and get half the points you would have used to upgrade to the new weapon originally refunded. Keep in mind that you cannot do this with weapons picked up off the ground, such as weapons given to you by allies or obtained from enemies in Deathmatch mode.</p>
-<p>A short summary of each weapon type may be found below.</p>
+<p><h3>《僵尸生存：土匪战争》中的购买系统是一个基于层级的系统，较弱的武器可以“升级”为更强的武器。</h3></p>
+<p>你可以用现有的武器和一些点数，得到更好的武器。这些通常是直接的改进，但有些武器有其独特的性能。你也可以恢复到以前的较弱武器，并获得原来升级到新武器所需的一半点数。请注意，从地面捡起的武器不可使用升级系统，比如队友给你的武器，或者在死亡竞赛模式下从敌人那里获得的武器。</p>
+<p>以下是每种武器类型的简要概述。</p>
 <table>
 	<tbody>
 		<tr>
@@ -687,7 +687,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>手枪（快速）</b></td>
-			<td>Peashooter</td>
+			<td>“豌豆射手”手枪</td>
 			<td>中</td>
 			<td>高</td>
 			<td>单发</td>
@@ -695,7 +695,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>手枪（精准）</b></td>
-			<td>Battleaxe</td>
+			<td>“战斧”手枪</td>
 			<td>高</td>
 			<td>中</td>
 			<td>单发</td>
@@ -703,7 +703,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>手枪（分裂）</b></td>
-			<td>Owens</td>
+			<td>“欧文斯”手枪</td>
 			<td>中</td>
 			<td>中</td>
 			<td>低</td>
@@ -711,7 +711,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>霰弹枪</b></td>
-			<td>Trench</td>
+			<td>“战壕”霰弹枪</td>
 			<td>低</td>
 			<td>低</td>
 			<td>高</td>
@@ -719,7 +719,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>突击步枪</b></td>
-			<td>Crackler</td>
+			<td>“粉碎者”突击步枪</td>
 			<td>中上</td>
 			<td>中</td>
 			<td>单发</td>
@@ -727,7 +727,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>冲锋枪</b></td>
-			<td>Tosser</td>
+			<td>“投掷者”冲锋枪</td>
 			<td>中下</td>
 			<td>非常高</td>
 			<td>单发</td>
@@ -735,7 +735,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>步枪</b></td>
-			<td>Stubber</td>
+			<td>“斯塔伯”步枪</td>
 			<td>非常高</td>
 			<td>低</td>
 			<td>单发</td>
@@ -743,7 +743,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>十字弩</b></td>
-			<td>Slinger</td>
+			<td>“斯林格”弩箭手枪</td>
 			<td>根据情况变化</td>
 			<td>根据情况变化</td>
 			<td>低（通常来说）</td>
@@ -751,7 +751,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>生化武器</b></td>
-			<td>Puker</td>
+			<td>“呕吐”生化霰弹枪</td>
 			<td>根据情况变化</td>
 			<td>根据情况变化</td>
 			<td>高（通常来说）</td>
@@ -759,7 +759,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>脉冲武器</b></td>
-			<td>Z9000</td>
+			<td>Z9000 脉冲手枪</td>
 			<td>根据情况变化</td>
 			<td>根据情况变化</td>
 			<td>根据情况变化</td>
@@ -767,7 +767,7 @@ LANGUAGE.help_cont_upgrades							= [[
 		</tr>
 		<tr>
 			<td><b>医疗武器</b></td>
-			<td>Jabber</td>
+			<td>“叽叽喳喳”喷射枪</td>
 			<td>高</td>
 			<td>根据情况变化</td>
 			<td>单发</td>
@@ -777,39 +777,39 @@ LANGUAGE.help_cont_upgrades							= [[
 </table>
 <hr>
 <p><h3>手枪</h3><p>
-<p>Pistols are divided into three large categories: Fast, Accurate and Split.</p>
-<p>The <b>Fast Pistols</b> offer high fire rates with often low individual damage. Some of these, such as the <i>Terminator</i> or <i>Eraser</i>, have quirks that make them quite strong but unwieldy and unable to consistently deal high damage. Overall, this line of weapons is handy as a backup even later on.</p>
-<p>The <b>Accurate Pistols</b> offers higher power at the cost of somewhat low firing speed. These are highly accurate and can be used for long range engagements, and are a good option as backup alongside shotguns and the like.</p>
-<p><b>Split Pistols</b> fire several bullets per shot. This technically reduces the overall accuracy but provides a wider effective cone of fire.</p> 
-<p>The <b>Split</b> and <b>Accurate</b> routes merge into the <i>Ventilator</i>, which offers both options. It has very high power per shot and good accuracy, and can also fire its entire clip like the previous split shot pistols if necessary.</p>
+<p>手枪分为三大类：快速手枪、精准手枪和分裂手枪。</p>
+<p><b>快速手枪</b>拥有较高的射速，但通常来说只能造成较低的个体伤害。其中一些，比如<i>“终结者”手枪</i>或者<i>“橡皮擦”手枪</i>，有一些怪癖，使它们非常强大，但也更加笨重，无法持续造成高伤害。总的来说，这一系列的武器即使在以后也可以作为备用武器。</p>
+<p><b>精准手枪</b>以较低的射击速度为代价提供更高的威力。这些武器非常精准，可用于远程作战，与霰弹枪等武器一起作为备用武器是一个不错的选择。</p>
+<p><b>分裂手枪</b>每次发射多颗子弹。这在技术上降低了整体精度，但提供了更大的有效射程。</p> 
+<p><b>分裂手枪</b>和<b>精准手枪</b>的特点合并到了<i>“吹风机”手枪</i>，后者提供两种选择。它具有很高的每发威力和很好的准确性，如果必要的话，还可以像以前的分裂手枪一样发射整个弹夹。</p>
 <hr>
 <p><h3>霰弹枪</h3><p>
-<p><b>Shotguns</b> fire a wide spread of many bullets. Each bullet has low damage potential on its own, but shotguns are extremely powerful up close.</p>
-<p>Shotguns are further split into ones that shoot slower, but with much more power per shot (<i>Severance</i>), and automatic shotguns that fire quickly (<i>Albatross</i>).</p>
+<p><b>霰弹枪</b>可以发射大量子弹。每颗子弹本身的伤害很低，但霰弹枪在近距离内非常强大。</p>
+<p>猎枪被进一步分为射速较慢但每次射程功率更大的霰弹枪（<i>“断绝”霰弹枪</i>），和射速更快的自动霰弹枪（<i>“信天翁”霰弹枪</i>）。</p>
 <hr>
 <p><h3>突击步枪</h3><p>
-<p><b>Assault Rifles</b> are automatic weapons with comparatively high accuracy. They are designed to be used while stationary and most of them will lose accuracy while moving. They are characterised by above average fire rate and high per-shot damage. Some of the higher tier assault rifles are equipped with scopes as well.</p>
+<p><b>突击步枪</b><b>是自动武器，精度相对较高。它们被设计为在站立时使用，大多数在移动时会失去准确性。它们的特点是射速高于平均水平，每发子弹造成的伤害也很高。一些更高级的突击步枪也配备了瞄准镜。</p>
 <hr>
 <p><h3>冲锋枪</h3><p>
-<p><b>SMGs</b> are a counterpart to assault rifles with a much faster firing rate on average but much lower accuracy. Unlike assault rifles, many of them are designed to work while on the move and get less accuracy debuffs while moving. While SMGs have lower per shot damage, the fire rate means that the overall potential damage output is higher.</p>
-<p>Some later tier SMGs are more balanced in this regard, losing some advantages while mitigating some downsides (<i>Reaper</i>).</p>
+<p><b>冲锋枪</b>与突击步枪相对应，平均射速快得多，但精确度低得多。与突击步枪不同的是，许多冲锋枪的设计目的是在移动中射击，并且在移动中导致的精度衰减较小。虽然冲锋枪的每发伤害较低，但射速意味着整体潜在伤害输出较高。</p>
+<p>在这方面，一些较后一层的冲锋枪更为平衡，失去了一些优势，同时也减少了一些缺点（<i>“收割者”冲锋枪</i>）。</p>
 <hr>
 <p><h3>步枪</h3><p>
-<p><b>Rifles</b> are built for long range engagements, boasting high damage but very low fire rates. Most of them are equipped with a sniper scope to aid aiming. Deliberate aiming is key to these weapons.</p>
-<p>Some of these rifles are modified to fire more quickly, while dealing less damage on hit. These are more suitable for cases where getting a clear shot may not always be viable.</p>
+<p><b>步枪</b>是为远程作战而设计的，具有高伤害但极低的射速。它们中的大多数都配备了狙击瞄准镜来帮助瞄准。沉下心来瞄准是这些武器的关键。</p>
+<p>其中一些步枪经过改装，可以更快地开火，同时打击时造成的伤害更小。这些方法更适用于可能不一定能获得清晰的射击视野的情况。</p>
 <hr>
 <p><h3>十字弩</h3><p>
-<p><b>Crossbows</b> are primarily projectile weapons. Depending on the crossbow used these may have properties such as bouncing on surfaces, impaling through multiple targets or causing bleeding. Thus, crossbows are often hard to clearly define as a weapon type. Because all of these throw projectiles forward, they can pierce through anti-bullet measures such as forcefields. However measures to mitigate projectiles such as interceptors do exist.</p>
+<p><b>十字弩</b>主要是投射类武器。根据使用的十字弩的不同，这些十字弩可能具有弹跳、刺穿多个目标或导致流血等特性。因此，十字弩通常很难明确定义为武器类型。因为所有这些发射物都是向前投掷的，所以它们可以穿透力场等防弹措施。然而，确实存在诸如拦截器之类的阻挡投射物的措施。</p>
 <hr>
 <p><h3>生化武器</h3><p>
-<p><b>Bioweapons</b> are an offshoot of projectile crossbows with distinct characteristics. The projectiles fired by these weapons are repurposed zombie biotechnology and have the same characteristics as poison of zombies. These will melt enemies into flesh that can be picked up for more ammunition, as well as being suited for high burst damage. This is because zombie poison is rapidly healed after the enemy sustains damage from it.</p>
-<p>Because most bioweapons are built to fire many projectiles in a short timespan, they can overwhelm anti-projectile measures.</p>
+<p><b>生化武器</b>是投射类武器十字弩的一个分支，具有鲜明的特点。这些武器发射的投射物是僵尸生物技术的重新利用，具有与僵尸毒物相同的特性。这将把敌人融化，可以获得更多的弹药，并且能够造成高爆发伤害。这是因为僵尸毒物在敌人受到伤害后会迅速失效。</p>
+<p>由于大多数生物武器的制造目的是在短时间内发射许多投射物，因此它们可以克制投射物防御措施。</p>
 <hr>
 <p><h3>脉冲武器</h3><p>
-<p>Although <b>Pulse Weapons</b> share the same ammunition type, they are all very different from one another. The true potential of pulse weapons is that they utilise the upgrade system to its fullest. Pulse weapons can seem to fit into any of the other categories of weapon. However, they can upgrade to a variety of other pulse weapons, and this allows a much faster change between weapon types than using the other categories.</p>
-<p>There are many entry points into the pulse weapon line, from various different other weapon types. It can be beneficial to pivot using pulse weaponry between weapon types.</p>
+<p>虽然<b>脉冲武器</b>共用相同的弹药类型，但它们彼此都非常不同。脉冲武器的真正潜力在于充分利用升级系统。脉冲武器似乎可以归入任何其他类型的武器。然而，他们可以升级到各种其他脉冲武器，这使得武器类型之间的变化比使用其他类别的武器要快得多。</p>
+<p>脉冲武器系列有许多切入点，来自各种不同的其他武器类型。在多种武器类型之间使用脉冲武器是有益的。</p>
 <hr>
 <p><h3>医疗武器</h3><p>
-<p><b>Medical Weapons</b> are dual-purpose weapons used to both heal allies and hurt enemies. Usually this is done by overdosing the opponent and causing damage over time. Some medical weapons fire projectiles while others simply fire standard bullets. However, they can all be used to heal allies in one way or another.</p>
-<p>Medical Weapons, much like medical kits, can be used to remove harmful status effects from allies, given that the amount healed is sufficiently large.</p>
+<p><b>医疗武器</b>是一种可以治疗队友和伤害敌人的双重用途武器。通常情况下，这种武器可以通过给敌人过量用药，并随着时间的推移造成伤害。一些医疗武器发射特殊的投射物，而另一些只是单纯的发射标准子弹。然而，它们都可以以某种方式治疗队友。</p>
+<p>医疗武器，更多的是像医疗包这样的，可以用来清除队友身上的负面效果，因为治疗量足够大。</p>
 ]]
