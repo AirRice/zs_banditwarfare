@@ -36,8 +36,8 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.086 * 180
-SWEP.ConeMin = 0.045 * 180
+SWEP.ConeMax = 0.086
+SWEP.ConeMin = 0.045
 SWEP.MovingConeOffset = 0.07
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.AimExpandStayDuration = 0.002

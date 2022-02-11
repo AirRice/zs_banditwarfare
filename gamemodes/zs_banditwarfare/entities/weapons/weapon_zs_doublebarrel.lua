@@ -53,8 +53,8 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "buckshot"
 SWEP.Primary.DefaultClip = 10
 SWEP.SelfKnockBackForce = 100
-SWEP.ConeMax = 0.265 * 180
-SWEP.ConeMin = 0.076 * 180
+SWEP.ConeMax = 0.265
+SWEP.ConeMin = 0.076
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
 SWEP.WalkSpeed = SPEED_SLOWER

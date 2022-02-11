@@ -75,8 +75,8 @@ GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
 SWEP.ReloadSpeed = 0.85
 
-SWEP.ConeMax = 0.081 * 180
-SWEP.ConeMin = 0.064 * 180
+SWEP.ConeMax = 0.081
+SWEP.ConeMin = 0.064
 SWEP.MovingConeOffset = 0.05
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.AimExpandStayDuration = 0.002
