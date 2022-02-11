@@ -6,7 +6,8 @@ ENT.Damage = 100
 function ENT:Initialize()
 	self.Touched = {}
 	self.Damaged = {}
-
+	self.HurtOrder = {}
+	self.LastHitNum = 1
 	self:SetModel(Model("models/crossbow_bolt.mdl"))
 	self:SetMoveType(MOVETYPE_FLYGRAVITY);
 	self:SetMoveCollide(MOVECOLLIDE_FLY_CUSTOM);
@@ -27,7 +28,7 @@ end
 local temp_pen_ents = {}
 local temp_me = NULL
 local myteammates = {}
-function ENT:PenUpdate(ent)
+local function ArrowFilter(ent)
 	if ent == temp_me or temp_pen_ents[ent] or table.HasValue(myteammates,ent) then
 		return false
 	end
@@ -45,33 +46,25 @@ function ENT:PhysicsUpdate(phys)
 	for i = 1, 5 do
 		if not self.NoColl then
 			local velnorm = vel:GetNormalized()
-
 			local ahead = (vel:LengthSqr() * FrameTime()) / 1200
 			local fwd = velnorm * ahead
 			local start = self:GetPos() - fwd
-			local side = vel:Angle():Right() * 5
 
-			local proj_trace = {mask = MASK_SHOT, filter = self.PenUpdate}
+			
+			local proj_trace = {mask = MASK_SHOT, filter = ArrowFilter}
 
-			proj_trace.start = start - side
-			proj_trace.endpos = start - side + fwd
+			proj_trace.start = start
+			proj_trace.endpos = start + fwd
 
 			local tr = util.TraceLine(proj_trace)
 
-			proj_trace.start = start + side
-			proj_trace.endpos = start + side + fwd
-
-			local tr2 = util.TraceLine(proj_trace)
-			local trs = {tr, tr2}
-
-			for _, trace in pairs(trs) do
-				if trace.Hit and not self.Touched[trace.Entity] then
-					local ent = trace.Entity
-					if ent ~= owner and (ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and ent:Alive()) then
-						self.Touched[trace.Entity] = trace
-						temp_pen_ents[trace.Entity] = true
-					end
-					break
+			if tr.Hit and not self.Touched[tr.Entity] then
+				local ent = tr.Entity
+				if ent ~= self:GetOwner() and (ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and ent:Alive()) then
+					self.Touched[ent] = tr
+					table.insert(self.HurtOrder,self.LastHitNum,ent)
+					temp_pen_ents[ent] = true
+					self.LastHitNum = self.LastHitNum + 1
 				end
 			end
 		end
@@ -108,23 +101,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 		self:SetAngles(vOldVelocity:Angle())
 		self:SetPos(vHitPos-vDirNormal*8)
 		self:Fire("kill", "", 10)
-	elseif eHitEntity:IsValid() then
-		local physData = self.PhysicsData
-
-		local tr = util.TraceLine({start=vHitPos + vDirNormal * -16, endpos=vHitPos + vDirNormal * 16, filter = self, mask = MASK_SHOT_HULL})
-
-		if (tr.Hit) then
-			local physData = self.PhysicsData
-
-			local tr = util.TraceLine({start=vHitPos + vDirNormal * -16, endpos=vHitPos + vDirNormal * 16, filter = self, mask = MASK_SHOT_HULL})
-
-			if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) then
-				self.Damage = self.Damage * (self.HeadDamageMultiplier or 2)
-				eHitEntity:SetLastHitGroup(HITGROUP_HEAD)
-				eHitEntity:SetWasHitInHead()
-			end
-		end
-
+	elseif eHitEntity:IsValid() then -- Only for props, player damage calculated by Touched
 		eHitEntity:TakeDamage(self.Damage or 25, owner, self)
 		self:Fire("kill", "", 0)
 	end
@@ -133,32 +110,29 @@ end
 function ENT:Think()
 	-- Do this out of the physics collide hook.
 
-	if self.Done and not self.NoColl then
-		if self.ParentEnt then
-			self:SetParent(self.ParentEnt)
-		end
-		self.NoColl = true
-	end
+	
 	if self.PhysicsData then
 		self:Hit(self.PhysicsData.HitPos, self.PhysicsData.HitNormal, self.PhysicsData.HitEntity, self.PhysicsData.OurOldVelocity)
 	end
-	self:NextThink(CurTime())
 
 	local owner = self:GetOwner()
 	if not owner:IsValid() then owner = self end
 
-	for ent, tr in pairs(self.Touched) do
-		if not self.Damaged[ent] then
+	for i, ent in ipairs(self.HurtOrder) do
+		if self.Touched[ent] and not self.Damaged[ent] then
 			local damage = (self.Damage or 100)
-			ent:TakeDamage(math.max(damage-table.Count(self.Damaged)*25,1), owner, self)
+			local processed_dmg = math.max(damage-(i-1)*25,1)
+
 			self.Damaged[ent] = true
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
-
+			ent:DispatchProjectileTraceAttack(processed_dmg, self.Touched[ent], owner, self)
 		end
 	end
+	self:NextThink(CurTime())
 	return true
 end
+
 function ENT:PhysicsCollide(data, phys)
 	if self.Done then return end
 	if not self:HitFence(data, phys) then
