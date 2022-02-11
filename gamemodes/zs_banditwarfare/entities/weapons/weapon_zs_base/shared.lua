@@ -675,6 +675,8 @@ end
 	Client-side hitscan logic end
 ]]
 function SWEP:DoSelfKnockBack(scale)
+	if (!IsFirstTimePredicted()) then return end
+	
 	local owner = self:GetOwner()
 	scale = scale or 1
 	if owner and owner:IsValid() and owner:IsPlayer() then
