@@ -68,8 +68,8 @@ SWEP.ReloadSound = Sound("ambient/machines/combine_terminal_idle4.wav")
 SWEP.Primary.Sound = Sound("Weapon_pulseboom.Single")
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 
-SWEP.ConeMax = 0.09
-SWEP.ConeMin = 0.007
+SWEP.ConeMax = 0.09 * 180
+SWEP.ConeMin = 0.007 * 180
 SWEP.MovingConeOffset = 0.09
 SWEP.AimSubtractUnit = 0.03
 SWEP.AimReleaseUnit = 0.2

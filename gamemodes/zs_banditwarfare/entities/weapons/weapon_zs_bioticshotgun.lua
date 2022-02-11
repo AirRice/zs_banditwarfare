@@ -48,7 +48,7 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "alyxgun"
 SWEP.Primary.DefaultClip = 40
 
-SWEP.ConeMax = 0.06
+SWEP.ConeMax = 0.06  
 SWEP.ConeMin = 0.045
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 

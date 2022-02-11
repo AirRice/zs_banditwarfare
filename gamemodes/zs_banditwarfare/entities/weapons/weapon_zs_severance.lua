@@ -68,8 +68,8 @@ SWEP.Primary.Ammo = "buckshot"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.ReloadSound = Sound("weapons/aug/aug_boltslap.wav")
 SWEP.SelfKnockBackForce = 220
-SWEP.ConeMax = 0.07
-SWEP.ConeMin = 0.05
+SWEP.ConeMax = 0.07 * 180
+SWEP.ConeMin = 0.05 * 180
 SWEP.MovingConeOffset = 0.1
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
