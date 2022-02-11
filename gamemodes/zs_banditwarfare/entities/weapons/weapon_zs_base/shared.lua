@@ -99,11 +99,13 @@ function SWEP:DoRecoil()
 	if SERVER then
 		self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 	else
-		local curAng = self:GetOwner():EyeAngles()
-		curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
-		curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
-		curAng.Roll = 0
-		self:GetOwner():SetEyeAngles(curAng)
+		if (IsFirstTimePredicted()) then
+			local curAng = self:GetOwner():EyeAngles()
+			curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
+			curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
+			curAng.Roll = 0
+			self:GetOwner():SetEyeAngles(curAng)
+		end
 	end
 end
 
@@ -673,9 +675,6 @@ end
 	Client-side hitscan logic end
 ]]
 function SWEP:DoSelfKnockBack(scale)
-	if (!IsFirstTimePredicted()) then
-		return
-	end
 	local owner = self:GetOwner()
 	scale = scale or 1
 	if owner and owner:IsValid() and owner:IsPlayer() then
