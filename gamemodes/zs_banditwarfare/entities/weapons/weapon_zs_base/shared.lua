@@ -95,13 +95,12 @@ function SWEP:DoRecoil()
 	end
 
 	recoil = recoil * mul
-	
-	if SERVER then
-		self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
-	else
-		if (IsFirstTimePredicted()) then
+	if (IsFirstTimePredicted()) then
+		if SERVER then
+			self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 4, 0), math.Rand(-recoil, recoil), 0))
+		else
 			local curAng = self:GetOwner():EyeAngles()
-			curAng.pitch = curAng.pitch - math.Rand(recoil * 2, 0)
+			curAng.pitch = curAng.pitch - math.Rand(recoil * 4, 0)
 			curAng.yaw = curAng.yaw + math.Rand(-recoil, recoil)
 			curAng.Roll = 0
 			self:GetOwner():SetEyeAngles(curAng)
@@ -454,13 +453,12 @@ end
 	}
 ]]
 
-function SWEP:SerialiseTraceResult(attacker, tr, damage, hitwater, bullet_water_tr, hitslime)
+function SWEP:SerialiseTraceResult(attacker, tr, shoottime, hitwater, bullet_water_tr, hitslime)
 	if (!IsFirstTimePredicted()) then return end
 
 	net.Start("bw_fire")
 		net.WriteEntity(attacker)
-		
-		net.WriteFloat(damage)
+		net.WriteFloat(shoottime)
 		
 		-- Sending TraceResult
 		net.WriteEntity(tr.Entity)
@@ -503,13 +501,13 @@ end
 
 if (SERVER) then
 	util.AddNetworkString("bw_fire")
-
+	local maxdistsqr = 192*192
 	-- Server-side bullet callback from client-side hitscan
 	net.Receive("bw_fire", function(len, pl)
 
 		-- Reading networked data
 		local attacker = net.ReadEntity()
-		local damage = net.ReadFloat()
+		local firetime = net.ReadFloat()
 
 		-- Deserializing TraceResult
 		local tr = {
@@ -548,8 +546,17 @@ if (SERVER) then
 		local wep = attacker:GetActiveWeapon()
 		if (!wep or !wep:IsValid() or !wep:IsWeapon()) then return end
 		-- Check distance
-
+		if tr.Entity and tr.Entity:IsValid() and (tr.HitPos:DistToSqr(tr.Entity:GetPos()) >= maxdistsqr) then return end
+		-- Check trace validity
+		if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
 		-- Build the damage table
+		local id = firetime.."|"..wep:GetCreationID().."|"..attacker:SteamID64()
+		print(id)
+		local damage = GAMEMODE.BulletsDmg[id]
+		GAMEMODE.BulletsDmg[id] = nil
+		if not damage then
+			damage = (wep.Primary and wep.Primary.Damage or 0)
+		end
 		local dmginfo = DamageInfo()
 		dmginfo:SetDamageType(DMG_BULLET)
 		dmginfo:SetDamage(damage)
@@ -557,7 +564,6 @@ if (SERVER) then
 		dmginfo:SetAttacker(attacker)
 		dmginfo:SetInflictor(wep)
 		dmginfo:SetDamageForce(damage * 70 * (tr.HitPos-tr.StartPos):GetNormalized())
-		
 		--Start bullet knockback
 		wep:StartBulletKnockback()
 		-- Do the generic bullet callback for processing knockbacks or whatever
@@ -608,13 +614,18 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 	else
 		temp_ignore_team = nil
 	end
-	
 	local dir = owner:GetAimVector()
 	local spread_ang = math.deg(math.asin(cone))
 	base_ang = dir:Angle()
 	for i=0, numbul - 1 do
 		dir = CircularGaussianSpread(dir, Vector(cone, cone, 0))
 		bullet_trace.endpos = owner:GetShootPos() + dir * max_dist
+		local curtime = CurTime()
+		if SERVER then
+			local id = curtime.."|"..self:GetCreationID().."|"..owner:SteamID64()
+			print(id)
+			GAMEMODE.BulletsDmg[id] = dmg
+		end
 		if CLIENT and IsFirstTimePredicted() then
 			local bullet_tr = util.TraceLine(bullet_trace)
 			local hitwater
@@ -632,7 +643,7 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 					end
 				end
 			end
-			self:SerialiseTraceResult(owner, bullet_tr, dmg, hitwater, bullet_water_tr, hitslime)
+			self:SerialiseTraceResult(owner, bullet_tr, curtime, hitwater, bullet_water_tr, hitslime)
 			local waterhitpos
 			local waterhitnorm
 			if bullet_water_tr and bullet_water_tr.HitPos and bullet_water_tr.HitNormal then

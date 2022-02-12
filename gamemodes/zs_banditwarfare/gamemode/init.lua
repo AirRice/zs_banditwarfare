@@ -874,6 +874,7 @@ GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
 GM.CurrentTransmitterTable = {}
+GM.BulletsDmg = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
 GM.SuddenDeath = false
