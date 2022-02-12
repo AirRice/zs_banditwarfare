@@ -93,8 +93,9 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	local shooter = GAMEMODE.ClientSideHitscan and attacker or attacker:GetOwner()
-	local wep = GAMEMODE.ClientSideHitscan and attacker:GetWeapon("weapon_zs_medicrifle") or attacker
+	local usecshitdetect = (GAMEMODE.ClientSideHitscan and !(attacker.GetOwner and attacker:GetOwner():IsPlayer() and attacker:GetOwner():IsBot()))
+	local shooter = usecshitdetect and attacker or attacker:GetOwner()
+	local wep = usecshitdetect and attacker:GetWeapon("weapon_zs_medicrifle") or attacker
 	dmginfo:SetAttacker(shooter)
 	if ent:IsPlayer() and SERVER then
 		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
@@ -141,7 +142,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	if GAMEMODE.ClientSideHitscan then
+	if GAMEMODE.ClientSideHitscan and !owner:IsBot() then
 		self:ShootCSBullets(owner, dmg, numbul, cone, true)
 	else
 		self:StartBulletKnockback()

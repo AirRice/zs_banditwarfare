@@ -672,7 +672,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.LastShotWeapon = self:GetClass()
 	end
 	self:DoSelfKnockBack(1)
-	if GAMEMODE.ClientSideHitscan then
+	if GAMEMODE.ClientSideHitscan and !owner:IsBot() then
 		self:ShootCSBullets(owner, dmg, numbul, cone)
 	else
 		self:StartBulletKnockback()

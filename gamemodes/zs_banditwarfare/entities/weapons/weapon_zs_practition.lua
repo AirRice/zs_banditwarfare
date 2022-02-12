@@ -70,8 +70,9 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.IronSightsPos = Vector(-6.6, 40, 2.1)
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
-	local shooter = GAMEMODE.ClientSideHitscan and attacker or attacker:GetOwner()
-	local wep = GAMEMODE.ClientSideHitscan and attacker:GetWeapon("weapon_zs_practition") or attacker
+	local usecshitdetect = (GAMEMODE.ClientSideHitscan and !(attacker.GetOwner and attacker:GetOwner():IsPlayer() and attacker:GetOwner():IsBot()))
+	local shooter = usecshitdetect and attacker or attacker:GetOwner()
+	local wep = usecshitdetect and attacker:GetWeapon("weapon_zs_practition") or attacker
 	if (!wep:IsValid()) then
 		return 
 	end
@@ -135,7 +136,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	if GAMEMODE.ClientSideHitscan then
+	if (GAMEMODE.ClientSideHitscan and !owner:IsBot()) then
 		self:ShootCSBullets(owner, dmg, numbul, cone, true)
 	else
 		self:StartBulletKnockback()
