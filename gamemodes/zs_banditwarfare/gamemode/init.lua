@@ -2423,6 +2423,15 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
 		samplestodrop = samplestodrop + pl:GetSamples()	
 	end
+	
+	-- Highers sample drop count when there are few playes online
+
+	local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold
+
+	local playersCount = math.min(lowPlayerCountThreshold, table.Count(player.GetAll()))
+
+	samplestodrop = samplestodrop + (GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer * (1 - playersCount / lowPlayerCountThreshold))
+
 	if samplestodrop >0 and self:IsSampleCollectMode()then
 		pl:DropSample(samplestodrop)
 	end

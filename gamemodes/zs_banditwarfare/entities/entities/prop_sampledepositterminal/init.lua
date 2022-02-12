@@ -32,7 +32,7 @@ function ENT:CalcSurroundingTeam()
 				bnum = bnum + 1
 			end
 
-			self.InsertingPlayers[pl] = (self.InsertingPlayers[pl] or 0) + 1
+			self.InsertingPlayers[pl] = (self.InsertingPlayers[pl] or -1) + 1
 
 			for k, v in pairs(playersToRemoveFromInsertingPlayers) do
 				if v == pl then

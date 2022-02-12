@@ -117,7 +117,7 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 			self:AddSamples(0,togive)
 		end
 	end
-	player:AddPoints(1)
+	player:AddPoints(togive)
 	net.Start("zs_commission")
 		net.WriteEntity(ent)
 		net.WriteEntity(player)

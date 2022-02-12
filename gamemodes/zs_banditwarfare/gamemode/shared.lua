@@ -192,7 +192,7 @@ function GM:OnPlayerHitGround(pl, inwater, hitfloater, speed)
 	if SERVER then
 		pl:PreventSkyCade()
 	end
-	if speed > 64 then
+	if speed > 640 then
 		pl.LandSlow = true
 	end
 	local mul = 1
