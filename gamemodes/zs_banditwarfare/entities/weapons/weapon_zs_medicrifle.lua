@@ -52,6 +52,7 @@ SWEP.CSMuzzleFlashes = false
 
 SWEP.ReloadSound = Sound("Weapon_Pistol.Reload")
 
+SWEP.Primary.Damage = 10
 SWEP.Primary.Delay = 0.5
 SWEP.Primary.ClipSize = 100
 SWEP.Primary.DefaultClip = 200
@@ -92,10 +93,9 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	local shooter = attacker
-	local wep = attacker:GetWeapon("weapon_zs_medicrifle")
+	local shooter = GAMEMODE.ClientSideHitscan and attacker or attacker:GetOwner()
+	local wep = GAMEMODE.ClientSideHitscan and attacker:GetWeapon("weapon_zs_medicrifle") or attacker
 	dmginfo:SetAttacker(shooter)
-	print(shooter, attacker, wep)
 	if ent:IsPlayer() and SERVER then
 		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
 			if ent:Team() ~= shooter:Team() then
@@ -132,7 +132,6 @@ end
 function SWEP:ShootBullets(dmg, numbul, cone)	
 	self:SetConeAndFire()
 	self:DoRecoil()
-
 	local owner = self.Owner
 	--owner:MuzzleFlash()
 	self:SendWeaponAnimation()
@@ -142,11 +141,16 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	
-	-- self:StartBulletKnockback()
-	self:ShootCSBullets(owner, dmg, numbul, cone, true)
-	-- self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	-- self:EndBulletKnockback()
+	if GAMEMODE.ClientSideHitscan then
+		self:ShootCSBullets(owner, dmg, numbul, cone, true)
+	else
+		self:StartBulletKnockback()
+		if IsFirstTimePredicted() then
+			self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
+		end
+		self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+		self:EndBulletKnockback()
+	end
 end
 
 function SWEP:Deploy()

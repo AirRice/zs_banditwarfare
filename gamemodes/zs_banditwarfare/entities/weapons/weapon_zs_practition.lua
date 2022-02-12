@@ -70,12 +70,11 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.IronSightsPos = Vector(-6.6, 40, 2.1)
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
-	local wep = attacker:GetWeapon("weapon_zs_practition")
-
+	local shooter = GAMEMODE.ClientSideHitscan and attacker or attacker:GetOwner()
+	local wep = GAMEMODE.ClientSideHitscan and attacker:GetWeapon("weapon_zs_practition") or attacker
 	if (!wep:IsValid()) then
 		return 
 	end
-
 	local ent = tr.Entity
 	if tr.HitSky then return end
 	local effectdata = EffectData()
@@ -88,23 +87,24 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	dmginfo:SetAttacker(attacker)
+
+	dmginfo:SetAttacker(shooter)
 	if ent:IsPlayer() and SERVER then
-		if IsValid(wep) and wep:IsValid() and attacker:IsPlayer() then
-			if ent:Team() ~= attacker:Team() then
+		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
+			if ent:Team() ~= shooter:Team() then
 				local tox = ent:GetStatus("tox")
 				if (tox and tox:IsValid()) then
 					tox:AddTime(wep.ToxDuration)
 					tox:SetOwner(ent)
 					tox.Damage = wep.ToxicDamage
-					tox.Damager = attacker
+					tox.Damager = shooter
 					tox.TimeInterval = wep.ToxicTick
 				else
 					tox = ent:GiveStatus("tox")
 					tox:SetTime(wep.ToxDuration)
 					tox:SetOwner(ent)
 					tox.Damage = wep.ToxicDamage
-					tox.Damager = attacker
+					tox.Damager = shooter
 					tox.TimeInterval = wep.ToxicTick
 				end
 			else
@@ -115,11 +115,11 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				if tr.HitGroup == HITGROUP_HEAD then
 					toheal = toheal * 3
 				end
-				ent:HealHealth(toheal,attacker,wep)
+				ent:HealHealth(toheal,shooter,wep)
 			end
 		end
 	end	
-	GenericBulletCallback(attacker, tr, dmginfo)
+	GenericBulletCallback(shooter, tr, dmginfo)
 end
 
 function SWEP:ShootBullets(dmg, numbul, cone)	
@@ -135,10 +135,14 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	
-	-- self:StartBulletKnockback()
-	-- self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
-	self:ShootCSBullets(owner, dmg, numbul, cone, true)
-	-- self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	-- self:EndBulletKnockback()
+	if GAMEMODE.ClientSideHitscan then
+		self:ShootCSBullets(owner, dmg, numbul, cone, true)
+	else
+		self:StartBulletKnockback()
+		if IsFirstTimePredicted() then
+			self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
+		end
+		self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+		self:EndBulletKnockback()
+	end
 end

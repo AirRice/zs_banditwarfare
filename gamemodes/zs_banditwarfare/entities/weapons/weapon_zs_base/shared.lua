@@ -455,7 +455,7 @@ end
 
 function SWEP:SerialiseTraceResult(attacker, tr, shoottime, hitwater, bullet_water_tr, hitslime)
 	if (!IsFirstTimePredicted()) then return end
-
+	if not GAMEMODE.ClientSideHitscan then return end
 	net.Start("bw_fire")
 		net.WriteEntity(attacker)
 		net.WriteFloat(shoottime)
@@ -500,11 +500,10 @@ function SWEP:SerialiseTraceResult(attacker, tr, shoottime, hitwater, bullet_wat
 end
 
 if (SERVER) then
-	util.AddNetworkString("bw_fire")
 	local maxdistsqr = 192*192
 	-- Server-side bullet callback from client-side hitscan
 	net.Receive("bw_fire", function(len, pl)
-
+		
 		-- Reading networked data
 		local attacker = net.ReadEntity()
 		local firetime = net.ReadFloat()
@@ -540,6 +539,7 @@ if (SERVER) then
 		local waterpos = net.ReadVector()
 		local waternormal = net.ReadVector()
 		local hitslime = net.ReadFloat()
+		if not GAMEMODE.ClientSideHitscan then return end
 		if (!IsFirstTimePredicted()) then return end
 		if (!attacker or !attacker:IsValid() or !attacker:IsPlayer()) then return end
 		if (attacker != pl) then return end
@@ -551,7 +551,6 @@ if (SERVER) then
 		if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
 		-- Build the damage table
 		local id = firetime.."|"..wep:GetCreationID().."|"..attacker:SteamID64()
-		print(id)
 		local damage = GAMEMODE.BulletsDmg[id]
 		GAMEMODE.BulletsDmg[id] = nil
 		if not damage then
@@ -601,7 +600,6 @@ end
 local bullet_trace = {mask = MASK_SHOT}
 local temp_angle = Angle(0, 0, 0)
 function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
-	self:SendWeaponAnimation()
 	owner = owner or self:GetOwner()
 	local max_dist = 56756
 	temp_shooter = self
@@ -623,7 +621,6 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 		local curtime = CurTime()
 		if SERVER then
 			local id = curtime.."|"..self:GetCreationID().."|"..owner:SteamID64()
-			print(id)
 			GAMEMODE.BulletsDmg[id] = dmg
 		end
 		if CLIENT and IsFirstTimePredicted() then
@@ -666,6 +663,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 
 	-- Do animations
 	if IsFirstTimePredicted() then
+		self:SendWeaponAnimation()
 		owner:DoAttackEvent()
 	end
 	-- Data collection
@@ -673,18 +671,19 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	self:ShootCSBullets(owner, dmg, numbul, cone)
 	self:DoSelfKnockBack(1)
-	--self:StartBulletKnockback()
-	-- if IsFirstTimePredicted() then
-	-- 	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
-	-- end
-	-- self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05) // Server-side
-	-- self:EndBulletKnockback() // Server-side
+	if GAMEMODE.ClientSideHitscan then
+		self:ShootCSBullets(owner, dmg, numbul, cone)
+	else
+		self:StartBulletKnockback()
+		if IsFirstTimePredicted() then
+			owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
+		end
+		self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+		self:EndBulletKnockback()
+	end
 end
---[[
-	Client-side hitscan logic end
-]]
+
 function SWEP:DoSelfKnockBack(scale)
 	local owner = self:GetOwner()
 	scale = scale or 1
