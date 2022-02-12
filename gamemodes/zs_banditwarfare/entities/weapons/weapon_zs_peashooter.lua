@@ -40,19 +40,52 @@ SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 
+function SWEP:SetupDataTables()
+	self:NetworkVar( "Int" , 10 , "RemainingShots" )
+	self:NetworkVar( "Float" , 9 , "NextPshtrFire" )
+	if self.BaseClass.SetupDataTables then
+		self.BaseClass.SetupDataTables(self)
+	end
+end
+
+function SWEP:Initialize()
+	self:SetRemainingShots(0)
+	self:SetNextPshtrFire(0)
+	self.BaseClass.Initialize(self)
+end
+
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	local shots = math.min(self:Clip1(),self.Primary.NumShots)
+	self:SetRemainingShots(shots)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay*(shots + 1.5))
 	self:SetNextReload(CurTime() + self.Primary.Delay*(shots + 1.5))
-	for i = 0, shots-1 do
-		timer.Simple(self.Primary.Delay * i, function()
-			if (self:IsValid() and self:GetOwner():Alive()) then
-				self:EmitFireSound()
-				self:TakeAmmo()
-				self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
-			end
-		end)
-	end
+
+	-- for i = 0, shots-1 do
+	-- 	timer.Simple(self.Primary.Delay * i, function()
+	-- 		if (self:IsValid() and self:GetOwner():Alive()) then
+	-- 			self:EmitFireSound()
+	-- 			self:TakeAmmo()
+	-- 			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+	-- 		end
+	-- 	end)
+	-- end
 	self.IdleAnimation = CurTime() + self:SequenceDuration()		
+end
+
+function SWEP:Think()	
+	local curtime = CurTime()
+	if (self:GetNextPrimaryFire() > curtime and self:GetRemainingShots() > 0) then
+		if (self:GetNextPshtrFire() < curtime) then
+			self:EmitFireSound()
+			self:TakeAmmo()
+			self:ShootBullets(self.Primary.Damage, 1, self:GetCone())
+			self:SetRemainingShots(self:GetRemainingShots()-1)
+			self:SetNextPshtrFire(curtime + self.Primary.Delay)
+		end
+	end
+	
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
+	end
 end

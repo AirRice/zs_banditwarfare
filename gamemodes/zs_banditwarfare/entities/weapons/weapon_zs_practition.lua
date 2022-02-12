@@ -70,6 +70,12 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.IronSightsPos = Vector(-6.6, 40, 2.1)
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
+	local usecshitdetect = (GAMEMODE.ClientSideHitscan and !(attacker.GetOwner and attacker:GetOwner():IsPlayer() and attacker:GetOwner():IsBot()))
+	local shooter = usecshitdetect and attacker or attacker:GetOwner()
+	local wep = usecshitdetect and attacker:GetWeapon("weapon_zs_practition") or attacker
+	if (!wep:IsValid()) then
+		return 
+	end
 	local ent = tr.Entity
 	if tr.HitSky then return end
 	local effectdata = EffectData()
@@ -82,8 +88,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 			effectdata:SetEntity(NULL)
 		end
 	util.Effect("hit_healdart", effectdata)
-	local shooter = attacker:GetOwner()
-	local wep = attacker
+
 	dmginfo:SetAttacker(shooter)
 	if ent:IsPlayer() and SERVER then
 		if IsValid(wep) and wep:IsValid() and shooter:IsPlayer() then
@@ -107,7 +112,7 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 				dmginfo:SetDamage(0)
 				ent:GiveStatus("healdartboost").DieTime = CurTime() + 5
 				ent:EmitSound("items/medshot4.wav")
-				local toheal = attacker.Heal
+				local toheal = wep.Heal
 				if tr.HitGroup == HITGROUP_HEAD then
 					toheal = toheal * 3
 				end
@@ -131,9 +136,14 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 		owner.ShotsFired = owner.ShotsFired + numbul
 		owner.LastShotWeapon = self:GetClass()
 	end
-	
-	self:StartBulletKnockback()
-	self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
-	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	self:EndBulletKnockback()
+	if (GAMEMODE.ClientSideHitscan and !owner:IsBot()) then
+		self:ShootCSBullets(owner, dmg, numbul, cone, true)
+	else
+		self:StartBulletKnockback()
+		if IsFirstTimePredicted() then
+			self:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = self.BulletCallback})
+		end
+		self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
+		self:EndBulletKnockback()
+	end
 end

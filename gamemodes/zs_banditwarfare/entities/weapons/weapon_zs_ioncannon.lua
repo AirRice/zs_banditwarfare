@@ -91,25 +91,16 @@ function SWEP:Initialize()
 	end
 end
 
-function SWEP:SetConeAndFire()
-	self.AimStartTime = CurTime()
-	hook.Add("Think", self, function(s)
-		s:SetConeAdder(math.Clamp(s:GetConeAdder()- s.AimSubtractUnit * FrameTime(), 0, s.ConeMax-s.ConeMin))
-
-		 if (s.AimStartTime + s.Primary.Delay <= CurTime()) then
-			s.CollapseStartTime = CurTime()
-
-			hook.Add("Think", s, function(_)
-				if (_.CollapseStartTime + _.AimExpandStayDuration > CurTime()) then
-					return
-				end      
-				_:SetConeAdder(math.Clamp(_:GetConeAdder() +_.AimReleaseUnit * FrameTime(), 0, _.ConeMax-_.ConeMin))
-				if (_:GetConeAdder() >= _.ConeMax-_.ConeMin) then
-					hook.Remove("Think", _)
-				end
-			end)
-		end
-	end)
+function SWEP:AimConeExpandThink()
+	local curTime = CurTime()
+	local collapseStartTime = self.AimStartTime + self.Primary.Delay
+	if collapseStartTime > curTime then
+		self:SetConeAdder(math.Clamp(self:GetConeAdder()-self.AimSubtractUnit * FrameTime(), 0, self.ConeMax-self.ConeMin))
+	else
+		if (collapseStartTime + self.AimExpandStayDuration <= curTime) and self:GetConeAdder() > 0 then
+			self:SetConeAdder(math.Clamp(self:GetConeAdder() + self.AimReleaseUnit * FrameTime(), 0, self.ConeMax-self.ConeMin))
+		end      
+	end
 end
 
 function SWEP:Reload()

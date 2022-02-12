@@ -1,7 +1,10 @@
 ENT.Type = "anim"
+ENT.Base = "projectile__base"
+
 function ENT:ShouldNotCollide(ent)
-	return ent:IsPlayer() and self:GetOwner():IsPlayer() and ent:Team() == self:GetOwner():Team()
+	return ent:IsPlayer()
 end
+
 AccessorFuncDT(ENT, "HitTime", "Float", 0)
 
 ENT.Bounces = 0
