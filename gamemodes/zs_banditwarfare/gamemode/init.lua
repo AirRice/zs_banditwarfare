@@ -78,12 +78,6 @@ function BroadcastLua(code)
 	end
 end
 
-player.GetByUniqueID = player.GetByUniqueID or function(uid)
-	for _, pl in ipairs(player.GetAll()) do
-		if pl:UniqueID() == uid then return pl end
-	end
-end
-
 function GM:WorldHint(hint, pos, ent, lifetime, filter)
 	net.Start("zs_worldhint")
 		net.WriteString(hint)
@@ -289,6 +283,8 @@ function GM:AddNetworkStrings()
 	util.AddNetworkString("zs_pls_kill_pl")
 	util.AddNetworkString("zs_pl_kill_self")
 	util.AddNetworkString("zs_death")
+	
+	util.AddNetworkString("bw_fire")
 end
 
 function GM:CenterNotifyAll(...)
@@ -1212,6 +1208,16 @@ function GM:PlayerInitialSpawnRound(pl)
 		return false;
 	end
 	
+	pl:SetPoints(0)
+	pl:SetFullPoints(0)
+	if self.PreviousPoints[pl:SteamID64()] then
+		pl:AddPoints(self.PreviousPoints[pl:SteamID64()])
+	elseif self:GetWave() > 0 then
+		pl:AddPoints(self:GetTeamPoints(pl:Team())/math.max(team.NumPlayers(pl:Team())-1,1))
+	else
+		pl:AddPoints(20)
+	end
+	
 	if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
 		if self:GetTeamKillAdvantage(TEAM_HUMAN) > self:GetTeamKillAdvantage(TEAM_BANDIT) then
 			pl:ChangeTeam(TEAM_BANDIT)
@@ -1226,8 +1232,8 @@ function GM:PlayerInitialSpawnRound(pl)
 				pl:ChangeTeam(math.random(3,4))
 			end
 		end
-		if self.PreviousTeam[pl:UniqueID()] then
-			pl:ChangeTeam(self.PreviousTeam[pl:UniqueID()])
+		if self.PreviousTeam[pl:SteamID64()] then
+			pl:ChangeTeam(self.PreviousTeam[pl:SteamID64()])
 		end
 	elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
 		pl:ChangeTeam(TEAM_HUMAN)
@@ -1237,15 +1243,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	if self:GetWave() == 0 then
 		self.CurrentMapLoadedPlayers = self.CurrentMapLoadedPlayers + 1;
 	end
-	pl:SetPoints(0)
-	pl:SetFullPoints(0)
-	if self.PreviousPoints[pl:UniqueID()] then
-		pl:AddPoints(self.PreviousPoints[pl:UniqueID()])
-	elseif self:GetWave() > 0 then
-		pl:AddPoints(self:GetTeamPoints(pl:Team())/(team.NumPlayers(pl:Team())-1))
-	else
-		pl:AddPoints(20)
-	end
+
 	pl.ClassicModeInsuredWeps = {}
 	pl.ClassicModeNextInsureWeps = {}
 	pl.ClassicModeRemoveInsureWeps = {}
@@ -1267,7 +1265,7 @@ end
 function GM:PlayerDisconnected(pl)
 	pl.Disconnecting = true
 
-	local uid = pl:UniqueID()
+	local uid = pl:SteamID64()
 
 	self.PreviouslyDied[uid] = CurTime()
 	self.PreviousTeam[uid] = pl:Team()
@@ -1840,7 +1838,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
 						attacker:AddLifeEnemyDamage(damage)
 						ent.DamagedBy[attacker] = (ent.DamagedBy[attacker] or 0) + damage
-						attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * ent:GetBounty()+ math.floor(ent:GetFullPoints()/100),0) 
+						attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * (ent:GetBounty()+ math.Clamp(math.floor(ent:GetFullPoints()/100),0,50)),0)
 						local pos = ent:GetPos()
 						pos.z = pos.z + 32
 						attacker.m_LastDamageDealtPosition = pos
@@ -2042,7 +2040,7 @@ function GM:DamageFloater(attacker, victim, dmginfo)
 end
 
 function GM:PlayerChangedTeam(pl, oldteam, newteam)
-	local uid = pl:UniqueID()
+	local uid = pl:SteamID64()
 	if newteam == TEAM_HUMAN or newteam == TEAM_BANDIT then
 		pl.DamagedBy = {}
 		self.PreviouslyDied[uid] = nil
@@ -2217,7 +2215,7 @@ end
 
 function GM:PlayerDeath(pl, inflictor, attacker)
 	pl.NextSpawnTime = nil
-	if self.PreviouslyDied[pl:UniqueID()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
+	if self.PreviouslyDied[pl:SteamID64()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
 		local mult = 1
 		if self:IsSampleCollectMode() then
 			mult = 0.7
@@ -2315,26 +2313,16 @@ function GM:PlayerKilledEnemy(pl, attacker, inflictor, dmginfo, headshot, suicid
 	if headshot then
 		attacker.HeadshotKilled = attacker.HeadshotKilled + 1
 	end
-	if pl.BountyModifier >0 then
-		if pl.BountyModifier > 10 then 
-			pl.BountyModifier = pl.BountyModifier -4
-		elseif pl.BountyModifier > 0 then
-			pl.BountyModifier = 0
-		elseif pl.BountyModifier > -10 then
-			if pl.BountyModifier < -5 then
-				pl.BountyModifier = pl.BountyModifier-1
-			end
-			pl.BountyModifier = pl.BountyModifier-1
-		end
+	local bountymult = 	self:IsClassicMode() and 2 or 1
+	if pl.BountyModifier > 0 then
+		pl.BountyModifier = math.max(0,pl.BountyModifier - 2 * bountymult)
+	else
+		pl.BountyModifier = math.max(self.PointsPerKill* bountymult*-1,pl.BountyModifier - math.abs(math.ceil(pl.BountyModifier*bountymult/self.PointsPerKill)))
 	end
 	if attacker.BountyModifier < 0 then
-		if attacker.BountyModifier < -6 then
-			attacker.BountyModifier = attacker.BountyModifier+2
-		else
-			attacker.BountyModifier = 0
-		end
+		attacker.BountyModifier = ((attacker.BountyModifier < -3*bountymult) and attacker.BountyModifier + 2 or 0)
 	else
-		attacker.BountyModifier = attacker.BountyModifier+2
+		attacker.BountyModifier = attacker.BountyModifier + 2
 	end
 	if mostdamager then
 		attacker:PointCashOut(pl, FM_LOCALKILLOTHERASSIST)
@@ -2440,7 +2428,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	end
 	pl:DropAll()
 	pl:AddDeaths(1)
-	self.PreviouslyDied[pl:UniqueID()] = CurTime()
+	self.PreviouslyDied[pl:SteamID64()] = CurTime()
 	if self:GetWave() == 0 then
 		pl.DiedDuringWave0 = true
 	end
@@ -2576,7 +2564,7 @@ function GM:PlayerSpawn(pl)
 		end
 	end
 	pl:RemoveStatus("overridemodel", false, true)
-	self.PreviouslyDied[pl:UniqueID()] = nil 
+	self.PreviouslyDied[pl:SteamID64()] = nil 
 			
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		pl.HighestLifeEnemyKills = 0

@@ -65,7 +65,7 @@ concommand.Add("mapeditor_pickup", function(sender, command, arguments)
 	if tr.Entity and tr.Entity:IsValid() then
 		for i, ent in ipairs(GAMEMODE.MapEditorEntities) do
 			if ent == tr.Entity then
-				timer.CreateEx(sender:UniqueID().."mapeditorpickup", 0.25, 0, ME_Pickup, sender, ent, sender:UniqueID())
+				timer.CreateEx(sender:SteamID64().."mapeditorpickup", 0.25, 0, ME_Pickup, sender, ent, sender:SteamID64())
 			end
 		end
 	end
@@ -176,7 +176,7 @@ end)
 concommand.Add("mapeditor_drop", function(sender, command, arguments)
 	if not sender:IsSuperAdmin() then return end
 
-	timer.Destroy(sender:UniqueID().."mapeditorpickup")
+	timer.Destroy(sender:SteamID64().."mapeditorpickup")
 	GAMEMODE:SaveMapEditorFile()
 end)
 

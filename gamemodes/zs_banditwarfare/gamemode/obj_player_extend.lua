@@ -471,7 +471,7 @@ function meta:TemporaryNoCollide(force)
 		if e and e:IsValid() and e:IsPlayer() and e ~= self and GAMEMODE:ShouldCollide(self, e) then
 			self:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 
-			local timername = "TemporaryNoCollide"..self:UniqueID()
+			local timername = "TemporaryNoCollide"..self:SteamID64()
 			timer.CreateEx(timername, 0, 0, nocollidetimer, self, timername)
 
 			return

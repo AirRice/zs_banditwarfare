@@ -660,10 +660,7 @@ function meta:GetAimAccuracy()
 end
 
 function meta:GetBounty()
-	local mult = 1
-	if GAMEMODE:IsClassicMode() then
-		mult = 2
-	end
+	local mult = GAMEMODE:IsClassicMode() and 2 or 1
 	if self.BountyModifier ~= nil then
 		return math.max(GAMEMODE.PointsPerKill * mult + self.BountyModifier,1)
 	else
