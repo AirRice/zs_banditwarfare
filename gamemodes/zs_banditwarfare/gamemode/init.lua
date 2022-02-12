@@ -2833,7 +2833,7 @@ function GM:WaveStateChanged(newstate)
 		util.RemoveAll("prop_obj_sample")
 		util.RemoveAll("prop_sampledepositterminal")
 		local deployables = ents.FindByClass("prop_drone")
-		table.Merge(deployables, ents.FindByClass("prop_manhack"))
+		table.Add(deployables, ents.FindByClass("prop_manhack"))
 		for _, ent in pairs(deployables) do
 			if ent.GetOwner and ent:GetOwner():IsPlayer() and (ent:GetOwner():Team() == TEAM_BANDIT or ent:GetOwner():Team() == TEAM_HUMAN) then
 				ent:OnPackedUp(ent:GetOwner())

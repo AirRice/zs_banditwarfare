@@ -3,8 +3,8 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
-ENT.InsertingPlayers = {}
-
+ENT.PlayerAdditionalInsertCount = {}
+ENT.NearbyPlayers = {}
 function ENT:Initialize()
 	self:SetModel("models/props_combine/breenconsole.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
@@ -22,31 +22,16 @@ function ENT:CalcSurroundingTeam()
 	local bnum = 0
 	local hnum = 0
 
-	local playersToRemoveFromInsertingPlayers = player.GetAll()
-	
-	for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
-		if pl:IsPlayer() then
-			if pl:Team() == TEAM_HUMAN and pl:Alive() then
-				hnum = hnum + 1
-			elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
-				bnum = bnum + 1
-			end
-
-			self.InsertingPlayers[pl] = (self.InsertingPlayers[pl] or -1) + 1
-
-			for k, v in pairs(playersToRemoveFromInsertingPlayers) do
-				if v == pl then
-					table.remove(playersToRemoveFromInsertingPlayers, k)
-					break
-				end
-			end
-		end
-	end
-
-	for i, pl in pairs(playersToRemoveFromInsertingPlayers) do
-		self.InsertingPlayers[pl] = (self.InsertingPlayers[pl] or 1) - 1
-		if self.InsertingPlayers[pl] <= 0 then
-			self.InsertingPlayers[pl] = nil
+	self.NearbyPlayers = {}
+ 	for _, pl in pairs(util.FindInSphereBiasZ(self:GetPos(), 200 ,0.25)) do
+ 		if pl:IsPlayer() and pl:Alive() then
+			local pl_uid = pl:SteamID64()
+ 			if pl:Team() == TEAM_HUMAN then
+ 				hnum = hnum + 1
+ 			elseif pl:Team() == TEAM_BANDIT then
+ 				bnum = bnum + 1
+ 			end
+			self.NearbyPlayers[pl_uid] = true
 		end
 	end
 
@@ -59,26 +44,36 @@ function ENT:CalcSurroundingTeam()
 	end
 	return 0
 end
-
-
+ 
 function ENT:Think()
-	if self:GetLastCalcedNearby() <= CurTime() - 1 and not GAMEMODE.SamplesEnd  then 
+	if self:GetLastCalcedNearby() <= CurTime() - 1 and not GAMEMODE.SamplesEnd then 
 		local calcedTeam = self:CalcSurroundingTeam()
 		self:SetLastCaptureTeam(calcedTeam)
-		if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
-			for _, pl in pairs(ents.FindInSphere(self:GetPos(), 200 )) do
-				if pl:IsPlayer() and pl:Team() == calcedTeam and pl:Alive() then
+		for k, pl in pairs(player.GetAllActive()) do
+			local pl_uid = pl:SteamID64()
+			if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() then
+				if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
 					local plysamples = pl:GetSamples()
-					local togive = math.min(2 + (self.InsertingPlayers[pl] and self.InsertingPlayers[pl] or 0), plysamples)
-					if togive > 0 then
+					self.PlayerAdditionalInsertCount[pl_uid] = (self.PlayerAdditionalInsertCount[pl_uid] or 0)
+					local togive = math.min(2 + self.PlayerAdditionalInsertCount[pl_uid], plysamples)
+					if plysamples > 0 and pl:Team() == calcedTeam then
 						pl:TakeSamples(togive)
 						pl:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
 						pl:EmitSound("weapons/physcannon/physcannon_drop.wav")
 						gamemode.Call("PlayerAddedSamples", pl, calcedTeam, togive, self)
+						self.PlayerAdditionalInsertCount[pl_uid] = math.min(self.PlayerAdditionalInsertCount[pl_uid] + 1,8)
+					else
+						self.PlayerAdditionalInsertCount[pl_uid] = 0
+					end
+					if self.PlayerAdditionalInsertCount[pl_uid] <= 0 then
+						self.PlayerAdditionalInsertCount[pl_uid] = nil
 					end
 				end
+			else
+				self.PlayerAdditionalInsertCount[pl_uid] = nil
 			end
 		end
+		
 		self:SetLastCalcedNearby(CurTime())
 	end
 end

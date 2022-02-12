@@ -117,11 +117,12 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 			self:AddSamples(0,togive)
 		end
 	end
-	player:AddPoints(togive)
+	local pointstogive = math.ceil(togive/2)
+	player:AddPoints(pointstogive)
 	net.Start("zs_commission")
 		net.WriteEntity(ent)
 		net.WriteEntity(player)
-		net.WriteUInt(1, 16)
+		net.WriteUInt(pointstogive, 16)
 	net.Send(player)
 	if self:IsSampleCollectMode() then
 		self.RoundEndCamPos = ent:WorldSpaceCenter()
@@ -150,31 +151,34 @@ function GM:CreateZombieNest()
 		vec:Set(node)
 		nodes[#nodes + 1] = {v = vec}
 	end
-
-	local id = 1
-	local chosen = false
-	while !chosen do
-		id = math.random(1,#nodes)
-		local avoid = player.GetAllActive()
-		table.Merge(avoid,ents.FindByClass("prop_obj_nest"))
-		table.Merge(avoid,ents.FindByClass("prop_sampledepositterminal"))
-		local playerswithin = false
-		for _, pl in pairs(avoid) do
-			if pl:GetPos():Distance(nodes[id].v) < 128 then
-				playerswithin = true
+	nodes = table.ShuffleOrder(nodes)
+	PrintTable(nodes)
+	local point 
+	local avoid = player.GetAllActive()
+	table.Add(avoid,ents.FindByClass("prop_obj_nest"))
+	table.Add(avoid,ents.FindByClass("prop_sampledepositterminal"))
+	for _, node in pairs(nodes) do 
+		local overlapped = false
+		for _, ent in pairs(avoid) do
+			local entdist = ent:GetPos():Distance(node.v)
+			if entdist < 128 then
+				overlapped = true
 				break
 			end
 		end
-		chosen = !playerswithin
+		if !overlapped then 
+			point = node.v
+			break
+		end
 	end
-	-- Remove the chosen point from the temp table and make the nest.
-	local point = nodes[id].v
-	local ent = ents.Create("prop_obj_nest")
-	if ent:IsValid() then
-		ent:SetPos(point)
-		ent:Spawn()
-		ent.NodePos = point
-		gamemode.Call("OnNestSpawned")
+	if point and isvector(point) then
+		local ent = ents.Create("prop_obj_nest")
+		if ent:IsValid() then
+			ent:SetPos(point)
+			ent:Spawn()
+			ent.NodePos = point
+			gamemode.Call("OnNestSpawned")
+		end
 	end
 end
 

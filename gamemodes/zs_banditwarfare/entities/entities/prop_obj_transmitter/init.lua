@@ -10,8 +10,18 @@ function ENT:Initialize()
 	self:SetModel("models/props_lab/reciever_cart.mdl")
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetUseType(SIMPLE_USE)
-	self:SetPos( Vector( self:GetPos().x, self:GetPos().y, self:GetPos().z+35.3 )) 
-	self:SetTransmitterMaxHealth(10+5*(math.floor(#player.GetAll()/5)))
+	self:SetPos( Vector( self:GetPos().x, self:GetPos().y, self:GetPos().z+35.3 ))
+	local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
+
+	local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+
+	local lessPlayersReduction = math.ceil(4 * (1 - playersCount / lowPlayerCountThreshold))
+	
+	local adder = math.min(5 * math.floor(math.max(player.GetCount()/GAMEMODE.LowPlayerCountThreshold-1,0)),10)
+	
+	local transmittercalcedhealth = 10 + adder - lessPlayersReduction
+	
+	self:SetTransmitterMaxHealth(transmittercalcedhealth)
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)
@@ -28,26 +38,24 @@ end
 function ENT:CalcClosePlayers()
 	local bnum = 0
 	local hnum = 0
-	local nearbyents = ents.FindInSphere(self:GetPos(), 150 )
+	local nearbyents = util.FindInSphereBiasZ(self:GetPos(), 150 ,0.35)
 	for _, pl in pairs(nearbyents) do
-		if util.SkewedDistance(pl:GetPos(),self:GetPos(), 2.75) <= 128 then
-			if pl:IsPlayer() then
-				local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
-				local skipPlayer = pl:GetActiveWeapon().SkipForCommsCalc
-				if not skipPlayer then
-					if pl:Team() == TEAM_HUMAN and pl:Alive() then
-							hnum = hnum + (doubleSpeed and 2 or 1)
-					elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
-							bnum = bnum + (doubleSpeed and 2 or 1)
-					end
+		if pl:IsPlayer() then
+			local doubleSpeed = pl:GetActiveWeapon().DoubleCapSpeed
+			local skipPlayer = pl:GetActiveWeapon().SkipForCommsCalc
+			if not skipPlayer then
+				if pl:Team() == TEAM_HUMAN and pl:Alive() then
+						hnum = hnum + (doubleSpeed and 2 or 1)
+				elseif pl:Team() == TEAM_BANDIT and pl:Alive() then
+						bnum = bnum + (doubleSpeed and 2 or 1)
 				end
-			elseif pl:GetClass() == "prop_drone" then
-				if pl:GetOwner():IsPlayer() and not table.HasValue(nearbyents,pl:GetOwner()) then 
-					if pl:GetOwner():Team() == TEAM_HUMAN and pl:GetObjectHealth() > 0 then
-						hnum = hnum + 1
-					elseif pl:GetOwner():Team() == TEAM_BANDIT and pl:GetObjectHealth() > 0 then
-						bnum = bnum + 1
-					end
+			end
+		elseif pl:GetClass() == "prop_drone" then
+			if pl:GetOwner():IsPlayer() and not table.HasValue(nearbyents,pl:GetOwner()) then 
+				if pl:GetOwner():Team() == TEAM_HUMAN and pl:GetObjectHealth() > 0 then
+					hnum = hnum + 1
+				elseif pl:GetOwner():Team() == TEAM_BANDIT and pl:GetObjectHealth() > 0 then
+					bnum = bnum + 1
 				end
 			end
 		end

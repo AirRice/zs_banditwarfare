@@ -408,8 +408,21 @@ end
 function util.FindValidInSphere(pos, radius)
 	local ret = {}
 	
-	for _, ent in pairs(util.FindInSphere(pos, radius)) do
+	for _, ent in pairs(ents.FindInSphere(pos, radius)) do
 		if ent and ent:IsValid() then
+			ret[#ret + 1] = ent
+		end
+	end
+
+	return ret
+end
+
+function util.FindInSphereBiasZ(pos, radius, zmult)
+	local ret = {}
+	zmult = zmult or 1
+	for _, ent in pairs(ents.FindInSphere(pos, radius)) do
+		local entpos = ent:GetPos()
+		if math.abs(entpos.z - pos.z) <= radius*zmult then
 			ret[#ret + 1] = ent
 		end
 	end
