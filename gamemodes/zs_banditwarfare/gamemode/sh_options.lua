@@ -493,17 +493,17 @@ cvars.AddChangeCallback("zsb_clientsidehitscan", function(cvar, oldvalue, newval
 end)
 
 -- Low player count threshold. Used for increasing sample drop count.
-GM.LowPlayerCountThreshold = CreateConVar("zsb_lowplayercountthreshold", "6", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The number of players below which the sample drop count is increased."):GetInt()
+GM.LowPlayerCountThreshold = CreateConVar("zsb_lowplayercountthreshold", "6", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The number of players below which the sample drop count starts being increased."):GetInt()
 cvars.AddChangeCallback("zsb_lowplayercountthreshold", function(cvar, oldvalue, newvalue)
 	GAMEMODE.LowPlayerCountThreshold = tonumber(newvalue) or 6
 end)
 
-GM.LowPlayerCountSamplesMaxAdditionalCountPlayer = CreateConVar("zsb_max_additional_samples_count_player", "3", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The number of samples to drop when the player count is below the low player count threshold."):GetInt()
+GM.LowPlayerCountSamplesMaxAdditionalCountPlayer = CreateConVar("zsb_max_additional_samples_count_player", "3", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The maximum number of additional samples a killed player will drop when the player count is below the low player count threshold."):GetInt()
 cvars.AddChangeCallback("zsb_max_additional_samples_count_player", function(cvar, oldvalue, newvalue)
 	GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer = tonumber(newvalue) or 3
 end)
 
-GM.LowPlayerCountSamplesMaxAdditionalCountNest = CreateConVar("zsb_max_additional_samples_count_nest", "10", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The number of samples to drop when the player count is below the low player count threshold."):GetInt()
+GM.LowPlayerCountSamplesMaxAdditionalCountNest = CreateConVar("zsb_max_additional_samples_count_nest", "10", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The maximum number of additional samples a nest will drop when the player count is below the low player count threshold."):GetInt()
 cvars.AddChangeCallback("zsb_max_additional_samples_count_nest", function(cvar, oldvalue, newvalue)
 	GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountNest = tonumber(newvalue) or 10
 end)

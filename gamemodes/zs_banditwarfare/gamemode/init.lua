@@ -2356,7 +2356,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	pl:Freeze(false)
 
 	local headshot = pl:WasHitInHead() and not inflictor.IgnoreDamageScaling 
-	local samplestodrop = 0
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()
 	
@@ -2377,7 +2376,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetNormal(force:GetNormalized())
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
-		samplestodrop = samplestodrop + 3
 		if dmginfo:GetDamageType() == DMG_SLASH then
 			local headbonei = pl:LookupBone("ValveBiped.Bip01_Head1")
 			local headpos, headang = pl:GetBonePosition(headbonei)
@@ -2411,29 +2409,33 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			net.WriteUInt(pl.LifeEnemyKills or 0, 16)
 		net.Send(pl)
 	end
-	
+	local samplestodrop = 0
 	if attacker:IsValid() and attacker:IsPlayer() and attacker ~= pl then
 		assistpl = gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
-		samplestodrop = samplestodrop + 3
+		if self:IsSampleCollectMode() then
+			-- Increases sample drop count when there are fewer playes online than the specified threshold
+			local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
+
+			local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+
+			samplestodrop = samplestodrop + 3 + math.ceil(GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer * (1 - playersCount / lowPlayerCountThreshold))
+			
+			if headshot then 
+				samplestodrop = samplestodrop * 2
+			end
+		end
 	end
 	if self:IsClassicMode() then
 		pl.ClassicModeNextInsureWeps = {}
 		pl.ClassicModeRemoveInsureWeps = {}
 	end
-	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
-		samplestodrop = samplestodrop + pl:GetSamples()	
-	end
-	
-	-- Highers sample drop count when there are few playes online
-
-	local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold
-
-	local playersCount = math.min(lowPlayerCountThreshold, table.Count(player.GetAll()))
-
-	samplestodrop = samplestodrop + (GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer * (1 - playersCount / lowPlayerCountThreshold))
-
-	if samplestodrop >0 and self:IsSampleCollectMode()then
-		pl:DropSample(samplestodrop)
+	if self:IsSampleCollectMode() then
+		if pl:GetSamples() > 0 then
+			samplestodrop = samplestodrop + pl:GetSamples()	
+		end
+		if samplestodrop > 0 then
+			pl:DropSample(samplestodrop)
+		end
 	end
 	pl:DropAll()
 	pl:AddDeaths(1)

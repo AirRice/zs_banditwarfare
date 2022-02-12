@@ -22,7 +22,7 @@ function ENT:Initialize()
 		phys:EnableMotion(false)
 		phys:Wake()
 	end
-	self:SetNestMaxHealth(math.Clamp(self.MaxHealthBase * player.GetCount()/7,self.MaxHealthBase,200))
+	self:SetNestMaxHealth(math.Clamp(math.floor(self.MaxHealthBase * player.GetCount()/GAMEMODE.LowPlayerCountThreshold),self.MaxHealthBase,200))
 	self:SetNestHealth(self:GetNestMaxHealth())
 end
 
@@ -47,9 +47,11 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:Destroy()
-	local currentPlayerCount = math.min(table.Count(player.GetAll()), 6)
+	local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
 
-	local adder = GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountNest * (1 - currentPlayerCount / 6)
+	local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+
+	local adder = math.ceil(GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountNest * (1 - playersCount / lowPlayerCountThreshold))
 
 	self.Destroyed = true
 	self:DropSample(10 + adder)
