@@ -237,6 +237,7 @@ end
 
 function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	local attacker = dmginfo:GetAttacker()
+	local isproj = (dmginfo:GetInflictor() and IsValid(dmginfo:GetInflictor()) and dmginfo:GetInflictor().m_IsProjectile)
 	local attackweapon = dmginfo:GetAttacker():GetActiveWeapon()
 	local headshot = hitgroup == HITGROUP_HEAD
 	if attackweapon.IgnoreDamageScaling then return end
@@ -245,7 +246,7 @@ function GM:ScalePlayerDamage(pl, hitgroup, dmginfo)
 	end
 	if headshot then
 		dmginfo:ScaleDamage(1.5)
-	elseif hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_GEAR then
+	elseif (hitgroup == HITGROUP_LEFTLEG or hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_GEAR) and not isproj then
 		dmginfo:ScaleDamage(0.5)
 	elseif hitgroup == HITGROUP_STOMACH or hitgroup == HITGROUP_LEFTARM or hitgroup == HITGROUP_RIGHTARM then
 		dmginfo:ScaleDamage(1)

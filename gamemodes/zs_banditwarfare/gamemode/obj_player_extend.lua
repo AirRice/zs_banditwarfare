@@ -337,7 +337,6 @@ function meta:AttemptNail(tr,showmessages)
 	end
 end
 
-
 function meta:SetSpeed(speed)
 	if not speed then speed = SPEED_NORMAL end
 

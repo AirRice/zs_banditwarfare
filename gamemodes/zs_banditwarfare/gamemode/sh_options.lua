@@ -487,6 +487,10 @@ cvars.AddChangeCallback("zsb_roundlimit", function(cvar, oldvalue, newvalue)
 	GAMEMODE.RoundLimit = tonumber(newvalue) or 3
 end)
 
+GM.ClientSideHitscan = CreateConVar("zsb_clientsidehitscan", "0", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "Enable clientside hitscan detection instead of serverside. Helps with detection but can be exploited more easily."):GetBool()
+cvars.AddChangeCallback("zsb_clientsidehitscan", function(cvar, oldvalue, newvalue)
+	GAMEMODE.ClientSideHitscan = tonumber(newvalue) == 1
+end)
 -- Static values that don't need convars...
 -- Initial length for wave 1.
 GM.WaveOneLength = 420

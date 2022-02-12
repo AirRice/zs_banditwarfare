@@ -107,7 +107,7 @@ function SWEP:PrimaryAttack()
 			local phys = ent:GetPhysicsObject()
 			if phys:IsValid() then
 				phys:Wake()
-				phys:SetVelocity(aimvec *2000)
+				phys:AddVelocity(aimvec * 4400)
 			end
 			--ent:SetVelocity(aimvec *2200)
 		end

@@ -85,23 +85,10 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:ShootNormalBullets(dmg, numbul, cone)	
-	self:SetConeAndFire()
-	self:DoRecoil()
-
-	local owner = self:GetOwner()
-	--owner:MuzzleFlash()
-	self:SendWeaponAnimation()
-	owner:DoAttackEvent()
-	
-	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
-		owner.ShotsFired = owner.ShotsFired + numbul
-		owner.LastShotWeapon = self:GetClass()
-	end
-	
-	self:StartBulletKnockback()
-	owner:FireBullets({Num = numbul, Src = owner:GetShootPos(), Dir = owner:GetAimVector(), Spread = Vector(cone, cone, 0), Tracer = 1, TracerName = self.TracerName, Force = dmg * 0.1, Damage = dmg, Callback = GenericBulletCallback})
-	self:DoBulletKnockback(self.Primary.KnockbackScale * 0.05)
-	self:EndBulletKnockback()
+	self._BulletCallback = self.BulletCallback
+	self.BulletCallback = GenericBulletCallback
+	self.BaseClass.ShootBullets(self,dmg,numbul,cone)
+	self.BulletCallback = self._BulletCallback
 end
 
 function SWEP.BulletCallback(attacker, tr, dmginfo)
