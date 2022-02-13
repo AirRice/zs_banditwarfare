@@ -63,7 +63,7 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.IronSightsPos = Vector(-5.75, 10, 2.7)
 
 SWEP.ReloadSpeed = 0.45
-SWEP.HealRangeSqr = 9216
+SWEP.HealRangeSqr = 16384
 SWEP.HealRangeSqrMin = 2048
 SWEP.LastUpdate = 0
 
@@ -192,7 +192,7 @@ function SWEP:CheckValidTarget(tgt)
 
 	local centre = tgt:WorldSpaceCenter()
 	local sqrdst = mypos:DistToSqr(centre)
-	if sqrdst > self.HealRangeSqr or (not (sqrdst < self.HealRangeSqrMin) and ((centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre))) then return false end
+	if sqrdst > (self.HealRangeSqr*1.5) or (not (sqrdst < self.HealRangeSqrMin) and ((centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.75 or not WorldVisible(mypos,centre))) then return false end
 
 	return true
 end
