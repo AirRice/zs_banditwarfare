@@ -143,6 +143,9 @@ function GM:SwitchCurrentlyActiveTerminal(entoverride)
 	if hasoverride then
 		entoverride:SetIsActive(true)
 	end
+	for _, pl in pairs(player.GetAll()) do
+		pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "sample_deposit_terminal_changed"), {killicon = "default"})
+	end
 end
 
 function GM:PlayerAddedSamples(player, team, togive, ent)
