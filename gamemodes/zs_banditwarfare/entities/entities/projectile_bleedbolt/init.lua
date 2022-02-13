@@ -64,18 +64,7 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 			util.Blood(vHitPos, 30, vHitNormal, math.Rand(10,30), true)
 			local bleed = eHitEntity:GetStatus("bleed")
 			if bleed and bleed:IsValid() then
-				local currentDamage = bleed:GetDamage()
-
-				if ((currentDamage + self.Damage) > 20) then
-					local bleedDamage = (currentDamage + self.Damage) - 20
-
-					bleed:SetDamage(20)
-
-					eHitEntity:TakeDamage(bleedDamage, owner, self)
-				else
-					bleed:AddDamage((self.Damage or 25)*0.75)
-				end
-				
+				bleed:AddDamage((self.Damage or 25)*0.75)
 				bleed.Damager = self:GetOwner()
 			else
 				local stat = eHitEntity:GiveStatus("bleed")
