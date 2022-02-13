@@ -13,7 +13,7 @@ function GM:OnTransmitterTaken(objent, justtakenby)
 		end
 	net.Broadcast()
 	
-	self.CurrentTransmitterTable = objs
+	self.CurrentObjectives = objs
 
 	local translatestring = nil
 	local allSameTeam = true
@@ -43,14 +43,16 @@ end
 GM.LastCommLink = 0
 function GM:TransmitterCommsThink()
 	if self.RoundEnded then return end
-	local objteams = self.CurrentTransmitterTable
+	local obj_tbl = self.CurrentObjectives
 	local bnum = 0
 	local hnum = 0
-	for _, obj in pairs(objteams) do
-		if obj:GetTransmitterTeam() == TEAM_BANDIT and obj:GetCanCommunicate() == 1 then
-			bnum = bnum +1
-		elseif obj:GetTransmitterTeam() == TEAM_HUMAN and obj:GetCanCommunicate() == 1 then
-			hnum = hnum +1
+	for _, obj in pairs(obj_tbl) do
+		if obj:GetClass() == "prop_obj_transmitter" then
+			if obj:GetTransmitterTeam() == TEAM_BANDIT and obj:GetCanCommunicate() == 1 then
+				bnum = bnum +1
+			elseif obj:GetTransmitterTeam() == TEAM_HUMAN and obj:GetCanCommunicate() == 1 then
+				hnum = hnum +1
+			end
 		end
 	end
 
@@ -79,12 +81,23 @@ function GM:TransmitterCommsThink()
 		end
 	end
 end
+GM.LastNestSpawnTime = GM.BaseNestSpawnTime
+GM.SampleTerminalChange = 0
+GM.ActivatedInitialTerminal = nil
 function GM:SamplesThink()
 	if self.RoundEnded then return end
 	if not self.SamplesEnd then 
+		if self:GetWaveStart() + 10 <= CurTime() and not self.ActivatedInitialTerminal then
+			self.ActivatedInitialTerminal = true
+			self:SwitchCurrentlyActiveTerminal()
+		end
 		if self.NextNestSpawn and self.NextNestSpawn <= CurTime() then
 			gamemode.Call("CreateZombieNest")
-			self.NextNestSpawn = CurTime() + 45
+			local closetowinning = (self:GetBanditSamples() > 75 and self:GetHumanSamples() > 75)
+			if !closetowinning then
+				self.LastNestSpawnTime = math.max(self.LastNestSpawnTime - self.NestSpawnTimeReduction, self.MinNestSpawnTime)
+			end
+			self.NextNestSpawn = CurTime() + (closetowinning and self.BaseNestSpawnTime or self.LastNestSpawnTime)
 		end
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
 		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
@@ -108,7 +121,30 @@ function GM:SamplesThink()
 		end
 	end
 end
-	
+
+function GM:SwitchCurrentlyActiveTerminal(entoverride)
+	if !self:IsSampleCollectMode() then return end
+	local obj_tbl = self.CurrentObjectives
+	local hasoverride = entoverride and entoverride:IsValid() and entoverride:GetClass() == "prop_sampledepositterminal" and entoverride.SetIsActive
+	obj_tbl = table.ShuffleOrder(obj_tbl)
+	local activated = false
+	for _, obj in ipairs(obj_tbl) do
+		if obj:GetClass() == "prop_sampledepositterminal" then
+			if obj:GetIsActive() then
+				obj:SetIsActive(false)
+			elseif not hasoverride then
+				if not activated then
+					obj:SetIsActive(true)
+					activated = true
+				end
+			end
+		end
+	end
+	if hasoverride then
+		entoverride:SetIsActive(true)
+	end
+end
+
 function GM:PlayerAddedSamples(player, team, togive, ent)
 	if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
 		if team == TEAM_BANDIT then
@@ -117,6 +153,7 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 			self:AddSamples(0,togive)
 		end
 	end
+		
 	local pointstogive = math.ceil(togive/2)
 	player:AddPoints(pointstogive)
 	net.Start("zs_commission")
@@ -129,6 +166,13 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
+	end
+	local samplethreshold = math.floor(self:GetTotalInsertedSamples()/50)
+	if self.SampleTerminalChange < samplethreshold then
+		self.SampleTerminalChange = samplethreshold
+		if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
+			self:SwitchCurrentlyActiveTerminal()
+		end
 	end
 end
 
@@ -152,7 +196,6 @@ function GM:CreateZombieNest()
 		nodes[#nodes + 1] = {v = vec}
 	end
 	nodes = table.ShuffleOrder(nodes)
-	PrintTable(nodes)
 	local point 
 	local avoid = player.GetAllActive()
 	table.Add(avoid,ents.FindByClass("prop_obj_nest"))
@@ -186,7 +229,7 @@ function GM:CreateObjectives(entname,nocollide)
 	if #self.ProfilerNodes < self.MaxTransmitters then
 		return
 	end
-
+	
 	-- Copy
 	local nodes = {}
 	for _, node in pairs(self.ProfilerNodes) do
@@ -215,6 +258,8 @@ function GM:CreateObjectives(entname,nocollide)
 			table.remove(nodes, _)
 		end
 	end
+	
+	local created_objectives = {}
 	table.sort(nodes, SortDistFromLast)
 	for i=1, self.MaxTransmitters do
 		local id
@@ -253,6 +298,8 @@ function GM:CreateObjectives(entname,nocollide)
 				ent:SetCollisionGroup(COLLISION_GROUP_DEBRIS_TRIGGER)
 			end
 			ent.NodePos = point
+			created_objectives[i] = ent
 		end
 	end
+	self.CurrentObjectives = created_objectives
 end

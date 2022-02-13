@@ -869,7 +869,7 @@ GM.TiedWaves = 0
 GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
-GM.CurrentTransmitterTable = {}
+GM.CurrentObjectives = {}
 GM.BulletsDmg = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
@@ -888,7 +888,7 @@ function GM:RestartLua()
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentTransmitterTable = {}
+	self.CurrentObjectives = {}
 	self:SetCurrentWaveWinner(nil)
 
 	
@@ -928,7 +928,7 @@ function GM:DoRestartGame()
 			net.WriteInt(0,4)
 		end
 	net.Broadcast()
-	self.CurrentTransmitterTable = {}
+	self.CurrentObjectives = {}
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -2676,11 +2676,15 @@ function GM:WaveStateChanged(newstate)
 				gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
 			elseif self:IsSampleCollectMode() then
 				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
+				self.LastNestSpawnTime = self.BaseNestSpawnTime
+				self.NextNestSpawn = CurTime() + self.LastNestSpawnTime
+				self.SampleTerminalChange = 0
+				self.ActivatedInitialTerminal = nil
 			end
 		end
 		gamemode.Call("SetWave", prevwave + 1)
 		gamemode.Call("SetWaveStart", CurTime())
-		self.NextNestSpawn = CurTime() + 45
+
 		gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() * (self:IsClassicMode() and 0.5 or 1) - (self:GetWave() - 1) * self.TimeLostPerWave* (self:IsClassicMode() and 0 or 1) )
 
 		net.Start("zs_wavestart")
@@ -2825,7 +2829,7 @@ function GM:WaveStateChanged(newstate)
 				net.WriteInt(0,4)
 			end
 		net.Broadcast()
-		self.CurrentTransmitterTable = {}
+		self.CurrentObjectives = {}
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
 		util.RemoveAll("prop_obj_transmitter")

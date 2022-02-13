@@ -51,7 +51,7 @@ function ENT:Think()
 		self:SetLastCaptureTeam(calcedTeam)
 		for k, pl in pairs(player.GetAllActive()) do
 			local pl_uid = pl:SteamID64()
-			if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() then
+			if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() and self:GetIsActive() then
 				if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
 					local plysamples = pl:GetSamples()
 					self.PlayerAdditionalInsertCount[pl_uid] = (self.PlayerAdditionalInsertCount[pl_uid] or 0)

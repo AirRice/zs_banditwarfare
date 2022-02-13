@@ -823,7 +823,7 @@ function GM:_HUDPaintBackground()
 	if self:IsSampleCollectMode() then
 		for _, ent in pairs(ents.FindByClass("prop_sampledepositterminal")) do
 			local uipos = ent:GetPos()+ent:GetAngles():Up()*30
-			if !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
+			if ent:GetIsActive() and !LightVisible(uipos,MySelf:EyePos(),MySelf,ent) then
 				local teamcolor = nil
 				if (ent:GetLastCaptureTeam() == TEAM_BANDIT or ent:GetLastCaptureTeam() == TEAM_HUMAN) then 
 					teamcolor = team.GetColor(ent:GetLastCaptureTeam())

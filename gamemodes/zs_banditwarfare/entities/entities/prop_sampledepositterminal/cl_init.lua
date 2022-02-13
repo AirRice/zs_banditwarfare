@@ -9,7 +9,7 @@ function ENT:Initialize()
 end
 
 function ENT:Think()
-	if EyePos():Distance(self:GetPos()) <= 1000 then
+	if EyePos():Distance(self:GetPos()) <= 1000 and self:GetIsActive() then
 		self.AmbientSound:PlayEx(1, 135)
 	else
 		self.AmbientSound:Stop()
@@ -30,33 +30,48 @@ function ENT:DrawTranslucent()
 	local curtime = CurTime()
 	local eyepos = EyePos()
 	local eyeangles = EyeAngles()
+	local up = self:GetUp()
 	local teamcolor = nil
 	if (self:GetLastCaptureTeam() == TEAM_BANDIT or self:GetLastCaptureTeam() == TEAM_HUMAN) then 
 		teamcolor = team.GetColor(self:GetLastCaptureTeam())
 	else
-		teamcolor = COLOR_GREY
+		teamcolor = COLOR_DARKGRAY
 	end
-	render.SuppressEngineLighting(true)
-	self:DrawModel()
-	render.SuppressEngineLighting(false)
-
-	local curtime = CurTime() + self.Seed
-	if MySelf:IsValid() then
-		local ringtime = (math.sin(curtime*2)+19)/20
-		local ringsize = ringtime *200
-		local beamsize = 6
-		local up = self:GetUp()
-		local ang = self:GetForward():Angle()
-		ang.yaw = curtime * 30 % 360
-		local ringpos = self:GetPos()
-
-		render.SetMaterial(matBeam)
-		render.StartBeam(40)
-		for i=1, 40 do
-			render.AddBeam(ringpos + ang:Forward() * ringsize, beamsize, beamsize, teamcolor)
-			ang:RotateAroundAxis(up, 20)
+	if self:GetIsActive() then
+		local dlight = DynamicLight(self:EntIndex())
+		if dlight then
+			dlight.Pos = self:GetPos() + up * 64
+			if teamcolor ~= nil then
+				dlight.r = teamcolor.r
+				dlight.g = teamcolor.g
+				dlight.b = teamcolor.b
+			end
+			dlight.Brightness = 2
+			dlight.Size = 200
+			dlight.Decay = 200
+			dlight.DieTime = curtime + 1
 		end
-		render.EndBeam()
 	end
+	--render.SuppressEngineLighting(true)
+	self:DrawModel()
+	--render.SuppressEngineLighting(false)
+	if self:GetIsActive() then
+		local curtime = CurTime() + self.Seed
+		if MySelf:IsValid() then
+			local ringtime = (math.sin(curtime*2)+19)/20
+			local ringsize = ringtime *200
+			local beamsize = 6
+			local ang = self:GetForward():Angle()
+			ang.yaw = curtime * 30 % 360
+			local ringpos = self:GetPos()
 
+			render.SetMaterial(matBeam)
+			render.StartBeam(40)
+			for i=1, 40 do
+				render.AddBeam(ringpos + ang:Forward() * ringsize, beamsize, beamsize, teamcolor)
+				ang:RotateAroundAxis(up, 20)
+			end
+			render.EndBeam()
+		end
+	end
 end

@@ -527,6 +527,15 @@ GM.WaveIntermissionLength = 30
 -- Time in seconds between end round and next map.
 GM.EndGameTime = 25
 
+-- Normal time between nest spawns.
+GM.BaseNestSpawnTime = 45
+
+-- Time removed from nest spawn delay every time one is spawned.
+GM.NestSpawnTimeReduction = 5
+
+-- Minimum possible spawn time between nest spawns.
+GM.MinNestSpawnTime = 20
+
 -- How many clips of ammo guns from the menu start with. The default clip is given as larger of the weapon's clip multiplied by this or 40.
 GM.SurvivalClips = 3
 
