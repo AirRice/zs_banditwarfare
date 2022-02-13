@@ -9,7 +9,9 @@ Mod by  Jooho 'air rice' Lee
 | Melee weapon models and sounds |  Zombie Panic: Source (http://www.zombiepanic.org/) |
 | Board Kit model |  Samuel (samuel_games@hotmail.com) |
 | Original Korean Translation |  Honsal |
-| Additional Code Snippets	  | Sunrust Community (Benjy, The Darker One, Raox, Scott), Original Git Repo |
+| Additional Code Snippets	  | Sunrust Community (Benjy, The Darker One, Raox, Scott), Original Git Repo, Honsal |
+| Russian Translation | Berry |
+| Simplified Chinese Translation | Insane Black Rock Shooter |
 
 ### Story (If you're into that kind of thing...)
 The devastating Zombie outbreaks, which led to hulking beasts and otherworldly monsters threatening mankind, has been put to rest. Whether by tenacity or pure miracle, the humans have survived to see another day
