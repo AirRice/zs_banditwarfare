@@ -82,7 +82,6 @@ function GM:TransmitterCommsThink()
 	end
 end
 GM.LastNestSpawnTime = GM.BaseNestSpawnTime
-GM.SampleTerminalChange = 0
 GM.ActivatedInitialTerminal = nil
 function GM:SamplesThink()
 	if self.RoundEnded then return end
@@ -169,13 +168,6 @@ function GM:PlayerAddedSamples(player, team, togive, ent)
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
-	end
-	local samplethreshold = math.floor(self:GetTotalInsertedSamples()/50)
-	if self.SampleTerminalChange < samplethreshold then
-		self.SampleTerminalChange = samplethreshold
-		if self:GetBanditSamples() < 100 and self:GetHumanSamples() < 100 then
-			self:SwitchCurrentlyActiveTerminal()
-		end
 	end
 end
 

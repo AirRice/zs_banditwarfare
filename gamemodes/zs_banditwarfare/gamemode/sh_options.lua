@@ -536,6 +536,9 @@ GM.NestSpawnTimeReduction = 5
 -- Minimum possible spawn time between nest spawns.
 GM.MinNestSpawnTime = 20
 
+-- Samples a research terminal can take before the active terminal changes.
+GM.SamplesBeforeChangeTerminal = 40
+
 -- How many clips of ammo guns from the menu start with. The default clip is given as larger of the weapon's clip multiplied by this or 40.
 GM.SurvivalClips = 3
 

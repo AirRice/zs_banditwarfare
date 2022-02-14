@@ -5,6 +5,9 @@ ENT.NoNails = true
 
 AccessorFuncDT(ENT, "LastCaptureTeam", "Int", 0)
 AccessorFuncDT(ENT, "LastCalcedNearby", "Float", 0)
+AccessorFuncDT(ENT, "SamplesSinceReset", "Int", 1)
+AccessorFuncDT(ENT, "LastInsertTime", "Float", 1)
+
 
 function ENT:SetIsActive(b)
 	if b then
@@ -18,6 +21,8 @@ function ENT:SetIsActive(b)
 		effectdata:SetMagnitude(4)
 		effectdata:SetScale(1.33)
 	util.Effect("cball_explode", effectdata)
+	self:SetSamplesSinceReset(0)
+	self:SetLastInsertTime(CurTime())
 	self:SetDTBool(0, b)
 end
 

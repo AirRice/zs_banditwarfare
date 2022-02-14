@@ -2678,7 +2678,6 @@ function GM:WaveStateChanged(newstate)
 				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
 				self.LastNestSpawnTime = self.BaseNestSpawnTime
 				self.NextNestSpawn = CurTime() + self.LastNestSpawnTime
-				self.SampleTerminalChange = 0
 				self.ActivatedInitialTerminal = nil
 			end
 		end

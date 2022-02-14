@@ -11,7 +11,10 @@ function ENT:Initialize()
 	self:SetUseType(SIMPLE_USE)
 
 	self:CollisionRulesChanged()
-
+	
+	self:SetSamplesSinceReset(0)
+	self:SetLastInsertTime(CurTime())
+	
 	local phys = self:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)
@@ -46,35 +49,48 @@ function ENT:CalcSurroundingTeam()
 end
  
 function ENT:Think()
-	if self:GetLastCalcedNearby() <= CurTime() - 1 and not GAMEMODE.SamplesEnd then 
-		local calcedTeam = self:CalcSurroundingTeam()
-		self:SetLastCaptureTeam(calcedTeam)
-		for k, pl in pairs(player.GetAllActive()) do
-			local pl_uid = pl:SteamID64()
-			if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() and self:GetIsActive() then
-				if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
-					local plysamples = pl:GetSamples()
-					self.PlayerAdditionalInsertCount[pl_uid] = (self.PlayerAdditionalInsertCount[pl_uid] or 0)
-					local togive = math.min(2 + self.PlayerAdditionalInsertCount[pl_uid], plysamples)
-					if plysamples > 0 and pl:Team() == calcedTeam then
-						pl:TakeSamples(togive)
-						pl:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
-						pl:EmitSound("weapons/physcannon/physcannon_drop.wav")
-						gamemode.Call("PlayerAddedSamples", pl, calcedTeam, togive, self)
-						self.PlayerAdditionalInsertCount[pl_uid] = math.min(self.PlayerAdditionalInsertCount[pl_uid] + 1,8)
-					else
-						self.PlayerAdditionalInsertCount[pl_uid] = 0
-					end
-					if self.PlayerAdditionalInsertCount[pl_uid] <= 0 then
-						self.PlayerAdditionalInsertCount[pl_uid] = nil
-					end
-				end
-			else
-				self.PlayerAdditionalInsertCount[pl_uid] = nil
-			end
+	local switchawayfrom = false
+	if not GAMEMODE.SamplesEnd then 
+		if self:GetLastInsertTime() + 60 < CurTime() then
+			switchawayfrom = true
 		end
-		
-		self:SetLastCalcedNearby(CurTime())
+		if self:GetLastCalcedNearby() <= CurTime() - 1 and self:GetIsActive() then
+			local calcedTeam = self:CalcSurroundingTeam()
+			self:SetLastCaptureTeam(calcedTeam)
+			for k, pl in pairs(player.GetAllActive()) do
+				local pl_uid = pl:SteamID64()
+				if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() then
+					if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
+						local plysamples = pl:GetSamples()
+						self.PlayerAdditionalInsertCount[pl_uid] = (self.PlayerAdditionalInsertCount[pl_uid] or 0)
+						local togive = math.min(2 + self.PlayerAdditionalInsertCount[pl_uid], plysamples)
+						if plysamples > 0 and pl:Team() == calcedTeam then
+							pl:TakeSamples(togive)
+							pl:RestartGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
+							pl:EmitSound("weapons/physcannon/physcannon_drop.wav")
+							gamemode.Call("PlayerAddedSamples", pl, calcedTeam, togive, self)
+							self:SetSamplesSinceReset(self:GetSamplesSinceReset() + togive)
+							self.PlayerAdditionalInsertCount[pl_uid] = math.min(self.PlayerAdditionalInsertCount[pl_uid] + 1,8)
+							self:SetLastInsertTime(CurTime())
+							if not switchawayfrom and self:GetSamplesSinceReset() > GAMEMODE.SamplesBeforeChangeTerminal then
+								switchawayfrom = true
+							end
+						else
+							self.PlayerAdditionalInsertCount[pl_uid] = 0
+						end
+						if self.PlayerAdditionalInsertCount[pl_uid] <= 0 then
+							self.PlayerAdditionalInsertCount[pl_uid] = nil
+						end
+					end
+				else
+					self.PlayerAdditionalInsertCount[pl_uid] = nil
+				end
+			end
+			self:SetLastCalcedNearby(CurTime())
+		end
+		if switchawayfrom and GAMEMODE:GetBanditSamples() < 100 and GAMEMODE:GetHumanSamples() < 100 and self:GetIsActive() then
+			gamemode.Call("SwitchCurrentlyActiveTerminal")
+		end
 	end
 end
 
