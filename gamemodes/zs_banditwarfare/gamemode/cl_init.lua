@@ -279,6 +279,8 @@ GM.PrePlayerDraw = GM.Think
 GM.PostPlayerDraw = GM.Think
 GM.InputMouseApply = GM.Think
 GM.GUIMousePressed = GM.Think
+GM.GUIMouseDoublePressed = GM.Think
+
 function GM:LocalPlayerFound()
 	self.Think = self._Think
 	self.HUDShouldDraw = self._HUDShouldDraw
@@ -293,6 +295,7 @@ function GM:LocalPlayerFound()
 	self.PostPlayerDraw = self._PostPlayerDraw
 	self.InputMouseApply = self._InputMouseApply
 	self.GUIMousePressed = self._GUIMousePressed
+	self.GUIMouseDoublePressed = self._GUIMouseDoublePressed
 	self.HUDWeaponPickedUp = self._HUDWeaponPickedUp
 
 	LocalPlayer().LegDamage = 0
