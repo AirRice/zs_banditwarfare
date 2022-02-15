@@ -869,7 +869,7 @@ GM.TiedWaves = 0
 GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
-GM.CurrentTransmitterTable = {}
+GM.CurrentObjectives = {}
 GM.BulletsDmg = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
@@ -888,7 +888,7 @@ function GM:RestartLua()
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentTransmitterTable = {}
+	self.CurrentObjectives = {}
 	self:SetCurrentWaveWinner(nil)
 
 	
@@ -928,7 +928,7 @@ function GM:DoRestartGame()
 			net.WriteInt(0,4)
 		end
 	net.Broadcast()
-	self.CurrentTransmitterTable = {}
+	self.CurrentObjectives = {}
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -2356,7 +2356,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	pl:Freeze(false)
 
 	local headshot = pl:WasHitInHead() and not inflictor.IgnoreDamageScaling 
-	local samplestodrop = 0
 	if suicide then attacker = pl:GetLastAttacker() or attacker end
 	pl:SetLastAttacker()
 	
@@ -2377,7 +2376,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			effectdata:SetNormal(force:GetNormalized())
 			effectdata:SetEntity(pl)
 		util.Effect("headshot", effectdata, true, true)
-		samplestodrop = samplestodrop + 3
 		if dmginfo:GetDamageType() == DMG_SLASH then
 			local headbonei = pl:LookupBone("ValveBiped.Bip01_Head1")
 			local headpos, headang = pl:GetBonePosition(headbonei)
@@ -2411,20 +2409,33 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			net.WriteUInt(pl.LifeEnemyKills or 0, 16)
 		net.Send(pl)
 	end
-	
+	local samplestodrop = 0
 	if attacker:IsValid() and attacker:IsPlayer() and attacker ~= pl then
 		assistpl = gamemode.Call("PlayerKilledEnemy", pl, attacker, inflictor, dmginfo, headshot, suicide)
-		samplestodrop = samplestodrop + 3
+		if self:IsSampleCollectMode() then
+			-- Increases sample drop count when there are fewer playes online than the specified threshold
+			local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
+
+			local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+
+			samplestodrop = samplestodrop + 3 + math.ceil(GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer * (1 - playersCount / lowPlayerCountThreshold))
+			
+			if headshot then 
+				samplestodrop = samplestodrop * 2
+			end
+		end
 	end
 	if self:IsClassicMode() then
 		pl.ClassicModeNextInsureWeps = {}
 		pl.ClassicModeRemoveInsureWeps = {}
 	end
-	if self:IsSampleCollectMode() and pl:GetSamples() > 0 then
-		samplestodrop = samplestodrop + pl:GetSamples()	
-	end
-	if samplestodrop >0 and self:IsSampleCollectMode()then
-		pl:DropSample(samplestodrop)
+	if self:IsSampleCollectMode() then
+		if pl:GetSamples() > 0 then
+			samplestodrop = samplestodrop + pl:GetSamples()	
+		end
+		if samplestodrop > 0 then
+			pl:DropSample(samplestodrop)
+		end
 	end
 	pl:DropAll()
 	pl:AddDeaths(1)
@@ -2665,11 +2676,14 @@ function GM:WaveStateChanged(newstate)
 				gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
 			elseif self:IsSampleCollectMode() then
 				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
+				self.LastNestSpawnTime = self.BaseNestSpawnTime
+				self.NextNestSpawn = CurTime() + self.LastNestSpawnTime
+				self.ActivatedInitialTerminal = nil
 			end
 		end
 		gamemode.Call("SetWave", prevwave + 1)
 		gamemode.Call("SetWaveStart", CurTime())
-		self.NextNestSpawn = CurTime() + 45
+
 		gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() * (self:IsClassicMode() and 0.5 or 1) - (self:GetWave() - 1) * self.TimeLostPerWave* (self:IsClassicMode() and 0 or 1) )
 
 		net.Start("zs_wavestart")
@@ -2814,7 +2828,7 @@ function GM:WaveStateChanged(newstate)
 				net.WriteInt(0,4)
 			end
 		net.Broadcast()
-		self.CurrentTransmitterTable = {}
+		self.CurrentObjectives = {}
 		util.RemoveAll("prop_ammo")
 		util.RemoveAll("prop_weapon")
 		util.RemoveAll("prop_obj_transmitter")
@@ -2822,7 +2836,7 @@ function GM:WaveStateChanged(newstate)
 		util.RemoveAll("prop_obj_sample")
 		util.RemoveAll("prop_sampledepositterminal")
 		local deployables = ents.FindByClass("prop_drone")
-		table.Merge(deployables, ents.FindByClass("prop_manhack"))
+		table.Add(deployables, ents.FindByClass("prop_manhack"))
 		for _, ent in pairs(deployables) do
 			if ent.GetOwner and ent:GetOwner():IsPlayer() and (ent:GetOwner():Team() == TEAM_BANDIT or ent:GetOwner():Team() == TEAM_HUMAN) then
 				ent:OnPackedUp(ent:GetOwner())

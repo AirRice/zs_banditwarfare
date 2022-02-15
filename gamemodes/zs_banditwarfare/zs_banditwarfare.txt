@@ -60,5 +60,37 @@
 			"type"		"Numeric"
 			"default"	"50"
 		}
+		7
+		{
+			"name"		"zsb_clientsidehitscan"
+			"text"		"zsb_client_side_hitscan"
+			"help"		"Enable clientside hitscan detection instead of serverside. Helps with detection but can be exploited more easily."
+			"type"		"CheckBox"
+			"default"	"0"
+		}
+		8
+		{
+			"name"		"zsb_lowplayercountthreshold"
+			"text"		"zsb_low_player_count_threshold"
+			"help"		"The number of players below which the sample drop count starts being increased."
+			"type"		"Numeric"
+			"default"	"6"
+		}
+		9
+		{
+			"name"		"zsb_max_additional_samples_count_player"
+			"text"		"zsb_max_add_samples_player"
+			"help"		"The maximum number of additional samples a killed player will drop when the player count is below the low player count threshold."
+			"type"		"Numeric"
+			"default"	"3"
+		}
+		10
+		{
+			"name"		"zsb_max_additional_samples_count_nest"
+			"text"		"zsb_max_add_samples_nest"
+			"help"		"The maximum number of additional samples a nest will drop when the player count is below the low player count threshold."
+			"type"		"Numeric"
+			"default"	"10"
+		}
 	}
 }

@@ -111,6 +111,10 @@ function GM:GetBanditSamples()
 	return GetGlobalInt("banditsamples", 0)
 end
 
+function GM:GetTotalInsertedSamples()
+	return (GetGlobalInt("banditsamples", 0) + GetGlobalInt("humansamples", 0))
+end
+
 function GM:SetComms(bamount,hamount)
 	SetGlobalInt("banditcomms", bamount)
 	SetGlobalInt("humancomms", hamount)

@@ -491,6 +491,23 @@ GM.ClientSideHitscan = CreateConVar("zsb_clientsidehitscan", "0", FCVAR_REPLICAT
 cvars.AddChangeCallback("zsb_clientsidehitscan", function(cvar, oldvalue, newvalue)
 	GAMEMODE.ClientSideHitscan = tonumber(newvalue) == 1
 end)
+
+-- Low player count threshold. Used for increasing sample drop count.
+GM.LowPlayerCountThreshold = CreateConVar("zsb_lowplayercountthreshold", "6", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The number of players below which the sample drop count starts being increased."):GetInt()
+cvars.AddChangeCallback("zsb_lowplayercountthreshold", function(cvar, oldvalue, newvalue)
+	GAMEMODE.LowPlayerCountThreshold = tonumber(newvalue) or 6
+end)
+
+GM.LowPlayerCountSamplesMaxAdditionalCountPlayer = CreateConVar("zsb_max_additional_samples_count_player", "3", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The maximum number of additional samples a killed player will drop when the player count is below the low player count threshold."):GetInt()
+cvars.AddChangeCallback("zsb_max_additional_samples_count_player", function(cvar, oldvalue, newvalue)
+	GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer = tonumber(newvalue) or 3
+end)
+
+GM.LowPlayerCountSamplesMaxAdditionalCountNest = CreateConVar("zsb_max_additional_samples_count_nest", "10", FCVAR_REPLICATED + FCVAR_ARCHIVE + FCVAR_NOTIFY, "The maximum number of additional samples a nest will drop when the player count is below the low player count threshold."):GetInt()
+cvars.AddChangeCallback("zsb_max_additional_samples_count_nest", function(cvar, oldvalue, newvalue)
+	GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountNest = tonumber(newvalue) or 10
+end)
+
 -- Static values that don't need convars...
 -- Initial length for wave 1.
 GM.WaveOneLength = 420
@@ -509,6 +526,18 @@ GM.WaveIntermissionLength = 30
 
 -- Time in seconds between end round and next map.
 GM.EndGameTime = 25
+
+-- Normal time between nest spawns.
+GM.BaseNestSpawnTime = 45
+
+-- Time removed from nest spawn delay every time one is spawned.
+GM.NestSpawnTimeReduction = 5
+
+-- Minimum possible spawn time between nest spawns.
+GM.MinNestSpawnTime = 20
+
+-- Samples a research terminal can take before the active terminal changes.
+GM.SamplesBeforeChangeTerminal = 40
 
 -- How many clips of ammo guns from the menu start with. The default clip is given as larger of the weapon's clip multiplied by this or 40.
 GM.SurvivalClips = 3

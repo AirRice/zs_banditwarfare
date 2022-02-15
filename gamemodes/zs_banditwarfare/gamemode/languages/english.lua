@@ -427,15 +427,16 @@ LANGUAGE.impossible									= "Impossible."
 LANGUAGE.trying_to_put_nails_in_glass				= "You can't hammer a nail into glass!"
 
 LANGUAGE.comms_interrupted							= "Comms Interrupted!"
-LANGUAGE.all_transmitters_taken_by_x						= "%s have taken all transmitters!"
-LANGUAGE.one_transmitter_taken_by_x						= "%s have taken a transmitter!"
-LANGUAGE.transmitter_comms_finished_by_x					= "%s have finished their transmission."
-LANGUAGE.transmitter_comms_tied							= "Both teams finished their transmissions."
+LANGUAGE.all_transmitters_taken_by_x				= "%s have taken all transmitters!"
+LANGUAGE.one_transmitter_taken_by_x					= "%s have taken a transmitter!"
+LANGUAGE.transmitter_comms_finished_by_x			= "%s have finished their transmission."
+LANGUAGE.transmitter_comms_tied						= "Both teams finished their transmissions."
 LANGUAGE.samples_finished_by_x						= "%s have collected enough samples."
 LANGUAGE.samples_tied								= "Both teams have collected enough samples."
 LANGUAGE.nest_destroyed_by_x				 		= "%s has destroyed a nest!"
 LANGUAGE.nest_spawned								= "A new zombie nest has appeared!"
-LANGUAGE.transmitter_comms_disrupted_x					= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
+LANGUAGE.transmitter_comms_disrupted_x				= "The %s' transmitter has been hacked! Their transmission has been damaged by 5%%."
+LANGUAGE.sample_deposit_terminal_changed			= "A different research terminal has been activated!"
 LANGUAGE.x_killed_all_enemies					    = "%s have killed all enemies."
 LANGUAGE.before_wave_cant_go_outside_spawn			= "You cannot leave the spawn before the round starts!"
 LANGUAGE.you_have_died								= "You have died"
@@ -554,8 +555,9 @@ LANGUAGE.help_cont_introduction_collection			=	[[<h2>Collection</h2> <br>
 <p>Collection mode involves the two teams attempting to collect blood samples for a potential zombie vaccine.</p>
 <p>Both teams have the same objective: to add enough samples for the vaccine. If a team adds enough samples first they win the wave. At the end of the game the team with more waves won wins overall.</p>
 <p>Samples can be earned by killing enemies. If the killing blow was a headshot this will make them drop twice the samples. If they were holding any samples, they will all be dropped upon dying.</p>
-<p>Every 30 seconds, a zombie nest may spawn randomly on the map. Finding and destroying them gives some points, as well as making them drop 10 samples.</p>
-<p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert the samples at a rate of 2 per second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
+<p>Every few seconds, a zombie nest may spawn randomly on the map. Finding and destroying them gives some points, as well as making them drop a considerable number of samples.</p>
+<p>Simply collecting the samples is not enough. You need to find a research terminal and insert the samples into them. Standing near the research terminals will automatically insert currently held samples every second, but you cannot insert them into a terminal if there are any enemies within its radius.</p>
+<p>The currently useable sample research terminal will change from time to time, so it is important to keep an eye out!</p>
 <p>You can open the weapon loadout menu by pressing and holding the Garry's Mod spawnmenu key ('Q' by default). In this menu you can click each weapon slot to purchase other weapons, replacing the one in the slot with it. Unless you purchase weapons in your loadout before the wave starts, they will not be given to you immediately. However, every time you respawn you will spawn with all the weapons in your loadout.</p>
 <p>In Collection mode some tools and weapons are especially useful. Biometric scanners, alongside their usual purpose, displays any zombie nest locations as well. Bioweapon ammunition is readily dropped by zombie nests when they break, making these weapons especially useful in this mode.</p>
 <p>This mode makes getting up close and personal with your enemies more valuable, as long range sniping will not net you samples!</p>]]

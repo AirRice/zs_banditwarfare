@@ -97,7 +97,7 @@ function SWEP:DoRecoil()
 	recoil = recoil * mul
 	if (IsFirstTimePredicted()) then
 		if SERVER then
-			self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 4, 0), math.Rand(-recoil, recoil), 0))
+			self:GetOwner():ViewPunch(Angle(math.Rand(-recoil * 2, 0), math.Rand(-recoil, recoil), 0))
 		else
 			local curAng = self:GetOwner():EyeAngles()
 			curAng.pitch = curAng.pitch - math.Rand(recoil * 4, 0)
@@ -685,6 +685,8 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 end
 
 function SWEP:DoSelfKnockBack(scale)
+	if (!IsFirstTimePredicted()) then return end
+	
 	local owner = self:GetOwner()
 	scale = scale or 1
 	if owner and owner:IsValid() and owner:IsPlayer() then

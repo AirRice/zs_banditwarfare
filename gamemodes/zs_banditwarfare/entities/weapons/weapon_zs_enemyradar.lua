@@ -58,8 +58,8 @@ end
 function SWEP:Think()
 	if CLIENT and GAMEMODE:GetWaveActive() and self.LastScan + self.ScanDelay <= CurTime() then
 		self.targets = {}
-		local toscan = player.GetAll()
-		table.Merge(toscan, ents.FindByClass("prop_obj_nest"))
+		local toscan = player.GetAllActive()
+		table.Add(toscan, ents.FindByClass("prop_obj_nest"))
 		for _, ent in pairs(toscan) do
 			if (ent:GetClass() == "prop_obj_nest") or (self:GetOwner():IsPlayer() and ent:IsPlayer() and ent:Team() ~= self:GetOwner():Team() and (ent:Team() == TEAM_HUMAN or ent:Team() == TEAM_BANDIT) and ent:Alive()) then 
 				table.insert(self.targets,ent:GetPos())
