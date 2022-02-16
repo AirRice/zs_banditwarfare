@@ -833,6 +833,8 @@ end
 
 function GM:LoadNextMap()
 	-- Just in case.
+	timer.Simple(5, game.LoadNextMap)
+	timer.Simple(10, function() RunConsoleCommand("changelevel", game.GetMap()) end)
 	-- timer.Simple(10, game.LoadNextMap)
 	-- timer.Simple(15, function() MapVote.Start(nil, nil, nil, nil) end) -- Handled in EndRound
 	
@@ -1036,6 +1038,7 @@ function GM:EndRound(winner)
 		timer.Simple(self.EndGameTime, function() gamemode.Call("RestartRound") end)
 		mapname = string.lower(game.GetMap())
 	else
+
 		if MapVote and MapVote.Start then
 			timer.Simple(10, function() MapVote.Start(self.EndGameTime - 10, nil, nil,  {"de_","cs_","zs_","zsb_"}) end)
 		else
@@ -1044,6 +1047,7 @@ function GM:EndRound(winner)
 	end
 	
 	
+
 	--[[if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 and self.AutoModeChange then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
