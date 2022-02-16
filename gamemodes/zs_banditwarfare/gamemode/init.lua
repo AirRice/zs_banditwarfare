@@ -833,8 +833,26 @@ end
 
 function GM:LoadNextMap()
 	-- Just in case.
-	timer.Simple(5, game.LoadNextMap)
-	timer.Simple(10, function() RunConsoleCommand("changelevel", game.GetMap()) end)
+	-- timer.Simple(10, game.LoadNextMap)
+	-- timer.Simple(15, function() MapVote.Start(nil, nil, nil, nil) end) -- Handled in EndRound
+	
+	if file.Exists(GetConVarString("mapcyclefile"), "GAME") then
+		timer.Simple(5, game.LoadNextMap())
+	else
+		local maps = file.Find("maps/zs_*.bsp", "GAME")
+		maps = table.Add(maps, file.Find("maps/zsb_*.bsp", "GAME"))
+		maps = table.Add(maps, file.Find("maps/cs_*.bsp", "GAME"))
+		maps = table.Add(maps, file.Find("maps/de_*.bsp", "GAME"))
+		table.sort(maps)
+		
+		local nextmap = table.Random(maps)
+
+		while (string.lower(nextmap) == string.lower(game.GetMap())) do
+			nextmap = string.lower(table.Random(maps))
+		end
+		
+		RunConsoleCommand("changelevel", RealMap(nextmap))
+	end
 end
 
 function GM:PreRestartRound()
@@ -1018,11 +1036,15 @@ function GM:EndRound(winner)
 		timer.Simple(self.EndGameTime, function() gamemode.Call("RestartRound") end)
 		mapname = string.lower(game.GetMap())
 	else
-		timer.Simple(self.EndGameTime, function() gamemode.Call("LoadNextMap") end)
+		if MapVote and MapVote.Start then
+			timer.Simple(10, function() MapVote.Start(self.EndGameTime - 10, nil, nil,  {"de_","cs_","zs_","zsb_"}) end)
+		else
+			timer.Simple(self.EndGameTime, function() gamemode.Call("LoadNextMap") end)
+		end
 	end
 	
 	
-	if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 and self.AutoModeChange then
+	--[[if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 and self.AutoModeChange then
 		local decider = math.random(1,4)
 		if not self:IsClassicMode() and decider == 1 then
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
@@ -1033,7 +1055,7 @@ function GM:EndRound(winner)
 		end
 	else
 		self:SetRoundMode(ROUNDMODE_CLASSIC)
-	end
+	end]]
 	-- Get rid of some lag.
 	util.RemoveAll("prop_ammo")
 	util.RemoveAll("prop_weapon")
