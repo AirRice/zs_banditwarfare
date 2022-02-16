@@ -542,7 +542,6 @@ if (SERVER) then
 		-- Check trace validity
 		if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
 		-- Build the damage table
-		print(damage)
 		local dmginfo = DamageInfo()
 		dmginfo:SetDamageType(DMG_BULLET)
 		dmginfo:SetDamage(damage)
