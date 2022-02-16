@@ -87,6 +87,7 @@ SWEP.ConeMax = 0.125
 SWEP.ConeMin = 0.019
 SWEP.Recoil = 1.05
 SWEP.WalkSpeed = SPEED_NORMAL
+SWEP.m_NotBulletWeapon = true
 
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self:GetOwner()

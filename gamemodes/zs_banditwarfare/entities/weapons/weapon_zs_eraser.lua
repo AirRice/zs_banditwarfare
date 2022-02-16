@@ -37,19 +37,25 @@ SWEP.ConeMax = 0.025
 SWEP.ConeMin = 0.007
 SWEP.MovingConeOffset = 0.03
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
-
+SWEP.m_HasDifferingDmgValues = true
 SWEP.IronSightsPos = Vector(-5.95, 0, 2.5)
 
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound, 80, 70 + (1 - (self:Clip1() / self.Primary.ClipSize)) * 90)
 end
 
-function SWEP:ShootBullets(dmg, numbul, cone)
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end 
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	--self:SetNextReload(CurTime() + self.Primary.Delay)
+	self:EmitFireSound()
+	self:TakeAmmo()
+	local dmg = self.Primary.Damage
 	if self:Clip1() == 0 then
 		dmg = dmg * 3
 	else
 		dmg = dmg + dmg * (1 - self:Clip1() / self.Primary.ClipSize)
 	end
-
-	self.BaseClass.ShootBullets(self, dmg, numbul, cone)
+	self:ShootBullets(dmg, self.Primary.NumShots, self:GetCone())
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end
