@@ -232,6 +232,7 @@ function meta:TraceHull(distance, mask, size, filter, start)
 end
 
 function meta:AttemptNail(tr,showmessages)
+	if CLIENT then return end
 	showmessages = showmessages or false
 	local trent = tr.Entity
 	if not trent:IsValid()
@@ -433,7 +434,7 @@ function meta:ShouldNotCollide(ent)
 		if ent:IsPlayer() then
 			return self:Team() == ent:Team()
 		end
-		return self:GetBarricadeGhosting() and ent:IsBarricadeProp() and ent:IsSameTeam(self) or (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and ent:GetPhysicsObject():IsValid() and ent:GetPhysicsObject():HasGameFlag(FVPHYSICS_PLAYER_HELD)
+		return (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and ent:GetPhysicsObject():IsValid() and ent:GetPhysicsObject():HasGameFlag(FVPHYSICS_PLAYER_HELD)
 	end
 
 	return false

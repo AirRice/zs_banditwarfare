@@ -1232,9 +1232,11 @@ local function EndRoundCalcView(pl, origin, angles, fov, znear, zfar)
 		local endposition = GAMEMODE.RoundEndCamPosition
 		if endposition then
 			local delta = math.Clamp((CurTime() - GAMEMODE.EndTime) * 2, 0, 1)
- 
+			local ignoreents = player.GetAll()
+			ignoreents = table.Add(ignoreents,ents.FindByClass("prop_obj_transmitter"))
+			ignoreents = table.Add(ignoreents,ents.FindByClass("prop_sampledepositterminal"))
 			local start = endposition * delta + origin * (1 - delta)
-			local tr = util.TraceHull({start = start, endpos = start + delta * 64 * Angle(0, CurTime() * 30, 0):Forward(), mins = Vector(-2, -2, -2), maxs = Vector(2, 2, 2), filter = player.GetAll(), mask = MASK_SOLID})
+			local tr = util.TraceHull({start = start, endpos = start + delta * 96 * Angle(-30, CurTime() * 30, 0):Forward(), mins = Vector(-2, -2, -2), maxs = Vector(2, 2, 2), filter = ignoreents, mask = MASK_SOLID})
 			return {origin = tr.HitPos + tr.HitNormal, angles = (start - tr.HitPos):Angle()}
 		end
 

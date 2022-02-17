@@ -31,13 +31,6 @@ function GM:OnTransmitterTaken(objent, justtakenby)
 		end
 		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_transmitters_taken_by_x" or "one_transmitter_taken_by_x",translatestring))
 	end
-	
-	if self:IsTransmissionMode() then
-		self.RoundEndCamPos = objent:WorldSpaceCenter()
-		net.Start("zs_roundendcampos")
-			net.WriteVector(self.RoundEndCamPos)
-		net.Broadcast()
-	end
 end
 
 GM.LastCommLink = 0
@@ -46,12 +39,25 @@ function GM:TransmitterCommsThink()
 	local obj_tbl = self.CurrentObjectives
 	local bnum = 0
 	local hnum = 0
+	local selectedcamtransmitter = nil
 	for _, obj in pairs(obj_tbl) do
 		if obj:GetClass() == "prop_obj_transmitter" then
 			if obj:GetTransmitterTeam() == TEAM_BANDIT and obj:GetCanCommunicate() == 1 then
+				if not (selectedcamtransmitter and IsValid(selectedcamtransmitter)) and self:GetBanditComms() >= self:GetHumanComms() then
+					selectedcamtransmitter = obj
+				end
 				bnum = bnum +1
 			elseif obj:GetTransmitterTeam() == TEAM_HUMAN and obj:GetCanCommunicate() == 1 then
+				if not (selectedcamtransmitter and IsValid(selectedcamtransmitter)) and self:GetHumanComms() >= self:GetHumanComms() then
+					selectedcamtransmitter = obj
+				end
 				hnum = hnum +1
+			end
+			if (selectedcamtransmitter and IsValid(selectedcamtransmitter)) then
+				self.RoundEndCamPos = selectedcamtransmitter:WorldSpaceCenter()
+				net.Start("zs_roundendcampos")
+					net.WriteVector(self.RoundEndCamPos)
+				net.Broadcast()
 			end
 		end
 	end

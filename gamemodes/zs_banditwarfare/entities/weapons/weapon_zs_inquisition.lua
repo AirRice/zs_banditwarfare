@@ -60,6 +60,8 @@ SWEP.Recoil = 0.8
 SWEP.IronSightsPos = Vector(-6, -1, 2.25)
 SWEP.ReloadSpeed = 0.9
 
+SWEP.m_NotBulletWeapon = true
+
 function SWEP:SetupDataTables()
 	self:NetworkVar( "Int" , 10 , "RemainingShots" )
 	self:NetworkVar( "Float" , 9 , "NextIqstnFire" )

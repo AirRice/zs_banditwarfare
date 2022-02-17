@@ -4,6 +4,7 @@ ENT.Base = "projectile__base"
 
 ENT.LifeTime = 20
 ENT.Damage = 10
+ENT.FinishOffset = 3
 
 ENT.m_bboxMins = Vector(-2, -0.02, -0.02)
 ENT.m_bboxMaxs = Vector(2, 0.02, 0.02)

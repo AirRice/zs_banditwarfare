@@ -833,8 +833,6 @@ end
 
 function GM:LoadNextMap()
 	-- Just in case.
-	timer.Simple(5, game.LoadNextMap)
-	timer.Simple(10, function() RunConsoleCommand("changelevel", game.GetMap()) end)
 	-- timer.Simple(10, game.LoadNextMap)
 	-- timer.Simple(15, function() MapVote.Start(nil, nil, nil, nil) end) -- Handled in EndRound
 	
@@ -888,7 +886,6 @@ end
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
 GM.CurrentObjectives = {}
-GM.BulletsDmg = {}
 GM.CommsEnd = false
 GM.SamplesEnd = false
 GM.SuddenDeath = false

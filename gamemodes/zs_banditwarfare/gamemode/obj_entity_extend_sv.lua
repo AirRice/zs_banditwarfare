@@ -125,9 +125,11 @@ function meta:FindByNameHammer(name, activator, caller)
 end
 
 function meta:IsNailed()
+	if self.m_CachedIsNailed then return true end
 	if self:IsValid() and self.Nails then -- In case we're the world.
 		for _, nail in pairs(self.Nails) do
 			if nail and nail:IsValid() and (nail:GetAttachEntity() == self or nail:GetBaseEntity() == self) then
+				self.m_CachedIsNailed = true
 				return true
 			end
 		end
@@ -405,8 +407,10 @@ function meta:RemoveNail(nail, dontremoveentity, removedby)
 	end
 
 	-- Only remove the constraint if it's the last nail.
-	if othernails == 0 and cons:IsValid() then
-		cons:Remove()
+	if othernails == 0 then
+		if cons:IsValid() then
+			cons:Remove()
+		end
 	end
 
 	local ent2 = GetNailOwner(nail, self)

@@ -95,6 +95,8 @@ SWEP.BarrelAngleTarget = 0
 SWEP.LastShotTime = 0
 SWEP.DuringReload = false
 
+SWEP.m_NotBulletWeapon = true
+
 function SWEP:Deploy()
 	if self.BaseClass.Deploy then
 		self.BaseClass.Deploy(self)

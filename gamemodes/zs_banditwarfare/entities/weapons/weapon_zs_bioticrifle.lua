@@ -65,6 +65,7 @@ SWEP.IronSightsPos = Vector() --Vector(-7.3, 9, 2.3)
 SWEP.IronSightsAng = Vector(0, -1, 0)
 
 SWEP.WalkSpeed = SPEED_SLOWER
+SWEP.m_NotBulletWeapon = true
 
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self:GetOwner()

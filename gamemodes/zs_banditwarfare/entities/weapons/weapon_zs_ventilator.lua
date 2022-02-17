@@ -63,6 +63,7 @@ SWEP.ConeMin = 0.001
 SWEP.MovingConeOffset = 0.1
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.LastSecondaryFire = 0
+SWEP.m_HasDifferingDmgValues = true
 function SWEP:EmitFireSound()
 	self:EmitSound("weapons/deagle/deagle-1.wav", 75, math.random(91, 95), 0.5)
 	self:EmitSound("weapons/ak47/ak47-1.wav", 75, math.random(112, 128), 0.73,CHAN_AUTO+20)
