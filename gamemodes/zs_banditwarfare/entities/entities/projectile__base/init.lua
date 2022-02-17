@@ -44,6 +44,10 @@ function ENT:Think()
 	if self:GetHitTime() ~= 0 and not self.NoColl and self.PhysicsData then
 		self.NoColl = true
 		self:Hit(self.PhysicsData.HitPos, self.PhysicsData.HitNormal, self.PhysicsData.HitEntity, self.PhysicsData.OurOldVelocity)
+	elseif self.NoColl then
+		self:SetSolid(SOLID_NONE)
+		self:SetMoveType(MOVETYPE_NONE)
+		self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	end
 
 	local parent = self:GetParent()
@@ -66,11 +70,8 @@ function ENT:Hit(vHitPos, vHitNormal, eHitEntity, vOldVelocity)
 	if phys:IsValid() then
 		phys:EnableMotion(false)
 	end
-	self:SetSolid(SOLID_NONE)
-	self:SetMoveType(MOVETYPE_NONE)
-	self:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	self:SetAngles(vOldVelocity:Angle())
-	self:SetPos(vHitPos-vDirNormal*8)
+	self:SetPos(vHitPos-vDirNormal*self.FinishOffset)
 	
 	local edata = EffectData()
 		edata:SetOrigin(vHitPos)
@@ -123,8 +124,7 @@ function ENT:DoPlayerHit(ent, dmg, pos, normal, vel)
 	local trs = {tr,tr2}
 	for _, trace in pairs(trs) do
 		if trace.Hit and trace.Entity == ent then
-			ent:DispatchProjectileTraceAttack(dmg, trace, owner, self)
-			ent:SetVelocity(velnorm*dmg)
+			ent:DispatchProjectileTraceAttack(dmg, trace, owner, self, vel)
 			return true
 		end
 	end

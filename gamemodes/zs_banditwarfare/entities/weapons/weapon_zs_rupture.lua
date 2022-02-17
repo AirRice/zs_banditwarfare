@@ -84,6 +84,8 @@ SWEP.WalkSpeed = SPEED_FAST
 SWEP.IronSightsPos = Vector(-6.15, 4, -1.5)
 SWEP.IronSightsAng = Vector(4, 0, 0)
 
+SWEP.m_NotBulletWeapon = true
+
 function SWEP:EmitFireSound()
 	self:EmitSound(self.Primary.Sound)
 	self:EmitSound("npc/assassin/ball_zap1.wav", 75, 110,50,CHAN_WEAPON+20) --weapons/mortar/mortar_fire1.wav

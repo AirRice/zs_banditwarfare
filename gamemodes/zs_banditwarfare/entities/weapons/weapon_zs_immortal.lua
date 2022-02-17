@@ -64,7 +64,7 @@ GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.ReloadSpeed = 1.3
 SWEP.IronSightsPos = Vector(-4.6, 0, -0.12)
 SWEP.IronSightsAng = Vector(0, 0, 0)
-
+SWEP.m_HasDifferingDmgValues = true
 function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)

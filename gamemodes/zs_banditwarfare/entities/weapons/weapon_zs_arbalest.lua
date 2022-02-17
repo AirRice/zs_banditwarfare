@@ -76,6 +76,7 @@ SWEP.IronSightsPos = Vector(-8.8, 7, 2.5)
 SWEP.IronSightsAng = Vector(-2.626, -0.28, -2.26)
 
 SWEP.WalkSpeed = SPEED_SLOWEST
+SWEP.m_NotBulletWeapon = true
 function SWEP:EmitFireSound(secondary)
 	self:EmitSound("weapons/crossbow/fire1.wav", 70, 90, 0.7)
 	self:EmitSound("npc/roller/blade_cut.wav", 75, 86, 0.75, CHAN_AUTO+21)

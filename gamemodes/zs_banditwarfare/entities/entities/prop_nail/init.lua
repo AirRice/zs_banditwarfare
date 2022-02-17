@@ -44,9 +44,15 @@ function ENT:AttachTo(baseent, attachent, physbone, physbone2)
 
 	if baseent:IsValid() then
 		baseent:CollisionRulesChanged()
+		if not baseent.m_CachedIsNailed then
+			baseent.m_CachedIsNailed = true
+		end
 	end
 	if attachent:IsValid() then
 		attachent:CollisionRulesChanged()
+		if not attachent.m_CachedIsNailed then
+			attachent.m_CachedIsNailed = true
+		end
 	end
 
 	if baseent:GetBarricadeHealth() == 0 then

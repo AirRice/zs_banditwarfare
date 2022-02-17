@@ -4,7 +4,7 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 ENT.CleanupPriority = 2
-
+ENT.LastUse = 0
 function ENT:Initialize()
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
@@ -40,7 +40,8 @@ function ENT:GetAmmo()
 end
 
 function ENT:Use(activator, caller)
-	if self.IgnoreUse then return end
+	if self.IgnoreUse or (self.LastUse + 0.1 >= CurTime()) then return end
+	self.LastUse = CurTime()
 	self:GiveToActivator(activator, caller, true)
 end
 
@@ -63,7 +64,10 @@ function ENT:GiveToActivator(activator, caller, used)
 		end
 
 		activator:GiveAmmo(self:GetAmmo(), self:GetAmmoType())
-		if not self.NeverRemove then self:RemoveNextFrame() end
+		if not self.NeverRemove then 
+			self.Removing = true
+			self:RemoveNextFrame() 
+		end
 	end
 end
 

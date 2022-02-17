@@ -53,6 +53,8 @@ SWEP.ConeMin = 0.005
 SWEP.IronSightsPos = Vector(-5.95, 3, 2.75)
 SWEP.IronSightsAng = Vector(-0.15, -1, 2)
 
+SWEP.m_NotBulletWeapon = true
+
 function SWEP:ShootBullets(dmg, numbul, cone)
 	local owner = self:GetOwner()
 	self:SendWeaponAnimation()
