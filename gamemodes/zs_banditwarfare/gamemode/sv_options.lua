@@ -1,9 +1,8 @@
 CreateConVar("zsb_roundgamemode", "0", FCVAR_ARCHIVE, "Gamemode for the round. 0 = Transmission mode, 1 = Collection mode, 2 = kill everyone to win mode.")
 cvars.AddChangeCallback("zsb_roundgamemode", function(cvar, oldvalue, newvalue)
-	if tonumber(newvalue) == 0 or tonumber(newvalue) == 1 or tonumber(newvalue) == 2 then
-		SetGlobalInt("roundgamemode",tonumber(newvalue))
-	else
-		SetGlobalInt("roundgamemode",0)
+	local roundmodevar = tonumber(newvalue)
+	if (roundmodevar != tonumber(oldvalue)) and (roundmodevar == ROUNDMODE_CLASSIC or roundmodevar == ROUNDMODE_TRANSMISSION or roundmodevar == ROUNDMODE_SAMPLES) then
+		GAMEMODE:SetRoundMode(roundmodevar)
 	end
 end)
 
