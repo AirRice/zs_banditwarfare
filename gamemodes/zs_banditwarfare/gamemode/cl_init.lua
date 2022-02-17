@@ -808,10 +808,6 @@ function GM:PlayerShouldTakeDamage(pl, attacker)
 	return pl == attacker or not attacker:IsPlayer() or pl:Team() ~= attacker:Team()
 end
 
-function GM:SetWave(wave)
-	SetGlobalInt("wave", wave)
-end
-
 --[[local texGradientUp = surface.GetTextureID("vgui/gradient_up")
 local texGradientDown = surface.GetTextureID("vgui/gradient_down")
 local texGradientRight = surface.GetTextureID("vgui/gradient-r")]]

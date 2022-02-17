@@ -898,30 +898,35 @@ GM.CurrentWaveWinner = nil
 GM.NextNestSpawn = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
-	self:SetComms(0,0)
-	self:SetSamples(0,0)
-	self.NextNestSpawn = nil
-	self.CommsEnd = false
-	self.SamplesEnd = false
 	self.SuddenDeath = false
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentObjectives = {}
 	self:SetCurrentWaveWinner(nil)
 
-	
 	self.PreviouslyDied = {}
 	self.PreviousTeam = {}
 	self.PreviousPoints = {}
 
 	ROUNDWINNER = nil
 
+	gamemode.Call("ResetLuaWave")
+
 	hook.Remove("PlayerShouldTakeDamage", "EndRoundShouldTakeDamage")
 end
 
 function GM:ResetLuaWave()
-
+	self.NextNestSpawn = nil
+	self:SetComms(0,0)
+	self:SetSamples(0,0)
+	self.CommsEnd = false
+	self.SamplesEnd = false
+	net.Start("zs_currenttransmitters")
+		for i=1, self.MaxTransmitters do
+			net.WriteInt(0,4)
+		end
+	net.Broadcast()
+	self.CurrentObjectives = {}
 end
 
 -- I don't know.
@@ -946,12 +951,7 @@ function GM:DoRestartGame()
 	end
 	self.CurrentMapLoadedPlayers = 0
 	self.ShuffledPlayersThisRound = false
-	net.Start("zs_currenttransmitters")
-		for i=1, self.MaxTransmitters do
-			net.WriteInt(0,4)
-		end
-	net.Broadcast()
-	self.CurrentObjectives = {}
+
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -1127,7 +1127,7 @@ function GM:PlayerReadyRound(pl)
 		gamemode.Call("DoHonorableMentions", pl)
 	end
 	pl:SendLua("MakepHelp()")
-	pl:SendLua("SetGlobalInt(\"roundgamemode\", "..GetGlobalInt("roundgamemode",0)..")")
+	--pl:SendLua("SetGlobalInt(\"roundgamemode\", "..GetGlobalInt("roundgamemode",0)..")")
 end
 
 function GM:FullGameUpdate(pl)
@@ -2675,10 +2675,6 @@ function GM:PlayerSpawn(pl)
 	pl:SetWeaponColor(wcol)
 end
 
-function GM:SetWave(wave)
-	SetGlobalInt("wave", wave)
-end
-
 function GM:WaveStarted()
 	local players = player.GetAllActive()
 	for _, pl in pairs(players) do
@@ -2776,11 +2772,7 @@ function GM:WaveEnded()
 			gamemode.Call("EndRound", nil)
 		end
 	end
-	self.NextNestSpawn = nil
-	self:SetComms(0,0)
-	self:SetSamples(0,0)
-	self.CommsEnd = false
-	self.SamplesEnd = false
+	gamemode.Call("ResetLuaWave")
 	--self.SuddenDeath = false
 	gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
 	for _, pl in ipairs(player.GetAll()) do
@@ -2857,12 +2849,6 @@ function GM:WaveEnded()
 		net.WriteFloat(self:GetWaveStart())
 		net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
 	net.Broadcast()
-	net.Start("zs_currenttransmitters")
-		for i=1, self.MaxTransmitters do
-			net.WriteInt(0,4)
-		end
-	net.Broadcast()
-	self.CurrentObjectives = {}
 	util.RemoveAll("prop_ammo")
 	util.RemoveAll("prop_weapon")
 	util.RemoveAll("prop_obj_transmitter")

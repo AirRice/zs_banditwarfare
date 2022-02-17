@@ -218,8 +218,6 @@ function GM:CreateObjectives(entname,nocollide)
 	if #self.ProfilerNodes < self.MaxTransmitters then
 		return
 	end
-	
-	-- Copy
 	local nodes = {}
 	for _, node in pairs(self.ProfilerNodes) do
 		local vec = Vector()
@@ -227,6 +225,7 @@ function GM:CreateObjectives(entname,nocollide)
 		nodes[#nodes + 1] = {v = vec}
 	end
 
+	-- Arrange by absolute minimum distance difference between both teams' spawnpoints
 	local bspawns = {}
 	local hspawns = {}
 	table.Add(bspawns,team.GetValidSpawnPoint(TEAM_BANDIT))
@@ -250,24 +249,21 @@ function GM:CreateObjectives(entname,nocollide)
 	
 	local created_objectives = {}
 	table.sort(nodes, SortDistFromLast)
+
 	for i=1, self.MaxTransmitters do
-		local id
-		local sigs = ents.FindByClass(entname)
-		local flag = false
-		for __, sig in pairs(sigs) do
-			for _, n in pairs(nodes) do
-				if n.v:Distance(sig.NodePos) <= 800 or (math.random(2) == 1 and WorldVisible(n.v,sig.NodePos)) then
-					table.remove(nodes, _)
-				end
-			end
-		end
-		
 		-- Sort the nodes by their distances.
 		-- Select node with algorithm that randomly selects while selecting closer ids more
 		local id = 1
 		if #nodes >=self.MaxTransmitters*2 then
+			for __, sig in pairs(created_objectives) do
+				for _, n in pairs(nodes) do
+					if n.v:Distance(sig.NodePos) <= 800 then
+						table.remove(nodes, _)
+					end
+				end
+			end
 			local decider = math.random(1,5)
-			if decider > 2 then
+			if #nodes <= self.MaxTransmitters or decider > 2 then
 				id = math.random(1,self.MaxTransmitters)
 			else
 				id = math.random(self.MaxTransmitters+1,#nodes)
@@ -275,7 +271,6 @@ function GM:CreateObjectives(entname,nocollide)
 		else
 			id = math.random(1,#nodes)
 		end
-
 		-- Remove the chosen point from the temp table and make the transmitter.
 		local point = nodes[id].v
 		table.remove(nodes, id)
