@@ -275,7 +275,7 @@ function meta:Give(weptype)
 	return ret
 end
 
-function meta:DispatchProjectileTraceAttack(dmg, tr, attacker, inflictor)
+function meta:DispatchProjectileTraceAttack(dmg, tr, attacker, inflictor, vel)
 	dmg = dmg or 0
 	if dmg <= 0 then return end
 	if not (tr and tr.HitPos and tr.Hit and tr.HitGroup) then return end
@@ -286,14 +286,14 @@ function meta:DispatchProjectileTraceAttack(dmg, tr, attacker, inflictor)
 	damageinfo:SetDamagePosition(tr.HitPos)
 	damageinfo:SetAttacker(attacker)
 	damageinfo:SetInflictor(inflictor)
-	
+	damageinfo:SetDamageForce(vel:GetNormalized())
 	if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) then
 		self:SetLastHitGroup(HITGROUP_HEAD)
 		self:SetWasHitInHead()
 	end
 	self:DispatchTraceAttack(damageinfo, tr)
 	if vel and attacker:IsPlayer() and attacker ~= self then
-		self:SetLocalVelocity(vel)
+		self:SetLocalVelocity(vel:GetNormalized() * math.min(dmg,10))
 	end
 end
 

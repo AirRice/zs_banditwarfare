@@ -133,7 +133,7 @@ function ENT:Think()
 			self.Damaged[ent] = true
 			ent:EmitSound("weapons/crossbow/hitbod"..math.random(2)..".wav")
 			util.Blood(ent:WorldSpaceCenter(), math.max(0, 30 - table.Count(self.Damaged) * 2), -self:GetForward(), math.Rand(100, 300), true)
-			ent:DispatchProjectileTraceAttack(processed_dmg, self.Touched[ent], owner, self)
+			ent:DispatchProjectileTraceAttack(processed_dmg, self.Touched[ent], owner, self, self:GetVelocity())
 		end
 	end
 	self:NextThink(CurTime())
