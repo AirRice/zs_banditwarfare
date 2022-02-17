@@ -61,23 +61,20 @@ function GM:TransmitterCommsThink()
 			self:AddComms(bnum,hnum)
 			self.LastCommLink = CurTime() + 1
 		elseif self:GetBanditComms() >= 200 and self:GetHumanComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", nil)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "transmitter_comms_tied"), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", nil)
 		elseif self:GetBanditComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 		elseif self:GetHumanComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 		end
 	end
 end
@@ -100,23 +97,20 @@ function GM:SamplesThink()
 		end
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
 		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", nil)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "samples_tied"), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", nil)
 		elseif self:GetBanditSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 		elseif self:GetHumanSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 		end
 	end
 end
