@@ -533,6 +533,7 @@ if (SERVER) then
 		local wep = attacker:GetActiveWeapon()
 		if (!wep or !wep:IsValid() or !wep:IsWeapon()) then return end
 		if wep.m_NotBulletWeapon then return end
+		if wep.IsMelee or not wep.IsFirearm then return end
 		if not damage or not wep.m_HasDifferingDmgValues then
 			damage = (wep.Primary and wep.Primary.Damage or 0)
 		end

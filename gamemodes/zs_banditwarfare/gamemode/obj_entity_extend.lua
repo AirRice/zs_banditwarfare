@@ -142,9 +142,11 @@ function meta:HitByHammer(wep, pl, tr)
 end
 
 function meta:IsNailed()
+	if self.m_CachedIsNailed then return true end
 	if self:IsValid() then -- In case we're the world.
 		for _, nail in pairs(ents.FindByClass("prop_nail")) do
 			if nail:IsValid() and (nail.GetAttachEntity and nail:GetAttachEntity() == self or nail.GetBaseEntity and nail:GetBaseEntity() == self) then
+				self.m_CachedIsNailed = true
 				return true
 			end
 		end
@@ -196,18 +198,20 @@ end
 
 function meta:GetNailedPropOwner()
 	if not self:IsNailed() then return nil end
-	if SERVER then
-		local nails = self:GetNails()
-		for _, nail in pairs(nails) do 
-			local owner = nail:GetDeployer()
-			if IsValid(owner) then
-				self:SetNWEntity("LastNailOwner", owner)
-			end
-		end
-	end
 	local owner = self:GetNWEntity("LastNailOwner")
 	if IsValid(owner) then
 		return owner
+	else
+		if SERVER then
+			local nails = self:GetNails()
+			for _, nail in pairs(nails) do 
+				local owner = nail:GetDeployer()
+				if IsValid(owner) then
+					self:SetNWEntity("LastNailOwner", owner)
+					return owner
+				end
+			end
+		end
 	end
 	return nil
 end
@@ -231,6 +235,14 @@ function meta:IsSameTeam(pl)
 	end
 end
 
+function meta:ShouldNotCollide(ent)
+	if ent:IsValid() then
+		if ent:IsPlayer() then
+			return ent:GetBarricadeGhosting() and self:IsBarricadeProp() and self:IsSameTeam(ent)
+		end
+	end
+	return false
+end
 
 function meta:IsBarricadeProp()
 	return self.IsBarricadeObject or self:IsNailed()
