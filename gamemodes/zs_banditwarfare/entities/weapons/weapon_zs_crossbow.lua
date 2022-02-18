@@ -41,6 +41,8 @@ SWEP.WalkSpeed = SPEED_SLOW
 SWEP.HasNoClip = true
 SWEP.LowAmmoThreshold = 2
 
+SWEP.m_NotBulletWeapon = true
+
 function SWEP:IsScoped()
 	return self:GetIronsights() and self.fIronTime and self.fIronTime + 0.25 <= CurTime()
 end

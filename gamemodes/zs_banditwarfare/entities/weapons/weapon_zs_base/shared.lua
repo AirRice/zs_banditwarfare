@@ -42,15 +42,6 @@ SWEP.LastAttemptedShot = 0
 SWEP.SelfKnockBackForce = 0
 SWEP.FireAnimSpeed = 1.0
 
-SWEP.AngleAdded = {
-	Pitch = 0,
-	Yaw = 0,
-	Roll = 0,
-	CurrentPitch = 0,
-	CurrentYaw = 0,
-	CurrentRoll = 0
-}
-
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 31, "ConeAdder")
 	self:NetworkVar("Float", 30, "NextAutoReload")
@@ -58,14 +49,11 @@ function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 28, "ReloadStart")
 end
 
-
-
 function SWEP:Initialize()
 	if not self:IsValid() then return end --???
 
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetDeploySpeed(1.1)
-
 	-- Maybe we didn't want to convert the weapon to the new system...
 	self:SetConeAdder(0)
 	if CLIENT then
@@ -453,13 +441,12 @@ end
 	}
 ]]
 
-function SWEP:SerialiseTraceResult(attacker, tr, shoottime, hitwater, bullet_water_tr, hitslime)
+function SWEP:SerialiseTraceResult(attacker, dmg, tr, hitwater, bullet_water_tr, hitslime)
 	if (!IsFirstTimePredicted()) then return end
 	if not GAMEMODE.ClientSideHitscan then return end
 	net.Start("bw_fire")
 		net.WriteEntity(attacker)
-		net.WriteFloat(shoottime)
-		
+		net.WriteFloat(dmg)
 		-- Sending TraceResult
 		net.WriteEntity(tr.Entity)
 		net.WriteFloat(tr.Fraction)
@@ -506,8 +493,8 @@ if (SERVER) then
 		
 		-- Reading networked data
 		local attacker = net.ReadEntity()
-		local firetime = net.ReadFloat()
-
+		local damage = net.ReadFloat()
+		
 		-- Deserializing TraceResult
 		local tr = {
 			Entity = net.ReadEntity(),
@@ -545,17 +532,17 @@ if (SERVER) then
 		if (attacker != pl) then return end
 		local wep = attacker:GetActiveWeapon()
 		if (!wep or !wep:IsValid() or !wep:IsWeapon()) then return end
+		if wep.m_NotBulletWeapon then return end
+		if wep.IsMelee or not wep.IsFirearm then return end
+		if not damage or not wep.m_HasDifferingDmgValues then
+			damage = (wep.Primary and wep.Primary.Damage or 0)
+		end
 		-- Check distance
-		if tr.Entity and tr.Entity:IsValid() and (tr.HitPos:DistToSqr(tr.Entity:GetPos()) >= maxdistsqr) then return end
+		local sqr_hitdist = tr.HitPos:DistToSqr(tr.Entity:GetPos())
+		if !tr.HitWorld and tr.Entity and tr.Entity:IsValid() and tr.Entity:IsPlayer() and (sqr_hitdist >= maxdistsqr) then return end
 		-- Check trace validity
 		if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
 		-- Build the damage table
-		local id = firetime.."|"..wep:GetCreationID().."|"..attacker:SteamID64()
-		local damage = GAMEMODE.BulletsDmg[id]
-		GAMEMODE.BulletsDmg[id] = nil
-		if not damage then
-			damage = (wep.Primary and wep.Primary.Damage or 0)
-		end
 		local dmginfo = DamageInfo()
 		dmginfo:SetDamageType(DMG_BULLET)
 		dmginfo:SetDamage(damage)
@@ -573,6 +560,10 @@ if (SERVER) then
 		end
 		
 		if (tr.Entity:IsValid()) then
+			if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) and tr.Entity:IsPlayer() then
+				tr.Entity:SetLastHitGroup(HITGROUP_HEAD)
+				tr.Entity:SetWasHitInHead()
+			end
 			--tr.Entity:TakeDamageInfo(dmginfo)
 			tr.Entity:DispatchTraceAttack(dmginfo, tr)
 		end
@@ -604,7 +595,7 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 	local max_dist = 56756
 	temp_shooter = self
 	temp_attacker = owner
-	
+
 	bullet_trace.start = owner:GetShootPos()
 	bullet_trace.filter = BaseBulletFilter
 	if not hit_own_team and owner:IsPlayer() then
@@ -613,16 +604,10 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 		temp_ignore_team = nil
 	end
 	local dir = owner:GetAimVector()
-	local spread_ang = math.deg(math.asin(cone))
 	base_ang = dir:Angle()
 	for i=0, numbul - 1 do
 		dir = CircularGaussianSpread(dir, Vector(cone, cone, 0))
 		bullet_trace.endpos = owner:GetShootPos() + dir * max_dist
-		local curtime = CurTime()
-		if SERVER then
-			local id = curtime.."|"..self:GetCreationID().."|"..owner:SteamID64()
-			GAMEMODE.BulletsDmg[id] = dmg
-		end
 		if CLIENT and IsFirstTimePredicted() then
 			local bullet_tr = util.TraceLine(bullet_trace)
 			local hitwater
@@ -640,7 +625,7 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 					end
 				end
 			end
-			self:SerialiseTraceResult(owner, bullet_tr, curtime, hitwater, bullet_water_tr, hitslime)
+			self:SerialiseTraceResult(owner, dmg, bullet_tr, hitwater, bullet_water_tr, hitslime)
 			local waterhitpos
 			local waterhitnorm
 			if bullet_water_tr and bullet_water_tr.HitPos and bullet_water_tr.HitNormal then
@@ -662,10 +647,9 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	--owner:MuzzleFlash()
 
 	-- Do animations
-	if IsFirstTimePredicted() then
-		self:SendWeaponAnimation()
-		owner:DoAttackEvent()
-	end
+	self:SendWeaponAnimation()
+	owner:DoAttackEvent()
+
 	-- Data collection
 	if owner and owner:IsValid() and owner:IsPlayer() and self.IsFirearm and SERVER then
 		owner.ShotsFired = owner.ShotsFired + numbul
@@ -715,8 +699,9 @@ local ActIndex = {
 	[ "melee2" ]		= ACT_HL2MP_IDLE_MELEE2,
 	[ "passive" ]		= ACT_HL2MP_IDLE_PASSIVE,
 	[ "knife" ]			= ACT_HL2MP_IDLE_KNIFE,
-	[ "duel" ]      = ACT_HL2MP_IDLE_DUEL,
-	[ "revolver" ]		= ACT_HL2MP_IDLE_REVOLVER
+	[ "duel" ]      	= ACT_HL2MP_IDLE_DUEL,
+	[ "revolver" ]		= ACT_HL2MP_IDLE_REVOLVER,
+	[ "camera" ]		= ACT_HL2MP_IDLE_CAMERA
 }
 
 function SWEP:SetWeaponHoldType( t )

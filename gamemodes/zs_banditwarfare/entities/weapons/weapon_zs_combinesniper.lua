@@ -88,6 +88,8 @@ SWEP.TracerName = "tracer_comsniper"
 SWEP.ChargeSound = "items/suitchargeok1.wav"
 SWEP.LastCharge = 0
 SWEP.LastOverchargeAlarm = 0
+
+SWEP.m_HasDifferingDmgValues = true
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 5, "ChargePerc")
 	self:NetworkVar("Bool", 5, "IsCharging")
