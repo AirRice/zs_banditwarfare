@@ -58,8 +58,8 @@ SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "pistol"
 GAMEMODE:SetupDefaultClip(SWEP.Primary)
 SWEP.ReloadSpeed = 1
-SWEP.ConeMax = 0.0015
-SWEP.ConeMin = 0.001
+SWEP.ConeMax = 0.0255
+SWEP.ConeMin = 0.021
 SWEP.MovingConeOffset = 0.1
 GAMEMODE:SetupAimDefaults(SWEP,SWEP.Primary)
 SWEP.LastSecondaryFire = 0
@@ -87,6 +87,16 @@ function SWEP:FinishReload()
 	end
 end
 
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then return end 
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	--self:SetNextReload(CurTime() + self.Primary.Delay)
+	self:EmitFireSound()
+	self:TakeAmmo()
+	self:ShootBullets(self.Primary.Damage, self.Primary.NumShots, math.min(self:GetCone()-0.02,0.001))
+	self.IdleAnimation = CurTime() + self:SequenceDuration()
+end
+
 function SWEP:SecondaryAttack()
 	if not self:CanPrimaryAttack() then return end 
 	local shots = self:Clip1()
@@ -95,7 +105,7 @@ function SWEP:SecondaryAttack()
 	self:EmitFireSound()
 	self:EmitSound("weapons/shotgun/shotgun_dbl_fire.wav",75,80,1,CHAN_AUTO+21)
 	self:TakePrimaryAmmo(shots)
-	self:ShootBullets(math.max(self.Primary.BurstDamage,math.floor(self.Primary.Damage/shots)), shots, math.min(self:GetCone()*60,0.18))
+	self:ShootBullets(math.max(self.Primary.BurstDamage,math.floor(self.Primary.Damage/shots)), shots, self:GetCone())
 	self.ReloadSpeed = 0.6
 	self.IdleAnimation = CurTime() + self:SequenceDuration()
 end

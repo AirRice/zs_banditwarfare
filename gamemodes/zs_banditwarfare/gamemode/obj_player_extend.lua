@@ -140,10 +140,10 @@ function meta:HealHealth(toheal,healer, wep)
 	local oldhealth = self:Health()
 	local newhealth = math.min(self:GetMaxHealth(),oldhealth + toheal)
 	self:SetHealth(newhealth)
+	if SERVER and toheal >= 5 then
+		self:PurgeStatusEffects()
+	end
 	if healer:IsPlayer() and healer~=self and newhealth != oldhealth and healer:Team() == self:Team() then
-		if SERVER and toheal > 5 then
-			self:PurgeStatusEffects()
-		end
 		gamemode.Call("PlayerHealedTeamMember", healer, self, newhealth - oldhealth, wep)
 	end
 end

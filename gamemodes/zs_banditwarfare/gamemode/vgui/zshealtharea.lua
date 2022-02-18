@@ -104,7 +104,7 @@ function PANEL:Init()
 		end
 		return 0
 	end
-	bleedstatus.MemberMaxValue = 50
+	bleedstatus.MemberMaxValue = 100
 	bleedstatus:Dock(TOP)
 
 	self:ParentToHUD()
@@ -368,8 +368,10 @@ function PANEL:Think()
 
 	if self.MemberValue > self.LerpMemberValue then
 		self.LerpMemberValue = self.MemberValue
+	elseif self.MemberValue == 0 then
+		self.LerpMemberValue = 0
 	elseif self.MemberValue < self.LerpMemberValue then
-		self.LerpMemberValue = math.Approach(self.LerpMemberValue, self.MemberValue, FrameTime() * 10)
+		self.LerpMemberValue = math.Approach(self.LerpMemberValue, self.MemberValue, FrameTime() * 30)
 	end
 end
 
