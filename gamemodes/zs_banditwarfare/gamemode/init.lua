@@ -225,7 +225,8 @@ function GM:Initialize()
 	self:AddCustomAmmo()
 	self:AddNetworkStrings()
 	self:SetRoundMode(ROUNDMODE_UNASSIGNED)
-	
+	file.CreateDir(GAMEMODE.PreviousRoundmodeDir)
+
 	print(self:IsTransmissionMode())
 	print(self:IsSampleCollectMode())
 	print(self:IsClassicMode())
@@ -663,11 +664,11 @@ function GM:FinishMove(pl, move)
 end
 
 function GM:ChooseRoundMode(vote)
+	local filename = self.PreviousRoundmodeDir.."/"..self.PreviousRoundmodeFile
 	if vote then 
 		return 
 	else
 		local prevroundmode
-		local filename = self.PreviousRoundmodeFile
 
 		if file.Exists(filename, "DATA") then
 			prevroundmode = tonumber(file.Read(filename, "DATA"))
@@ -690,8 +691,7 @@ function GM:ChooseRoundMode(vote)
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
 		end
 	end
-
-
+	file.Write(filename, tostring(self:GetRoundMode()))
 end
 
 function GM:Think()
@@ -1062,7 +1062,7 @@ function GM:EndRound(winner)
 
 	game.SetTimeScale(0.25)
 	timer.Simple(2, function() game.SetTimeScale(1) end)
-	file.Write(self.PreviousRoundmodeFile, tostring( self:GetRoundMode()))
+	
 	hook.Add("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility", EndRoundSetupPlayerVisibility)
 
 	local mapname = string.lower(game.GetMapNext())
@@ -1309,9 +1309,10 @@ function GM:PlayerInitialSpawnRound(pl)
 		end
 		if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 			timer.Simple(0.1,pl:Kill())
-			return end
+			return
 		end
 	end
+	gamemode.Call("OnRoundModeChanged")
 end
 
 function GM:PlayerDisconnected(pl)
@@ -2585,6 +2586,17 @@ end
 
 function GM:GetTeamKillAdvantage(teamid)
 	return team.TotalFrags(teamid) - team.TotalDeaths(teamid)
+end
+
+function GM:OnRoundModeChanged()
+	if not self:IsRoundModeUnassigned() then
+		for _, pl in pairs(player.GetAll()) do
+			pl:GodDisable()
+			gamemode.Call("PlayerInitialSpawnRound", pl)
+			pl:UnSpectateAndSpawn()
+			gamemode.Call("PlayerReadyRound", pl)
+		end
+	end
 end
 
 function GM:PlayerSpawn(pl)

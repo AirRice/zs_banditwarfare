@@ -545,7 +545,8 @@ GM.SurvivalClips = 3
 -- How much the price of an item is discounted in classic (deathmatch) mode. 0.75 means a 30% discount.
 GM.ClassicModeDiscountMultiplier = 0.7
 
-GM.PreviousRoundmodeFile = "zsbw/previous_round_mode.txt"
+GM.PreviousRoundmodeDir = "zsbw"
+GM.PreviousRoundmodeFile = "previous_round_mode.dat"
 
 -- End of round music
 GM.SuddenDeathSound = Sound("music/bandit/lasthuman.ogg")
