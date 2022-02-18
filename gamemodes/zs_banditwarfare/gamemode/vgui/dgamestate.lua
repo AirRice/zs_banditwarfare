@@ -51,7 +51,7 @@ function PANEL:PerformLayout()
 	self.m_Text3:MoveRightOf(self.m_HumanCount, 12)
 	self.m_Text3:AlignBottom(4)
 	self:SetSize(ScrW(),self:GetTall())
-	self.m_TeamScore:SetSize(math.min(ScrW(), ScrH()) * 0.6, ScrH() * 0.15)
+	self.m_TeamScore:SetSize(ScrW() * 0.75, ScrH() * 0.15)
 	self.m_TeamScore:MoveRightOf(self.m_Text1)
 	self.m_TeamScore:CenterHorizontal()
 end
