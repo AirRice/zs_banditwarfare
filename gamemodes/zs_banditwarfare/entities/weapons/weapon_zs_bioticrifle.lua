@@ -81,7 +81,7 @@ function SWEP:ShootBullets(dmg, numbul, cone)
 	self:GetOwner():EmitSound("npc/headcrab_poison/ph_scream"..math.random(1, 3)..".wav",35,math.Rand(140,150))
 	if CLIENT then return end
 	for i=1, numbul do
-	local ent = ents.Create("projectile_poisonspit")
+	local ent = ents.Create("projectile_poisonspit_rif")
 	if ent:IsValid() then
 		ent:SetOwner(owner)
 		local vStart = owner:GetShootPos()

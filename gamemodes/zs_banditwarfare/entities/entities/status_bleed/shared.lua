@@ -1,6 +1,7 @@
 ENT.Type = "anim"
 ENT.Base = "status__base"
-
+ENT.NextBleedTick = 0
+ENT.NextStopBleedingTick = 0
 function ENT:Initialize()
 	self:DrawShadow(false)
 	if self:GetDTFloat(1) == 0 then

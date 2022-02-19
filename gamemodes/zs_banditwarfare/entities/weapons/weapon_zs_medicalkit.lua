@@ -19,8 +19,8 @@ SWEP.WorldModel = "models/weapons/w_medkit.mdl"
 SWEP.ViewModel = "models/weapons/c_medkit.mdl"
 SWEP.UseHands = true
 
-SWEP.Primary.Delay = 3
-SWEP.Primary.Heal = 20
+SWEP.Primary.Delay = 0.5
+SWEP.Primary.Heal = 10
 SWEP.Primary.Automatic = true
 
 SWEP.Primary.ClipSize = 0
@@ -152,7 +152,7 @@ end
 
 function SWEP:CanPrimaryAttack()
 	local owner = self:GetOwner()
-	if owner:IsHolding() or owner:GetBarricadeGhosting() then return false end
+	if owner:IsHolding() or owner:GetBarricadeGhosting() or self:GetNextCharge() >= CurTime() then return false end
 
 	if self:GetPrimaryAmmoCount() <= 0 then
 		self:EmitSound("items/medshotno1.wav")

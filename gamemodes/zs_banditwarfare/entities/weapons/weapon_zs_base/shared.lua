@@ -421,68 +421,54 @@ function SWEP:SetConeAndFire()
 	self.AimStartTime = CurTime()
 end
 
---[[
-	Client-side hitscan logic start
-
-	DMGINFO STRUCTURE: 
-	{
-		AmmoType: number,
-		Attacker: Entity,
-		BaseDamage: number,
-		Damage: number,
-		DamageBonus: number,
-		DamageCustom: number,
-		DamageForce: vector,
-		DamagePosition: vector,
-		DamageType: number,
-		Inflictor: Entity,
-		MaxDamage: number,
-		ReportedPosition: vector,
-	}
-]]
-
-function SWEP:SerialiseTraceResult(attacker, dmg, tr, hitwater, bullet_water_tr, hitslime)
+function SWEP:SerialiseTraceResult(attacker, dmg, numbul, trs, hitwaters, bullet_water_trs, hitslimes)
 	if (!IsFirstTimePredicted()) then return end
 	if not GAMEMODE.ClientSideHitscan then return end
 	net.Start("bw_fire")
 		net.WriteEntity(attacker)
 		net.WriteFloat(dmg)
-		-- Sending TraceResult
-		net.WriteEntity(tr.Entity)
-		net.WriteFloat(tr.Fraction)
-		net.WriteFloat(tr.FractionLeftSolid)
-		net.WriteBool(tr.Hit)
-		net.WriteFloat(tr.HitBox)
-		net.WriteFloat(tr.HitGroup)
-		net.WriteBool(tr.HitNoDraw)
-		net.WriteBool(tr.HitNonWorld)
-		net.WriteVector(tr.HitNormal)
-		net.WriteVector(tr.HitPos)
-		net.WriteBool(tr.HitSky)
-		net.WriteString(tr.HitTexture)
-		net.WriteBool(tr.HitWorld)
-		net.WriteFloat(tr.MatType)
-		net.WriteVector(tr.Normal)
-		net.WriteFloat(tr.PhysicsBone)
-		net.WriteVector(tr.StartPos)
-		net.WriteFloat(tr.SurfaceProps)
-		net.WriteBool(tr.StartSolid)
-		net.WriteBool(tr.AllSolid)
-		net.WriteFloat(tr.SurfaceFlags)
-		net.WriteFloat(tr.DispFlags)
-		net.WriteFloat(tr.Contents)
-		
-		--Water impact TraceResult
-		net.WriteBool(hitwater)
-		local waterhitpos = Vector(0,0,0)
-		local waterhitnorm = Vector(0,0,0)
-		if bullet_water_tr and bullet_water_tr.HitPos and bullet_water_tr.HitNormal then
-			waterhitpos = bullet_water_tr.HitPos
-			waterhitnorm = bullet_water_tr.HitNormal
+		net.WriteUInt(numbul, 8)
+
+		for i = 1, numbul do
+			local tr = trs[i]
+			-- Sending TraceResult
+			net.WriteEntity(tr.Entity)
+			net.WriteFloat(tr.Fraction)
+			net.WriteFloat(tr.FractionLeftSolid)
+			net.WriteBool(tr.Hit)
+			net.WriteFloat(tr.HitBox)
+			net.WriteFloat(tr.HitGroup)
+			net.WriteBool(tr.HitNoDraw)
+			net.WriteBool(tr.HitNonWorld)
+			net.WriteVector(tr.HitNormal)
+			net.WriteVector(tr.HitPos)
+			net.WriteBool(tr.HitSky)
+			net.WriteString(tr.HitTexture)
+			net.WriteBool(tr.HitWorld)
+			net.WriteFloat(tr.MatType)
+			net.WriteVector(tr.Normal)
+			net.WriteFloat(tr.PhysicsBone)
+			net.WriteVector(tr.StartPos)
+			net.WriteFloat(tr.SurfaceProps)
+			net.WriteBool(tr.StartSolid)
+			net.WriteBool(tr.AllSolid)
+			net.WriteFloat(tr.SurfaceFlags)
+			net.WriteFloat(tr.DispFlags)
+			net.WriteFloat(tr.Contents)
+			
+			--Water impact TraceResult
+			net.WriteBool(hitwaters[i] or false)
+			local waterhitpos = Vector(0,0,0)
+			local waterhitnorm = Vector(0,0,0)
+			local bullet_water_tr = bullet_water_trs[i]
+			if bullet_water_tr and bullet_water_tr.HitPos and bullet_water_tr.HitNormal then
+				waterhitpos = bullet_water_tr.HitPos
+				waterhitnorm = bullet_water_tr.HitNormal
+			end
+			net.WriteVector(waterhitpos)
+			net.WriteVector(waterhitnorm)
+			net.WriteFloat(hitslimes[i] or 0)
 		end
-		net.WriteVector(waterhitpos)
-		net.WriteVector(waterhitnorm)
-		net.WriteFloat(hitslime or 0)		
 	net.SendToServer()
 end
 
@@ -494,38 +480,49 @@ if (SERVER) then
 		-- Reading networked data
 		local attacker = net.ReadEntity()
 		local damage = net.ReadFloat()
-		
+		local numbul = net.ReadUInt(8)
+
+		local trs = {}
+		local hitwaters = {}
+		local waterposes = {}
+		local waternormals = {}
+		local hitslimes = {}
+
+		for i = 1, numbul do
 		-- Deserializing TraceResult
-		local tr = {
-			Entity = net.ReadEntity(),
-			Fraction = net.ReadFloat(),
-			FractionLeftSolid = net.ReadFloat(),
-			Hit = net.ReadBool(),
-			HitBox = net.ReadFloat(),
-			HitGroup = net.ReadFloat(),
-			HitNoDraw = net.ReadBool(),
-			HitNonWorld = net.ReadBool(),
-			HitNormal = net.ReadVector(),
-			HitPos = net.ReadVector(),
-			HitSky = net.ReadBool(),
-			HitTexture = net.ReadString(),
-			HitWorld = net.ReadBool(),
-			MatType = net.ReadFloat(),
-			Normal = net.ReadVector(),
-			PhysicsBone = net.ReadFloat(),
-			StartPos = net.ReadVector(),
-			SurfaceProps = net.ReadFloat(),
-			StartSolid = net.ReadBool(),
-			AllSolid = net.ReadBool(),
-			SurfaceFlags = net.ReadFloat(),
-			DispFlags = net.ReadFloat(),
-			Contents = net.ReadFloat()
-		}
-		
-		local hitwater = net.ReadBool()
-		local waterpos = net.ReadVector()
-		local waternormal = net.ReadVector()
-		local hitslime = net.ReadFloat()
+			local tr = {
+				Entity = net.ReadEntity(),
+				Fraction = net.ReadFloat(),
+				FractionLeftSolid = net.ReadFloat(),
+				Hit = net.ReadBool(),
+				HitBox = net.ReadFloat(),
+				HitGroup = net.ReadFloat(),
+				HitNoDraw = net.ReadBool(),
+				HitNonWorld = net.ReadBool(),
+				HitNormal = net.ReadVector(),
+				HitPos = net.ReadVector(),
+				HitSky = net.ReadBool(),
+				HitTexture = net.ReadString(),
+				HitWorld = net.ReadBool(),
+				MatType = net.ReadFloat(),
+				Normal = net.ReadVector(),
+				PhysicsBone = net.ReadFloat(),
+				StartPos = net.ReadVector(),
+				SurfaceProps = net.ReadFloat(),
+				StartSolid = net.ReadBool(),
+				AllSolid = net.ReadBool(),
+				SurfaceFlags = net.ReadFloat(),
+				DispFlags = net.ReadFloat(),
+				Contents = net.ReadFloat()
+			}
+			trs[i] = tr
+
+			hitwaters[i] = net.ReadBool()
+			waterposes[i]  = net.ReadVector()
+			waternormals[i]  = net.ReadVector()
+			hitslimes[i]  = net.ReadFloat()
+		end
+
 		if not GAMEMODE.ClientSideHitscan then return end
 		if (!IsFirstTimePredicted()) then return end
 		if (!attacker or !attacker:IsValid() or !attacker:IsPlayer()) then return end
@@ -537,43 +534,48 @@ if (SERVER) then
 		if not damage or not wep.m_HasDifferingDmgValues then
 			damage = (wep.Primary and wep.Primary.Damage or 0)
 		end
-		-- Check distance
-		local sqr_hitdist = tr.HitPos:DistToSqr(tr.Entity:GetPos())
-		if !tr.HitWorld and tr.Entity and tr.Entity:IsValid() and tr.Entity:IsPlayer() and (sqr_hitdist >= maxdistsqr) then return end
-		-- Check trace validity
-		if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
-		-- Build the damage table
-		local dmginfo = DamageInfo()
-		dmginfo:SetDamageType(DMG_BULLET)
-		dmginfo:SetDamage(damage)
-		dmginfo:SetDamagePosition(tr.HitPos)
-		dmginfo:SetAttacker(attacker)
-		dmginfo:SetInflictor(wep)
-		dmginfo:SetDamageForce(damage * 70 * (tr.HitPos-tr.StartPos):GetNormalized())
-		--Start bullet knockback
-		wep:StartBulletKnockback()
-		-- Do the generic bullet callback for processing knockbacks or whatever
-		if wep.BulletCallback then
-			wep.BulletCallback(attacker, tr, dmginfo)
-		else
-			GenericBulletCallback(attacker, tr, dmginfo)
-		end
 		
-		if (tr.Entity:IsValid()) then
-			if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) and tr.Entity:IsPlayer() then
-				tr.Entity:SetLastHitGroup(HITGROUP_HEAD)
-				tr.Entity:SetWasHitInHead()
-			end
-			--tr.Entity:TakeDamageInfo(dmginfo)
-			tr.Entity:DispatchTraceAttack(dmginfo, tr)
-		end
 		local rf = RecipientFilter()
 		rf:AddAllPlayers()
 		rf:RemovePlayer(pl)
-		util.DoBulletEffects(attacker, wep, tr, wep.TracerName, damage, hitwater, waterpos, waternormal, hitslime, rf)
-		-- Do and end knockbacks
-		wep:DoBulletKnockback(wep.Primary.KnockbackScale * 0.05) // Server-side
-		wep:EndBulletKnockback()
+		for i = 1, numbul do
+			wep:StartBulletKnockback()
+			-- Check distance
+			local tr = trs[i]
+			if !tr.HitWorld and tr.Entity and tr.Entity:IsValid() and tr.Entity:IsPlayer() then
+				local sqr_hitdist = tr.HitPos:DistToSqr(tr.Entity:GetPos())
+				if (sqr_hitdist >= maxdistsqr) then return end
+			end
+			-- Check trace validity
+			if not (TrueVisibleFilters(tr.StartPos, tr.HitPos, attacker, wep)) then return end
+			-- Build the damage table
+			local dmginfo = DamageInfo()
+			dmginfo:SetDamageType(DMG_BULLET)
+			dmginfo:SetDamage(damage)
+			dmginfo:SetDamagePosition(tr.HitPos)
+			dmginfo:SetAttacker(attacker)
+			dmginfo:SetInflictor(wep)
+			dmginfo:SetDamageForce(damage * 70 * (tr.HitPos-tr.StartPos):GetNormalized())
+			--Start bullet knockback
+			-- Do the generic bullet callback for processing knockbacks or whatever
+			if wep.BulletCallback then
+				wep.BulletCallback(attacker, tr, dmginfo)
+			else
+				GenericBulletCallback(attacker, tr, dmginfo)
+			end
+			if (tr.Entity:IsValid()) then
+				if (tr.Hit and tr.HitGroup == HITGROUP_HEAD) and tr.Entity:IsPlayer() then
+					tr.Entity:SetLastHitGroup(HITGROUP_HEAD)
+					tr.Entity:SetWasHitInHead()
+				end
+				--tr.Entity:TakeDamageInfo(dmginfo)
+				tr.Entity:DispatchTraceAttack(dmginfo, tr)
+			end
+			util.DoBulletEffects(attacker, wep, tr, wep.TracerName, damage, hitwaters[i], waterposes[i], waternormals[i], hitslimes[i], rf)
+			-- Do and end knockbacks
+			wep:DoBulletKnockback(wep.Primary.KnockbackScale * 0.05) // Server-side
+			wep:EndBulletKnockback()
+		end
 	end)
 end
 
@@ -605,13 +607,17 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 	end
 	local dir = owner:GetAimVector()
 	base_ang = dir:Angle()
-	for i=0, numbul - 1 do
-		dir = CircularGaussianSpread(dir, Vector(cone, cone, 0))
-		bullet_trace.endpos = owner:GetShootPos() + dir * max_dist
-		if CLIENT and IsFirstTimePredicted() then
+	if CLIENT and IsFirstTimePredicted() then
+		local bullet_trs = {}
+		local hitwaters = {}
+		local bullet_water_trs = {}
+		local hitslimes = {}
+		for i=1, numbul do
+			dir = CircularGaussianSpread(dir, Vector(cone, cone, 0))
+			bullet_trace.endpos = owner:GetShootPos() + dir * max_dist
+			
 			local bullet_tr = util.TraceLine(bullet_trace)
-			local hitwater
-			local hitslime 
+			bullet_trs[i] = bullet_tr
 			local bullet_water_tr
 			if bit.band(util.PointContents(bullet_tr.HitPos), bit.bor(CONTENTS_WATER, CONTENTS_SLIME)) ~= 0 then
 				bullet_trace.mask = bit.bor(MASK_SHOT, bit.bor(CONTENTS_WATER, CONTENTS_SLIME))
@@ -620,20 +626,21 @@ function SWEP:ShootCSBullets(owner, dmg, numbul, cone, hit_own_team)
 				if !bullet_water_tr.AllSolid then 
 					local contents = util.PointContents(bullet_water_tr.HitPos - bullet_water_tr.HitNormal * 0.1)
 					if bit.band(contents, bit.bor(CONTENTS_WATER, CONTENTS_SLIME)) != 0 then 
-						hitwater = true
-						hitslime = bit.band(contents, CONTENTS_SLIME) ~= 0 and 1 or 0
+						hitwaters[i] = true
+						hitslimes[i] = bit.band(contents, CONTENTS_SLIME) ~= 0 and 1 or 0
 					end
 				end
 			end
-			self:SerialiseTraceResult(owner, dmg, bullet_tr, hitwater, bullet_water_tr, hitslime)
 			local waterhitpos
 			local waterhitnorm
 			if bullet_water_tr and bullet_water_tr.HitPos and bullet_water_tr.HitNormal then
 				waterhitpos = bullet_water_tr.HitPos
 				waterhitnorm = bullet_water_tr.HitNormal
 			end
-			util.DoBulletEffects(owner, self, bullet_tr, self.TracerName, dmg, hitwater, waterhitpos, waterhitnorm, hitslime)
+			bullet_water_trs[i] = bullet_water_tr
+			util.DoBulletEffects(owner, self, bullet_tr, self.TracerName, dmg, hitwaters[i], waterhitpos, waterhitnorm, hitslimes[i])
 		end
+		self:SerialiseTraceResult(owner, dmg, numbul, bullet_trs, hitwaters, bullet_water_trs, hitslimes)
 	end
 end
 
