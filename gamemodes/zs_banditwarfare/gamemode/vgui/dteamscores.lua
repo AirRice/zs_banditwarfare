@@ -28,7 +28,7 @@ function PANEL:PerformLayout()
 	local hei = 40 * screenscale
 	local centremargin = 32 * screenscale
 	local parentwidth = self:GetWide()
-	local ypos = self:GetY()
+	local ypos = self:GetY() + 4
 	self.m_ProgressBarH:SetSize(wid, hei)
 	self.m_ProgressBarH:SetPos(parentwidth*0.5 - centremargin - wid, ypos)
 	self.m_ScoreLabelH:SetContentAlignment(6)
