@@ -72,19 +72,15 @@ function meta:ClassicInventoryToLoadout()
 	local weptool = nil
 	local insuredweps = self.ClassicModeInsuredWeps
 	table.Add(insuredweps, self.ClassicModeNextInsureWeps)
-	PrintTable(insuredweps)
 	for i,wep in ipairs(self:GetWeapons()) do
 		local weptab = wep:GetClass()
 		local shoptab = FindItembyClass(weptab)
 		if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) and table.HasValue(insuredweps, weptab) and not (GAMEMODE:IsSampleCollectMode() and shoptab.NoSampleCollectMode) then
-			PrintTable(shoptab)
 			if (shoptab.Category == ITEMCAT_GUNS) then
 				if not wep2 and weptab != self:GetWeapon1() then
-					print("WEP2 SET TO "..weptab)
 					wep2 = weptab
 					self:SetWeapon2(weptab)		
 				elseif not wep1 and weptab != self:GetWeapon2()  then
-					print("WEP1 SET TO "..weptab)
 					wep1 = weptab
 					self:SetWeapon1(weptab)
 				end
