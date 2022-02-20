@@ -26,6 +26,90 @@ function meta:UpdateWeaponLoadouts()
 	end
 end
 
+local function AddToClassicInsuredList(wepname, pl)
+	storedwep = weapons.GetStored(wepname)
+	shoptab = FindItembyClass(wepname)
+	if storedwep and not (shoptab.NoClassicMode) then
+		table.ForceInsert(pl.ClassicModeInsuredWeps,wepname)
+	end
+end
+
+function meta:LoadoutToClassicInventory()
+	if not (GAMEMODE:IsSampleCollectMode() or GAMEMODE:IsTransmissionMode()) then return end
+	self:StripWeapons()
+	self.ClassicModeInsuredWeps = {}
+	self.ClassicModeNextInsureWeps = {}
+	self.ClassicModeRemoveInsureWeps = {}
+	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+	local wep1 = self:GetWeapon1()
+	AddToClassicInsuredList(wep1, self)
+	local wep2 = self:GetWeapon2()
+	AddToClassicInsuredList(wep2, self)
+	local weptool = self:GetWeaponToolslot()
+	AddToClassicInsuredList(weptool, self)
+	local wepmelee = self:GetWeaponMelee()	
+	AddToClassicInsuredList(wepmelee, self)
+	for _, wep in pairs(self.ClassicModeInsuredWeps) do
+		local storedwep = weapons.GetStored(wep)
+		if storedwep then
+			local given = self:Give(wep)
+			if given then
+				net.Start("zs_insure_weapon")
+					net.WriteString(wep)
+					net.WriteBool(false)
+				net.Send(self)
+			end
+		end
+	end
+end
+
+function meta:ClassicInventoryToLoadout()
+	if not GAMEMODE:IsClassicMode() then return end
+	local wep1 = nil 
+	local wep2 = nil
+	local wepmelee = nil
+	local weptool = nil
+	local insuredweps = self.ClassicModeInsuredWeps
+	table.Add(insuredweps, self.ClassicModeNextInsureWeps)
+	PrintTable(insuredweps)
+	for i,wep in ipairs(self:GetWeapons()) do
+		local weptab = wep:GetClass()
+		local shoptab = FindItembyClass(weptab)
+		if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) and table.HasValue(insuredweps, weptab) and not (GAMEMODE:IsSampleCollectMode() and shoptab.NoSampleCollectMode) then
+			PrintTable(shoptab)
+			if (shoptab.Category == ITEMCAT_GUNS) then
+				if not wep2 and weptab != self:GetWeapon1() then
+					print("WEP2 SET TO "..weptab)
+					wep2 = weptab
+					self:SetWeapon2(weptab)		
+				elseif not wep1 and weptab != self:GetWeapon2()  then
+					print("WEP1 SET TO "..weptab)
+					wep1 = weptab
+					self:SetWeapon1(weptab)
+				end
+			elseif (shoptab.Category == ITEMCAT_MELEE) then
+				if not wepmelee then
+					wepmelee = weptab
+					self:SetWeaponMelee(weptab)				
+				end	
+			elseif (shoptab.Category == ITEMCAT_TOOLS) then
+				if not weptool then
+					weptool = weptab
+					self:SetWeaponToolslot(weptab)				
+				end	
+			end
+		end
+	end
+	self:StripWeapons()
+	self.ClassicModeInsuredWeps = {}
+	self.ClassicModeNextInsureWeps = {}
+	self.ClassicModeRemoveInsureWeps = {}
+	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+	self:UpdateWeaponLoadouts()
+end
+
 function meta:StripNonLoadoutWeapons()
 	for _, wep in pairs(self:GetWeapons()) do
 		local wep1 = self:GetWeapon1()

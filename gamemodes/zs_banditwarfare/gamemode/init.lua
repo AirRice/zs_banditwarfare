@@ -541,13 +541,16 @@ function GM:GetRoundMode()
 end
 
 function GM:SetRoundMode(mode)
-	if (mode == ROUNDMODE_TRANSMISSION or mode == ROUNDMODE_SAMPLES or mode == ROUNDMODE_CLASSIC) then 
-		local cm = GetConVar("zsb_roundgamemode")
+	local cm = GetConVar("zsb_roundgamemode")
+	local oldmode = self.LastRoundMode or ROUNDMODE_UNASSIGNED
+	gamemode.Call("OnRoundModeChanged", oldmode, mode)
+	if (IsValidRoundMode(mode)) then 
 		cm:SetInt(mode)
 	elseif (mode != ROUNDMODE_UNASSIGNED) then
 		return
 	end
 	SetGlobalInt("roundgamemode",mode)
+	self.LastRoundMode = mode
 end
 
 local playermins = Vector(-17, -17, 0)
@@ -663,7 +666,23 @@ function GM:FinishMove(pl, move)
 	end
 end
 
-function GM:ChooseRoundMode(vote)
+function GM:OnRoundModeChanged(oldmode, newmode)
+	if (oldmode == ROUNDMODE_UNASSIGNED) then return end
+	local allplayers = player.GetAll()
+	for _, pl in ipairs(allplayers) do
+		if oldmode == ROUNDMODE_CLASSIC and (newmode == ROUNDMODE_SAMPLES or newmode == ROUNDMODE_TRANSMISSION) then
+			pl:ClassicInventoryToLoadout()
+		elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
+			pl:LoadoutToClassicInventory()
+		end
+	end
+	if self:GetWaveActive() then
+		self:SetWave(self:GetWave()-1)
+		gamemode.Call("SetWaveActive", false)
+	end
+end
+
+function GM:InitialChooseRoundMode(vote)
 	local filename = self.PreviousRoundmodeDir.."/"..self.PreviousRoundmodeFile
 	if vote then 
 		return 
@@ -674,24 +693,15 @@ function GM:ChooseRoundMode(vote)
 			prevroundmode = tonumber(file.Read(filename, "DATA"))
 		end
 		local curmap = game.GetMap()
-		if (prevroundmode == ROUNDMODE_CLASSIC or prevroundmode == ROUNDMODE_SAMPLES or prevroundmode == ROUNDMODE_TRANSMISSION) then
-			if table.HasValue(self.MapWhitelist, curmap) and self:MapHasEnoughObjectives(curmap) and player.GetCount() >= 6 and self.AutoModeChange then
-				local decider = math.random(1,4)
-				if prevroundmode != ROUNDMODE_CLASSIC and decider == 1 then
-					self:SetRoundMode(ROUNDMODE_CLASSIC)
-				elseif decider <= 2 then
-					self:SetRoundMode(ROUNDMODE_SAMPLES)
-				else
-					self:SetRoundMode(ROUNDMODE_TRANSMISSION)
-				end
-			else
-				self:SetRoundMode(prevroundmode)
-			end
+		if (prevroundmode == ROUNDMODE_CLASSIC or prevroundmode == ROUNDMODE_SAMPLES or prevroundmode == ROUNDMODE_TRANSMISSION) and table.HasValue(self.MapWhitelist, curmap) and self:MapHasEnoughObjectives(curmap) and self.AutoModeChange then
+			local roundmode = (prevroundmode + 1) % 3
+			self:SetRoundMode(roundmode)
 		else
 			self:SetRoundMode(ROUNDMODE_CLASSIC)
 		end
 	end
 	file.Write(filename, tostring(self:GetRoundMode()))
+	gamemode.Call("OnRoundModeInitialSelected")
 end
 
 function GM:Think()
@@ -718,7 +728,7 @@ function GM:Think()
 					end
 				end
 				if self:IsRoundModeUnassigned() then
-					gamemode.Call("ChooseRoundMode")
+					gamemode.Call("InitialChooseRoundMode")
 				end
 			end
 			if self:GetWaveStart() <= time then
@@ -1312,7 +1322,6 @@ function GM:PlayerInitialSpawnRound(pl)
 			return
 		end
 	end
-	gamemode.Call("OnRoundModeChanged")
 end
 
 function GM:PlayerDisconnected(pl)
@@ -2483,6 +2492,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 		if samplestodrop > 0 then
 			pl:DropSample(samplestodrop)
 		end
+		pl:SetSamples(0)
 	end
 	pl:DropAll()
 	pl:AddDeaths(1)
@@ -2588,14 +2598,18 @@ function GM:GetTeamKillAdvantage(teamid)
 	return team.TotalFrags(teamid) - team.TotalDeaths(teamid)
 end
 
-function GM:OnRoundModeChanged()
-	if not self:IsRoundModeUnassigned() then
-		for _, pl in pairs(player.GetAll()) do
-			pl:GodDisable()
-			gamemode.Call("PlayerInitialSpawnRound", pl)
-			pl:UnSpectateAndSpawn()
-			gamemode.Call("PlayerReadyRound", pl)
+function GM:OnRoundModeInitialSelected()
+	for _, pl in ipairs(player.GetAllActive()) do
+		pl.ClassicModeInsuredWeps = {}
+		pl.ClassicModeNextInsureWeps = {}
+		pl.ClassicModeRemoveInsureWeps = {}
+		pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+		pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+		if self:IsClassicMode() then
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
 		end
+		pl:Spawn()
 	end
 end
 
@@ -2795,6 +2809,7 @@ function GM:WaveEnded()
 	--self.SuddenDeath = false
 	gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
 	for _, pl in ipairs(player.GetAll()) do
+		
 		if self.SuddenDeath or self:IsClassicMode() then
 			pl:RemoveStatus("spawnbuff", false, true)
 		end

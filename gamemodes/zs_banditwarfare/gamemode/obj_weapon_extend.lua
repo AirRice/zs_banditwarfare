@@ -263,7 +263,7 @@ function meta:BaseDrawWeaponSelection(x, y, wide, tall, alpha)
 		surface.DrawTexturedRect(x + wide * 0.5 - wid * 0.5, y + tall * 0.5 - hei * 0.5, wid, hei)
 		
 	end
-	local isinsured = GAMEMODE.ClassicModeInsuredWeps[self:GetClass()]
+	local isinsured = GAMEMODE:IsClassicMode() and GAMEMODE.ClassicModeInsuredWeps[self:GetClass()]
 	surface.SetDrawColor(color_black_alpha220)
 	surface.DrawRect(x, y + tall * 0.65, wide, tall * 0.2)
 	drawcol = isinsured and insuredcolor or COLOR_RED
