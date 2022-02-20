@@ -91,6 +91,10 @@ function GM:AddCustomAmmo()
 	game.AddAmmoType({name = "autocharging"})
 end
 
+function GM:SetWave(wave)
+	SetGlobalInt("wave", wave)
+end
+
 function GM:SetSamples(bamount,hamount)
 	SetGlobalInt("banditsamples", bamount)
 	SetGlobalInt("humansamples", hamount)

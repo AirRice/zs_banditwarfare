@@ -224,13 +224,8 @@ function GM:Initialize()
 	self:PrecacheResources()
 	self:AddCustomAmmo()
 	self:AddNetworkStrings()
-	local roundmodecvar = GetConVar("zsb_roundgamemode"):GetInt()
-	if roundmodecvar == ROUNDMODE_CLASSIC or roundmodecvar == ROUNDMODE_TRANSMISSION or roundmodecvar == ROUNDMODE_SAMPLES then
-		self:SetRoundMode(roundmodecvar)
-	else
-		self:SetRoundMode(0)
-	end
-	
+	self:SetRoundMode(ROUNDMODE_UNASSIGNED)
+	file.CreateDir(GAMEMODE.PreviousRoundmodeDir)
 	game.ConsoleCommand("fire_dmgscale 1\n")
 	game.ConsoleCommand("mp_flashlight 1\n")
 	game.ConsoleCommand("sv_gravity 600\n")
@@ -302,19 +297,25 @@ end
 GM.TopNotify = GM.TopNotifyAll
 
 function GM:ShowHelp(pl)
-	pl:SendLua("GAMEMODE:ShowHelp()")
+	if not self:IsRoundModeUnassigned() then
+		pl:SendLua("GAMEMODE:ShowHelp()")
+	end
 end
 
 function GM:ShowTeam(pl)
-	if pl:Alive() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
-		pl:SendLua("GAMEMODE:OpenPointsShop("..WEAPONLOADOUT_NULL..")")
+	if not self:IsRoundModeUnassigned() then
+		if pl:Alive() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
+			pl:SendLua("GAMEMODE:OpenPointsShop("..WEAPONLOADOUT_NULL..")")
+		end
 	end
 end
 
 function GM:ShowSpare1(pl)
-	if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
-		if not (pl:IsValid() and pl:IsConnected() and pl:Alive()) then return end
-		pl:DropActiveWeapon()
+	if not self:IsRoundModeUnassigned() then
+		if pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT then
+			if not (pl:IsValid() and pl:IsConnected() and pl:Alive()) then return end
+			pl:DropActiveWeapon()
+		end
 	end
 end
 
@@ -509,6 +510,10 @@ function GM:RemoveUnusedEntities()
 	end
 end
 
+function GM:IsRoundModeUnassigned()
+	return self:GetRoundMode() == ROUNDMODE_UNASSIGNED
+end
+
 function GM:IsClassicMode()
 	return self:GetRoundMode() == ROUNDMODE_CLASSIC
 end
@@ -524,17 +529,24 @@ end
 function GM:GetRoundMode()
 	local cvarvalue = GetConVar("zsb_roundgamemode"):GetInt()
 	local curvalue = GetGlobalInt("roundgamemode",0)
-	if cvarvalue != curvalue then
+	--[[if cvarvalue != curvalue then
 		self:SetRoundMode(cvarvalue)
-	end
-	return cvarvalue
+	end]]
+	--return cvarvalue
+	return curvalue
 end
 
 function GM:SetRoundMode(mode)
-	if not (mode == ROUNDMODE_TRANSMISSION or mode == ROUNDMODE_SAMPLES or mode == ROUNDMODE_CLASSIC) then return end
 	local cm = GetConVar("zsb_roundgamemode")
+	local oldmode = self.LastRoundMode or ROUNDMODE_UNASSIGNED
+	gamemode.Call("OnRoundModeChanged", oldmode, mode)
+	if (IsValidRoundMode(mode)) then 
+		cm:SetInt(mode)
+	elseif (mode != ROUNDMODE_UNASSIGNED) then
+		return
+	end
 	SetGlobalInt("roundgamemode",mode)
-	cm:SetInt(mode)
+	self.LastRoundMode = mode
 end
 
 local playermins = Vector(-17, -17, 0)
@@ -650,6 +662,40 @@ function GM:FinishMove(pl, move)
 	end
 end
 
+function GM:OnRoundModeChanged(oldmode, newmode)
+	if (oldmode == ROUNDMODE_UNASSIGNED) then return end
+	local allplayers = player.GetAll()
+	for _, pl in ipairs(allplayers) do
+		pl:HandleRoundModeChangeLoadout(oldmode,newmode)
+	end
+	if self:GetWaveActive() then
+		self:SetWave(self:GetWave()-1)
+		gamemode.Call("SetWaveActive", false)
+	end
+end
+
+function GM:InitialChooseRoundMode(vote)
+	local filename = self.PreviousRoundmodeDir.."/"..self.PreviousRoundmodeFile
+	if vote then 
+		return 
+	else
+		local prevroundmode
+
+		if file.Exists(filename, "DATA") then
+			prevroundmode = tonumber(file.Read(filename, "DATA"))
+		end
+		local curmap = game.GetMap()
+		if (prevroundmode == ROUNDMODE_CLASSIC or prevroundmode == ROUNDMODE_SAMPLES or prevroundmode == ROUNDMODE_TRANSMISSION) and table.HasValue(self.MapWhitelist, curmap) and self:MapHasEnoughObjectives(curmap) and self.AutoModeChange then
+			local roundmode = (prevroundmode + 1) % 3
+			self:SetRoundMode(roundmode)
+		else
+			self:SetRoundMode(ROUNDMODE_CLASSIC)
+		end
+	end
+	file.Write(filename, tostring(self:GetRoundMode()))
+	gamemode.Call("OnRoundModeInitialSelected")
+end
+
 function GM:Think()
 	local time = CurTime()
 	
@@ -658,9 +704,9 @@ function GM:Think()
 			if self:GetWaveEnd() <= time and self:GetWaveEnd() ~= -1 then
 				gamemode.Call("SetWaveActive", false)
 			end
-			if not self:IsClassicMode() and not self.SuddenDeath and self:IsTransmissionMode() then
+			if not self.SuddenDeath and self:IsTransmissionMode() then
 				gamemode.Call("TransmitterCommsThink")
-			elseif not self:IsClassicMode() and not self.SuddenDeath and self:IsSampleCollectMode() then
+			elseif not self.SuddenDeath and self:IsSampleCollectMode() then
 				gamemode.Call("SamplesThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
@@ -672,6 +718,9 @@ function GM:Think()
 					else
 						gamemode.Call("SetWaveStart", CurTime()+self.WaveIntermissionLength)
 					end
+				end
+				if self:IsRoundModeUnassigned() then
+					gamemode.Call("InitialChooseRoundMode")
 				end
 			end
 			if self:GetWaveStart() <= time then
@@ -883,8 +932,6 @@ function GM:RestartRound()
 		net.WriteString("RestartRound")
 	net.Broadcast()
 end
-GM.TiedWaves = 0
-GM.PreviouslyDied = {}
 GM.PreviousTeam = {}
 GM.PreviousPoints = {}
 GM.CurrentObjectives = {}
@@ -893,29 +940,36 @@ GM.SamplesEnd = false
 GM.SuddenDeath = false
 GM.CurrentWaveWinner = nil
 GM.NextNestSpawn = nil
+GM.ActivatedInitialTerminal = nil
 function GM:RestartLua()
 	self.CachedHMs = nil
-	self.UseTransmitters = nil
-	self:SetComms(0,0)
-	self:SetSamples(0,0)
-	self.NextNestSpawn = nil
-	self.CommsEnd = false
-	self.SamplesEnd = false
 	self.SuddenDeath = false
 	net.Start("zs_suddendeath")
 		net.WriteBool( false )
 	net.Broadcast()
-	self.CurrentObjectives = {}
 	self:SetCurrentWaveWinner(nil)
 
-	
-	self.PreviouslyDied = {}
 	self.PreviousTeam = {}
 	self.PreviousPoints = {}
 
 	ROUNDWINNER = nil
 
-	hook.Remove("PlayerShouldTakeDamage", "EndRoundShouldTakeDamage")
+	gamemode.Call("ResetLuaWave")
+end
+
+function GM:ResetLuaWave()
+	self.NextNestSpawn = nil
+	self:SetComms(0,0)
+	self:SetSamples(0,0)
+	self.CommsEnd = false
+	self.SamplesEnd = false
+	self.ActivatedInitialTerminal = nil
+	net.Start("zs_currenttransmitters")
+		for i=1, self.MaxTransmitters do
+			net.WriteInt(0,4)
+		end
+	net.Broadcast()
+	self.CurrentObjectives = {}
 end
 
 -- I don't know.
@@ -940,12 +994,7 @@ function GM:DoRestartGame()
 	end
 	self.CurrentMapLoadedPlayers = 0
 	self.ShuffledPlayersThisRound = false
-	net.Start("zs_currenttransmitters")
-		for i=1, self.MaxTransmitters do
-			net.WriteInt(0,4)
-		end
-	net.Broadcast()
-	self.CurrentObjectives = {}
+
 	self:SetWave(0)
 	self:SetHumanScore(0)
 	self:SetBanditScore(0)
@@ -975,10 +1024,7 @@ function GM:RestartGame()
 		pl:SetFrags(0)
 		pl:SetDeaths(0)
 	end
-	--[[self:SetWave(0)
-	self:SetWaveStart(CurTime() + self.WaveZeroLength)
-	self:SetWaveEnd(self:GetWaveStart() + self:GetWaveOneLength())]]
-	
+
 	self:SetWaveActive(false)
 	self.SuddenDeath = false
 	SetGlobalInt("numwaves", -2)
@@ -1000,13 +1046,6 @@ function GM:InitPostEntityMap()
 	gamemode.Call("SetupProps")
 end
 
-local function EndRoundPlayerShouldTakeDamage(pl, attacker) 
-	if attacker:IsPlayer() and attacker ~= pl and attacker:Team() == pl:Team() then 
-		return false 
-	end
-	return true
-end
-
 local function EndRoundPlayerCanSuicide(pl) return true end
 
 local function EndRoundSetupPlayerVisibility(pl)
@@ -1025,7 +1064,7 @@ function GM:EndRound(winner)
 
 	game.SetTimeScale(0.25)
 	timer.Simple(2, function() game.SetTimeScale(1) end)
-
+	
 	hook.Add("SetupPlayerVisibility", "EndRoundSetupPlayerVisibility", EndRoundSetupPlayerVisibility)
 
 	local mapname = string.lower(game.GetMapNext())
@@ -1035,33 +1074,16 @@ function GM:EndRound(winner)
 		timer.Simple(self.EndGameTime, function() gamemode.Call("RestartRound") end)
 		mapname = string.lower(game.GetMap())
 	else
-
 		if MapVote and MapVote.Start then
 			timer.Simple(10, function() MapVote.Start(self.EndGameTime - 10, nil, nil,  {"de_","cs_","zs_","zsb_"}) end)
 		else
 			timer.Simple(self.EndGameTime, function() gamemode.Call("LoadNextMap") end)
 		end
 	end
-	
-	
 
-	--[[if table.HasValue(self.MapWhitelist, mapname) and self:MapHasEnoughObjectives(mapname) and player.GetCount() >= 6 and self.AutoModeChange then
-		local decider = math.random(1,4)
-		if not self:IsClassicMode() and decider == 1 then
-			self:SetRoundMode(ROUNDMODE_CLASSIC)
-		elseif decider <= 2 then
-			self:SetRoundMode(ROUNDMODE_SAMPLES)
-		else
-			self:SetRoundMode(ROUNDMODE_TRANSMISSION)
-		end
-	else
-		self:SetRoundMode(ROUNDMODE_CLASSIC)
-	end]]
 	-- Get rid of some lag.
 	util.RemoveAll("prop_ammo")
 	util.RemoveAll("prop_weapon")
-	
-	hook.Add("PlayerShouldTakeDamage", "EndRoundShouldTakeDamage", EndRoundPlayerShouldTakeDamage)
 	
 	timer.Simple(5, function() gamemode.Call("DoHonorableMentions") end)
 
@@ -1090,13 +1112,16 @@ function GM:EndRound(winner)
 end
 
 function GM:WaveEndWithWinner(winner)
-	if self:IsClassicMode() or self.SamplesEnd or self.CommsEnd then 
-		self:SetCurrentWaveWinner(winner)
-		local endtime = self:IsClassicMode() and 5 or 3.5
-		--if self:GetWaveEnd() - CurTime() > endtime then
-			gamemode.Call("SetWaveEnd",CurTime()+endtime)
-		--end
+	if self:IsTransmissionMode() then
+		self.CommsEnd = true 
+	elseif self:IsSampleCollectMode() then
+		self.SamplesEnd = true
 	end
+	self:SetCurrentWaveWinner(winner)
+	local endtime = self:IsClassicMode() and 5 or 3.5
+	--if self:GetWaveEnd() - CurTime() > endtime then
+		gamemode.Call("SetWaveEnd",CurTime()+endtime)
+	--end
 end
 function GM:GetCurrentWaveWinner()
 	return self.CurrentWaveWinner
@@ -1117,8 +1142,8 @@ function GM:PlayerReadyRound(pl)
 		pl:SendLua("gamemode.Call(\"EndRound\", "..tostring(ROUNDWINNER)..", \""..game.GetMapNext().."\")")
 		gamemode.Call("DoHonorableMentions", pl)
 	end
-	pl:SendLua("MakepHelp()")
-	pl:SendLua("SetGlobalInt(\"roundgamemode\", "..GetGlobalInt("roundgamemode",0)..")")
+	--pl:SendLua("MakepHelp()")
+	--pl:SendLua("SetGlobalInt(\"roundgamemode\", "..GetGlobalInt("roundgamemode",0)..")")
 end
 
 function GM:FullGameUpdate(pl)
@@ -1149,25 +1174,10 @@ local function groupsort(a, b)
 end
 
 function GM:PlayerInitialSpawn(pl)
+	
 	gamemode.Call("PlayerInitialSpawnRound", pl)
 end
 
-local primaryguns = {
-	"weapon_zs_tosser",
-	"weapon_zs_crackler",
-	"weapon_zs_doublebarrel",
-	"weapon_zs_stubber",
-}
-local secondaryguns = {
-	"weapon_zs_peashooter",
-	"weapon_zs_battleaxe",
-	"weapon_zs_slinger"
-}
-local meleeslot = {
-	"weapon_zs_swissarmyknife",
-	"weapon_zs_lamp",
-	"weapon_zs_plank"
-}
 function GM:PlayerInitialSpawnRound(pl)
 	pl:SprintDisable()
 	--pl:RemoveSuit()
@@ -1210,7 +1220,6 @@ function GM:PlayerInitialSpawnRound(pl)
 	
 	pl.m_PointQueue = 0
 	pl.m_LastDamageDealt = 0
-	pl.m_PreRespawn = nil
 
 	pl.HealedThisRound = 0
 	pl.CarryOverHealth = 0
@@ -1241,6 +1250,7 @@ function GM:PlayerInitialSpawnRound(pl)
 		pl:AddPoints(20)
 	end
 	
+	-- Player team selection
 	if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
 		if self:GetTeamKillAdvantage(TEAM_HUMAN) > self:GetTeamKillAdvantage(TEAM_BANDIT) then
 			pl:ChangeTeam(TEAM_BANDIT)
@@ -1263,6 +1273,8 @@ function GM:PlayerInitialSpawnRound(pl)
 	elseif #team.GetPlayers(TEAM_BANDIT) < #team.GetPlayers(TEAM_HUMAN) then
 		pl:ChangeTeam(TEAM_BANDIT)
 	end
+
+	--Check if all players loaded
 	if self:GetWave() == 0 then
 		self.CurrentMapLoadedPlayers = self.CurrentMapLoadedPlayers + 1;
 	end
@@ -1272,16 +1284,16 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.ClassicModeRemoveInsureWeps = {}
 	pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
 	pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
-	pl:SetWeapon1(primaryguns[math.random(#primaryguns)])
-	pl:SetWeapon2(secondaryguns[math.random(#secondaryguns)])
-	pl:SetWeaponToolslot("weapon_zs_enemyradar")
-	pl:SetWeaponMelee(meleeslot[math.random(#meleeslot)])
-	if self:IsClassicMode() then
-		table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
-		table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
-	end
-	if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
-		timer.Simple(0.2, function() pl:Kill() end)
+	pl:ResetLoadout()
+	if not self:IsRoundModeUnassigned() then
+		if self:IsClassicMode() then
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
+		end
+		if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
+			timer.Simple(0.1,pl:Kill())
+			return
+		end
 	end
 end
 
@@ -1290,7 +1302,6 @@ function GM:PlayerDisconnected(pl)
 
 	local uid = pl:SteamID64()
 
-	self.PreviouslyDied[uid] = CurTime()
 	self.PreviousTeam[uid] = pl:Team()
 	self.PreviousPoints[uid] = pl:GetPoints()
 	pl:DropAll()
@@ -1475,28 +1486,11 @@ function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
 			if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) 
 			or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) 
 			or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
-				local oldwep = nil
-				if slot == WEAPONLOADOUT_SLOT1 then 
-					oldwep = pl:GetWeapon1()
-				elseif slot == WEAPONLOADOUT_SLOT2 then 
-					oldwep = pl:GetWeapon2() 
-				elseif slot == WEAPONLOADOUT_TOOLS then
-					oldwep = pl:GetWeaponToolslot()
-				elseif slot == WEAPONLOADOUT_MELEE then
-					oldwep = pl:GetWeaponMelee()
-				end
+				local oldwep = pl:GetWeaponLoadoutBySlot(slot)
 				if isstring(oldwep) and isstring(originswep) and string.lower(oldwep) != string.lower(originswep) then
 					return
 				end
-				if slot == WEAPONLOADOUT_SLOT1 then 
-					pl:SetWeapon1(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_SLOT2 then 
-					pl:SetWeapon2(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_TOOLS then
-					pl:SetWeaponToolslot(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_MELEE then
-					pl:SetWeaponMelee(itemtab.SWEP)
-				end
+				pl:SetWeaponLoadoutBySlot(itemtab.SWEP, slot)
 				if not self:GetWaveActive() and pl:Alive() then
 					local newweptab = weapons.GetStored(itemtab.SWEP)
 					if newweptab then
@@ -1574,20 +1568,8 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 		else
 			if itemtab.SWEP then
 				if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
-					local oldwep = nil
-					if slot == WEAPONLOADOUT_SLOT1 then 
-						oldwep = pl:GetWeapon1()
-						pl:SetWeapon1(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_SLOT2 then 
-						oldwep = pl:GetWeapon2() 
-						pl:SetWeapon2(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_TOOLS then
-						oldwep = pl:GetWeaponToolslot()
-						pl:SetWeaponToolslot(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_MELEE then
-						oldwep = pl:GetWeaponMelee()
-						pl:SetWeaponMelee(itemtab.SWEP)
-					end
+					local oldwep = pl:GetWeaponLoadoutBySlot(slot)
+					pl:SetWeaponLoadoutBySlot(itemtab.SWEP, slot)
 					if not self:GetWaveActive() and pl:Alive() then
 						local newweptab = weapons.GetStored(itemtab.SWEP)
 						if newweptab then
@@ -1658,15 +1640,11 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 	pl:SendLua("surface.PlaySound(\"ambient/levels/labs/coinslot1.wav\")")
 end
 
-local function TimedOut(pl)
-	if pl:IsValid() and pl:Alive() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
-		--gamemode.Call("GiveRandomEquipment", pl)
-	end
-end
-
 concommand.Add("zsb_dropactiveweapon", function(sender, command)
 	if not (sender:IsValid() and sender:IsConnected() and sender:Alive()) then return end
-	sender:DropActiveWeapon()
+	if not GAMEMODE:IsRoundModeUnassigned() then
+		sender:DropActiveWeapon()
+	end
 end)
 
 concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
@@ -1675,8 +1653,9 @@ concommand.Add("zsb_pointsshopbuy", function(sender, command, arguments)
 	local id = arguments[1]
 	local slot = tonumber(arguments[2])
 	local itemtab = FindItem(id)
-
-	gamemode.Call("PlayerPurchasePointshopItem",sender,itemtab,slot)
+	if not GAMEMODE:IsRoundModeUnassigned() then
+		gamemode.Call("PlayerPurchasePointshopItem",sender,itemtab,slot)
+	end
 end)
 
 concommand.Add("zsb_pointsshopupgrade", function(sender, command, arguments)
@@ -1687,7 +1666,9 @@ concommand.Add("zsb_pointsshopupgrade", function(sender, command, arguments)
 	local slot = tonumber(arguments[4])
 	local originaltab = FindItem(prev_id)
 	local itemtab = FindItem(toupgrade_id)
-	gamemode.Call("PlayerUpgradePointshopItem",sender,originaltab,itemtab,revertmode,slot)
+	if not GAMEMODE:IsRoundModeUnassigned() then
+		gamemode.Call("PlayerUpgradePointshopItem",sender,originaltab,itemtab,revertmode,slot)
+	end
 end)
 
 function GM:SpectatorThink(pl)
@@ -1722,25 +1703,23 @@ function GM:PlayerDeathThink(pl)
 			pl:SpectateEntity(NULL)
 		end
 	end
-	if pl.NextSpawnTime and pl.NextSpawnTime <= CurTime() and pl:KeyDown(IN_ATTACK) then -- Force spawn.
+	if not self:IsRoundModeUnassigned() and pl.NextSpawnTime and pl.NextSpawnTime <= CurTime() and pl:KeyPressed(IN_ATTACK) then -- Force spawn.
 		net.Start("zs_playerrespawntime")
 			net.WriteFloat(-1)
 			net.WriteEntity(pl)
 		net.Broadcast()
 		if not self:IsClassicMode() and not self.SuddenDeath then 
-		pl.m_PreRespawn = true
-		local teamspawns = {}
-		teamspawns = team.GetValidSpawnPoint(pl:Team())
-		pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
-		pl:SetAbsVelocity(Vector(0,0,0))
-		pl:UnSpectateAndSpawn()
-		pl.m_PreRespawn = nil
-		pl.SpawnedTime = CurTime()
-		pl.NextSpawnTime = nil
-		net.Start("zs_playerredeemed")
-			net.WriteEntity(pl)
-			net.WriteString(pl:Name())
-		net.Broadcast()	
+			local teamspawns = {}
+			teamspawns = team.GetValidSpawnPoint(pl:Team())
+			pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+			pl:SetAbsVelocity(Vector(0,0,0))
+			pl:UnSpectateAndSpawn()
+			pl.SpawnedTime = CurTime()
+			pl.NextSpawnTime = nil
+			net.Start("zs_playerredeemed")
+				net.WriteEntity(pl)
+				net.WriteString(pl:Name())
+			net.Broadcast()	
 		end
 	elseif pl:GetObserverMode() == OBS_MODE_NONE then -- Not in spectator yet.
 		if self:GetWaveActive() then -- During wave.
@@ -2066,7 +2045,6 @@ function GM:PlayerChangedTeam(pl, oldteam, newteam)
 	local uid = pl:SteamID64()
 	if newteam == TEAM_HUMAN or newteam == TEAM_BANDIT then
 		pl.DamagedBy = {}
-		self.PreviouslyDied[uid] = nil
 		pl:SetBarricadeGhosting(false)
 		timer.Simple(0.25, function() pl:RefreshPlayerModel() end)
 	elseif newteam == TEAM_SPECTATOR then
@@ -2237,8 +2215,7 @@ function GM:PlayerUse(pl, ent)
 end
 
 function GM:PlayerDeath(pl, inflictor, attacker)
-	pl.NextSpawnTime = nil
-	if self.PreviouslyDied[pl:SteamID64()]<=CurTime() or pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
+	if not self:IsRoundModeUnassigned() and pl.NextSpawnTime == nil and not self:IsClassicMode() and not self.SuddenDeath then
 		local mult = 1
 		if self:IsSampleCollectMode() then
 			mult = 0.7
@@ -2251,40 +2228,40 @@ function GM:PlayerDeath(pl, inflictor, attacker)
 			net.WriteEntity(pl)
 		net.Broadcast()
 	end
-	if self:IsClassicMode() then
+	if self:IsClassicMode() or self.SuddenDeath then
 		self.RoundEndCamPos = pl:WorldSpaceCenter()
 		net.Start("zs_roundendcampos")
 			net.WriteVector(self.RoundEndCamPos)
 		net.Broadcast()
-	end
-	if self:GetWaveActive() and (self:IsClassicMode() or self.SuddenDeath) then 
-		local banditcount = 0
-		local humancount = 0
-		for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
-			if bandit:Alive() then banditcount = banditcount +1 end
-		end
-		for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
-			if human:Alive() then humancount = humancount +1 end
-		end
-		if humancount == 0 or banditcount == 0 then
-			self.SuddenDeath = false
-			net.Start("zs_suddendeath")
-				net.WriteBool( false )
-			net.Broadcast()
-			if humancount >=1 then
-				gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
-				for _, pl in pairs(player.GetAll()) do
-					pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_human")))
-				end
-			elseif banditcount >=1 then			
-				gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
-				for _, pl in pairs(player.GetAll()) do
-					pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_bandit")))
-				end
-			else
-				gamemode.Call("WaveEndWithWinner", nil)
-				for _, pl in pairs(player.GetAll()) do
-					pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "all_dead"))
+		if self:GetWaveActive() then 
+			local banditcount = 0
+			local humancount = 0
+			for _, bandit in pairs(team.GetPlayers(TEAM_BANDIT)) do
+				if bandit:Alive() then banditcount = banditcount +1 end
+			end
+			for _, human in pairs(team.GetPlayers(TEAM_HUMAN)) do
+				if human:Alive() then humancount = humancount +1 end
+			end
+			if humancount == 0 or banditcount == 0 then
+				self.SuddenDeath = false
+				net.Start("zs_suddendeath")
+					net.WriteBool( false )
+				net.Broadcast()
+				if humancount >=1 then
+					gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
+					for _, pl in pairs(player.GetAll()) do
+						pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_human")))
+					end
+				elseif banditcount >=1 then			
+					gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
+					for _, pl in pairs(player.GetAll()) do
+						pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, "x_killed_all_enemies",translate.ClientGet(pl,"teamname_bandit")))
+					end
+				else
+					gamemode.Call("WaveEndWithWinner", nil)
+					for _, pl in pairs(player.GetAll()) do
+						pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "all_dead"))
+					end
 				end
 			end
 		end
@@ -2459,10 +2436,10 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 		if samplestodrop > 0 then
 			pl:DropSample(samplestodrop)
 		end
+		pl:SetSamples(0)
 	end
 	pl:DropAll()
 	pl:AddDeaths(1)
-	self.PreviouslyDied[pl:SteamID64()] = CurTime()
 	if self:GetWave() == 0 then
 		pl.DiedDuringWave0 = true
 	end
@@ -2476,7 +2453,6 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 	if IsValid(hands) then
 		hands:Remove()
 	end
-	--if pl.NextSpawnTime
 	if attacker == pl then
 		net.Start("zs_pl_kill_self")
 			net.WriteEntity(pl)
@@ -2566,6 +2542,21 @@ function GM:GetTeamKillAdvantage(teamid)
 	return team.TotalFrags(teamid) - team.TotalDeaths(teamid)
 end
 
+function GM:OnRoundModeInitialSelected()
+	for _, pl in ipairs(player.GetAllActive()) do
+		pl.ClassicModeInsuredWeps = {}
+		pl.ClassicModeNextInsureWeps = {}
+		pl.ClassicModeRemoveInsureWeps = {}
+		pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+		pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+		if self:IsClassicMode() then
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
+			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
+		end
+		pl:Spawn()
+	end
+end
+
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
 	--pl:RemoveSuit()
@@ -2578,9 +2569,7 @@ function GM:PlayerSpawn(pl)
 	pl.StartSpectating = nil
 	pl.Gibbed = nil
 
-	pl.SpawnNoSuicide = CurTime() + 1
 	pl.SpawnedTime = CurTime()
-	pl.NextSpawnTime = nil
 	
 	pl:ShouldDropWeapon(false)
 
@@ -2588,6 +2577,19 @@ function GM:PlayerSpawn(pl)
 	pl:SetLegDamage(0)
 	pl:SetSamples(0)
 	pl:SetLastAttacker()
+
+	local pcol = Vector(pl:GetInfo("cl_playercolor"))
+	pcol.x = math.Clamp(pcol.x, 0, 2.5)
+	pcol.y = math.Clamp(pcol.y, 0, 2.5)
+	pcol.z = math.Clamp(pcol.z, 0, 2.5)
+	pl:SetPlayerColor(pcol)
+
+	local wcol = Vector(pl:GetInfo("cl_weaponcolor"))
+	wcol.x = math.Clamp(wcol.x, 0, 2.5)
+	wcol.y = math.Clamp(wcol.y, 0, 2.5)
+	wcol.z = math.Clamp(wcol.z, 0, 2.5)
+	pl:SetWeaponColor(wcol)
+
 	if (pl:IsSpectator()) then
 		if pl:GetInfo("zsb_spectator") == "1" then
 			pl:StripWeapons( )
@@ -2598,8 +2600,7 @@ function GM:PlayerSpawn(pl)
 		end
 	end
 	pl:RemoveStatus("overridemodel", false, true)
-	self.PreviouslyDied[pl:SteamID64()] = nil 
-			
+
 	if (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		pl.HighestLifeEnemyKills = 0
 		pl.LifeBarricadeDamage = 0
@@ -2627,248 +2628,228 @@ function GM:PlayerSpawn(pl)
 		pl.DamageVulnerability = nil
 			
 		pl:SetupHands()
-
-		if self:IsClassicMode() then
-			for _, wep in pairs(pl.ClassicModeInsuredWeps) do
-				local storedwep = weapons.GetStored(wep)
-				if storedwep then
-					local given = pl:Give(wep)
-					if given then
-						net.Start("zs_insure_weapon")
-							net.WriteString(wep)
-							net.WriteBool(false)
-						net.Send(pl)
+		if not self:IsRoundModeUnassigned() then
+			if self:IsClassicMode() then
+				for _, wep in pairs(pl.ClassicModeInsuredWeps) do
+					local storedwep = weapons.GetStored(wep)
+					if storedwep then
+						local given = pl:Give(wep)
+						if given then
+							net.Start("zs_insure_weapon")
+								net.WriteString(wep)
+								net.WriteBool(false)
+							net.Send(pl)
+						end
 					end
 				end
-			end
-		else
-			pl:UpdateWeaponLoadouts()
-			if not self.SuddenDeath then
-				local buff = pl:GiveStatus("spawnbuff")
-				if buff and IsValid(buff) then
-					buff:SetOwner(pl)
+			else
+				pl:UpdateWeaponLoadouts()
+				if not self.SuddenDeath then
+					local buff = pl:GiveStatus("spawnbuff")
+					if buff and IsValid(buff) then
+						buff:SetOwner(pl)
+					end
 				end
 			end
 		end
 	end
-
-	local pcol = Vector(pl:GetInfo("cl_playercolor"))
-	pcol.x = math.Clamp(pcol.x, 0, 2.5)
-	pcol.y = math.Clamp(pcol.y, 0, 2.5)
-	pcol.z = math.Clamp(pcol.z, 0, 2.5)
-	pl:SetPlayerColor(pcol)
-
-	local wcol = Vector(pl:GetInfo("cl_weaponcolor"))
-	wcol.x = math.Clamp(wcol.x, 0, 2.5)
-	wcol.y = math.Clamp(wcol.y, 0, 2.5)
-	wcol.z = math.Clamp(wcol.z, 0, 2.5)
-	pl:SetWeaponColor(wcol)
 end
 
-function GM:SetWave(wave)
-	SetGlobalInt("wave", wave)
+function GM:WaveStarted()
+	local players = player.GetAllActive()
+	for _, pl in pairs(players) do
+		if not pl:Alive() then
+			local teamspawns = {}
+			teamspawns = team.GetValidSpawnPoint(pl:Team())
+			pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+			pl:SetAbsVelocity(Vector(0,0,0))
+			pl:UnSpectateAndSpawn()
+			pl.SpawnedTime = CurTime()
+			pl.NextSpawnTime = nil
+			net.Start("zs_playerredeemed")
+				net.WriteEntity(pl)
+				net.WriteString(pl:Name())
+			net.Broadcast()	
+		end
+	end
+	self.RoundEndCamPos = nil
+		
+	local prevwave = self:GetWave()
+
+	if prevwave >= self:GetNumberOfWaves() and not self.SuddenDeath then return end
+	if not self:IsClassicMode() and not self.SuddenDeath then
+		if self:IsTransmissionMode() then
+			gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
+		elseif self:IsSampleCollectMode() then
+			gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
+			self.LastNestSpawnTime = self.BaseNestSpawnTime
+			self.NextNestSpawn = CurTime() + self.LastNestSpawnTime
+		end
+	end
+	gamemode.Call("SetWave", prevwave + 1)
+	gamemode.Call("SetWaveStart", CurTime())
+
+	gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() * (self:IsClassicMode() and 0.5 or 1) - (self:GetWave() - 1) * self.TimeLostPerWave* (self:IsClassicMode() and 0 or 1) )
+
+	net.Start("zs_wavestart")
+		net.WriteInt(self:GetWave(), 16)
+		net.WriteFloat(self:GetWaveEnd())
+	net.Broadcast()
+
+
+	local curwave = self:GetWave()
+	for _, ent in pairs(ents.FindByClass("logic_waves")) do
+		if ent.Wave == curwave or ent.Wave == -1 then
+			ent:Input("onwavestart", ent, ent, curwave)
+		end
+	end
+end
+
+function GM:WaveEnded()
+	if not self.SuddenDeath then
+		if self:GetCurrentWaveWinner() == TEAM_HUMAN then
+			self:SetHumanScore(self:GetHumanScore()+1)
+		elseif self:GetCurrentWaveWinner() == TEAM_BANDIT then
+			self:SetBanditScore(self:GetBanditScore()+1)
+		elseif self:GetCurrentWaveWinner() == nil then
+			self:SetTieScore(self:GetTieScore()+1)
+		end
+		if self:GetHumanScore() == self:GetBanditScore() then
+	
+		elseif (self:GetHumanScore() >= math.ceil((self:GetNumberOfWaves()-self:GetTieScore()+1)/2)) then
+			gamemode.Call("EndRound", TEAM_HUMAN)
+			return
+		elseif (self:GetBanditScore() >= math.ceil((self:GetNumberOfWaves()-self:GetTieScore()+1)/2))then
+			gamemode.Call("EndRound", TEAM_BANDIT)
+			return
+		end
+		if self:GetWave() >= self:GetNumberOfWaves() then -- Last wave is over
+			if self:GetHumanScore() > self:GetBanditScore() then
+				gamemode.Call("EndRound", TEAM_HUMAN)
+			elseif self:GetHumanScore() < self:GetBanditScore() then
+				gamemode.Call("EndRound", TEAM_BANDIT)
+			elseif self:GetWave() > self:GetNumberOfWaves() then
+				gamemode.Call("EndRound", nil)
+			else	
+				self.SuddenDeath = true
+				self:SetCurrentWaveWinner(nil)
+				net.Start("zs_suddendeath")
+					net.WriteBool( true )
+				net.Broadcast()
+			end
+			local curwave = self:GetWave()
+			for _, ent in pairs(ents.FindByClass("logic_waves")) do
+				if ent.Wave == curwave or ent.Wave == -1 then
+					ent:Input("onwaveend", ent, ent, curwave)
+				end
+			end
+		end
+	else
+		if self:GetCurrentWaveWinner() == nil then
+			gamemode.Call("EndRound", nil)
+		end
+	end
+	gamemode.Call("ResetLuaWave")
+	--self.SuddenDeath = false
+	gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
+	for _, pl in ipairs(player.GetAll()) do
+		
+		if self.SuddenDeath or self:IsClassicMode() then
+			pl:RemoveStatus("spawnbuff", false, true)
+		end
+		local teamspawns = {}
+		teamspawns = team.GetValidSpawnPoint(pl:Team())
+		if pl:GetInfo("zsb_spectator") == "1" then
+			pl:Flashlight(false)
+			if pl:Team() != TEAM_SPECTATOR then
+				pl:ChangeTeam(TEAM_SPECTATOR)
+			end
+			pl:StripWeapons()
+			if pl:GetObserverMode() != OBS_MODE_ROAMING then
+				pl:Spectate(OBS_MODE_ROAMING)
+			end
+		elseif pl:Alive() then
+			if not self:IsClassicMode() then
+				pl:UpdateWeaponLoadouts()
+			else
+				for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
+					if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeInsuredWeps,wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
+						table.insert(pl.ClassicModeInsuredWeps,wep)
+						net.Start("zs_insure_weapon")
+							net.WriteString(wep)
+							net.WriteBool(true)
+						net.Send(pl)
+					end
+				end
+				for i,wep in ipairs(pl.ClassicModeInsuredWeps) do
+					if table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
+						table.remove(pl.ClassicModeInsuredWeps,i)
+						net.Start("zs_remove_insured_weapon")
+							net.WriteString(wep)
+						net.Send(pl)
+					end
+				end
+				pl.ClassicModeNextInsureWeps = {}
+				pl.ClassicModeRemoveInsureWeps = {}
+			end
+			pl.LifeBarricadeDamage = 0
+			pl.LifeEnemyDamage = 0
+			pl.LifeEnemyKills = 0
+			pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
+			pl:SetAbsVelocity(Vector(0,0,0))
+		else
+			pl:UnSpectateAndSpawn()	
+		end
+		pl:PurgeStatusEffects()
+		pl:SetSamples(0)
+		pl:SetHealth(pl:GetMaxHealth())
+		local toadd = 10*(1+self:GetWave())
+		if (self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_BANDIT) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_HUMAN) then
+			pl:AddPoints(toadd)
+			pl:PrintTranslatedMessage(HUD_PRINTTALK, "loser_points_added", toadd)
+		elseif 
+			(self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_HUMAN) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_BANDIT) then
+			pl:AddPoints(toadd/2)
+			pl:PrintTranslatedMessage(HUD_PRINTTALK, "winner_points_added", toadd/2)
+		elseif
+			(self:GetCurrentWaveWinner() == nil and pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
+			pl:AddPoints(toadd*0.8)
+			pl:PrintTranslatedMessage(HUD_PRINTTALK, "draw_points_added", toadd*0.8)
+		end
+		if (team.NumPlayers(TEAM_BANDIT) > team.NumPlayers(TEAM_HUMAN) and pl:Team() == TEAM_HUMAN) or (team.NumPlayers(TEAM_BANDIT) < team.NumPlayers(TEAM_HUMAN) and pl:Team() == TEAM_BANDIT) then
+			pl:AddPoints(toadd/5)
+			pl:PrintTranslatedMessage(HUD_PRINTTALK, "less_players_points_added", toadd/5)
+		end
+	end
+	
+	net.Start("zs_waveend")
+		net.WriteInt(self:GetWave(), 16)
+		net.WriteFloat(self:GetWaveStart())
+		net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
+	net.Broadcast()
+	util.RemoveAll("prop_ammo")
+	util.RemoveAll("prop_weapon")
+	util.RemoveAll("prop_obj_transmitter")
+	util.RemoveAll("prop_obj_nest")
+	util.RemoveAll("prop_obj_sample")
+	util.RemoveAll("prop_sampledepositterminal")
+	local deployables = ents.FindByClass("prop_drone")
+	table.Add(deployables, ents.FindByClass("prop_manhack"))
+	for _, ent in pairs(deployables) do
+		if ent.GetOwner and ent:GetOwner():IsPlayer() and (ent:GetOwner():Team() == TEAM_BANDIT or ent:GetOwner():Team() == TEAM_HUMAN) then
+			ent:OnPackedUp(ent:GetOwner())
+		else
+			ent:Destroy()
+		end
+	end
+	timer.Simple(1, function() self:SetCurrentWaveWinner(nil) end)
 end
 
 function GM:WaveStateChanged(newstate)
 	if newstate then
-		local players = player.GetAllActive()
-		for _, pl in pairs(players) do
-			if not pl:Alive() then
-				pl.m_PreRespawn = true
-				local teamspawns = {}
-				teamspawns = team.GetValidSpawnPoint(pl:Team())
-				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
-				pl:SetAbsVelocity(Vector(0,0,0))
-				pl:UnSpectateAndSpawn()
-				pl.m_PreRespawn = nil
-				pl.SpawnedTime = CurTime()
-				pl.NextSpawnTime = nil
-				net.Start("zs_playerredeemed")
-					net.WriteEntity(pl)
-					net.WriteString(pl:Name())
-				net.Broadcast()	
-			end
-		end
-		self.RoundEndCamPos = nil
-			
-		local prevwave = self:GetWave()
-
-		if prevwave >= self:GetNumberOfWaves() and not self.SuddenDeath then return end
-		if not self:IsClassicMode() and not self.SuddenDeath then
-			if self:IsTransmissionMode() then
-				gamemode.Call("CreateObjectives","prop_obj_transmitter",false)
-			elseif self:IsSampleCollectMode() then
-				gamemode.Call("CreateObjectives","prop_sampledepositterminal",true)
-				self.LastNestSpawnTime = self.BaseNestSpawnTime
-				self.NextNestSpawn = CurTime() + self.LastNestSpawnTime
-				self.ActivatedInitialTerminal = nil
-			end
-		end
-		gamemode.Call("SetWave", prevwave + 1)
-		gamemode.Call("SetWaveStart", CurTime())
-
-		gamemode.Call("SetWaveEnd", self:GetWaveStart() + self:GetWaveOneLength() * (self:IsClassicMode() and 0.5 or 1) - (self:GetWave() - 1) * self.TimeLostPerWave* (self:IsClassicMode() and 0 or 1) )
-
-		net.Start("zs_wavestart")
-			net.WriteInt(self:GetWave(), 16)
-			net.WriteFloat(self:GetWaveEnd())
-		net.Broadcast()
-
-
-		local curwave = self:GetWave()
-		for _, ent in pairs(ents.FindByClass("logic_waves")) do
-			if ent.Wave == curwave or ent.Wave == -1 then
-				ent:Input("onwavestart", ent, ent, curwave)
-			end
-		end
+		gamemode.Call("WaveStarted")	
 	else
-		if not self.SuddenDeath then
-			if self:GetCurrentWaveWinner() == TEAM_HUMAN then
-				self:SetHumanScore(self:GetHumanScore()+1)
-			elseif self:GetCurrentWaveWinner() == TEAM_BANDIT then
-				self:SetBanditScore(self:GetBanditScore()+1)
-			elseif self:GetCurrentWaveWinner() == nil then
-				self:SetTieScore(self:GetTieScore()+1)
-			end
-			if self:GetHumanScore() == self:GetBanditScore() then
-		
-			elseif (self:GetHumanScore() >= math.ceil((self:GetNumberOfWaves()-self:GetTieScore()+1)/2)) then
-				gamemode.Call("EndRound", TEAM_HUMAN)
-				return
-			elseif (self:GetBanditScore() >= math.ceil((self:GetNumberOfWaves()-self:GetTieScore()+1)/2))then
-				gamemode.Call("EndRound", TEAM_BANDIT)
-				return
-			end
-			if self:GetWave() >= self:GetNumberOfWaves() then -- Last wave is over
-				if self:GetHumanScore() > self:GetBanditScore() then
-					gamemode.Call("EndRound", TEAM_HUMAN)
-				elseif self:GetHumanScore() < self:GetBanditScore() then
-					gamemode.Call("EndRound", TEAM_BANDIT)
-				elseif self:GetWave() > self:GetNumberOfWaves() then
-					gamemode.Call("EndRound", nil)
-				else	
-					self.SuddenDeath = true
-					self:SetCurrentWaveWinner(nil)
-					net.Start("zs_suddendeath")
-						net.WriteBool( true )
-					net.Broadcast()
-				end
-				local curwave = self:GetWave()
-				for _, ent in pairs(ents.FindByClass("logic_waves")) do
-					if ent.Wave == curwave or ent.Wave == -1 then
-						ent:Input("onwaveend", ent, ent, curwave)
-					end
-				end
-			end
-		else
-			if self:GetCurrentWaveWinner() == nil then
-				gamemode.Call("EndRound", nil)
-			end
-		end
-		self.NextNestSpawn = nil
-		self:SetComms(0,0)
-		self:SetSamples(0,0)
-		self.CommsEnd = false
-		self.SamplesEnd = false
-		--self.SuddenDeath = false
-		gamemode.Call("SetWaveStart", CurTime() + self.WaveIntermissionLength)
-		for _, pl in ipairs(player.GetAll()) do
-			if self.SuddenDeath or self:IsClassicMode() then
-				pl:RemoveStatus("spawnbuff", false, true)
-			end
-			local teamspawns = {}
-			teamspawns = team.GetValidSpawnPoint(pl:Team())
-			if pl:GetInfo("zsb_spectator") == "1" then
-				pl:Flashlight(false)
-				if pl:Team() != TEAM_SPECTATOR then
-					pl:ChangeTeam(TEAM_SPECTATOR)
-				end
-				pl:StripWeapons()
-				if pl:GetObserverMode() != OBS_MODE_ROAMING then
-					pl:Spectate(OBS_MODE_ROAMING)
-				end
-			elseif pl:Alive() then
-				if not self:IsClassicMode() then
-					pl:UpdateWeaponLoadouts()
-				else
-					for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
-						if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeInsuredWeps,wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
-							table.insert(pl.ClassicModeInsuredWeps,wep)
-							net.Start("zs_insure_weapon")
-								net.WriteString(wep)
-								net.WriteBool(true)
-							net.Send(pl)
-						end
-					end
-					for i,wep in ipairs(pl.ClassicModeInsuredWeps) do
-						if table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
-							table.remove(pl.ClassicModeInsuredWeps,i)
-							net.Start("zs_remove_insured_weapon")
-								net.WriteString(wep)
-							net.Send(pl)
-						end
-					end
-					pl.ClassicModeNextInsureWeps = {}
-					pl.ClassicModeRemoveInsureWeps = {}
-				end
-				pl.LifeBarricadeDamage = 0
-				pl.LifeEnemyDamage = 0
-				pl.LifeEnemyKills = 0
-				pl:SetPos(teamspawns[ math.random(#teamspawns) ]:GetPos())
-				pl:SetAbsVelocity(Vector(0,0,0))
-			else
-				pl:UnSpectateAndSpawn()	
-			end
-			pl:PurgeStatusEffects()
-			pl:SetSamples(0)
-			pl:SetHealth(pl:GetMaxHealth())
-			local toadd = 10*(1+self:GetWave())
-			if (self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_BANDIT) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_HUMAN) then
-				pl:AddPoints(toadd)
-				pl:PrintTranslatedMessage(HUD_PRINTTALK, "loser_points_added", toadd)
-			elseif 
-				(self:GetCurrentWaveWinner() == TEAM_HUMAN and pl:Team() == TEAM_HUMAN) or (self:GetCurrentWaveWinner() == TEAM_BANDIT and pl:Team() == TEAM_BANDIT) then
-				pl:AddPoints(toadd/2)
-				pl:PrintTranslatedMessage(HUD_PRINTTALK, "winner_points_added", toadd/2)
-			elseif
-				(self:GetCurrentWaveWinner() == nil and pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
-				pl:AddPoints(toadd*0.8)
-				pl:PrintTranslatedMessage(HUD_PRINTTALK, "draw_points_added", toadd*0.8)
-			end
-			if (team.NumPlayers(TEAM_BANDIT) > team.NumPlayers(TEAM_HUMAN) and pl:Team() == TEAM_HUMAN) or (team.NumPlayers(TEAM_BANDIT) < team.NumPlayers(TEAM_HUMAN) and pl:Team() == TEAM_BANDIT) then
-				pl:AddPoints(toadd/5)
-				pl:PrintTranslatedMessage(HUD_PRINTTALK, "less_players_points_added", toadd/5)
-			end
-		end
-		
-		net.Start("zs_waveend")
-			net.WriteInt(self:GetWave(), 16)
-			net.WriteFloat(self:GetWaveStart())
-			net.WriteUInt(self:GetCurrentWaveWinner() or -1, 8)
-		net.Broadcast()
-		net.Start("zs_currenttransmitters")
-			for i=1, self.MaxTransmitters do
-				net.WriteInt(0,4)
-			end
-		net.Broadcast()
-		self.CurrentObjectives = {}
-		util.RemoveAll("prop_ammo")
-		util.RemoveAll("prop_weapon")
-		util.RemoveAll("prop_obj_transmitter")
-		util.RemoveAll("prop_obj_nest")
-		util.RemoveAll("prop_obj_sample")
-		util.RemoveAll("prop_sampledepositterminal")
-		local deployables = ents.FindByClass("prop_drone")
-		table.Add(deployables, ents.FindByClass("prop_manhack"))
-		for _, ent in pairs(deployables) do
-			if ent.GetOwner and ent:GetOwner():IsPlayer() and (ent:GetOwner():Team() == TEAM_BANDIT or ent:GetOwner():Team() == TEAM_HUMAN) then
-				ent:OnPackedUp(ent:GetOwner())
-			else
-				ent:Destroy()
-			end
-		end
-
-		timer.Simple(1, function() self:SetCurrentWaveWinner(nil) end)
+		gamemode.Call("WaveEnded")
 	end
 	gamemode.Call("OnWaveStateChanged")
 end

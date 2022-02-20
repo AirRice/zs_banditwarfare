@@ -56,6 +56,13 @@ function FindItem(id)
 	return t
 end
 
+function IsValidRoundMode(mode)
+	if mode == ROUNDMODE_TRANSMISSION or mode == ROUNDMODE_SAMPLES or mode == ROUNDMODE_CLASSIC then
+		return true
+	end
+	return false
+end
+
 function FindWeaponConsequents(id)
 	if not id then return end
 	local num = tonumber(id)
@@ -119,10 +126,7 @@ function PlayerCanUpgradePointshopItem(pl,itemtab,slot)
 	if not itemtab then return end	
 	local owned = false
 	if not GAMEMODE:IsClassicMode() and not (slot == WEAPONLOADOUT_NULL or not slot) then 
-		owned = (itemtab.SWEP and pl:GetWeapon1() == itemtab.SWEP and slot == WEAPONLOADOUT_SLOT1)
-		or (itemtab.SWEP and pl:GetWeapon2() == itemtab.SWEP and slot == WEAPONLOADOUT_SLOT2)
-		or (itemtab.SWEP and pl:GetWeaponMelee() == itemtab.SWEP and slot == WEAPONLOADOUT_MELEE)
-		or (itemtab.SWEP and pl:GetWeaponToolslot() == itemtab.SWEP and slot == WEAPONLOADOUT_TOOLS)
+		owned = (itemtab.SWEP and pl:GetWeaponLoadoutBySlot(slot) == itemtab.SWEP)
 	else
 		owned = (itemtab.SWEP and pl:HasWeapon(itemtab.SWEP))
 	end
