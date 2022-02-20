@@ -34,6 +34,26 @@ local function AddToClassicInsuredList(wepname, pl)
 	end
 end
 
+function meta:ResetLoadout(oldmode, newmode)
+	local keepold = (isnumber(oldmode) and isnumber(newmode) and (oldmode != ROUNDMODE_UNASSIGNED) and (oldmode != ROUNDMODE_CLASSIC))
+	local wepdefaults = {}
+	wepdefaults[WEAPONLOADOUT_SLOT1] = GAMEMODE.PossiblePrimaryGuns
+	wepdefaults[WEAPONLOADOUT_SLOT2] = GAMEMODE.PossibleSecondaryGuns
+	wepdefaults[WEAPONLOADOUT_MELEE] = GAMEMODE.PossibleMelees
+	wepdefaults[WEAPONLOADOUT_TOOLS] = {"weapon_zs_enemyradar"}
+	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
+		local wepname = self:GetWeaponLoadoutBySlot(slot)
+		storedwep = weapons.GetStored(wepname)
+		shoptab = FindItembyClass(wepname)
+		local shoptabnotvalid = (storedwep and ((newmode == ROUNDMODE_SAMPLES) and (shoptab.NoSampleCollectMode) or (newmode == ROUNDMODE_TRANSMISSION) and (shoptab.NoTransmissionMode)))
+		if not keepold or shoptabnotvalid then
+			local possibleguns = wepdefaults[slot]
+			self:SetWeaponLoadoutBySlot(possibleguns[math.random(#possibleguns)],slot)
+		end
+	end
+	self:UpdateWeaponLoadouts()
+end
+
 function meta:LoadoutToClassicInventory()
 	if not (GAMEMODE:IsSampleCollectMode() or GAMEMODE:IsTransmissionMode()) then return end
 	self:StripWeapons()
@@ -42,14 +62,10 @@ function meta:LoadoutToClassicInventory()
 	self.ClassicModeRemoveInsureWeps = {}
 	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
 	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
-	local wep1 = self:GetWeapon1()
-	AddToClassicInsuredList(wep1, self)
-	local wep2 = self:GetWeapon2()
-	AddToClassicInsuredList(wep2, self)
-	local weptool = self:GetWeaponToolslot()
-	AddToClassicInsuredList(weptool, self)
-	local wepmelee = self:GetWeaponMelee()	
-	AddToClassicInsuredList(wepmelee, self)
+	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
+		local wep = self:GetWeaponLoadoutBySlot(slot)
+		AddToClassicInsuredList(wep, self)
+	end
 	for _, wep in pairs(self.ClassicModeInsuredWeps) do
 		local storedwep = weapons.GetStored(wep)
 		if storedwep then
@@ -104,6 +120,16 @@ function meta:ClassicInventoryToLoadout()
 	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
 	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
 	self:UpdateWeaponLoadouts()
+end
+
+function meta:HandleRoundModeChangeLoadout(oldmode, newmode)
+	if oldmode == ROUNDMODE_CLASSIC and (newmode == ROUNDMODE_SAMPLES or newmode == ROUNDMODE_TRANSMISSION) then
+		self:ClassicInventoryToLoadout()
+	elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
+		self:LoadoutToClassicInventory()
+	elseif (newmode != ROUNDMODE_CLASSIC) then
+		self:ResetLoadout(oldmode, newmode)
+	end
 end
 
 function meta:StripNonLoadoutWeapons()

@@ -666,11 +666,7 @@ function GM:OnRoundModeChanged(oldmode, newmode)
 	if (oldmode == ROUNDMODE_UNASSIGNED) then return end
 	local allplayers = player.GetAll()
 	for _, pl in ipairs(allplayers) do
-		if oldmode == ROUNDMODE_CLASSIC and (newmode == ROUNDMODE_SAMPLES or newmode == ROUNDMODE_TRANSMISSION) then
-			pl:ClassicInventoryToLoadout()
-		elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
-			pl:LoadoutToClassicInventory()
-		end
+		pl:HandleRoundModeChangeLoadout(oldmode,newmode)
 	end
 	if self:GetWaveActive() then
 		self:SetWave(self:GetWave()-1)
@@ -1182,22 +1178,6 @@ function GM:PlayerInitialSpawn(pl)
 	gamemode.Call("PlayerInitialSpawnRound", pl)
 end
 
-local primaryguns = {
-	"weapon_zs_tosser",
-	"weapon_zs_crackler",
-	"weapon_zs_doublebarrel",
-	"weapon_zs_stubber",
-}
-local secondaryguns = {
-	"weapon_zs_peashooter",
-	"weapon_zs_battleaxe",
-	"weapon_zs_slinger"
-}
-local meleeslot = {
-	"weapon_zs_swissarmyknife",
-	"weapon_zs_lamp",
-	"weapon_zs_plank"
-}
 function GM:PlayerInitialSpawnRound(pl)
 	pl:SprintDisable()
 	--pl:RemoveSuit()
@@ -1304,10 +1284,7 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.ClassicModeRemoveInsureWeps = {}
 	pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
 	pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
-	pl:SetWeapon1(primaryguns[math.random(#primaryguns)])
-	pl:SetWeapon2(secondaryguns[math.random(#secondaryguns)])
-	pl:SetWeaponToolslot("weapon_zs_enemyradar")
-	pl:SetWeaponMelee(meleeslot[math.random(#meleeslot)])
+	pl:ResetLoadout()
 	if not self:IsRoundModeUnassigned() then
 		if self:IsClassicMode() then
 			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
@@ -1509,28 +1486,11 @@ function GM:PlayerUpgradePointshopItem(pl,originaltab,itemtab,revertmode,slot)
 			if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) 
 			or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) 
 			or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
-				local oldwep = nil
-				if slot == WEAPONLOADOUT_SLOT1 then 
-					oldwep = pl:GetWeapon1()
-				elseif slot == WEAPONLOADOUT_SLOT2 then 
-					oldwep = pl:GetWeapon2() 
-				elseif slot == WEAPONLOADOUT_TOOLS then
-					oldwep = pl:GetWeaponToolslot()
-				elseif slot == WEAPONLOADOUT_MELEE then
-					oldwep = pl:GetWeaponMelee()
-				end
+				local oldwep = pl:GetWeaponLoadoutBySlot(slot)
 				if isstring(oldwep) and isstring(originswep) and string.lower(oldwep) != string.lower(originswep) then
 					return
 				end
-				if slot == WEAPONLOADOUT_SLOT1 then 
-					pl:SetWeapon1(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_SLOT2 then 
-					pl:SetWeapon2(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_TOOLS then
-					pl:SetWeaponToolslot(itemtab.SWEP)
-				elseif slot == WEAPONLOADOUT_MELEE then
-					pl:SetWeaponMelee(itemtab.SWEP)
-				end
+				pl:SetWeaponLoadoutBySlot(itemtab.SWEP, slot)
 				if not self:GetWaveActive() and pl:Alive() then
 					local newweptab = weapons.GetStored(itemtab.SWEP)
 					if newweptab then
@@ -1608,20 +1568,8 @@ function GM:PlayerPurchasePointshopItem(pl,itemtab,slot)
 		else
 			if itemtab.SWEP then
 				if ((slot == WEAPONLOADOUT_SLOT1 or slot == WEAPONLOADOUT_SLOT2) and itemtab.Category == ITEMCAT_GUNS) or (slot == WEAPONLOADOUT_TOOLS  and itemtab.Category == ITEMCAT_TOOLS) or (slot == WEAPONLOADOUT_MELEE  and itemtab.Category == ITEMCAT_MELEE) then	
-					local oldwep = nil
-					if slot == WEAPONLOADOUT_SLOT1 then 
-						oldwep = pl:GetWeapon1()
-						pl:SetWeapon1(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_SLOT2 then 
-						oldwep = pl:GetWeapon2() 
-						pl:SetWeapon2(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_TOOLS then
-						oldwep = pl:GetWeaponToolslot()
-						pl:SetWeaponToolslot(itemtab.SWEP)
-					elseif slot == WEAPONLOADOUT_MELEE then
-						oldwep = pl:GetWeaponMelee()
-						pl:SetWeaponMelee(itemtab.SWEP)
-					end
+					local oldwep = pl:GetWeaponLoadoutBySlot(slot)
+					pl:SetWeaponLoadoutBySlot(itemtab.SWEP, slot)
 					if not self:GetWaveActive() and pl:Alive() then
 						local newweptab = weapons.GetStored(itemtab.SWEP)
 						if newweptab then
