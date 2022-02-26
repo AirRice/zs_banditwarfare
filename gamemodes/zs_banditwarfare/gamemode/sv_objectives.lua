@@ -67,23 +67,20 @@ function GM:TransmitterCommsThink()
 			self:AddComms(bnum,hnum)
 			self.LastCommLink = CurTime() + 1
 		elseif self:GetBanditComms() >= 200 and self:GetHumanComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", nil)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "transmitter_comms_tied"), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", nil)
 		elseif self:GetBanditComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 		elseif self:GetHumanComms() >= 200 then
-			self.CommsEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "transmitter_comms_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 		end
 	end
 end
@@ -106,23 +103,20 @@ function GM:SamplesThink()
 		end
 		local timetoWin = math.min(3.5,self:GetWaveEnd()-CurTime()-0.1)
 		if self:GetBanditSamples() >= 100 and self:GetHumanSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", nil)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientGet(pl, "samples_tied"), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", nil)
 		elseif self:GetBanditSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_bandit")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_BANDIT)
 		elseif self:GetHumanSamples() >= 100 then
-			self.SamplesEnd = true
+			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 			for _, pl in pairs(player.GetAll()) do
 				pl:CenterNotify({killicon = "default"}, " ", COLOR_RED, translate.ClientFormat(pl, "samples_finished_by_x",translate.ClientGet(pl,"teamname_human")), {killicon = "default"})
 			end
-			gamemode.Call("WaveEndWithWinner", TEAM_HUMAN)
 		end
 	end
 end
@@ -230,8 +224,6 @@ function GM:CreateObjectives(entname,nocollide)
 	if #self.ProfilerNodes < self.MaxTransmitters then
 		return
 	end
-	
-	-- Copy
 	local nodes = {}
 	for _, node in pairs(self.ProfilerNodes) do
 		local vec = Vector()
@@ -239,6 +231,7 @@ function GM:CreateObjectives(entname,nocollide)
 		nodes[#nodes + 1] = {v = vec}
 	end
 
+	-- Arrange by absolute minimum distance difference between both teams' spawnpoints
 	local bspawns = {}
 	local hspawns = {}
 	table.Add(bspawns,team.GetValidSpawnPoint(TEAM_BANDIT))
@@ -262,24 +255,21 @@ function GM:CreateObjectives(entname,nocollide)
 	
 	local created_objectives = {}
 	table.sort(nodes, SortDistFromLast)
+
 	for i=1, self.MaxTransmitters do
-		local id
-		local sigs = ents.FindByClass(entname)
-		local flag = false
-		for __, sig in pairs(sigs) do
-			for _, n in pairs(nodes) do
-				if n.v:Distance(sig.NodePos) <= 800 or (math.random(2) == 1 and WorldVisible(n.v,sig.NodePos)) then
-					table.remove(nodes, _)
-				end
-			end
-		end
-		
 		-- Sort the nodes by their distances.
 		-- Select node with algorithm that randomly selects while selecting closer ids more
 		local id = 1
 		if #nodes >=self.MaxTransmitters*2 then
+			for __, sig in pairs(created_objectives) do
+				for _, n in pairs(nodes) do
+					if n.v:Distance(sig.NodePos) <= 800 then
+						table.remove(nodes, _)
+					end
+				end
+			end
 			local decider = math.random(1,5)
-			if decider > 2 then
+			if #nodes <= self.MaxTransmitters or decider > 2 then
 				id = math.random(1,self.MaxTransmitters)
 			else
 				id = math.random(self.MaxTransmitters+1,#nodes)
@@ -287,7 +277,6 @@ function GM:CreateObjectives(entname,nocollide)
 		else
 			id = math.random(1,#nodes)
 		end
-
 		-- Remove the chosen point from the temp table and make the transmitter.
 		local point = nodes[id].v
 		table.remove(nodes, id)

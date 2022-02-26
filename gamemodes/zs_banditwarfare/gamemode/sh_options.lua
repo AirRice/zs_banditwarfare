@@ -6,6 +6,23 @@ ITEMCAT_CONS = 4
 ITEMCAT_OTHER = 5
 --ITEMCAT_RETURNS = 7
 
+GM.PossiblePrimaryGuns = {
+	"weapon_zs_tosser",
+	"weapon_zs_crackler",
+	"weapon_zs_doublebarrel",
+	"weapon_zs_stubber",
+}
+GM.PossibleSecondaryGuns = {
+	"weapon_zs_peashooter",
+	"weapon_zs_battleaxe",
+	"weapon_zs_slinger"
+}
+GM.PossibleMelees = {
+	"weapon_zs_swissarmyknife",
+	"weapon_zs_lamp",
+	"weapon_zs_plank"
+}
+
 GM.Items = {}
 function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, canbuy, failtobuystr)
 	local prereqs = {}
@@ -544,6 +561,9 @@ GM.SurvivalClips = 3
 
 -- How much the price of an item is discounted in classic (deathmatch) mode. 0.75 means a 30% discount.
 GM.ClassicModeDiscountMultiplier = 0.7
+
+GM.PreviousRoundmodeDir = "zsbw"
+GM.PreviousRoundmodeFile = "previous_round_mode.dat"
 
 -- End of round music
 GM.SuddenDeathSound = Sound("music/bandit/lasthuman.ogg")

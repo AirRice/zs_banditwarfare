@@ -10,17 +10,23 @@ function ENT:Think()
 		self:Remove()
 		return
 	end
-
-	local dmg = math.min(self:GetDamage(),math.random(1, 3))
+	if self.NextBleedTick <= CurTime() then
+		local dmg = math.min(self:GetDamage(),math.random(1, 3))
  
-	owner:TakeDamage(dmg, self.Damager and self.Damager:IsValid() and self.Damager:IsPlayer() and self.Damager:Team() ~= owner:Team() and self.Damager or owner, self)
-	owner:AddLegDamage(dmg)
-	self:AddDamage(-dmg)
+		owner:TakeDamage(dmg, self.Damager and self.Damager:IsValid() and self.Damager:IsPlayer() and self.Damager:Team() ~= owner:Team() and self.Damager or owner, self)
+		owner:AddLegDamage(dmg)
+		self:AddDamage(-dmg)		
+		local dir = VectorRand()
+		dir:Normalize()
+		util.Blood(owner:WorldSpaceCenter(), 6, dir, 64)
+		self.NextBleedTick = CurTime() + 0.55
+	end
+	if self.NextStopBleedingTick <= CurTime() then
+		local notmoving = (owner:GetVelocity():Length() <= 32)
+		if notmoving then
+			self:AddDamage(-2)	
+		end
+		self.NextStopBleedingTick = CurTime() + 0.1
+	end
 
-	local dir = VectorRand()
-	dir:Normalize()
-	util.Blood(owner:WorldSpaceCenter(), 6, dir, 64)
-
-	self:NextThink(CurTime() + 0.55)
-	return true
 end

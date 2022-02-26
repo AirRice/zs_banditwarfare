@@ -121,7 +121,7 @@ function SWEP:Think()
 		self.PukeLeft = self.PukeLeft - 1
 		self.NextPuke = CurTime() + 0.02
 
-		local ent = ents.Create("projectile_poisonflesh")
+		local ent = ents.Create("projectile_poisonflesh_shot")
 		if ent:IsValid() then
 			ent:SetPos(pl:GetShootPos())
 			ent:SetOwner(pl)

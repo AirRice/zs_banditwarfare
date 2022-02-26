@@ -33,6 +33,32 @@ function meta:GetWeaponToolslot()
 	return self:GetDTString(3)
 end
 
+function meta:GetWeaponLoadoutBySlot(slot)
+	if not slot or (slot == WEAPONLOADOUT_NULL) then return nil end
+	if slot == WEAPONLOADOUT_SLOT1 then 
+		return self:GetWeapon1()
+	elseif slot == WEAPONLOADOUT_SLOT2 then 
+		return self:GetWeapon2()
+	elseif slot == WEAPONLOADOUT_TOOLS then
+		return self:GetWeaponToolslot()
+	elseif slot == WEAPONLOADOUT_MELEE then
+		return self:GetWeaponMelee()
+	end
+end
+
+function meta:SetWeaponLoadoutBySlot(weaponstring, slot)
+	if not slot or (slot == WEAPONLOADOUT_NULL) then return end
+	if slot == WEAPONLOADOUT_SLOT1 then 
+		self:SetWeapon1(weaponstring)
+	elseif slot == WEAPONLOADOUT_SLOT2 then 
+		self:SetWeapon2(weaponstring)
+	elseif slot == WEAPONLOADOUT_TOOLS then
+		self:SetWeaponToolslot(weaponstring)
+	elseif slot == WEAPONLOADOUT_MELEE then
+		self:SetWeaponMelee(weaponstring)
+	end
+end
+
 function meta:SetPoints(points)
 	self:SetDTInt(1, points)
 end
@@ -140,10 +166,10 @@ function meta:HealHealth(toheal,healer, wep)
 	local oldhealth = self:Health()
 	local newhealth = math.min(self:GetMaxHealth(),oldhealth + toheal)
 	self:SetHealth(newhealth)
+	if SERVER and toheal >= 5 then
+		self:PurgeStatusEffects()
+	end
 	if healer:IsPlayer() and healer~=self and newhealth != oldhealth and healer:Team() == self:Team() then
-		if SERVER and toheal > 5 then
-			self:PurgeStatusEffects()
-		end
 		gamemode.Call("PlayerHealedTeamMember", healer, self, newhealth - oldhealth, wep)
 	end
 end

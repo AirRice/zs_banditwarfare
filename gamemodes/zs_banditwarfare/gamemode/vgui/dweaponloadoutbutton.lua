@@ -109,16 +109,9 @@ end
 
 function PANEL:Think()
 	local wepslot = self.m_WeaponSlot
-	local wep
-	if wepslot == WEAPONLOADOUT_SLOT1 then
-		wep = MySelf:GetWeapon1()
-	elseif wepslot == WEAPONLOADOUT_SLOT2 then
-		wep = MySelf:GetWeapon2()
-	elseif wepslot == WEAPONLOADOUT_MELEE then
-		wep = MySelf:GetWeaponMelee()
-	elseif wepslot == WEAPONLOADOUT_TOOLS then
-		wep = MySelf:GetWeaponToolslot()	
-	else return 
+	local wep = MySelf:GetWeaponLoadoutBySlot(wepslot)
+	if not wep or not isstring(wep) then
+		return 
 	end
 	if self:GetWeapon() ~= wep then
 		self:SetWeaponSlot(wepslot)
@@ -174,16 +167,9 @@ end
 
 function PANEL:SetWeaponSlot(wepslot)
 	if not wepslot or wepslot < 1 or wepslot > 4 then return end
-	local wep = ""
-	if wepslot == WEAPONLOADOUT_SLOT1 then
-		wep = MySelf:GetWeapon1()
-	elseif wepslot == WEAPONLOADOUT_SLOT2 then
-		wep = MySelf:GetWeapon2()
-	elseif wepslot == WEAPONLOADOUT_MELEE then
-		wep = MySelf:GetWeaponMelee()
-	elseif wepslot == WEAPONLOADOUT_TOOLS then
-		wep = MySelf:GetWeaponToolslot()
-	else return 
+	local wep = MySelf:GetWeaponLoadoutBySlot(wepslot)
+	if not wep or not isstring(wep) then 
+		return 
 	end
 	self.m_WeaponSlot = wepslot
 	local sweptable = weapons.GetStored(wep)

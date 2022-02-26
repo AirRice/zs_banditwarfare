@@ -26,6 +26,112 @@ function meta:UpdateWeaponLoadouts()
 	end
 end
 
+local function AddToClassicInsuredList(wepname, pl)
+	storedwep = weapons.GetStored(wepname)
+	shoptab = FindItembyClass(wepname)
+	if storedwep and not (shoptab.NoClassicMode) then
+		table.ForceInsert(pl.ClassicModeInsuredWeps,wepname)
+	end
+end
+
+function meta:ResetLoadout(oldmode, newmode)
+	local keepold = (isnumber(oldmode) and isnumber(newmode) and (oldmode != ROUNDMODE_UNASSIGNED) and (oldmode != ROUNDMODE_CLASSIC))
+	local wepdefaults = {}
+	wepdefaults[WEAPONLOADOUT_SLOT1] = GAMEMODE.PossiblePrimaryGuns
+	wepdefaults[WEAPONLOADOUT_SLOT2] = GAMEMODE.PossibleSecondaryGuns
+	wepdefaults[WEAPONLOADOUT_MELEE] = GAMEMODE.PossibleMelees
+	wepdefaults[WEAPONLOADOUT_TOOLS] = {"weapon_zs_enemyradar"}
+	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
+		local wepname = self:GetWeaponLoadoutBySlot(slot)
+		storedwep = weapons.GetStored(wepname)
+		shoptab = FindItembyClass(wepname)
+		local shoptabnotvalid = (storedwep and ((newmode == ROUNDMODE_SAMPLES) and (shoptab.NoSampleCollectMode) or (newmode == ROUNDMODE_TRANSMISSION) and (shoptab.NoTransmissionMode)))
+		if not keepold or shoptabnotvalid then
+			local possibleguns = wepdefaults[slot]
+			self:SetWeaponLoadoutBySlot(possibleguns[math.random(#possibleguns)],slot)
+		end
+	end
+	self:UpdateWeaponLoadouts()
+end
+
+function meta:LoadoutToClassicInventory()
+	if not (GAMEMODE:IsSampleCollectMode() or GAMEMODE:IsTransmissionMode()) then return end
+	self:StripWeapons()
+	self.ClassicModeInsuredWeps = {}
+	self.ClassicModeNextInsureWeps = {}
+	self.ClassicModeRemoveInsureWeps = {}
+	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
+		local wep = self:GetWeaponLoadoutBySlot(slot)
+		AddToClassicInsuredList(wep, self)
+	end
+	for _, wep in pairs(self.ClassicModeInsuredWeps) do
+		local storedwep = weapons.GetStored(wep)
+		if storedwep then
+			local given = self:Give(wep)
+			if given then
+				net.Start("zs_insure_weapon")
+					net.WriteString(wep)
+					net.WriteBool(false)
+				net.Send(self)
+			end
+		end
+	end
+end
+
+function meta:ClassicInventoryToLoadout()
+	if not GAMEMODE:IsClassicMode() then return end
+	local wep1 = nil 
+	local wep2 = nil
+	local wepmelee = nil
+	local weptool = nil
+	local insuredweps = self.ClassicModeInsuredWeps
+	table.Add(insuredweps, self.ClassicModeNextInsureWeps)
+	for i,wep in ipairs(self:GetWeapons()) do
+		local weptab = wep:GetClass()
+		local shoptab = FindItembyClass(weptab)
+		if shoptab and (shoptab.Category == ITEMCAT_GUNS or shoptab.Category == ITEMCAT_MELEE or shoptab.Category == ITEMCAT_TOOLS) and table.HasValue(insuredweps, weptab) and not (GAMEMODE:IsSampleCollectMode() and shoptab.NoSampleCollectMode) then
+			if (shoptab.Category == ITEMCAT_GUNS) then
+				if not wep2 and weptab != self:GetWeapon1() then
+					wep2 = weptab
+					self:SetWeapon2(weptab)		
+				elseif not wep1 and weptab != self:GetWeapon2()  then
+					wep1 = weptab
+					self:SetWeapon1(weptab)
+				end
+			elseif (shoptab.Category == ITEMCAT_MELEE) then
+				if not wepmelee then
+					wepmelee = weptab
+					self:SetWeaponMelee(weptab)				
+				end	
+			elseif (shoptab.Category == ITEMCAT_TOOLS) then
+				if not weptool then
+					weptool = weptab
+					self:SetWeaponToolslot(weptab)				
+				end	
+			end
+		end
+	end
+	self:StripWeapons()
+	self.ClassicModeInsuredWeps = {}
+	self.ClassicModeNextInsureWeps = {}
+	self.ClassicModeRemoveInsureWeps = {}
+	self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+	self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+	self:UpdateWeaponLoadouts()
+end
+
+function meta:HandleRoundModeChangeLoadout(oldmode, newmode)
+	if oldmode == ROUNDMODE_CLASSIC and (newmode == ROUNDMODE_SAMPLES or newmode == ROUNDMODE_TRANSMISSION) then
+		self:ClassicInventoryToLoadout()
+	elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
+		self:LoadoutToClassicInventory()
+	elseif (newmode != ROUNDMODE_CLASSIC) then
+		self:ResetLoadout(oldmode, newmode)
+	end
+end
+
 function meta:StripNonLoadoutWeapons()
 	for _, wep in pairs(self:GetWeapons()) do
 		local wep1 = self:GetWeapon1()

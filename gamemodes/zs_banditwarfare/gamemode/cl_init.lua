@@ -328,6 +328,10 @@ function GM:IsTransmissionMode()
 	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_TRANSMISSION
 end
 
+function GM:IsRoundModeUnassigned()
+	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_UNASSIGNED
+end
+
 local lastwarntim = -1
 function GM:_Think()
 	
@@ -806,10 +810,6 @@ end
 
 function GM:PlayerShouldTakeDamage(pl, attacker)
 	return pl == attacker or not attacker:IsPlayer() or pl:Team() ~= attacker:Team()
-end
-
-function GM:SetWave(wave)
-	SetGlobalInt("wave", wave)
 end
 
 --[[local texGradientUp = surface.GetTextureID("vgui/gradient_up")
@@ -1318,7 +1318,7 @@ function GM:LocalPlayerDied(attackername)
 end
 
 function GM:OnSpawnMenuOpen()
-	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) then
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and not self:IsRoundModeUnassigned() then
 		if not self:IsClassicMode() then
 			gamemode.Call("HumanMenu")
 		elseif MySelf:Alive() then
@@ -1328,7 +1328,7 @@ function GM:OnSpawnMenuOpen()
 end
 
 function GM:OnSpawnMenuClose()
-	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and not self:IsClassicMode() 
+	if (MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT) and not self:IsRoundModeUnassigned() and self.HumanMenuPanel and self.HumanMenuPanel:Valid() and not self:IsClassicMode() 
 	and not (self.m_PointsShop and self.m_PointsShop:Valid()) then
 		self.HumanMenuPanel:CloseMenu()
 	end

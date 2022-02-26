@@ -101,7 +101,7 @@ function SWEP:PrimaryAttack()
 	owner:DoAttackEvent()
 	local aimvec = owner:GetAimVector()
 	if SERVER then
-		local ent = ents.Create("projectile_bonemesh")
+		local ent = ents.Create("projectile_bonemesh_blightcaster")
 		if ent:IsValid() then
 			ent:SetPos(owner:GetShootPos())
 			local ang = owner:EyeAngles()
