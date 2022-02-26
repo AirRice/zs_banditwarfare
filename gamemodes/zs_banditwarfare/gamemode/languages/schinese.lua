@@ -427,15 +427,16 @@ LANGUAGE.impossible									= "不可能。"
 LANGUAGE.trying_to_put_nails_in_glass				= "你不能把钉子锤入玻璃！"
 
 LANGUAGE.comms_interrupted							= "传输中断！"
-LANGUAGE.all_transmitters_taken_by_x						= "%s 已占领全部发射器！"
-LANGUAGE.one_transmitter_taken_by_x						= "%s 占领了一个发射器！"
-LANGUAGE.transmitter_comms_finished_by_x					= "%s 已完成传输。"
-LANGUAGE.transmitter_comms_tied							= "两个团队均已完成传输。"
+LANGUAGE.all_transmitters_taken_by_x				= "%s 已占领全部发射器！"
+LANGUAGE.one_transmitter_taken_by_x					= "%s 占领了一个发射器！"
+LANGUAGE.transmitter_comms_finished_by_x			= "%s 已完成传输。"
+LANGUAGE.transmitter_comms_tied						= "两个团队均已完成传输。"
 LANGUAGE.samples_finished_by_x						= "%s 已收集足够的样本。"
 LANGUAGE.samples_tied								= "两个团队均已收集足够的样本。"
 LANGUAGE.nest_destroyed_by_x				 		= "%s 已摧毁一个僵尸巢穴！"
 LANGUAGE.nest_spawned								= "出现了一个新的僵尸巢穴！"
-LANGUAGE.transmitter_comms_disrupted_x					= "%s 的发射器被黑客攻击了！他们的传输被破坏了 5%%。"
+LANGUAGE.transmitter_comms_disrupted_x				= "%s 的发射器被黑客攻击了！他们的传输被破坏了 5%%。"
+LANGUAGE.sample_deposit_terminal_changed			= "另一个研究终端已激活！"
 LANGUAGE.x_killed_all_enemies					    = "%s 已杀死全部敌人。"
 LANGUAGE.before_wave_cant_go_outside_spawn			= "在回合开始前你不能离开出生点！"
 LANGUAGE.you_have_died								= "你死了"
@@ -554,8 +555,9 @@ LANGUAGE.help_cont_introduction_collection			=	[[<h2>采集模式</h2> <br>
 <p>采集模式需要两个团队采集尽可能多的血液样本，以获得潜在的僵尸病毒疫苗。</p>
 <p>两个团队都有相同的目标：为疫苗采集足够的样本。如果一个团队先采集到了足够的样本，他们就会赢得这一波比赛。在游戏结束时，获胜波数较多的团队为总冠军。</p>
 <p>通过杀死敌人可以获得样本。如果是爆头击杀，这将使他们掉落两倍的样本。如果他们拥有任何样本，他们死后都会掉落。</p>
-<p>每隔 30 秒，地图上可能会随机生成一个僵尸巢穴。找到并销毁它们会得到一些点数，并会掉落 10 个样本</p>
-<p>仅仅收集样本是不够的。你需要找到一个研究终端并将样本插入其中。站在研究终端附近会以每秒 2 个的速度自动插入样本，但如果终端半径内有敌人，则无法将样本插入终端。</p>
+<p>每隔几秒钟，地图上就会随机出现一个僵尸巢穴。找到并摧毁它们会给玩家一些点数，同时它们也会掉落大量样本。</p>
+<p>仅仅收集样本是不够的。你需要找到一个研究终端，并且将样本插入终端。站在研究终端附近会每秒自动插入当前所持有的样本，但如果在终端的范围内有敌人存在，则无法将样本插入终端。</p>
+<p>可以使用的研究终端会随着时间而改变，因此，可要注意什么时候可以用哪一个研究终端哦！</p>
 <p>你可以通过按住 Garry's Mod 的菜单键（默认情况下为“Q”）打开武器配置菜单。在这个菜单中，你可以点击每个武器槽购买其他武器，用它替换槽中的武器。除非你在每一波开始前就购买好武器，否则它们不会立即提供给你。然而，每次你重生时，你都会带着所有你武器配置菜单中的武器重生。</p>
 <p>在收集模式下，一些工具和武器特别有用。生物扫描仪除了通常的用途外，还可以显示任何僵尸巢穴的位置。当僵尸巢穴被破坏时，它们很容易掉落生化武器的弹药，这使得生化武器在这种模式下特别有用。</p>
 <p>这种模式下，你与敌人近距离对战变得更有价值，因为远程狙击不会让你拿到样本！</p>]]
