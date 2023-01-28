@@ -427,15 +427,16 @@ LANGUAGE.impossible									= "Imposible."
 LANGUAGE.trying_to_put_nails_in_glass				= "¡No puedes clavar un clavo en cristal!"
 
 LANGUAGE.comms_interrupted							= "¡Comunicación interrumpida!"
-LANGUAGE.all_transmitters_taken_by_x						= "¡El equipo %s ha tomado todos los transmisores!"
-LANGUAGE.one_transmitter_taken_by_x						= "El equipo %s ha tomado un transmisor!"
-LANGUAGE.transmitter_comms_finished_by_x					= "El equipo %s ha finalizado su transmisión."
-LANGUAGE.transmitter_comms_tied							= "Ambos equipos han finalizado sus transmisiones."
+LANGUAGE.all_transmitters_taken_by_x				= "¡El equipo %s ha tomado todos los transmisores!"
+LANGUAGE.one_transmitter_taken_by_x					= "El equipo %s ha tomado un transmisor!"
+LANGUAGE.transmitter_comms_finished_by_x			= "El equipo %s ha finalizado su transmisión."
+LANGUAGE.transmitter_comms_tied						= "Ambos equipos han finalizado sus transmisiones."
 LANGUAGE.samples_finished_by_x						= "El equipo %s ha recogido muestras suficientes."
 LANGUAGE.samples_tied								= "Ambos equipos han recogido muestras suficientes."
 LANGUAGE.nest_destroyed_by_x				 		= "¡%s ha destruido un nido!"
 LANGUAGE.nest_spawned								= "¡Ha aparecido otro nido zombi!"
-LANGUAGE.transmitter_comms_disrupted_x					= "¡El transmisor %s ha sido hackeado! Su transmisión se ha dañado un 5 %%."
+LANGUAGE.transmitter_comms_disrupted_x				= "¡El transmisor %s ha sido hackeado! Su transmisión se ha dañado un 5 %%."
+LANGUAGE.sample_deposit_terminal_changed			= "¡Se ha activado un terminal de investigación distinto!"
 LANGUAGE.x_killed_all_enemies					    = "El equipo %s ha acabado con todos los enemigos."
 LANGUAGE.before_wave_cant_go_outside_spawn			= "¡No puedes abandonar la base antes de que empiece la ronda!"
 LANGUAGE.you_have_died								= "Has muerto"
@@ -554,8 +555,9 @@ LANGUAGE.help_cont_introduction_collection			=	[[<h2>Recolección</h2> <br>
 <p>En el modo Recolección, la tarea de los equipos es intentar recoger muestras de sangre para una potencial vacuna contra el virus zombi.</p>
 <p>Ambos equipos tienen el mismo objetivo: recoger suficientes muestras para la vacuna. Si un equipo reúne suficientes muestras antes, ganará la oleada. Al final de la partida, el equipo con más oleadas superadas gana.</p>
 <p>Se pueden obtener muestras asesinando enemigos. Si se mata de un disparo a la cabeza, el enemigo soltará dos muestras. Si además tenía alguna mustra, también la soltará al morir.</p>
-<p>Cada 30 segundos, aparece un nido zombi al azar en un punto del mapa. Buscarlo y encontrarlo dará puntos y 10 muestras.</p>
-<p>No todo es recoger las muestras. Es necesario encontrar una terminal de investigación e insertarlas en ella. Permaneciendo junto a una terminal de investigación se insertarán las muestras a una velocidad de 2 por segundo, pero no se insertarán mientras haya enemigos en el área.</p>
+<p>Cada cierta cantidad de segundos, aparece un nido zombi al azar en el mapa. Si se busca y se destruye se obtendrán algunos puntos, además de recoger una cantidad de muestras considerable.</p>
+<p>Recoger muestras solo no es suficiente. Tienes que encontrar terminales de investigación e insertar las muestras en ellos. Permanecer junto a los terminales de investigación hará que se inserten automáticamente las muestras que se tengan encima con cada segundo que pase, pero no puedes introducirlas en un terminal si hay enemigos cerca.</p>
+<p>El terminal utilizable irá rotando con el paso del tiempo, ¡por lo que hay que andar atento!</p>
 <p>Puedes abrir el menú de equipamiento del arma pulsando y manteniendo la tecla del catálogo de objetos de Garry's Mod («Q» por defecto). En este menú puedes hacer clic en cada espacio de arma para comprar otras o reemplazar los espacios. Debes comprar las armas en tu equipamiento antes de que empiece la ronda, en caso contrario, si ya ha comenzado la oleada, no las obtendrás inmediatamente. Sin embargo, cada vez que reaparezcas lo harás con todas las armas en tu equipamiento.</p>
 <p>En el modo Recolección hay algunas armas y herramientas especialmente útiles. Los escáneres biométricos, además de hacer su función, muestran la ubicación de cualquier nido zombi. La munición de las bioarmas se obtiene en nidos zombi, al ser destruidos, y estas son las armas más importantes del modo.</p>
 <p>Este modo hace que enfrentarte a corto alcance o cuerpo a cuerpo con tus enemigos sea más valioso, ¡ya que desde lejos no puedes recoger muestras!</p>]]
