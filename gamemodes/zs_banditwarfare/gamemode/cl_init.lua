@@ -1449,11 +1449,13 @@ net.Receive("zs_playerrespawntime", function(length)
 end)
 
 net.Receive("zs_dmg", function(length)
+	local infinitedmg = net.ReadBool()
 	local damage = net.ReadUInt(16)
 	local pos = net.ReadVector()
 
 	if DamageFloaters then
 		local effectdata = EffectData()
+			effectdata:SetFlags(infinitedmg and 1 or 0)
 			effectdata:SetOrigin(pos)
 			effectdata:SetMagnitude(damage)
 			effectdata:SetScale(0)
@@ -1462,11 +1464,13 @@ net.Receive("zs_dmg", function(length)
 end)
 
 net.Receive("zs_dmg_prop", function(length)
+	local infinitedmg = net.ReadBool()
 	local damage = net.ReadUInt(16)
 	local pos = net.ReadVector()
 
 	if DamageFloaters then
 		local effectdata = EffectData()
+			effectdata:SetFlags(infinitedmg and 1 or 0)
 			effectdata:SetOrigin(pos)
 			effectdata:SetMagnitude(damage)
 			effectdata:SetScale(1)

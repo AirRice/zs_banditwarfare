@@ -20,9 +20,7 @@ ENT.AlwaysGhostable = true
 local NextCache = 0
 local CachedFilter = {}
 
-function ENT:ShouldNotCollide(ent)
-	return ent:IsPlayer() and self:GetObjectOwner():IsPlayer() and ent:Team() == self:GetObjectOwner():Team()
-end
+ENT.SameTeamNoCollide = true
 
 function ENT:GetLocalAnglesToTarget(target)
 	return self:WorldToLocalAngles(self:GetAnglesToTarget(target))

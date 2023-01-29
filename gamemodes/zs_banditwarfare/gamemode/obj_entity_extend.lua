@@ -237,8 +237,15 @@ end
 
 function meta:ShouldNotCollide(ent)
 	if ent:IsValid() then
+		if self.CustomNoCollideRules ~= nil then
+			return self:CustomNoCollideRules(ent)	
+		end
 		if ent:IsPlayer() then
-			return ent:GetBarricadeGhosting() and self:IsBarricadeProp() and self:IsSameTeam(ent)
+			if self:IsBarricadeProp() then
+				return ent:GetBarricadeGhosting() and self:IsSameTeam(ent)
+			elseif self.SameTeamNoCollide then
+				return self.GetOwner and self:GetOwner() ~= nil and self:GetOwner():IsPlayer() and ent:Team() == self:GetOwner():Team()
+			end
 		end
 	end
 	return false

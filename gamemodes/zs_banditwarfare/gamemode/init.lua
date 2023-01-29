@@ -1829,22 +1829,24 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		dispatchdamagedisplay = true
 		if attacker:IsValid() then
 			if attacker:IsPlayer() then
-				ent:SetLastAttacker(attacker)
+				if self:PlayerShouldTakeDamage(ent,attacker) then
+					ent:SetLastAttacker(attacker)
 
-				local myteam = attacker:Team()
-				local otherteam = ent:Team()
-				if myteam ~= otherteam then
-					damage = math.min(dmginfo:GetDamage(), ent:Health())
-					if damage > 0 then
-						attacker.DamageDealt = attacker.DamageDealt + damage
+					local myteam = attacker:Team()
+					local otherteam = ent:Team()
+					if myteam ~= otherteam then
+						damage = math.min(dmginfo:GetDamage(), ent:Health())
+						if damage > 0 then
+							attacker.DamageDealt = attacker.DamageDealt + damage
 
-						attacker:AddLifeEnemyDamage(damage)
-						ent.DamagedBy[attacker] = (ent.DamagedBy[attacker] or 0) + damage
-						attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * (ent:GetBounty()+ math.Clamp(math.floor(ent:GetFullPoints()/100),0,50)),0)
-						local pos = ent:GetPos()
-						pos.z = pos.z + 32
-						attacker.m_LastDamageDealtPosition = pos
-						attacker.m_LastDamageDealt = CurTime()
+							attacker:AddLifeEnemyDamage(damage)
+							ent.DamagedBy[attacker] = (ent.DamagedBy[attacker] or 0) + damage
+							attacker.m_PointQueue = attacker.m_PointQueue + math.max(math.Clamp(damage / ent:GetMaxHealth(),0,1) * (ent:GetBounty()+ math.Clamp(math.floor(ent:GetFullPoints()/100),0,50)),0)
+							local pos = ent:GetPos()
+							pos.z = pos.z + 32
+							attacker.m_LastDamageDealtPosition = pos
+							attacker.m_LastDamageDealt = CurTime()
+						end
 					end
 				end
 			elseif attacker:GetClass() == "trigger_hurt" then
@@ -2029,14 +2031,16 @@ end
 function GM:DamageFloater(attacker, victim, dmginfo)
 	local dmgpos = dmginfo:GetDamagePosition()
 	if dmgpos == vector_origin then dmgpos = victim:NearestPoint(attacker:EyePos()) end
-
+	if victim:IsPlayer() and not self:PlayerShouldTakeDamage(victim, attacker) then return end
+	
 	net.Start(victim:IsPlayer() and "zs_dmg" or "zs_dmg_prop")
 		if INFDAMAGEFLOATER then
 			INFDAMAGEFLOATER = nil
-			net.WriteUInt(9999, 16)
+			net.WriteBool(true)
 		else
-			net.WriteUInt(math.ceil(dmginfo:GetDamage()), 16)
+			net.WriteBool(false)
 		end
+		net.WriteUInt(math.ceil(dmginfo:GetDamage()), 16)
 		net.WriteVector(dmgpos)
 	net.Send(attacker)
 end
