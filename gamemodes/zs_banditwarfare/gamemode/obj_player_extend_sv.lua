@@ -229,7 +229,7 @@ function meta:ProcessDamage(dmginfo)
 	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
 	local lasthitgroup = self:LastHitGroup()
 	if attacker:IsPlayer() then
-		if attacker ~= self then
+		if attacker ~= self and GAMEMODE:PlayerShouldTakeDamage(self,attacker) then
 			local head = (self:WasHitInHead())
 			net.Start( "zs_hitmarker" )
 				net.WriteBool( self:IsPlayer() )
