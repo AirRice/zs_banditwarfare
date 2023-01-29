@@ -79,11 +79,15 @@ function SWEP.BulletCallback(attacker, tr, dmginfo)
 	if tr.HitGroup == HITGROUP_HEAD then
 		local ent = tr.Entity
 		if ent:IsValid() and ent:IsPlayer() then
-			ent.Gibbed = CurTime()
-		end
-
-		if gamemode.Call("PlayerShouldTakeDamage", ent, attacker) then
-			ent:SetHealth(1)
+			if gamemode.Call("PlayerShouldTakeDamage", ent, attacker) then
+				if SERVER then
+					attacker.DamageDealt = attacker.DamageDealt + ent:Health()-1
+					attacker:AddLifeEnemyDamage(ent:Health()-1)
+					INFDAMAGEFLOATER = true
+				end
+				ent:SetHealth(1)
+				ent.Gibbed = CurTime()
+			end
 		end
 	end
 

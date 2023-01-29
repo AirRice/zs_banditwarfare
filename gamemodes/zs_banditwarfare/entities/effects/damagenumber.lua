@@ -29,9 +29,9 @@ hook.Add("PostDrawTranslucentRenderables", "DrawDamage", function()
 			done = false
 
 			c.a = math.Clamp(particle.DieTime - curtime, 0, 1) * 220
-
+			local texttodraw = particle.IsInfinite and "!" or particle.Amount
 			cam.Start3D2D(particle:GetPos(), ang, 0.1)
-				draw.SimpleText(particle.Amount, "ZS3D2DFont2", 0, 0, c, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+				draw.SimpleText(texttodraw, "ZS3D2DFont2", 0, 0, c, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 			cam.End3D2D()
 		end
 	end
@@ -49,6 +49,7 @@ function EFFECT:Init(data)
 	local pos = data:GetOrigin()
 	local amount = data:GetMagnitude()
 	local Type = data:GetScale()
+	local isinfinite = data:GetFlags()
 
 	local vel = VectorRand() * 0.3
 	vel.z = math.Rand(0.7, 0.98)
@@ -67,6 +68,7 @@ function EFFECT:Init(data)
 	particle:SetGravity(gravity)
 	particle:SetVelocity(math.Clamp(amount, 5, 50) * 4 * vel)
 
+	particle.IsInfinite = (isinfinite == 1)
 	particle.Amount = amount
 	particle.DieTime = CurTime() + 2
 	particle.Type = Type

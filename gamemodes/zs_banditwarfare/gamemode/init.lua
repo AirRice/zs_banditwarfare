@@ -2033,10 +2033,11 @@ function GM:DamageFloater(attacker, victim, dmginfo)
 	net.Start(victim:IsPlayer() and "zs_dmg" or "zs_dmg_prop")
 		if INFDAMAGEFLOATER then
 			INFDAMAGEFLOATER = nil
-			net.WriteUInt(9999, 16)
+			net.WriteBool(true)
 		else
-			net.WriteUInt(math.ceil(dmginfo:GetDamage()), 16)
+			net.WriteBool(false)
 		end
+		net.WriteUInt(math.ceil(dmginfo:GetDamage()), 16)
 		net.WriteVector(dmgpos)
 	net.Send(attacker)
 end
