@@ -28,10 +28,7 @@ ENT.BounceFleshVelocity = 33
 ENT.BounceVelocity = 50
 ENT.SelfDamageSpeed = 0.7
 ENT.SelfDamageMul = 0.08
-
---[[function ENT:ShouldNotCollide(ent)
-	return ent:IsPlayer() and self:GetOwner():IsPlayer() and ent:Team() == self:GetOwner():Team()
-end]]
+ENT.SameTeamNoCollide = true
 
 function ENT:SetObjectHealth(health)
 	self:SetDTFloat(0, health)
