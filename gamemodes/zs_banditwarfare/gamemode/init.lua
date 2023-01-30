@@ -922,9 +922,10 @@ end
 GM.CurrentRound = 1
 GM.CurrentMapLoadedPlayers = 0
 GM.ShuffledPlayersThisRound = false
-function GM:RestartRound()
-	self.CurrentRound = self.CurrentRound + 1
-
+function GM:RestartRound(noaddround)
+	if not noaddround then
+		self.CurrentRound = self.CurrentRound + 1
+	end
 	self:RestartLua()
 	self:RestartGame()
 	
@@ -1312,7 +1313,9 @@ function GM:PlayerDisconnected(pl)
 		end
 	end
 	pl:Kill()
-	if #player.GetAllActive()
+	if #player.GetAllActive() <= 0 then -- No more players, restart game
+		gamemode.Call("RestartRound", true)
+	end
 end
 
 function GM:OnNestDestroyed(attacker)
