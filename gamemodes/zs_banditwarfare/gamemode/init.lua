@@ -724,7 +724,7 @@ function GM:Think()
 				end
 			end
 			if self:GetWaveStart() <= time then
-				if player.GetCount() >= 2 and !self:IsTeamImbalanced() then
+				if player.GetActiveCount() >= 2 and !self:IsTeamImbalanced() then
 					gamemode.Call("SetWaveActive", true)
 				else
 					gamemode.Call("SetWaveStart", CurTime()+self.WaveIntermissionLength)
@@ -1312,6 +1312,7 @@ function GM:PlayerDisconnected(pl)
 		end
 	end
 	pl:Kill()
+	if #player.GetAllActive()
 end
 
 function GM:OnNestDestroyed(attacker)
@@ -2420,7 +2421,7 @@ function GM:DoPlayerDeath(pl, attacker, dmginfo)
 			-- Increases sample drop count when there are fewer playes online than the specified threshold
 			local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
 
-			local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+			local playersCount = math.min(lowPlayerCountThreshold, player.GetActiveCount() - 2)
 
 			samplestodrop = samplestodrop + 3 + math.ceil(GAMEMODE.LowPlayerCountSamplesMaxAdditionalCountPlayer * (1 - playersCount / lowPlayerCountThreshold))
 			

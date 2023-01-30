@@ -11,15 +11,11 @@ function player.GetAllActive()
 end
 
 function player.GetAllSpectators()
-	local t = {}
+	return team.GetPlayers(TEAM_SPECTATOR)
+end
 
-	for _, pl in pairs(player.GetAll()) do
-		if pl:IsSpectator() then
-			t[#t + 1] = pl
-		end
-	end
-
-	return t
+function player.GetActiveCount()
+	return player.GetCount() - #player.GetAllSpectators()
 end
 
 function FindItembyClass(class)

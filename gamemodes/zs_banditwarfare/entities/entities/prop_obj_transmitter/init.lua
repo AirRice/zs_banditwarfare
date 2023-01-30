@@ -13,11 +13,11 @@ function ENT:Initialize()
 	self:SetPos( Vector( self:GetPos().x, self:GetPos().y, self:GetPos().z+35.3 ))
 	local lowPlayerCountThreshold = GAMEMODE.LowPlayerCountThreshold - 2
 
-	local playersCount = math.min(lowPlayerCountThreshold, player.GetCount() - 2)
+	local playersCount = math.min(lowPlayerCountThreshold, player.GetActiveCount() - 2)
 
 	local lessPlayersReduction = math.ceil(4 * (1 - playersCount / lowPlayerCountThreshold))
 	
-	local adder = math.min(5 * math.floor(math.max(player.GetCount()/GAMEMODE.LowPlayerCountThreshold-1,0)),10)
+	local adder = math.min(5 * math.floor(math.max(player.GetActiveCount()/GAMEMODE.LowPlayerCountThreshold-1,0)),10)
 	
 	local transmittercalcedhealth = 10 + adder - lessPlayersReduction
 	
