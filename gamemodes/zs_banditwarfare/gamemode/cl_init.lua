@@ -21,6 +21,7 @@ include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
 include("vgui/dweaponloadoutbutton.lua")
 include("vgui/dteamheading.lua")
+include("vgui/dteamselect.lua")
 include("vgui/dmodelkillicon.lua")
 
 include("vgui/dexroundedpanel.lua")

@@ -527,6 +527,8 @@ LANGUAGE.stat_gundmg								= "Damage"
 LANGUAGE.stat_numshots								= "Shots per Fire"
 LANGUAGE.stat_firedelay								= "Attack Delay"
 
+LANGUAGE.team_desc_bandit							= "The Bandits were once survivors who armed themselves to the teeth using innovative new weaponry to fight off the zombies during the outbreak. However, will they be victorious in their struggle for autonomy and control against the survivors?"
+LANGUAGE.team_desc_human							= "The Survivors are the proud remnants of humanity who fought off the zombie outbreak, and have finally established some form of civilised society. But will they be able to defeat a threat from within: their once allies turned rebellious marauders?"
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Introduction"

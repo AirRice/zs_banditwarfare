@@ -43,6 +43,7 @@ AddCSLuaFile("vgui/dweaponloadoutbutton.lua")
 AddCSLuaFile("vgui/dpingmeter.lua")
 AddCSLuaFile("vgui/dteamheading.lua")
 AddCSLuaFile("vgui/dteamscores.lua")
+AddCSLuaFile("vgui/dteamselect.lua")
 AddCSLuaFile("vgui/dmodelkillicon.lua")
 
 AddCSLuaFile("vgui/dexroundedpanel.lua")

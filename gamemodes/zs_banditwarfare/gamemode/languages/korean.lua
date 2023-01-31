@@ -517,6 +517,9 @@ LANGUAGE.stat_gundmg								= "대미지"
 LANGUAGE.stat_numshots								= "발사 탄환 수"
 LANGUAGE.stat_firedelay								= "공격 딜레이"
 
+LANGUAGE.team_desc_bandit							= "밴딧들은 한 때 대단한 기술력의 신식 무기들을 들고 좀비들에게서 살아남은 자들이었습니다. 하지만 통제에서 벗어난 자유를 위해 생존자들의 사회에 반기를 든 이번에도 승리할 수 있을까요?"
+LANGUAGE.team_desc_human							= "생존자들은 좀비들을 몰아내고 문명 사회를 다시 한번 가꾸어낸 인류의 위대한 후손입니다. 그러나 약탈과 반란을 도모하는 밴딧들이 일으킨 위기 또한 극복할 수 있을까요?"
+
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "게임모드 소개"
 LANGUAGE.help_cat_keys								= "키 설명"
