@@ -164,7 +164,9 @@ function GM:AddResources()
 	resource.AddFile("materials/models/weapons/hammer2.vmt")
 	resource.AddFile("materials/models/weapons/hammer.vmt")
 	resource.AddFile("materials/models/weapons/v_hand/armtexture.vmt")
-	
+	resource.AddFile("materials/vgui/survivors_thumbnail.vmt")
+	resource.AddFile("materials/vgui/bandits_thumbnail.vmt")
+
 	resource.AddFile("models/weapons/c_annabelle.mdl")	
 	resource.AddFile("models/weapons/w_sledgehammer.mdl")
 	resource.AddFile("models/weapons/v_sledgehammer/c_sledgehammer.mdl")
