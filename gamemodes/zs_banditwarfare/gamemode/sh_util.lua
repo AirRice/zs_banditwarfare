@@ -18,6 +18,21 @@ function player.GetActiveCount()
 	return player.GetCount() - #player.GetAllSpectators()
 end
 
+function translate.GetTranslatedTeamName(teamindex,pl)
+	if CLIENT then pl = MySelf end
+	local translatestring = ""
+	if teamindex == TEAM_BANDIT then
+		translatestring = "teamname_bandit"
+	elseif teamindex == TEAM_HUMAN then
+		translatestring = "teamname_human"
+	elseif teamindex == TEAM_SPECTATOR then
+		translatestring = "teamname_spectator"
+	end
+
+	if not (pl and pl:IsPlayer()) then return end
+	return translate.ClientGet(pl,translatestring)
+end
+
 function FindItembyClass(class)
 	if not class then return end
 

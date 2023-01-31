@@ -117,11 +117,7 @@ function ENT:DoDamageComms(team,pl)
 	util.Effect("Explosion", effectdata, true, true)
 	local translatestring = nil
 	for _, pl in pairs(player.GetAll()) do
-		if team == TEAM_BANDIT then
-			translatestring = translate.ClientGet(pl,"teamname_human")
-		elseif team == TEAM_HUMAN then
-			translatestring = translate.ClientGet(pl,"teamname_bandit")
-		end
+		translatestring = translate.GetTranslatedTeamName(team,pl)
 		pl:CenterNotify(COLOR_DARKRED, translate.ClientFormat(pl, "transmitter_comms_disrupted_x",translatestring))
 	end
 	self:SetTransmitterTeam(team)

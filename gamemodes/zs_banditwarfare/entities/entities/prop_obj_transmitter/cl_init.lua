@@ -68,7 +68,7 @@ function ENT:DrawTranslucent()
 	self:DrawHealthBar(healthperc)
 	draw.SimpleText(math.Round(self:GetTransmitterHealth()), "ZS3D2DFontBig", 0,280, COLOR_WHITE, TEXT_ALIGN_CENTER)
 	if (self:GetTransmitterTeam() == TEAM_BANDIT or self:GetTransmitterTeam() == TEAM_HUMAN) then
-		local teamname = translate.Get(self:GetTransmitterTeam() == TEAM_BANDIT and "teamname_bandit" or "teamname_human")
+		local teamname = translate.GetTranslatedTeamName(self:GetTransmitterTeam())
 		draw.SimpleText(teamname, "ZS3D2DFontBig", 0, -100, teamcolor ~= nil and teamcolor or COLOR_WHITE, TEXT_ALIGN_CENTER)
 		draw.RoundedBox( 40, -500, -900, 1000, 750, teamcolor ~= nil and teamcolor or COLOR_WHITE )
 	end

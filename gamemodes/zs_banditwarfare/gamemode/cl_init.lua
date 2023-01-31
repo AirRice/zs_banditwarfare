@@ -1573,10 +1573,8 @@ net.Receive("zs_waveend", function(length)
 	local winner = net.ReadUInt(8)
 	--GAMEMODE.IsInSuddenDeath = false
 	gamemode.Call("RestartBeats")
-	if winner == TEAM_HUMAN then
-		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.ClientGet(pl,"teamname_human")) ,{killicon = "default"})
-	elseif winner == TEAM_BANDIT then
-		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.ClientGet(pl,"teamname_bandit")) ,{killicon = "default"})
+	if winner == TEAM_HUMAN or winner == TEAM_BANDIT then
+		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.GetTranslatedTeamName(winner,pl)) ,{killicon = "default"})
 	else
 		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", COLOR_DARKGRAY, translate.ClientGet(pl, "draw"),{killicon = "default"})
 	end

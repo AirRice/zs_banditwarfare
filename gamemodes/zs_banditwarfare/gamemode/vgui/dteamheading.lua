@@ -33,8 +33,7 @@ end
 
 function PANEL:Refresh()
 	local teamid = self:GetTeam()
-	local translatestring = teamid == TEAM_BANDIT and "teamname_bandit" or "teamname_human"
-	self.m_TeamNameLabel:SetText(translate.Get(translatestring))
+	self.m_TeamNameLabel:SetText(translate.GetTranslatedTeamName(teamid))
 	self.m_TeamNameLabel:SizeToContents()
 
 	self.m_TeamCountLabel:SetText(team.NumPlayers(teamid))
