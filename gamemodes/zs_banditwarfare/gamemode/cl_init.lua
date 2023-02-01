@@ -788,6 +788,7 @@ function GM:CreateVGUI()
 	end
 	self.CenterNotificationHUD:InvalidateLayout()
 	self.CenterNotificationHUD:ParentToHUD()
+	self.CenterNotificationHUD:SetDrawOnTop(true)
 end
 
 function GM:Initialize()

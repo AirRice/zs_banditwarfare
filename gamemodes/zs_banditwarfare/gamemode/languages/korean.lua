@@ -445,6 +445,7 @@ LANGUAGE.sudden_death								= "서든 데스"
 
 LANGUAGE.too_close_to_another_nail					= "다른 못이 너무 가까이 있다."
 LANGUAGE.object_too_damaged_to_be_used				= "그 물건은 다시 사용하기에 너무 훼손됐다."
+LANGUAGE.selected_team_is_full						= "선택한 팀은 인원이 가득 찼다."
 LANGUAGE.x_turned_on_noclip							= "%s turned on noclip."
 LANGUAGE.x_turned_off_noclip						= "%s turned off noclip."
 

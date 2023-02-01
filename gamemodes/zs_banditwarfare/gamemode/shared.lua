@@ -91,6 +91,17 @@ function GM:AddCustomAmmo()
 	game.AddAmmoType({name = "autocharging"})
 end
 
+function GM:PlayerCanChooseTeam(teamid)
+	if not teamid or not (teamid == TEAM_BANDIT or teamid == TEAM_HUMAN or teamid == TEAM_SPECTATOR) then return false end
+	if teamid == TEAM_SPECTATOR then return true end
+	local bothteams = TEAM_BANDIT+TEAM_HUMAN
+	if #team.GetPlayers(teamid) > #team.GetPlayers(bothteams-teamid) then
+		return false
+	else
+		return true
+	end
+end
+
 function GM:SetWave(wave)
 	SetGlobalInt("wave", wave)
 end
@@ -351,7 +362,7 @@ function GM:GetRagdollEyes(pl)
 end
 
 function GM:PlayerNoClip(pl, on)
-	if pl:IsAdmin() then
+	if pl:IsAdmin() and not pl:IsSpectator() then
 		if SERVER then
 			PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", pl:Name()))
 		end

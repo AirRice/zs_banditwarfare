@@ -455,6 +455,7 @@ LANGUAGE.sudden_death								= "TIEBREAKER"
 
 LANGUAGE.too_close_to_another_nail					= "You can't put a nail so close to another one."
 LANGUAGE.object_too_damaged_to_be_used				= "This object is too damaged to hammer back in."
+LANGUAGE.selected_team_is_full						= "The selected team is full."
 LANGUAGE.x_turned_on_noclip							= "%s turned on noclip."
 LANGUAGE.x_turned_off_noclip						= "%s turned off noclip."
 

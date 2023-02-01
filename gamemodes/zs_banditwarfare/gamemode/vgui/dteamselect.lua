@@ -1,5 +1,10 @@
 local function TeamButtonDoClick(self)
 	if not (self.Team == TEAM_HUMANS or self.Team == TEAM_BANDITS or self.Team == TEAM_SPECTATOR) then return end
+	if self.CannotChoose then 
+		surface.PlaySound("buttons/button8.wav")
+		GAMEMODE:CenterNotify(COLOR_DARKRED, translate.Get("selected_team_is_full"))
+		return 
+	end
 	surface.PlaySound("buttons/button15.wav")
 	GAMEMODE:CloseTeamSelectMenu()
 end
@@ -58,6 +63,15 @@ vgui.Register("DTeamSelectMenu", PANEL, "DPanel")
 local PANEL = {}
 
 PANEL.Team = TEAM_UNASSIGNED
+PANEL.CannotChoose = false
+
+function PANEL:Think()
+	if not GAMEMODE:PlayerCanChooseTeam(self.Team) then
+		self.CannotChoose = true
+	else
+		self.CannotChoose = false
+	end
+end
 
 function PANEL:SetTeam(t)
 	if not (t == TEAM_BANDITS or t == TEAM_HUMANS or t == TEAM_SPECTATOR) then return end
@@ -102,7 +116,11 @@ end
 function PANEL:Paint()
 	local outlinecol
 	if self:IsHovered() then
-		outlinecol = COLOR_DARKGREEN
+		if self.CannotChoose then
+			outlinecol = COLOR_DARKRED
+		else
+			outlinecol = COLOR_DARKGREEN
+		end
 	else
 		outlinecol = COLOR_DARKGRAY
 	end
@@ -113,12 +131,13 @@ end
 
 local survivorsthumbnail = Material("vgui/survivors_thumbnail")
 local banditsthumbnail = Material("vgui/bandits_thumbnail")
-
+local survivorsthumbnaildisabled = Material("vgui/survivors_thumbnail_disabled")
+local banditsthumbnaildisabled = Material("vgui/bandits_thumbnail_disabled")
 function PANEL:PaintOver()
 	local screenscale = BetterScreenScale()
 	local parentteam = self.Team
 	if (parentteam == TEAM_HUMANS or parentteam == TEAM_BANDITS) then
-		local material = (parentteam == TEAM_HUMANS and survivorsthumbnail or banditsthumbnail)
+		local material = self.CannotChoose and (parentteam == TEAM_HUMANS and survivorsthumbnaildisabled or banditsthumbnaildisabled) or (parentteam == TEAM_HUMANS and survivorsthumbnail or banditsthumbnail)
 		local wid = screenscale * 500
 		local sidepadding = (screenscale * 580 - screenscale * 500) / 2
 		surface.SetMaterial(material)
