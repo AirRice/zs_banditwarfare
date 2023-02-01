@@ -19,6 +19,7 @@ LANGUAGE.itemcategory_melee							= "근접 무기"
 LANGUAGE.itemcategory_tools							= "도구"
 LANGUAGE.itemcategory_etc							= "기타"
 
+LANGUAGE.select_team								= "팀 변경"
 LANGUAGE.playermodel_changed_to_x					= "이제 플레이어모델은 %s입니다."
 LANGUAGE.select_playermodel							= "플레이어모델 선택"
 LANGUAGE.player_color								= "플레이어 색깔"

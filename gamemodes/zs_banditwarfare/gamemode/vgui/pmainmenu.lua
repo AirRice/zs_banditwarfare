@@ -142,6 +142,15 @@ function GM:ShowHelp()
 
 	local but = vgui.Create("DButton", menu)
 	but:SetFont("ZSHUDFontSmaller")
+	but:SetText(translate.Get("select_team"))
+	but:SetTall(32)
+	but:DockMargin(0, 0, 0, 12)
+	but:DockPadding(0, 12, 0, 12)
+	but:Dock(TOP)
+	but.DoClick = function() self:ShowTeamSelectMenu() menu:Remove() end
+
+	local but = vgui.Create("DButton", menu)
+	but:SetFont("ZSHUDFontSmaller")
 	but:SetText(translate.Get("select_playermodel"))
 	but:SetTall(32)
 	but:DockMargin(0, 0, 0, 12)

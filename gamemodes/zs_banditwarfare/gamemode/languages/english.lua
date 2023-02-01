@@ -25,6 +25,7 @@ LANGUAGE.itemcategory_melee							= "Melee"
 LANGUAGE.itemcategory_tools							= "Tools"
 LANGUAGE.itemcategory_etc							= "Etc"
 
+LANGUAGE.select_team								= "Change Team"
 LANGUAGE.playermodel_changed_to_x					= "Your playermodel has been set to %s."
 LANGUAGE.select_playermodel							= "Select Playermodel"
 LANGUAGE.player_color								= "Player Color"
