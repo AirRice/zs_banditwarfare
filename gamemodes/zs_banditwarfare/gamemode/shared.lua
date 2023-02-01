@@ -91,11 +91,21 @@ function GM:AddCustomAmmo()
 	game.AddAmmoType({name = "autocharging"})
 end
 
-function GM:PlayerCanChooseTeam(teamid)
+function GM:PlayerCanChooseTeam(pl, teamid)
+	if not (pl and pl:IsValid() and pl:IsPlayer()) then return false end 
 	if not teamid or not (teamid == TEAM_BANDIT or teamid == TEAM_HUMAN or teamid == TEAM_SPECTATOR) then return false end
 	if teamid == TEAM_SPECTATOR then return true end
 	local bothteams = TEAM_BANDIT+TEAM_HUMAN
-	if #team.GetPlayers(teamid) > #team.GetPlayers(bothteams-teamid) then
+	local iSwitchTo = #team.GetPlayers(teamid)
+	local iOtherTeam = #team.GetPlayers(bothteams-teamid)
+	if (pl:Team() == TEAM_BANDIT or pl:Team() == TEAM_HUMAN) then
+		if (pl:Team() == bothteams-teamid) then
+			iOtherTeam = iOtherTeam - 1
+		else
+			iSwitchTo = iSwitchTo - 1
+		end
+	end
+	if iSwitchTo > iOtherTeam then
 		return false
 	else
 		return true

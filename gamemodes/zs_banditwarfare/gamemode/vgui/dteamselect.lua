@@ -6,6 +6,7 @@ local function TeamButtonDoClick(self)
 		return 
 	end
 	surface.PlaySound("buttons/button15.wav")
+	RunConsoleCommand("zsb_selectteam", self.Team)
 	GAMEMODE:CloseTeamSelectMenu()
 end
 
@@ -66,7 +67,7 @@ PANEL.Team = TEAM_UNASSIGNED
 PANEL.CannotChoose = false
 
 function PANEL:Think()
-	if not GAMEMODE:PlayerCanChooseTeam(self.Team) then
+	if not GAMEMODE:PlayerCanChooseTeam(MySelf,self.Team) then
 		self.CannotChoose = true
 	else
 		self.CannotChoose = false
