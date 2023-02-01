@@ -1377,6 +1377,7 @@ function GM:SetNextSpawnTime(respawntime,pl)
 	if (respawntime == nil or respawntime < 0) then self.NextSpawnTime = nil return end
 	self.NextSpawnTime = respawntime
 end
+
 function GM:Rewarded(class, amount)
 	if CurTime() < self.SuppressArsenalTime then return end
 

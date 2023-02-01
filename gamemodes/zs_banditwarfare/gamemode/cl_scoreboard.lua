@@ -360,6 +360,7 @@ function PANEL:Refresh()
 	self:SetZPos(-pl:GetPoints())
 
 	if pl:Team() ~= self._LastTeam then
+		self:SetParent()
 		self._LastTeam = pl:Team()
 		if self._LastTeam == TEAM_HUMAN then
 			self:SetWide(ScoreBoard.HumanList:GetWide())
@@ -375,7 +376,7 @@ function PANEL:Refresh()
 			self:Dock(NODOCK)
 		end
 	end
-
+	ScoreBoard:InvalidateLayout()
 	self:InvalidateLayout()
 end
 
