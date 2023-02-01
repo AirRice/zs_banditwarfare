@@ -11,7 +11,7 @@ local function RefreshDetpackOwners(pl)
 	end
 end
 hook.Add("PlayerDisconnected", "Detpack.PlayerDisconnected", RefreshDetpackOwners)
-hook.Add("OnPlayerChangedTeam", "Detpack.OnPlayerChangedTeam", RefreshDetpackOwners)
+hook.Add("PlayerChangedTeam", "Detpack.PlayerChangedTeam", RefreshDetpackOwners)
 
 ENT.NextBlip = 0
 
