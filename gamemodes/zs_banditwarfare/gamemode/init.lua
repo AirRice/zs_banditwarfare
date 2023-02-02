@@ -1284,9 +1284,18 @@ function GM:InitialPlayerChangedTeam(pl)
 	end
 	if not self:IsRoundModeUnassigned() then 
 		pl:ResetLoadout()
-		if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
-			timer.Simple(0.1,pl:Kill())
-			return
+		if (self:IsClassicMode() or self.SuddenDeath) then
+			if self:GetWaveActive() then
+				timer.Simple(0.1,pl:Kill())
+				return
+			end
+		else		
+			if pl:Alive() then
+				local buff = pl:GiveStatus("spawnbuff")
+				if buff and IsValid(buff) then
+					buff:SetOwner(pl)
+				end
+			end
 		end
 	end
 end
@@ -2571,10 +2580,8 @@ function GM:PlayerSpawn(pl)
 
 	pl:RemoveStatus("overridemodel", false, true)
 	
-	local pcol = Vector(team.GetColor(pl:Team()))
-	pcol.x = math.Clamp(pcol.x, 0, 2.5)
-	pcol.y = math.Clamp(pcol.y, 0, 2.5)
-	pcol.z = math.Clamp(pcol.z, 0, 2.5)
+	local pcolor = team.GetColor(pl:Team())
+	local pcol = Vector( pcolor.r / 255, pcolor.g / 255, pcolor.b / 255 )
 	pl:SetPlayerColor(pcol)
 	pl:SetWeaponColor(pcol)
 
@@ -2749,6 +2756,12 @@ function GM:WaveEnded()
 		elseif pl:Alive() then
 			if not self:IsClassicMode() then
 				pl:UpdateWeaponLoadouts()
+				if not self.SuddenDeath then
+					local buff = pl:GiveStatus("spawnbuff")
+					if buff and IsValid(buff) then
+						buff:SetOwner(pl)
+					end
+				end
 			else
 				for _,wep in ipairs(pl.ClassicModeNextInsureWeps) do
 					if pl:HasWeapon(wep) and not table.HasValue(pl.ClassicModeInsuredWeps,wep) and not table.HasValue(pl.ClassicModeRemoveInsureWeps,wep) then
