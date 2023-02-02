@@ -24,7 +24,6 @@ cvars.AddChangeCallback("zsb_filmmode", function(cvar, oldvalue, newvalue)
 	GAMEMODE:EvaluateFilmMode()
 end)
 
-CreateClientConVar("zsb_spectator", "0", true, true)
 CreateClientConVar("zsb_autoselectteam", "0", true, true)
 
 GM.BeatsVolume = math.Clamp(CreateClientConVar("zsb_beatsvolume", 80, true, false):GetInt(), 0, 100) / 100

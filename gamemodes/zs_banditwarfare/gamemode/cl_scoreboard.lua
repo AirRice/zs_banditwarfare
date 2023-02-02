@@ -356,11 +356,11 @@ function PANEL:Refresh()
 			self.m_Mute:SetImage("icon16/sound.png")
 		end
 	end
-
+ 
 	self:SetZPos(-pl:GetPoints())
 
 	if pl:Team() ~= self._LastTeam then
-		self:SetParent()
+		local prevparent = self:GetParent()
 		self._LastTeam = pl:Team()
 		if self._LastTeam == TEAM_HUMAN then
 			self:SetWide(ScoreBoard.HumanList:GetWide())
@@ -375,8 +375,8 @@ function PANEL:Refresh()
 			ScoreBoard.SpectatorList:AddPanel(self)
 			self:Dock(NODOCK)
 		end
+		prevparent:InvalidateLayout()
 	end
-	ScoreBoard:InvalidateLayout()
 	self:InvalidateLayout()
 end
 
