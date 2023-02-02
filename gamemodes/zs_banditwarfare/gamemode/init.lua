@@ -2569,19 +2569,14 @@ function GM:PlayerSpawn(pl)
 	pl:SetSamples(0)
 	pl:SetLastAttacker()
 
-	local pcol = Vector(pl:GetInfo("cl_playercolor"))
+	pl:RemoveStatus("overridemodel", false, true)
+	
+	local pcol = Vector(team.GetColor(pl:Team()))
 	pcol.x = math.Clamp(pcol.x, 0, 2.5)
 	pcol.y = math.Clamp(pcol.y, 0, 2.5)
 	pcol.z = math.Clamp(pcol.z, 0, 2.5)
 	pl:SetPlayerColor(pcol)
-
-	local wcol = Vector(pl:GetInfo("cl_weaponcolor"))
-	wcol.x = math.Clamp(wcol.x, 0, 2.5)
-	wcol.y = math.Clamp(wcol.y, 0, 2.5)
-	wcol.z = math.Clamp(wcol.z, 0, 2.5)
-	pl:SetWeaponColor(wcol)
-
-	pl:RemoveStatus("overridemodel", false, true)
+	pl:SetWeaponColor(pcol)
 
 	if (pl:IsSpectator()) then
 		pl:StripWeapons( )
