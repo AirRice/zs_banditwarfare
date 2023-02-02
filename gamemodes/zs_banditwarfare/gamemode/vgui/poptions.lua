@@ -56,9 +56,9 @@ function MakepOptions()
 	list:AddItem(check)
 	
 	local check = vgui.Create("DCheckBoxLabel", Window)
-	check:SetText(translate.Get("option_spectator_mode"))
+	check:SetText(translate.Get("option_auto_select_team"))
 	check:SetFont("ZSHUDFontSmallerNS")
-	check:SetConVar("zsb_spectator")
+	check:SetConVar("zsb_autoselectteam")
 	check:SizeToContents()
 	list:AddItem(check)
 

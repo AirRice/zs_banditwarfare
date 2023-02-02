@@ -10,7 +10,7 @@ GM.PossiblePrimaryGuns = {
 	"weapon_zs_tosser",
 	"weapon_zs_crackler",
 	"weapon_zs_doublebarrel",
-	"weapon_zs_stubber",
+	"weapon_zs_stubber"
 }
 GM.PossibleSecondaryGuns = {
 	"weapon_zs_peashooter",

@@ -34,24 +34,36 @@ local function AddToClassicInsuredList(wepname, pl)
 	end
 end
 
-function meta:ResetLoadout(oldmode, newmode)
-	local keepold = (isnumber(oldmode) and isnumber(newmode) and (oldmode != ROUNDMODE_UNASSIGNED) and (oldmode != ROUNDMODE_CLASSIC))
+function meta:ResetLoadout()
 	local wepdefaults = {}
 	wepdefaults[WEAPONLOADOUT_SLOT1] = GAMEMODE.PossiblePrimaryGuns
 	wepdefaults[WEAPONLOADOUT_SLOT2] = GAMEMODE.PossibleSecondaryGuns
 	wepdefaults[WEAPONLOADOUT_MELEE] = GAMEMODE.PossibleMelees
 	wepdefaults[WEAPONLOADOUT_TOOLS] = {"weapon_zs_enemyradar"}
+
 	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
 		local wepname = self:GetWeaponLoadoutBySlot(slot)
 		storedwep = weapons.GetStored(wepname)
 		shoptab = FindItembyClass(wepname)
 		local shoptabnotvalid = (storedwep and ((newmode == ROUNDMODE_SAMPLES) and (shoptab.NoSampleCollectMode) or (newmode == ROUNDMODE_TRANSMISSION) and (shoptab.NoTransmissionMode)))
-		if not keepold or shoptabnotvalid then
+		if not shoptabnotvalid then
 			local possibleguns = wepdefaults[slot]
 			self:SetWeaponLoadoutBySlot(possibleguns[math.random(#possibleguns)],slot)
 		end
 	end
-	self:UpdateWeaponLoadouts()
+
+	if GAMEMODE:IsClassicMode() then
+		self.ClassicModeInsuredWeps = {}
+		self.ClassicModeNextInsureWeps = {}
+		self.ClassicModeRemoveInsureWeps = {}
+		self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+		self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+
+		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeapon2())
+		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeaponMelee())
+	else
+		self:UpdateWeaponLoadouts()
+	end
 end
 
 function meta:LoadoutToClassicInventory()
@@ -127,8 +139,8 @@ function meta:HandleRoundModeChangeLoadout(oldmode, newmode)
 		self:ClassicInventoryToLoadout()
 	elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
 		self:LoadoutToClassicInventory()
-	elseif (newmode != ROUNDMODE_CLASSIC) then
-		self:ResetLoadout(oldmode, newmode)
+	elseif (oldmode == ROUNDMODE_UNASSIGNED) then
+		self:ResetLoadout() -- Start from scratch
 	end
 end
 

@@ -669,9 +669,6 @@ end
 function GM:OnRoundModeChanged(oldmode, newmode)
 	local allplayers = player.GetAll()
 	for _, pl in ipairs(allplayers) do
-		if (oldmode == ROUNDMODE_UNASSIGNED) then 
-			pl:ResetLoadout()
-		end
 		pl:HandleRoundModeChangeLoadout(oldmode,newmode)
 	end
 	if (oldmode == ROUNDMODE_UNASSIGNED) then return end
@@ -687,20 +684,20 @@ function GM:InitialChooseRoundMode(vote)
 		return 
 	else
 		local prevroundmode
-
+		local roundmode
 		if file.Exists(filename, "DATA") then
 			prevroundmode = tonumber(file.Read(filename, "DATA"))
 		end
 		local curmap = game.GetMap()
 		if (prevroundmode == ROUNDMODE_CLASSIC or prevroundmode == ROUNDMODE_SAMPLES or prevroundmode == ROUNDMODE_TRANSMISSION) and table.HasValue(self.MapWhitelist, curmap) and self:MapHasEnoughObjectives(curmap) and self.AutoModeChange then
-			local roundmode = (prevroundmode + 1) % 3
+			roundmode = (prevroundmode + 1) % 3
 			self:SetRoundMode(roundmode)
 		else
-			self:SetRoundMode(ROUNDMODE_CLASSIC)
+			roundmode = ROUNDMODE_CLASSIC
+			self:SetRoundMode(roundmode)
 		end
 	end
 	file.Write(filename, tostring(self:GetRoundMode()))
-	gamemode.Call("OnRoundModeInitialSelected")
 end
 
 function GM:Think()
@@ -717,11 +714,12 @@ function GM:Think()
 				gamemode.Call("SamplesThink")
 			end
 		elseif self:GetWaveStart() ~= -1 then
-			if self:GetWave() == 0 and not (self.CurrentRound > 1) and self:GetWaveStart() - time <= self.WaveZeroLength - self.WaveIntermissionLength then
-				if !self.ShuffledPlayersThisRound then
+			if self:GetWave() == 0 and self:GetWaveStart() - time <= self.WaveZeroLength - self.WaveIntermissionLength then
+				if !self.ShuffledPlayersThisRound and (self.CurrentRound > 1) then
 					if self:AllPlayersLoaded() then
 						self.ShuffledPlayersThisRound = true
-						gamemode.Call("ShuffleTeams",true)
+						timer.Simple(5, function() gamemode.Call("ShuffleTeams",true) end)	
+						PrintTranslatedMessage(HUD_PRINTCENTER, "teambalance_shuffle_in_5_seconds")
 					else
 						gamemode.Call("SetWaveStart", CurTime()+self.WaveIntermissionLength)
 					end
@@ -915,7 +913,7 @@ function GM:PreRestartRound()
 	for _, pl in ipairs(player.GetAll()) do
 		pl:StripWeapons()
 		pl:Spectate(OBS_MODE_ROAMING)
-		pl:SetTeam(TEAM_UNASSIGNED)
+		--pl:SetTeam(TEAM_UNASSIGNED)
 		pl:GodDisable()
 	end
 end
@@ -1145,7 +1143,7 @@ function GM:PlayerReadyRound(pl)
 	if self.RoundEnded then
 		pl:SendLua("gamemode.Call(\"EndRound\", "..tostring(ROUNDWINNER)..", \""..game.GetMapNext().."\")")
 		gamemode.Call("DoHonorableMentions", pl)
-	elseif pl.InitialTeamNotSelected then
+	elseif not pl.InitialTeamSelected then
 		pl:SendLua("GAMEMODE:ShowTeamSelectMenu()")
 	end
 	--pl:SendLua("MakepHelp()")
@@ -1204,8 +1202,6 @@ function GM:PlayerInitialSpawnRound(pl)
 	pl.LastShotWeapon = nil
 	pl.HeadshotKilled = 0
 	
-	pl.InitialTeamNotSelected = true
-	
 	pl.BarricadeDamage = 0
 
 	pl.NextPainSound = 0
@@ -1237,40 +1233,40 @@ function GM:PlayerInitialSpawnRound(pl)
 	
 	pl.SpawnedTime = CurTime()
 
-	pl:Flashlight(false)
-	pl:ChangeTeam(TEAM_SPECTATOR)
-	pl:StripWeapons()
-	pl:Spectate( OBS_MODE_ROAMING )
+	if not pl.InitialTeamSelected then
+		pl:Flashlight(false)
+		pl:ChangeTeam(TEAM_SPECTATOR)
+		pl:StripWeapons()
+		pl:Spectate( OBS_MODE_ROAMING )
 
-	if pl:GetInfo("zsb_spectator") == "1" then
-		return false;
-	end
+		-- Player team selection but only if they have auto selection enabled
 
-	-- Player team selection but only if they have auto selection enabled
-
-	if pl:GetInfo("zsb_autoselectteam") == "1" or pl:IsBot() then
-		if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
-			if self:GetTeamKillAdvantage(TEAM_HUMAN) > self:GetTeamKillAdvantage(TEAM_BANDIT) then
-				pl:ChangeTeam(TEAM_BANDIT)
-			elseif self:GetTeamKillAdvantage(TEAM_HUMAN) < self:GetTeamKillAdvantage(TEAM_BANDIT) then
-				pl:ChangeTeam(TEAM_HUMAN)
-			else
-				if self:GetTeamPoints(TEAM_HUMAN) < self:GetTeamPoints(TEAM_BANDIT) then 
-					pl:ChangeTeam(TEAM_HUMAN)
-				elseif self:GetTeamPoints(TEAM_HUMAN) > self:GetTeamPoints(TEAM_BANDIT) then 
+		if pl:GetInfo("zsb_autoselectteam") == "1" or pl:IsBot() then
+			if #team.GetPlayers(TEAM_BANDIT) == #team.GetPlayers(TEAM_HUMAN) then
+				if self:GetTeamKillAdvantage(TEAM_HUMAN) > self:GetTeamKillAdvantage(TEAM_BANDIT) then
 					pl:ChangeTeam(TEAM_BANDIT)
+				elseif self:GetTeamKillAdvantage(TEAM_HUMAN) < self:GetTeamKillAdvantage(TEAM_BANDIT) then
+					pl:ChangeTeam(TEAM_HUMAN)
 				else
-					pl:ChangeTeam(math.random(3,4))
+					if self:GetTeamPoints(TEAM_HUMAN) < self:GetTeamPoints(TEAM_BANDIT) then 
+						pl:ChangeTeam(TEAM_HUMAN)
+					elseif self:GetTeamPoints(TEAM_HUMAN) > self:GetTeamPoints(TEAM_BANDIT) then 
+						pl:ChangeTeam(TEAM_BANDIT)
+					else
+						pl:ChangeTeam(math.random(3,4))
+					end
 				end
+			elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
+				pl:ChangeTeam(TEAM_HUMAN)
+			elseif #team.GetPlayers(TEAM_BANDIT) < #team.GetPlayers(TEAM_HUMAN) then
+				pl:ChangeTeam(TEAM_BANDIT)
 			end
-		elseif #team.GetPlayers(TEAM_BANDIT) > #team.GetPlayers(TEAM_HUMAN) then
-			pl:ChangeTeam(TEAM_HUMAN)
-		elseif #team.GetPlayers(TEAM_BANDIT) < #team.GetPlayers(TEAM_HUMAN) then
-			pl:ChangeTeam(TEAM_BANDIT)
+			gamemode.Call("InitialPlayerChangedTeam",pl)
 		end
+	else
 		gamemode.Call("InitialPlayerChangedTeam",pl)
 	end
-
+	
 	--Check if all players loaded
 	if self:GetWave() == 0 then
 		self.CurrentMapLoadedPlayers = self.CurrentMapLoadedPlayers + 1;
@@ -1278,31 +1274,21 @@ function GM:PlayerInitialSpawnRound(pl)
 end
 
 function GM:InitialPlayerChangedTeam(pl)
-	pl.InitialTeamNotSelected = false
+	pl.InitialTeamSelected = true
 	pl:SetPoints(0)
 	pl:SetFullPoints(0)
 	if self:GetWave() > 0 then
-		pl:AddPoints(self:GetTeamPoints(pl:Team())/math.max(team.NumPlayers(pl:Team())-1,1))
+		pl:AddPoints(math.max(self:GetTeamPoints(pl:Team())/math.max(team.NumPlayers(pl:Team())-1,1),20))
 	else
 		pl:AddPoints(20)
 	end
 	if not self:IsRoundModeUnassigned() then 
-		if self:IsClassicMode() then
-			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
-			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
-		else
-			pl:ResetLoadout()
-		end
+		pl:ResetLoadout()
 		if (self:IsClassicMode() or self.SuddenDeath) and self:GetWaveActive() then
 			timer.Simple(0.1,pl:Kill())
 			return
 		end
 	end
-	pl.ClassicModeInsuredWeps = {}
-	pl.ClassicModeNextInsureWeps = {}
-	pl.ClassicModeRemoveInsureWeps = {}
-	pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
-	pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
 end
 
 function GM:PlayerDisconnected(pl)
@@ -2562,21 +2548,6 @@ function GM:GetTeamKillAdvantage(teamid)
 	return team.TotalFrags(teamid) - team.TotalDeaths(teamid)
 end
 
-function GM:OnRoundModeInitialSelected()
-	for _, pl in ipairs(player.GetAllActive()) do
-		pl.ClassicModeInsuredWeps = {}
-		pl.ClassicModeNextInsureWeps = {}
-		pl.ClassicModeRemoveInsureWeps = {}
-		pl:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
-		pl:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
-		if self:IsClassicMode() then
-			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeapon2())
-			table.ForceInsert(pl.ClassicModeInsuredWeps,pl:GetWeaponMelee())
-		end
-		pl:Spawn()
-	end
-end
-
 function GM:PlayerSpawn(pl)
 	pl:StripWeapons()
 	--pl:RemoveSuit()
@@ -2613,13 +2584,9 @@ function GM:PlayerSpawn(pl)
 	pl:RemoveStatus("overridemodel", false, true)
 
 	if (pl:IsSpectator()) then
-		if pl.InitialTeamNotSelected then
-			pl:StripWeapons( )
-			pl:Spectate( OBS_MODE_ROAMING )
-			return false;
-		else
-			gamemode.Call("PlayerInitialSpawnRound", pl)
-		end
+		pl:StripWeapons( )
+		pl:Spectate( OBS_MODE_ROAMING )
+		return false;
 	elseif (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 		pl.HighestLifeEnemyKills = 0
 		pl.LifeBarricadeDamage = 0
