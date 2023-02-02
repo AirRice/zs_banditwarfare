@@ -543,7 +543,6 @@ end
 function GM:SetRoundMode(mode)
 	local cm = GetConVar("zsb_roundgamemode")
 	local oldmode = self.LastRoundMode or ROUNDMODE_UNASSIGNED
-	gamemode.Call("OnRoundModeChanged", oldmode, mode)
 	if (IsValidRoundMode(mode)) then 
 		cm:SetInt(mode)
 	elseif (mode != ROUNDMODE_UNASSIGNED) then
@@ -551,6 +550,7 @@ function GM:SetRoundMode(mode)
 	end
 	SetGlobalInt("roundgamemode",mode)
 	self.LastRoundMode = mode
+	gamemode.Call("OnRoundModeChanged", oldmode, mode)
 end
 
 local playermins = Vector(-17, -17, 0)

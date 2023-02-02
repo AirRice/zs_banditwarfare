@@ -61,6 +61,19 @@ function meta:ResetLoadout()
 
 		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeapon2())
 		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeaponMelee())
+
+		for _, wep in pairs(self.ClassicModeInsuredWeps) do
+			local storedwep = weapons.GetStored(wep)
+			if storedwep then
+				local given = self:Give(wep)
+				if given then
+					net.Start("zs_insure_weapon")
+						net.WriteString(wep)
+						net.WriteBool(false)
+					net.Send(self)
+				end
+			end
+		end
 	else
 		self:UpdateWeaponLoadouts()
 	end
