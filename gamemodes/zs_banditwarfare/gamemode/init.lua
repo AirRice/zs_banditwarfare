@@ -51,6 +51,7 @@ AddCSLuaFile("vgui/dexroundedframe.lua")
 AddCSLuaFile("vgui/dexrotatedimage.lua")
 AddCSLuaFile("vgui/dexnotificationslist.lua")
 AddCSLuaFile("vgui/dexchanginglabel.lua")
+AddCSLuaFile("vgui/dcomboboxex.lua")
 
 AddCSLuaFile("vgui/pmainmenu.lua")
 AddCSLuaFile("vgui/poptions.lua")

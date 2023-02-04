@@ -29,6 +29,7 @@ include("vgui/dexroundedframe.lua")
 include("vgui/dexrotatedimage.lua")
 include("vgui/dexnotificationslist.lua")
 include("vgui/dexchanginglabel.lua")
+include("vgui/dcomboboxex.lua")
 
 include("vgui/pmainmenu.lua")
 include("vgui/poptions.lua")

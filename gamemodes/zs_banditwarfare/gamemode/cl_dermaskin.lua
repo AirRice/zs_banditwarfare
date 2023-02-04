@@ -195,4 +195,40 @@ function SKIN:PaintButton(panel, w, h)
 	draw.RoundedBox(edgesize/4, 4, 4, w-8 , h-8, color_black)
 end
 
+--[[---------------------------------------------------------
+	MenuOption
+-----------------------------------------------------------]]
+function SKIN:PaintMenuOption( panel, w, h )
+
+	if ( panel.m_bBackground && !panel:IsEnabled() ) then
+		surface.SetDrawColor( Color( 0, 0, 0, 50 ) )
+		surface.DrawRect( 0, 0, w, h )
+	end
+
+	if not panel.m_bBackground then return end
+
+	local outlinecol
+	if panel:GetDisabled() then
+		outlinecol = Color(5, 5, 5, 90)
+	elseif panel:GetChecked() then
+		outlinecol = COLOR_LIMEGREEN
+	elseif panel.Hovered || panel.Highlight then
+		outlinecol = COLOR_DARKGREEN
+	else
+		outlinecol = COLOR_DARKGRAY
+	end
+
+	local selectcol = color_black
+
+	if ( panel:GetChecked() ) then
+		selectcol = COLOR_GRAY
+	end
+
+	surface.SetDrawColor(outlinecol)
+	surface.DrawRect(0, 0, w , h)
+
+	surface.SetDrawColor(selectcol)
+	surface.DrawRect(4, 4, w-8 , h-8)
+end
+
 derma.DefineSkin("banditwarfare", "The default Derma skin for Bandit Warfare", SKIN, "Default")

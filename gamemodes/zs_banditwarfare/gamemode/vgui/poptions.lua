@@ -147,7 +147,7 @@ function MakepOptions()
 	list:AddItem(check)
 	
 	list:AddItem(EasyLabel(Window, translate.Get("option_weapon_hud_style"), "ZSHUDFontSmallerNS", color_white))
-	local dropdown = vgui.Create("DComboBox", Window)
+	local dropdown = vgui.Create("DComboBoxEx", Window)
 	dropdown:SetMouseInputEnabled(true)
 	dropdown:AddChoice("3D")
 	dropdown:AddChoice("2D")
