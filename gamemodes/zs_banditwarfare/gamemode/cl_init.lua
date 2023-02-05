@@ -38,6 +38,7 @@ include("vgui/pweapons.lua")
 include("vgui/pendboard.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
+include("vgui/pplayermodel.lua")
 include("vgui/zshealtharea.lua")
 
 include("cl_dermaskin.lua")

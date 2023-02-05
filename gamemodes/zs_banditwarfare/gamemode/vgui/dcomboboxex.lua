@@ -9,7 +9,7 @@ function PANEL:Init()
 	self:SetKeyboardInputEnabled( true )
 
 	self:SetCursor( "hand" )
-	self:SetFont( "ZSHUDFontSmallest" )
+	self:SetFont( "ZSHUDFontSmallestNS" )
 
     self:SizeToContentsY(8)
 end

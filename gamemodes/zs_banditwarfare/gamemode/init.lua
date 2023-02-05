@@ -59,6 +59,7 @@ AddCSLuaFile("vgui/phelp.lua")
 AddCSLuaFile("vgui/pweapons.lua")
 AddCSLuaFile("vgui/pendboard.lua")
 AddCSLuaFile("vgui/ppointshop.lua")
+AddCSLuaFile("vgui/pplayermodel.lua")
 AddCSLuaFile("vgui/zshealtharea.lua")
 
 include("shared.lua")
@@ -302,9 +303,7 @@ end
 GM.TopNotify = GM.TopNotifyAll
 
 function GM:ShowHelp(pl)
-	if not self:IsRoundModeUnassigned() then
-		pl:SendLua("GAMEMODE:ShowHelp()")
-	end
+	pl:SendLua("GAMEMODE:ShowHelp()")
 end
 
 function GM:ShowTeam(pl)

@@ -21,6 +21,8 @@ LANGUAGE.itemcategory_etc							= "기타"
 
 LANGUAGE.select_team								= "팀 변경"
 LANGUAGE.playermodel_changed_to_x					= "이제 플레이어모델은 %s입니다."
+LANGUAGE.random_model								= "무작위 플레이어모델"
+LANGUAGE.reset_playermodel_button					= "무작위 플레이어모델 사용"
 LANGUAGE.select_playermodel							= "플레이어모델 선택"
 LANGUAGE.options_button								= "옵션"
 LANGUAGE.credits_button								= "제작진"
