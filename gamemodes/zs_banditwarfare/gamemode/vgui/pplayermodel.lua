@@ -31,16 +31,20 @@ function PANEL:PerformLayout()
 	self.m_TopSpace:Dock(TOP)
 	self.m_TopSpace:CenterHorizontal()	
 	
-	self.m_ResetPMButton:SetTall(36)
-	self.m_ResetPMButton:SetWide(256*screenscale)
-	self.m_ResetPMButton:SetContentAlignment(5)
-	self.m_ResetPMButton:AlignLeft(8)
-	
+	self.m_TopSpaceLabel:SetTall(36)
+	self.m_TopSpaceLabel:SetWide(256*screenscale)
+	self.m_TopSpaceLabel:SetContentAlignment(4)
+	self.m_TopSpaceLabel:AlignLeft(8)
 	self.btnClose:SetTall(36)
 	self.btnClose:SetWide(128*screenscale)
 	self.btnClose:SetContentAlignment(5)
 	self.btnClose:AlignRight(8)
-	
+
+	self.m_ResetPMButton:SetTall(36)
+	self.m_ResetPMButton:SetWide(256*screenscale)
+	self.m_ResetPMButton:SetContentAlignment(5)
+	self.m_ResetPMButton:MoveLeftOf(self.btnClose, 8)
+
 	self.m_HumanPanel:SetWide(wid*0.5 - sidemargin*2)
 	self.m_HumanPanel:DockMargin(sidemargin, 4, sidemargin, 4)
 	self.m_HumanPanel:Dock(LEFT)
@@ -54,7 +58,7 @@ end
 function PANEL:Init()
 	local screenscale = BetterScreenScale()
 	local wid, hei = math.min(ScrW(), 1000) * screenscale, math.min(ScrH(), 600) * screenscale
-
+	self.ColorOverride = Color(30, 30, 30, 255)
 	self:SetSize(wid, hei)
 	self:SetDeleteOnClose(true)
 	self:SetTitle(" ")
@@ -67,6 +71,8 @@ function PANEL:Init()
 
 	local topspace = vgui.Create("DPanel", self)
 	self.m_TopSpace = topspace
+
+	self.m_TopSpaceLabel = EasyLabel(topspace, translate.Get("select_playermodel"), "ZSHUDFontSmallNS", color_white)
 
 	local closebutton = EasyButton(topspace, translate.Get("close_button"))
 	closebutton:SetFont("ZSHUDFontSmallest")
@@ -175,6 +181,7 @@ function PANEL:Think()
 		for _, mdl in pairs(modellist) do
 			self.m_ModelDropDown:AddChoice(mdl,nil,(curmodelstr ~= "" and mdl == curmodelstr))
 		end
+
 		self:UpdateSelectedModel(curmodelstr)
 	end
 end

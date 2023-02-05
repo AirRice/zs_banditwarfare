@@ -3,22 +3,32 @@ GM.VoiceSetTranslate = {}
 GM.VoiceSetTranslate["models/player/alyx.mdl"] = "alyx"
 GM.VoiceSetTranslate["models/player/barney.mdl"] = "barney"
 GM.VoiceSetTranslate["models/player/breen.mdl"] = "male"
-GM.VoiceSetTranslate["models/player/combine_soldier.mdl"] = "combine"
-GM.VoiceSetTranslate["models/player/combine_soldier_prisonguard.mdl"] = "combine"
-GM.VoiceSetTranslate["models/player/combine_super_soldier.mdl"] = "combine"
 GM.VoiceSetTranslate["models/player/eli.mdl"] = "male"
 GM.VoiceSetTranslate["models/player/gman_high.mdl"] = "male"
 GM.VoiceSetTranslate["models/player/kleiner.mdl"] = "male"
 GM.VoiceSetTranslate["models/player/monk.mdl"] = "monk"
 GM.VoiceSetTranslate["models/player/mossman.mdl"] = "female"
 GM.VoiceSetTranslate["models/player/odessa.mdl"] = "male"
+GM.VoiceSetTranslate["models/player/p2_chell.mdl"] = "female"
+
+// All Bandit ones
+GM.VoiceSetTranslate["models/player/combine_soldier.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/combine_soldier_prisonguard.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/combine_super_soldier.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/arctic.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/gasmask.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/guerilla.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/leet.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/phoenix.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/riot.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/swat.mdl"] = "combine"
+GM.VoiceSetTranslate["models/player/urban.mdl"] = "combine"
 GM.VoiceSetTranslate["models/player/police.mdl"] = "combine"
-GM.VoiceSetTranslate["models/player/brsp.mdl"] = "female"
+GM.VoiceSetTranslate["models/player/police_fem.mdl"] = "combine"
+
 GM.VoiceSetTranslate["models/player/corpse1.mdl"] = "zombie"
 GM.VoiceSetTranslate["models/player/zombie_classic.mdl"] = "zombie"
 GM.VoiceSetTranslate["models/player/zombie_fast.mdl"] = "zombie"
-GM.VoiceSetTranslate["models/player/p2_chell.mdl"] = "female"
-GM.VoiceSetTranslate["models/player/brsp.mdl"] = "female"
 
 GM.VoiceSets = {}
 

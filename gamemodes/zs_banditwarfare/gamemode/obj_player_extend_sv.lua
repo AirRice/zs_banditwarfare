@@ -214,27 +214,25 @@ end
 
 function meta:RefreshPlayerModel()
 	local randommodel = nil
+	local preferredmodel = nil
 	if (self:Team() == TEAM_HUMAN) then
+		preferredmodel = self:GetInfo("zsb_preferredsurvivormodel")
 		randommodel = GAMEMODE.RandomSurvivorModels[math.random(#GAMEMODE.RandomSurvivorModels)]
 	elseif (self:Team() == TEAM_BANDIT) then
+		preferredmodel = self:GetInfo("zsb_preferredbanditmodel")
 		randommodel = GAMEMODE.RandomBanditModels[math.random(#GAMEMODE.RandomBanditModels)]
-	else
-		randommodel = GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]
 	end
 	
-	local desiredname = self:GetInfo("cl_playermodel")	
-	if #desiredname == 0 then
-		desiredname = randommodel
+	if preferredmodel == nil then
+		preferredmodel = randommodel
 	end
 	
-	local modelname = player_manager.TranslatePlayerModel(desiredname)
-	if table.HasValue(GAMEMODE.RestrictedModels, string.lower(modelname)) or (self:Team() == TEAM_HUMAN and table.HasValue(GAMEMODE.RandomBanditModels, string.lower(desiredname))) or (self:Team() == TEAM_BANDIT and table.HasValue(GAMEMODE.RandomSurvivorModels, string.lower(desiredname))) then
-		modelname = player_manager.TranslatePlayerModel(randommodel)
-	end
-	local lowermodelname = string.lower(modelname)
+	local modelname = player_manager.TranslatePlayerModel(preferredmodel)
 	self:SetModel(modelname)
 	self:SetupHands(self)
 	-- Cache the voice set.
+
+	local lowermodelname = string.lower(modelname)
 	if GAMEMODE.VoiceSetTranslate[lowermodelname] then
 		self.VoiceSet = GAMEMODE.VoiceSetTranslate[lowermodelname]
 	elseif string.find(lowermodelname, "female", 1, true) then
@@ -371,10 +369,6 @@ function meta:PopPackedItem(class)
 
 		return data
 	end
-end
-
-function meta:SelectRandomPlayerModel()
-	self:SetModel(player_manager.TranslatePlayerModel(GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]))
 end
 
 function meta:GiveEmptyWeapon(weptype)
