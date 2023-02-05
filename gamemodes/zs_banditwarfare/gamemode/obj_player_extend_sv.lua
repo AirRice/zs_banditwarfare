@@ -223,7 +223,7 @@ function meta:RefreshPlayerModel()
 		randommodel = GAMEMODE.RandomBanditModels[math.random(#GAMEMODE.RandomBanditModels)]
 	end
 	
-	if preferredmodel == nil then
+	if preferredmodel == nil or preferredmodel == "" then
 		preferredmodel = randommodel
 	end
 	
