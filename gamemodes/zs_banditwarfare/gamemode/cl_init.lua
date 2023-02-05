@@ -319,22 +319,6 @@ function GM:TrackLastDeath()
 	end
 end
 
-function GM:IsSampleCollectMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_SAMPLES
-end
-
-function GM:IsClassicMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_CLASSIC
-end
-
-function GM:IsTransmissionMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_TRANSMISSION
-end
-
-function GM:IsRoundModeUnassigned()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_UNASSIGNED
-end
-
 local lastwarntim = -1
 function GM:_Think()
 	

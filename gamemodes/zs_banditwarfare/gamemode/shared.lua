@@ -160,6 +160,27 @@ function GM:GetBanditComms()
 	return GetGlobalInt("banditcomms", 0)
 end
 
+function GM:IsRoundModeUnassigned()
+	return self:GetRoundMode() == ROUNDMODE_UNASSIGNED
+end
+
+function GM:IsClassicMode()
+	return self:GetRoundMode() == ROUNDMODE_CLASSIC
+end
+
+function GM:IsSampleCollectMode()
+	return self:GetRoundMode() == ROUNDMODE_SAMPLES
+end
+
+function GM:IsTransmissionMode()
+	return self:GetRoundMode() == ROUNDMODE_TRANSMISSION
+end
+
+function GM:GetRoundMode()
+	local curvalue = GetGlobalInt("roundgamemode",0)
+	return curvalue
+end
+
 function GM:PlayerIsAdmin(pl)
 	return pl:IsAdmin()
 end

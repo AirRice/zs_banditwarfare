@@ -1,11 +1,3 @@
-CreateConVar("zsb_roundgamemode", "0", FCVAR_ARCHIVE, "Gamemode for the round. 0 = Transmission mode, 1 = Collection mode, 2 = kill everyone to win mode.")
-cvars.AddChangeCallback("zsb_roundgamemode", function(cvar, oldvalue, newvalue)
-	local roundmodevar = tonumber(newvalue)
-	if (roundmodevar != tonumber(oldvalue)) and IsValidRoundMode(roundmodevar) then
-		GAMEMODE:SetRoundMode(roundmodevar)
-	end
-end)
-
 GM.AutoModeChange = CreateConVar("zsb_autoroundmodechange", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY, "Allow automatic round gamemode change at the end of each map, if enough players are on the game."):GetBool()
 cvars.AddChangeCallback("zsb_autoroundmodechange", function(cvar, oldvalue, newvalue)
 	GAMEMODE.AutoModeChange = tonumber(newvalue) == 1

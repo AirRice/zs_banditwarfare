@@ -102,7 +102,7 @@ function MakepHelp()
 	propertysheet:StretchToParent(12, 52, 12, 64)
 
 	for _, helptab in ipairs(GAMEMODE.Help) do
-		local content_translated = (helptab.Name == "help_cat_introduction") and (translate.Get(helptab.Content)..translate.Get(GAMEMODE.RoundModeHelp[GetGlobalInt("roundgamemode", 0)])) or translate.Get(helptab.Content)
+		local content_translated = (helptab.Name == "help_cat_introduction") and (translate.Get(helptab.Content)..translate.Get(GAMEMODE.RoundModeHelp[GAMEMODE:GetRoundMode()])) or translate.Get(helptab.Content)
 		local htmlpanel = vgui.Create("DHTML", propertysheet)
 		htmlpanel:StretchToParent(4, 4, 4, 24)
 		htmlpanel:SetHTML([[<html>

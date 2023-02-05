@@ -514,38 +514,9 @@ function GM:RemoveUnusedEntities()
 	end
 end
 
-function GM:IsRoundModeUnassigned()
-	return self:GetRoundMode() == ROUNDMODE_UNASSIGNED
-end
-
-function GM:IsClassicMode()
-	return self:GetRoundMode() == ROUNDMODE_CLASSIC
-end
-
-function GM:IsSampleCollectMode()
-	return self:GetRoundMode() == ROUNDMODE_SAMPLES
-end
-
-function GM:IsTransmissionMode()
-	return self:GetRoundMode() == ROUNDMODE_TRANSMISSION
-end
-
-function GM:GetRoundMode()
-	local cvarvalue = GetConVar("zsb_roundgamemode"):GetInt()
-	local curvalue = GetGlobalInt("roundgamemode",0)
-	--[[if cvarvalue != curvalue then
-		self:SetRoundMode(cvarvalue)
-	end]]
-	--return cvarvalue
-	return curvalue
-end
-
 function GM:SetRoundMode(mode)
-	local cm = GetConVar("zsb_roundgamemode")
 	local oldmode = self.LastRoundMode or ROUNDMODE_UNASSIGNED
-	if (IsValidRoundMode(mode)) then 
-		cm:SetInt(mode)
-	elseif (mode != ROUNDMODE_UNASSIGNED) then
+	if !IsValidRoundMode(mode) and (mode != ROUNDMODE_UNASSIGNED) then
 		return
 	end
 	SetGlobalInt("roundgamemode",mode)
@@ -1146,8 +1117,6 @@ function GM:PlayerReadyRound(pl)
 	elseif not pl.InitialTeamSelected and not pl:GetInfo("zsb_autoselectteam") == "1" then
 		pl:SendLua("GAMEMODE:ShowTeamSelectMenu()")
 	end
-	--pl:SendLua("MakepHelp()")
-	--pl:SendLua("SetGlobalInt(\"roundgamemode\", "..GetGlobalInt("roundgamemode",0)..")")
 end
 
 function GM:FullGameUpdate(pl)
