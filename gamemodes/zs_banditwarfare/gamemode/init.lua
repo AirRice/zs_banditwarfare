@@ -1144,7 +1144,7 @@ function GM:PlayerReadyRound(pl)
 	if self.RoundEnded then
 		pl:SendLua("gamemode.Call(\"EndRound\", "..tostring(ROUNDWINNER)..", \""..game.GetMapNext().."\")")
 		gamemode.Call("DoHonorableMentions", pl)
-	elseif not pl.InitialTeamSelected then
+	elseif not pl.InitialTeamSelected and not pl:GetInfo("zsb_autoselectteam") == "1" then
 		pl:SendLua("GAMEMODE:ShowTeamSelectMenu()")
 	end
 	--pl:SendLua("MakepHelp()")
