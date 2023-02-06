@@ -10,8 +10,8 @@ local function RefreshCrateOwners(pl)
 		end
 	end
 end
-hook.Add("PlayerDisconnected", "FFemitter.PlayerDisconnected", RefreshCrateOwners)
-hook.Add("OnPlayerChangedTeam", "FFemitter.OnPlayerChangedTeam", RefreshCrateOwners)
+hook.Add("PlayerDisconnected", "FFemitter.PlayerDisconnected", RefreshFFieldOwners)
+hook.Add("PlayerChangedTeam", "FFemitter.PlayerChangedTeam", RefreshFFieldOwners)
 
 function ENT:Initialize()
 	self:SetModel("models/props_lab/lab_flourescentlight002b.mdl")

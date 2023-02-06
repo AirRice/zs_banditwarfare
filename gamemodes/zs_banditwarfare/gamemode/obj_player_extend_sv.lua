@@ -34,24 +34,49 @@ local function AddToClassicInsuredList(wepname, pl)
 	end
 end
 
-function meta:ResetLoadout(oldmode, newmode)
-	local keepold = (isnumber(oldmode) and isnumber(newmode) and (oldmode != ROUNDMODE_UNASSIGNED) and (oldmode != ROUNDMODE_CLASSIC))
+function meta:ResetLoadout()
 	local wepdefaults = {}
 	wepdefaults[WEAPONLOADOUT_SLOT1] = GAMEMODE.PossiblePrimaryGuns
 	wepdefaults[WEAPONLOADOUT_SLOT2] = GAMEMODE.PossibleSecondaryGuns
 	wepdefaults[WEAPONLOADOUT_MELEE] = GAMEMODE.PossibleMelees
 	wepdefaults[WEAPONLOADOUT_TOOLS] = {"weapon_zs_enemyradar"}
+
 	for slot=WEAPONLOADOUT_SLOT1, WEAPONLOADOUT_TOOLS do
 		local wepname = self:GetWeaponLoadoutBySlot(slot)
 		storedwep = weapons.GetStored(wepname)
 		shoptab = FindItembyClass(wepname)
 		local shoptabnotvalid = (storedwep and ((newmode == ROUNDMODE_SAMPLES) and (shoptab.NoSampleCollectMode) or (newmode == ROUNDMODE_TRANSMISSION) and (shoptab.NoTransmissionMode)))
-		if not keepold or shoptabnotvalid then
+		if not shoptabnotvalid then
 			local possibleguns = wepdefaults[slot]
 			self:SetWeaponLoadoutBySlot(possibleguns[math.random(#possibleguns)],slot)
 		end
 	end
-	self:UpdateWeaponLoadouts()
+
+	if GAMEMODE:IsClassicMode() then
+		self.ClassicModeInsuredWeps = {}
+		self.ClassicModeNextInsureWeps = {}
+		self.ClassicModeRemoveInsureWeps = {}
+		self:SendLua("GAMEMODE.ClassicModeInsuredWeps = {}")
+		self:SendLua("GAMEMODE.ClassicModePurchasedThisWave = {}")
+
+		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeapon2())
+		table.ForceInsert(self.ClassicModeInsuredWeps,self:GetWeaponMelee())
+
+		for _, wep in pairs(self.ClassicModeInsuredWeps) do
+			local storedwep = weapons.GetStored(wep)
+			if storedwep then
+				local given = self:Give(wep)
+				if given then
+					net.Start("zs_insure_weapon")
+						net.WriteString(wep)
+						net.WriteBool(false)
+					net.Send(self)
+				end
+			end
+		end
+	else
+		self:UpdateWeaponLoadouts()
+	end
 end
 
 function meta:LoadoutToClassicInventory()
@@ -127,8 +152,8 @@ function meta:HandleRoundModeChangeLoadout(oldmode, newmode)
 		self:ClassicInventoryToLoadout()
 	elseif (oldmode == ROUNDMODE_SAMPLES or oldmode == ROUNDMODE_TRANSMISSION) and newmode == ROUNDMODE_CLASSIC then
 		self:LoadoutToClassicInventory()
-	elseif (newmode != ROUNDMODE_CLASSIC) then
-		self:ResetLoadout(oldmode, newmode)
+	elseif (oldmode == ROUNDMODE_UNASSIGNED) then
+		self:ResetLoadout() -- Start from scratch
 	end
 end
 
@@ -189,27 +214,25 @@ end
 
 function meta:RefreshPlayerModel()
 	local randommodel = nil
+	local preferredmodel = nil
 	if (self:Team() == TEAM_HUMAN) then
+		preferredmodel = self:GetInfo("zsb_preferredsurvivormodel")
 		randommodel = GAMEMODE.RandomSurvivorModels[math.random(#GAMEMODE.RandomSurvivorModels)]
 	elseif (self:Team() == TEAM_BANDIT) then
+		preferredmodel = self:GetInfo("zsb_preferredbanditmodel")
 		randommodel = GAMEMODE.RandomBanditModels[math.random(#GAMEMODE.RandomBanditModels)]
-	else
-		randommodel = GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]
 	end
 	
-	local desiredname = self:GetInfo("cl_playermodel")	
-	if #desiredname == 0 then
-		desiredname = randommodel
+	if preferredmodel == nil or preferredmodel == "" then
+		preferredmodel = randommodel
 	end
 	
-	local modelname = player_manager.TranslatePlayerModel(desiredname)
-	if table.HasValue(GAMEMODE.RestrictedModels, string.lower(modelname)) or (self:Team() == TEAM_HUMAN and table.HasValue(GAMEMODE.RandomBanditModels, string.lower(desiredname))) or (self:Team() == TEAM_BANDIT and table.HasValue(GAMEMODE.RandomSurvivorModels, string.lower(desiredname))) then
-		modelname = player_manager.TranslatePlayerModel(randommodel)
-	end
-	local lowermodelname = string.lower(modelname)
+	local modelname = player_manager.TranslatePlayerModel(preferredmodel)
 	self:SetModel(modelname)
 	self:SetupHands(self)
 	-- Cache the voice set.
+
+	local lowermodelname = string.lower(modelname)
 	if GAMEMODE.VoiceSetTranslate[lowermodelname] then
 		self.VoiceSet = GAMEMODE.VoiceSetTranslate[lowermodelname]
 	elseif string.find(lowermodelname, "female", 1, true) then
@@ -346,10 +369,6 @@ function meta:PopPackedItem(class)
 
 		return data
 	end
-end
-
-function meta:SelectRandomPlayerModel()
-	self:SetModel(player_manager.TranslatePlayerModel(GAMEMODE.RandomPlayerModels[math.random(#GAMEMODE.RandomPlayerModels)]))
 end
 
 function meta:GiveEmptyWeapon(weptype)

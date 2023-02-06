@@ -10,8 +10,8 @@ local function RefreshCrateOwners(pl)
 		end
 	end
 end
-hook.Add("PlayerDisconnected", "SpotLamp.PlayerDisconnected", RefreshCrateOwners)
-hook.Add("OnPlayerChangedTeam", "SpotLamp.OnPlayerChangedTeam", RefreshCrateOwners)
+hook.Add("PlayerDisconnected", "SpotLamp.PlayerDisconnected", RefreshLampOwners)
+hook.Add("PlayerChangedTeam", "SpotLamp.PlayerChangedTeam", RefreshLampOwners)
 
 function ENT:Initialize()
 	self:SetModel("models/props_combine/combine_light001a.mdl")

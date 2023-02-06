@@ -86,7 +86,9 @@ local function ItemButtonThink(self)
 			local slot = GAMEMODE.m_PointsShop.m_LoadoutSlot
 			local canpurchase, reasons = PlayerCanPurchasePointshopItem(MySelf,itemtab,slot,false)
 			local canupgrade, upgradereasons = PlayerCanUpgradePointshopItem(MySelf,itemtab,slot)
-			canupgrade = canupgrade and (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
+			if GAMEMODE:IsClassicMode() then
+				canupgrade = canupgrade and (GAMEMODE.ClassicModePurchasedThisWave[itemtab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[itemtab.SWEP])
+			end
 			if canpurchase ~= self.m_LastAbleToBuy then
 				self.m_LastAbleToBuy = canpurchase
 			end

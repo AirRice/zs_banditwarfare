@@ -30,21 +30,13 @@
 		}
 		3
 		{
-			"name"		"zsb_roundgamemode"
-			"text"		"zsb_round_gamemode"
-			"help"		"Gamemode for the round. 0 = Transmission mode, 1 = Collection mode, 2 = kill everyone to win mode."
-			"type"		"Numeric"
-			"default"	"2"
-		}
-		4
-		{
 			"name"		"zsb_autoroundmodechange"
 			"text"		"zsb_auto_roundmode_change"
 			"help"		"Allow automatic round gamemode change at the end of each map, if enough players are on the game."
 			"type"		"CheckBox"
 			"default"	"1"
 		}
-		5
+		4
 		{
 			"name"		"zsb_maxpropsinbarricade"
 			"text"		"zsb_max_props_in_barricade"
@@ -52,7 +44,7 @@
 			"type"		"Numeric"
 			"default"	"8"
 		}
-		6
+		5
 		{
 			"name"		"zsb_nailhealthperrepair"
 			"text"		"zsb_nail_health_per_repair"
@@ -60,7 +52,7 @@
 			"type"		"Numeric"
 			"default"	"50"
 		}
-		7
+		6
 		{
 			"name"		"zsb_clientsidehitscan"
 			"text"		"zsb_client_side_hitscan"
@@ -68,7 +60,7 @@
 			"type"		"CheckBox"
 			"default"	"0"
 		}
-		8
+		7
 		{
 			"name"		"zsb_lowplayercountthreshold"
 			"text"		"zsb_low_player_count_threshold"
@@ -76,7 +68,7 @@
 			"type"		"Numeric"
 			"default"	"6"
 		}
-		9
+		8
 		{
 			"name"		"zsb_max_additional_samples_count_player"
 			"text"		"zsb_max_add_samples_player"
@@ -84,7 +76,7 @@
 			"type"		"Numeric"
 			"default"	"3"
 		}
-		10
+		9
 		{
 			"name"		"zsb_max_additional_samples_count_nest"
 			"text"		"zsb_max_add_samples_nest"

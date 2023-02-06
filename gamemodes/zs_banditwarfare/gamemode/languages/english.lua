@@ -25,22 +25,22 @@ LANGUAGE.itemcategory_melee							= "Melee"
 LANGUAGE.itemcategory_tools							= "Tools"
 LANGUAGE.itemcategory_etc							= "Etc"
 
+LANGUAGE.select_team								= "Change Team"
 LANGUAGE.playermodel_changed_to_x					= "Your playermodel has been set to %s."
 LANGUAGE.select_playermodel							= "Select Playermodel"
-LANGUAGE.player_color								= "Player Color"
-LANGUAGE.weapon_color								= "Weapon Color(Only certain weapons)"
-LANGUAGE.colors_button								= "Player Colors"
+LANGUAGE.random_model								= "Random Model"
+LANGUAGE.reset_playermodel_button					= "Use random Playermodel"
 LANGUAGE.options_button								= "Options"
 LANGUAGE.credits_button								= "Credits"
 LANGUAGE.close_button								= "Close"
 LANGUAGE.back_button								= "Back"
 LANGUAGE.consumables_purchase_button				= "Buy Consumables"
 
-
 LANGUAGE.option_no_floating_scores					= "Do not show points floaters"
 LANGUAGE.option_show_team_indicators				= "Show ally team indicators"
 LANGUAGE.option_enable_killstreak_sounds			= "Enable killstreak sounds"
 LANGUAGE.option_spectator_mode						= "Spectator Mode (Applied next wave)"
+LANGUAGE.option_auto_select_team					= "Select team automatically when first joining"
 LANGUAGE.option_hide_most_of_hud					= "Film Mode (Hide most HUD elements)"
 LANGUAGE.option_simple_score_board					= "Simple Scoreboard (Hide Points)"
 LANGUAGE.option_play_music							= "Play Background Music"
@@ -455,6 +455,7 @@ LANGUAGE.sudden_death								= "TIEBREAKER"
 
 LANGUAGE.too_close_to_another_nail					= "You can't put a nail so close to another one."
 LANGUAGE.object_too_damaged_to_be_used				= "This object is too damaged to hammer back in."
+LANGUAGE.selected_team_is_full						= "The selected team is full."
 LANGUAGE.x_turned_on_noclip							= "%s turned on noclip."
 LANGUAGE.x_turned_off_noclip						= "%s turned off noclip."
 
@@ -527,6 +528,8 @@ LANGUAGE.stat_gundmg								= "Damage"
 LANGUAGE.stat_numshots								= "Shots per Fire"
 LANGUAGE.stat_firedelay								= "Attack Delay"
 
+LANGUAGE.team_desc_bandit							= "The Bandits were once survivors who armed themselves to the teeth using innovative new weaponry to fight off the zombies during the outbreak. However, will they be victorious in their struggle for autonomy and control against the survivors?"
+LANGUAGE.team_desc_human							= "The Survivors are the proud remnants of humanity who fought off the zombie outbreak, and have finally established some form of civilised society. But will they be able to defeat a threat from within: their once allies turned rebellious marauders?"
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Introduction"

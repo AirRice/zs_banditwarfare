@@ -11,15 +11,26 @@ function player.GetAllActive()
 end
 
 function player.GetAllSpectators()
-	local t = {}
+	return team.GetPlayers(TEAM_SPECTATOR)
+end
 
-	for _, pl in pairs(player.GetAll()) do
-		if pl:IsSpectator() then
-			t[#t + 1] = pl
-		end
+function player.GetActiveCount()
+	return player.GetCount() - #player.GetAllSpectators()
+end
+
+function translate.GetTranslatedTeamName(teamindex,pl)
+	if CLIENT then pl = MySelf end
+	local translatestring = ""
+	if teamindex == TEAM_BANDIT then
+		translatestring = "teamname_bandit"
+	elseif teamindex == TEAM_HUMAN then
+		translatestring = "teamname_human"
+	elseif teamindex == TEAM_SPECTATOR then
+		translatestring = "teamname_spectator"
 	end
 
-	return t
+	if not (pl and pl:IsPlayer()) then return end
+	return translate.ClientGet(pl,translatestring)
 end
 
 function FindItembyClass(class)

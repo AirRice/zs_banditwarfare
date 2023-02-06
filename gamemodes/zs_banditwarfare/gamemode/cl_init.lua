@@ -21,6 +21,7 @@ include("vgui/dteamscores.lua")
 include("vgui/dmodelpanelex.lua")
 include("vgui/dweaponloadoutbutton.lua")
 include("vgui/dteamheading.lua")
+include("vgui/dteamselect.lua")
 include("vgui/dmodelkillicon.lua")
 
 include("vgui/dexroundedpanel.lua")
@@ -28,6 +29,7 @@ include("vgui/dexroundedframe.lua")
 include("vgui/dexrotatedimage.lua")
 include("vgui/dexnotificationslist.lua")
 include("vgui/dexchanginglabel.lua")
+include("vgui/dcomboboxex.lua")
 
 include("vgui/pmainmenu.lua")
 include("vgui/poptions.lua")
@@ -36,6 +38,7 @@ include("vgui/pweapons.lua")
 include("vgui/pendboard.lua")
 include("vgui/ppointshop.lua")
 include("vgui/dpingmeter.lua")
+include("vgui/pplayermodel.lua")
 include("vgui/zshealtharea.lua")
 
 include("cl_dermaskin.lua")
@@ -314,22 +317,6 @@ function GM:TrackLastDeath()
 	else
 		self.LastTimeDead = CurTime()
 	end
-end
-
-function GM:IsSampleCollectMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_SAMPLES
-end
-
-function GM:IsClassicMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_CLASSIC
-end
-
-function GM:IsTransmissionMode()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_TRANSMISSION
-end
-
-function GM:IsRoundModeUnassigned()
-	return GetGlobalInt("roundgamemode", 0) == ROUNDMODE_UNASSIGNED
 end
 
 local lastwarntim = -1
@@ -787,6 +774,7 @@ function GM:CreateVGUI()
 	end
 	self.CenterNotificationHUD:InvalidateLayout()
 	self.CenterNotificationHUD:ParentToHUD()
+	self.CenterNotificationHUD:SetDrawOnTop(true)
 end
 
 function GM:Initialize()
@@ -1375,6 +1363,7 @@ function GM:SetNextSpawnTime(respawntime,pl)
 	if (respawntime == nil or respawntime < 0) then self.NextSpawnTime = nil return end
 	self.NextSpawnTime = respawntime
 end
+
 function GM:Rewarded(class, amount)
 	if CurTime() < self.SuppressArsenalTime then return end
 
@@ -1573,10 +1562,8 @@ net.Receive("zs_waveend", function(length)
 	local winner = net.ReadUInt(8)
 	--GAMEMODE.IsInSuddenDeath = false
 	gamemode.Call("RestartBeats")
-	if winner == TEAM_HUMAN then
-		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.ClientGet(pl,"teamname_human")) ,{killicon = "default"})
-	elseif winner == TEAM_BANDIT then
-		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.ClientGet(pl,"teamname_bandit")) ,{killicon = "default"})
+	if winner == TEAM_HUMAN or winner == TEAM_BANDIT then
+		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", team.GetColor(winner), translate.ClientFormat(pl, "win",translate.GetTranslatedTeamName(winner,pl)) ,{killicon = "default"})
 	else
 		GAMEMODE:CenterNotify({killicon = "default"},{font = "ZSHUDFont"}, " ", COLOR_DARKGRAY, translate.ClientGet(pl, "draw"),{killicon = "default"})
 	end

@@ -24,12 +24,7 @@ function GM:OnTransmitterTaken(objent, justtakenby)
 		end
 	end
 	for _, pl in pairs(player.GetAll()) do
-		if justtakenby == TEAM_BANDIT then
-			translatestring = translate.ClientGet(pl,"teamname_bandit")
-		elseif justtakenby == TEAM_HUMAN then
-			translatestring = translate.ClientGet(pl,"teamname_human")
-		end
-		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_transmitters_taken_by_x" or "one_transmitter_taken_by_x",translatestring))
+		pl:CenterNotify(COLOR_DARKGREEN, translate.ClientFormat(pl, allSameTeam and "all_transmitters_taken_by_x" or "one_transmitter_taken_by_x",translate.GetTranslatedTeamName(justtakenby,pl)))
 	end
 end
 

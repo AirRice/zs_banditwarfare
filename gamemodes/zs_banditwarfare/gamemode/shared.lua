@@ -91,6 +91,27 @@ function GM:AddCustomAmmo()
 	game.AddAmmoType({name = "autocharging"})
 end
 
+function GM:PlayerCanChooseTeam(pl, teamid)
+	if not (pl and pl:IsValid() and pl:IsPlayer()) then return false end 
+	if not teamid or not (teamid == TEAM_BANDIT or teamid == TEAM_HUMAN or teamid == TEAM_SPECTATOR) then return false end
+	if teamid == TEAM_SPECTATOR then return true end
+	local bothteams = TEAM_BANDIT+TEAM_HUMAN
+	local iSwitchTo = #team.GetPlayers(teamid)
+	local iOtherTeam = #team.GetPlayers(bothteams-teamid)
+	if (pl:Team() == TEAM_BANDIT or pl:Team() == TEAM_HUMAN) then
+		if (pl:Team() == bothteams-teamid) then
+			iOtherTeam = iOtherTeam - 1
+		else
+			iSwitchTo = iSwitchTo - 1
+		end
+	end
+	if iSwitchTo > iOtherTeam then
+		return false
+	else
+		return true
+	end
+end
+
 function GM:SetWave(wave)
 	SetGlobalInt("wave", wave)
 end
@@ -137,6 +158,27 @@ end
 
 function GM:GetBanditComms()
 	return GetGlobalInt("banditcomms", 0)
+end
+
+function GM:IsRoundModeUnassigned()
+	return self:GetRoundMode() == ROUNDMODE_UNASSIGNED
+end
+
+function GM:IsClassicMode()
+	return self:GetRoundMode() == ROUNDMODE_CLASSIC
+end
+
+function GM:IsSampleCollectMode()
+	return self:GetRoundMode() == ROUNDMODE_SAMPLES
+end
+
+function GM:IsTransmissionMode()
+	return self:GetRoundMode() == ROUNDMODE_TRANSMISSION
+end
+
+function GM:GetRoundMode()
+	local curvalue = GetGlobalInt("roundgamemode",0)
+	return curvalue
 end
 
 function GM:PlayerIsAdmin(pl)
@@ -351,7 +393,7 @@ function GM:GetRagdollEyes(pl)
 end
 
 function GM:PlayerNoClip(pl, on)
-	if pl:IsAdmin() then
+	if pl:IsAdmin() and not pl:IsSpectator() then
 		if SERVER then
 			PrintMessage(HUD_PRINTCONSOLE, translate.Format(on and "x_turned_on_noclip" or "x_turned_off_noclip", pl:Name()))
 		end

@@ -10,7 +10,7 @@ GM.PossiblePrimaryGuns = {
 	"weapon_zs_tosser",
 	"weapon_zs_crackler",
 	"weapon_zs_doublebarrel",
-	"weapon_zs_stubber",
+	"weapon_zs_stubber"
 }
 GM.PossibleSecondaryGuns = {
 	"weapon_zs_peashooter",
@@ -372,18 +372,6 @@ GM.HonorableMentions[HM_WARRIOR] = {TranslateName = "hm_warrior_name", Translate
 GM.HonorableMentions[HM_HEADSHOTS] = {TranslateName = "hm_mostheadshots_name", TranslateString = "hm_mostheadshots_desc", Callback = genericcallback}
 GM.HonorableMentions[HM_BESTAIM] = {TranslateName = "hm_bestaim_name", TranslateString = "hm_bestaim_desc", Callback = genericcallback}
 
--- Zombine: has no head.
--- Skeleton: doesn't have flesh therefore making the hitboxes seem wonky
-
-GM.RestrictedModels = {
-	"models/player/zombine.mdl",
-	"models/player/zombie_soldier.mdl",
-	"models/player/skeleton.mdl",
-	"models/player/charple.mdl",
-	"models/player/zombie_classic.mdl",
-	"models/player/zombie_fast.mdl"
-	--"models/player/corpse1.mdl"
-}
 GM.MapWhitelist = {
 	--"cs_assault", Assault is way more fun in classic mode.
 	--"cs_compound",
@@ -422,27 +410,12 @@ GM.MapWhitelist = {
 	"zsb_hallways"
 }
 GM.RandomSurvivorModels = {
-	"female01",
-	"female02",
-	"female03",
-	"female04",
-	"female05",
-	"female06",
 	"female07",
 	"female08",
 	"female09",
 	"female10",
 	"female11",
 	"female12",
-	"male01",
-	"male02",
-	"male03",
-	"male04",
-	"male05",
-	"male06",
-	"male07",
-	"male08",
-	"male09",
 	"male10",
 	"male11",
 	"male12",
@@ -461,7 +434,6 @@ GM.RandomBanditModels = {
 	"combine",
 	"combineelite",
 	"combineprison",
-	"corpse",
 	"css_arctic",
 	"css_gasmask",
 	"css_guerilla",
@@ -470,7 +442,18 @@ GM.RandomBanditModels = {
 	"css_riot",
 	"css_swat",
 	"css_urban",
-	"css_arctic"
+}
+
+-- Zombine: has no head.
+-- Skeleton: doesn't have flesh therefore making the hitboxes seem wonky
+
+GM.RestrictedModels = {
+	"charple",
+	"corpse",
+	"skeleton",
+	"zombie",
+	"zombiefast",
+	"zombine"
 }
 
 -- If a person has no player model then use one of these (auto-generated).

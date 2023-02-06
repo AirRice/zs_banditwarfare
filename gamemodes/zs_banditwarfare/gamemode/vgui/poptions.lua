@@ -10,7 +10,7 @@ function MakepOptions()
 	end
 
 	local Window = vgui.Create("DFrame")
-	local wide = math.min(ScrW(), 600)
+	local wide = math.min(ScrW(), 800)
 	local tall = math.min(ScrH(), 780)
 	Window:SetSize(wide, tall)
 	Window:Center()
@@ -30,7 +30,7 @@ function MakepOptions()
 	list:SetSize(wide - 24, tall - y - 12)
 	list:SetPos(12, y)
 	list:SetPadding(8)
-	list:SetSpacing(4)
+	list:SetSpacing(6)
 
 	gamemode.Call("AddExtraOptions", list, Window)
 
@@ -56,9 +56,9 @@ function MakepOptions()
 	list:AddItem(check)
 	
 	local check = vgui.Create("DCheckBoxLabel", Window)
-	check:SetText(translate.Get("option_spectator_mode"))
+	check:SetText(translate.Get("option_auto_select_team"))
 	check:SetFont("ZSHUDFontSmallerNS")
-	check:SetConVar("zsb_spectator")
+	check:SetConVar("zsb_autoselectteam")
 	check:SizeToContents()
 	list:AddItem(check)
 
@@ -147,7 +147,7 @@ function MakepOptions()
 	list:AddItem(check)
 	
 	list:AddItem(EasyLabel(Window, translate.Get("option_weapon_hud_style"), "ZSHUDFontSmallerNS", color_white))
-	local dropdown = vgui.Create("DComboBox", Window)
+	local dropdown = vgui.Create("DComboBoxEx", Window)
 	dropdown:SetMouseInputEnabled(true)
 	dropdown:AddChoice("3D")
 	dropdown:AddChoice("2D")
