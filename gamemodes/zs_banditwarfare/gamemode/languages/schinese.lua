@@ -27,15 +27,11 @@ LANGUAGE.itemcategory_etc							= "其他"
 
 LANGUAGE.playermodel_changed_to_x					= "你的玩家模型已设置为“%s”。"
 LANGUAGE.select_playermodel							= "选择玩家模型"
-LANGUAGE.player_color								= "玩家颜色"
-LANGUAGE.weapon_color								= "武器颜色（仅限部分特定武器）"
-LANGUAGE.colors_button								= "玩家颜色"
 LANGUAGE.options_button								= "选项"
 LANGUAGE.credits_button								= "制作人员"
 LANGUAGE.close_button								= "关闭"
 LANGUAGE.back_button								= "返回"
 LANGUAGE.consumables_purchase_button				= "购买消耗品"
-
 
 LANGUAGE.option_no_floating_scores					= "不显示弹出文本"
 LANGUAGE.option_show_team_indicators				= "显示友方团队方位"

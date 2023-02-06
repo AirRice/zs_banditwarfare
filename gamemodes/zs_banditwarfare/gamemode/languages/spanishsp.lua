@@ -27,15 +27,11 @@ LANGUAGE.itemcategory_etc							= "Etc."
 
 LANGUAGE.playermodel_changed_to_x					= "Tu modelo de jugador se ha establecido en %s."
 LANGUAGE.select_playermodel							= "Seleccionar modelo de jugador"
-LANGUAGE.player_color								= "Color de jugador"
-LANGUAGE.weapon_color								= "Color de arma (solo algunas)"
-LANGUAGE.colors_button								= "Colores de jugador"
 LANGUAGE.options_button								= "Opciones"
 LANGUAGE.credits_button								= "Créditos"
 LANGUAGE.close_button								= "Cerrar"
 LANGUAGE.back_button								= "Atrás"
 LANGUAGE.consumables_purchase_button				= "Comprar consumibles"
-
 
 LANGUAGE.option_no_floating_scores					= "No mostrar puntos flotantes"
 LANGUAGE.option_show_team_indicators				= "Mostrar indicadores de compañeros"
