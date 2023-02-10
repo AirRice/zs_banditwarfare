@@ -455,6 +455,7 @@ LANGUAGE.sudden_death								= "决胜局"
 
 LANGUAGE.too_close_to_another_nail					= "你不能把钉子放得离另一个钉子这么近。"
 LANGUAGE.object_too_damaged_to_be_used				= "此物体损伤的太厉害，不能把钉子锤进去。"
+LANGUAGE.selected_team_is_full						= "选中的阵营已满。"
 LANGUAGE.x_turned_on_noclip							= "%s 已开启穿墙模式。"
 LANGUAGE.x_turned_off_noclip						= "%s 已关闭穿墙模式。"
 
