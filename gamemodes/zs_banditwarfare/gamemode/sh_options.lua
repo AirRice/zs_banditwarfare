@@ -462,18 +462,18 @@ GM.RandomSurvivorModels = {
 GM.RandomBanditModels = {
 	"police",
 	"policefem",
-	"stripped",
+	--"stripped",
 	"combine",
 	"combineelite",
-	"combineprison",
-	"css_arctic",
-	"css_gasmask",
+	--"combineprison",
+	--"css_arctic",
+	--"css_gasmask",
 	"css_guerilla",
 	"css_leet",
 	"css_phoenix",
-	"css_riot",
-	"css_swat",
-	"css_urban",
+	--"css_riot",
+	--"css_swat",
+	--"css_urban",
 }
 
 -- Zombine: has no head.
