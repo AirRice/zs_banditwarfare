@@ -1128,7 +1128,11 @@ function GM:PostDrawViewModel(vm, pl, wep)
 		if wep.UseHands or not wep:IsScripted() then
 			local hands = pl:GetHands()
 			if hands and hands:IsValid() then
+				if wep.handsBlendOverride != nil then
+					render.SetBlend(wep.handsBlendOverride )
+				end
 				hands:DrawModel()
+				render.SetBlend(1)
 			end
 		end
 

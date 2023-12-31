@@ -79,9 +79,6 @@ end
 
 function SWEP:Deploy()
 	self:DrawShadow(false)
-	if self:GetOwner() and self:GetOwner():IsPlayer() and self:GetOwner():Alive() then
-		self:GetOwner():DrawShadow(false)
-	end
 	self:SetStealthWepBlend(1)
 	self:SetStealthMeter(0)
 	self:SendWeaponAnim(ACT_VM_DRAW_SILENCED)
@@ -115,9 +112,24 @@ function SWEP:Think()
 		self.LastStealthMeterCheck = curTime
 	end
 	self:SetStealthWepBlend(1-math.Clamp(self:GetStealthMeter()/100,0,1)*0.85)
+	if CLIENT then
+		local veles = self.VElements
+		self.handsBlendOverride = self:GetStealthWepBlend()
+		veles["techpart1"].alphaoverride = self:GetStealthWepBlend()
+		veles["techpart2"].alphaoverride = self:GetStealthWepBlend()
+		veles["techpart3"].alphaoverride = self:GetStealthWepBlend()
+		veles["techpart4"].alphaoverride = self:GetStealthWepBlend()
+	end
+	if self:GetOwner() and self:GetOwner():IsPlayer() and self:GetOwner():Alive()then
+		if self:GetStealthWepBlend() < 0.5 then
+			self:GetOwner():DrawShadow(false)
+		else
+			self:GetOwner():DrawShadow(true)
+		end
+	end
 	self.BaseClass.Think(self)	
 end
-
+ 
 if CLIENT then
 	local texGradDown = surface.GetTextureID("VGUI/gradient_down")
 	function SWEP:DrawHUD()
@@ -143,4 +155,31 @@ if CLIENT then
 		end
 		self.BaseClass.DrawHUD(self)	
 	end
+
+	function SWEP:PreDrawViewModel(vm)
+		render.SetBlend(self:GetStealthWepBlend())
+		if self.BaseClass.PreDrawViewModel then
+			self.BaseClass.PreDrawViewModel(self)
+		end
+	end
+	function SWEP:PostDrawViewModel(vm, pl, wep)
+		render.SetBlend(1)
+		if self.BaseClass.PostDrawViewModel then 
+			self.BaseClass.PostDrawViewModel(self,vm, pl, wep)
+		end
+	end
+	function SWEP:PreDrawPlayerHands(hands, vm)
+		render.SetBlend(self:GetStealthWepBlend())
+		if self.BaseClass.PreDrawPlayerHands then
+			self.BaseClass.PreDrawPlayerHands(self, hands, vm)
+		end
+	end
+
+	function SWEP:PostDrawPlayerHands(hands, vm)
+		render.SetBlend(1)
+		if self.BaseClass.PostDrawPlayerHands then
+			self.BaseClass.PostDrawPlayerHands(self, hands, vm)
+		end
+	end
+
 end

@@ -149,7 +149,11 @@ if CLIENT then
 				end
 				
 				render.SetColorModulation(v.color.r/255, v.color.g/255, v.color.b/255)
-				render.SetBlend(v.color.a/255)
+				if (v.alphaoverride != nil) then
+					render.SetBlend(v.alphaoverride)
+				else
+					render.SetBlend(v.color.a/255)
+				end
 				model:DrawModel()
 				render.SetBlend(1)
 				render.SetColorModulation(1, 1, 1)
@@ -266,7 +270,11 @@ if CLIENT then
 				end
 				
 				render.SetColorModulation(v.color.r/255, v.color.g/255, v.color.b/255)
-				render.SetBlend(v.color.a/255)
+				if (v.alphaoverride != nil) then
+					render.SetBlend(v.alphaoverride)
+				else
+					render.SetBlend(v.color.a/255)
+				end
 				model:DrawModel()
 				render.SetBlend(1)
 				render.SetColorModulation(1, 1, 1)
