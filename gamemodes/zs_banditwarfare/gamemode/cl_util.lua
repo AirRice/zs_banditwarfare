@@ -87,3 +87,14 @@ function EasyButton(parent, text, xpadding, ypadding)
 
 	return dpanel
 end
+
+function GetWeaponClassColor(class)
+	local weptab = FindItembyClass(class)
+	if not weptab then return end
+
+	local wepclass = weptab.WeaponClass
+	if not wepclass then return end
+
+	local wepClassCol = GAMEMODE.WeaponClassColors[wepclass]
+	return wepClassCol
+end

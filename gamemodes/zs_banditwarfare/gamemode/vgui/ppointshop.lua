@@ -10,11 +10,13 @@ local function imgAdj(img, maximgx, maximgy)
 	end
 	img:Center()
 end
-	
+
 local function WeaponIconFill(class,parent,islarge)
 	islarge = islarge or false
+	
+	local wepClassCol = GetWeaponClassColor(class)
 	local ki = killicon.Get(class)
-	local col = ki and Color(ki[#ki].r, ki[#ki].g, ki[#ki].b) or color_white
+	local col = wepClassCol and wepClassCol or (ki and Color(ki[#ki].r, ki[#ki].g, ki[#ki].b) or color_white)
 	if ki and #ki == 3 then
 		local label = vgui.Create("DLabel", parent)
 		label:SetText(ki[2])

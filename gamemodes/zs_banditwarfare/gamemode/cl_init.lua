@@ -705,9 +705,6 @@ function GM:CreateFonts()
 	surface.CreateLegacyFont(fontfamily, screenscale * 72, fontweight, fontaa, false, "ZSHUDFontBigNS", false, false, false, true)
 	
 	surface.CreateLegacyFont("arial", screenscale * 24, 0, true, false, "ZSIconFont", false, font)
-	
-	surface.CreateLegacyFont(fontfamily, screenscale * 16, 0, true, false, "ZSDamageResistance", false, true, false, true)
-	surface.CreateLegacyFont(fontfamily, screenscale * 16, 0, true, false, "ZSDamageResistanceBlur", false, true, false, true)
 
 	surface.CreateLegacyFont(fontfamily, 32, fontweight, true, false, "ZSScoreBoardTitle", false, true, false, true)
 	surface.CreateLegacyFont(fontfamily, 22, fontweight, true, false, "ZSScoreBoardSubTitle", false, true, false, true)
