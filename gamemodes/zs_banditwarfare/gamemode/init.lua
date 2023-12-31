@@ -310,6 +310,9 @@ function GM:ShowTeam(pl)
 	if not self:IsRoundModeUnassigned() then
 		if pl:Alive() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) then
 			pl:SendLua("GAMEMODE:OpenPointsShop("..WEAPONLOADOUT_NULL..")")
+			if not self:IsClassicMode() then
+				pl:SendLua("gamemode.Call(\"HumanMenu\")")
+			end
 		end
 	end
 end
