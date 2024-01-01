@@ -76,6 +76,11 @@ WEAPONCLASS_BIO = 12
 WEAPONCLASS_PULSE = 13
 WEAPONCLASS_MEDICAL = 14
 
+WEAPONCLASS_UTIL = 15
+
+---- Melee Classes (for visualisation)
+
+
 -- Humans can not carry OR drag anything heavier than this (in kg.)
 CARRY_MAXIMUM_MASS = 300
 -- Humans can not carry anything with a volume more than this (OBBMins():Length() + OBBMaxs():Length()).

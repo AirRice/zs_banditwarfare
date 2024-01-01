@@ -10,25 +10,26 @@ ITEMCAT_OTHER = 5
 
 GM.WeaponClassColors = {}
 
-GM.WeaponClassColors[WEAPONCLASS_FASTPISTOL] = Color(60, 250, 232)
-GM.WeaponClassColors[WEAPONCLASS_MAGNUMPISTOL] = Color(30, 130, 250)
-GM.WeaponClassColors[WEAPONCLASS_SPLITPISTOL] = Color(30, 70, 250)
+GM.WeaponClassColors[WEAPONCLASS_FASTPISTOL] = COLOR_CYAN
+GM.WeaponClassColors[WEAPONCLASS_MAGNUMPISTOL] = COLOR_BLUE
+GM.WeaponClassColors[WEAPONCLASS_SPLITPISTOL] = COLOR_LIGHTBLUE
 
-GM.WeaponClassColors[WEAPONCLASS_SHOTGUN] = Color(224, 77, 118)
-GM.WeaponClassColors[WEAPONCLASS_AUTOSHOTGUN] = Color(224, 10, 125)
+GM.WeaponClassColors[WEAPONCLASS_SHOTGUN] = COLOR_CORAL
+GM.WeaponClassColors[WEAPONCLASS_AUTOSHOTGUN] = COLOR_MAGENTA
 
-GM.WeaponClassColors[WEAPONCLASS_ASSAULT] = Color(224, 104, 54)
-GM.WeaponClassColors[WEAPONCLASS_SMG] = Color(224, 134, 54)
-GM.WeaponClassColors[WEAPONCLASS_ASSAULTSMG] = Color(224, 200, 54)
-GM.WeaponClassColors[WEAPONCLASS_SNIPER] = Color(224, 37, 63)
-GM.WeaponClassColors[WEAPONCLASS_MARKSMAN] = Color(224, 129, 85)
+GM.WeaponClassColors[WEAPONCLASS_ASSAULT] = COLOR_VERMILLION
+GM.WeaponClassColors[WEAPONCLASS_SMG] = COLOR_ORANGE
+GM.WeaponClassColors[WEAPONCLASS_ASSAULTSMG] = COLOR_AMBER
+GM.WeaponClassColors[WEAPONCLASS_SNIPER] = COLOR_RED
+GM.WeaponClassColors[WEAPONCLASS_MARKSMAN] = COLOR_DARKRED
 
-GM.WeaponClassColors[WEAPONCLASS_CROSSBOW] = Color(184, 0, 224)
-GM.WeaponClassColors[WEAPONCLASS_BIO] = Color(181, 108, 224)
+GM.WeaponClassColors[WEAPONCLASS_CROSSBOW] = COLOR_PURPLE
+GM.WeaponClassColors[WEAPONCLASS_BIO] = COLOR_DARKPURPLE
 
 GM.WeaponClassColors[WEAPONCLASS_PULSE] = COLOR_YELLOW
 GM.WeaponClassColors[WEAPONCLASS_MEDICAL] = COLOR_DARKGREEN
 
+GM.WeaponClassColors[WEAPONCLASS_UTIL] = COLOR_LIMEGREEN
 ----------------------------------------------
 
 GM.PossiblePrimaryGuns = {
@@ -51,7 +52,7 @@ GM.PossibleMelees = {
 GM.Items = {}
 function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, canbuy, failtobuystr, wepclass)
 	local prereqs = {}
-	local tab = { Tier = tier, Signature = signature, TranslateName = name, TranslateDesc = desc, Category = category, Worth = worth or 0, SWEP = swep, Callback = callback, CanPurchaseFunc = canbuy, FailTranslateString = failtobuystr, Prerequisites = prereqs, WeaponClass = wepclass}
+	local tab = { ID = #self.Items + 1, Tier = tier, Signature = signature, TranslateName = name, TranslateDesc = desc, Category = category, Worth = worth or 0, SWEP = swep, Callback = callback, CanPurchaseFunc = canbuy, FailTranslateString = failtobuystr, Prerequisites = prereqs, WeaponClass = wepclass}
 	self.Items[#self.Items + 1] = tab
 	return tab
 end
@@ -61,6 +62,9 @@ function GM:AddPointShopItem(tier, signature, name, desc, category, points, call
 end
 
 function GM:AddPointShopWeapon(tier, signature, category, points, swep, wepclass)
+	if (category == ITEMCAT_GUNS && wepclass == nil) then
+		wepclass = WEAPONCLASS_UTIL
+	end
 	return self:AddItem(tier, "ps_"..signature, nil, nil, category, points, swep, nil,nil,nil, wepclass)
 end
 
@@ -93,6 +97,10 @@ GM.AmmoResupply["sniperround"] = 1
 -- Points --
 ------------
 
+------------ GUNS ------------
+/* 
+ALL guns need to be defined as AddPointShopWeapon(tier (int), unique id (string), ITEMCAT enum, points to purchase/ upgrade (int) , weapon classname (string), WEAPONCLASS enum)
+*/
 ------------ TIER 0 ------------
 
 GM:AddPointShopWeapon(0,"btlax", ITEMCAT_GUNS, 10, "weapon_zs_battleaxe", WEAPONCLASS_MAGNUMPISTOL)
@@ -103,7 +111,9 @@ GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler", WEAPONC
 GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber", WEAPONCLASS_SNIPER)
 GM:AddPointShopWeapon(0,"doublebarrel", ITEMCAT_GUNS, 15, "weapon_zs_doublebarrel", WEAPONCLASS_SHOTGUN)
 GM:AddPointShopWeapon(0,"jabbr", ITEMCAT_GUNS, 20, "weapon_zs_injector", WEAPONCLASS_MEDICAL)
-GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 30, "weapon_zs_nailgun").NoClassicMode = true
+
+-- Conflicted about this one being here, but should be OK since it's non classic mode.
+GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 30, "weapon_zs_nailgun", WEAPONCLASS_UTIL).NoClassicMode = true
 
 ------------ TIER 1 ------------
 
@@ -383,6 +393,28 @@ local item = GM:AddPointShopItem(nil,"bodyarmor", "shopitem_bodyarmor_name", "sh
 local item = GM:AddPointShopItem(nil,"extraspd", "shopitem_adrenaline_name", "shopitem_adrenaline_desc", ITEMCAT_OTHER, 10,function(pl) pl:ApplyAdrenaline() end, function(pl) return not (pl:GetMaxHealth() < 60) end,"shopitem_adrenaline_toomuch")
 
 local item = GM:AddPointShopItem(nil,"ammopurchase", "shopitem_ammo_name", "shopitem_ammo_desc", ITEMCAT_OTHER, 20, function(pl) pl:RefillActiveWeapon() end, function(pl) return pl:ActiveWeaponCanBeRefilled() end, "shopitem_ammo_invalid")
+
+-- Cache this now so we don't need to do it over and over
+
+local function GetItemsByWeaponClass(wepclass)
+	if not wepclass then return end
+
+	local wepclassitems = {}
+	for i, tab in pairs(GM.Items) do
+		if tab.WeaponClass == wepclass then
+			table.insert(wepclassitems, tab)
+		end
+	end
+
+	return wepclassitems
+end
+
+GM.ItemsWepClass = {}
+for i = 1, 15 do -- update when more weapon classes get added
+	GM.ItemsWepClass[i] = GetItemsByWeaponClass(i)
+	print("Weapon Class "..i)
+	PrintTable(GM.ItemsWepClass[i])
+end
 
 -- These are the honorable mentions that come at the end of the round.
 

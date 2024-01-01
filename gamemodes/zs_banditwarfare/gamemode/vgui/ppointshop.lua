@@ -10,7 +10,7 @@ local function imgAdj(img, maximgx, maximgy)
 	end
 	img:Center()
 end
-
+	
 local function WeaponIconFill(class,parent,islarge)
 	islarge = islarge or false
 	
@@ -609,16 +609,66 @@ function PANEL:Init()
 	self:MakePopup()
 end
 
+function PANEL:UpdatePointsShopClassic()
+	if !GAMEMODE:IsClassicMode() then return end
+
+	local currentweppanel = nil
+	local currentweplist = nil
+	local currentwepcatname = nil
+	local wep = nil
+
+	local activewep = MySelf:GetActiveWeapon()
+	if activewep and activewep:IsValid() then wep = activewep:GetClass() end
+
+	for catid, catname in ipairs(GAMEMODE.ItemCategories) do
+		if !table.IsEmpty(self.m_PropSheet.scrollLists) and  ispanel(self.m_PropSheet.scrollLists[catid]) then
+			self.m_PropSheet.scrollLists[catid]:Clear()
+		end
+	end
+
+	local list = nil
+	
+	for i, tab in ipairs(GAMEMODE.Items) do
+		if not (tab.NoClassicMode) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and MySelf:GetWeapon(tab.SWEP) and MySelf:GetWeapon(tab.SWEP):IsValid())) then 
+			for catid, catname in ipairs(GAMEMODE.ItemCategories) do
+				if tab.Category == catid then
+					if !table.IsEmpty(self.m_PropSheet.scrollLists) and  ispanel(self.m_PropSheet.scrollLists[catid]) then
+						list = self.m_PropSheet.scrollLists[catid]
+						local itembut = vgui.Create("ShopItemButton")
+						itembut:SetupItemButton(i,nil)
+						itembut:Dock(TOP)
+						list:AddItem(itembut)
+						if tab.SWEP == wep then 
+							self.CurrentID = i
+							SetViewer(tab)
+							currentweppanel = itembut
+							currentwepcatname = catname
+							currentweplist = list
+						end
+					end
+				end
+			end
+		end
+	end
+	if currentweppanel then
+		self.m_PropSheet:SwitchToName(translate.Get(currentwepcatname))
+	end
+
+	self:InvalidateLayout()
+end
+
 function PANEL:UpdatePointsShop(weaponslot)
+	if GAMEMODE:IsClassicMode() then
+		self:UpdatePointsShopClassic()
+		return 
+	end
+
 	local currentweppanel = nil
 	local currentweplist = nil
 	local currentwepcatname = nil
 	
 	local wep = nil
-	if GAMEMODE:IsClassicMode() or (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
-		local activewep = MySelf:GetActiveWeapon()
-		if activewep and activewep:IsValid() then wep = activewep:GetClass() end
-	elseif weaponslot == WEAPONLOADOUT_SLOT1 then
+	if weaponslot == WEAPONLOADOUT_SLOT1 then
 		self.m_TitleLabel:SetText(translate.Get("pointshop_title_guns1"))
 		wep = MySelf:GetWeapon1()
 	elseif weaponslot == WEAPONLOADOUT_SLOT2 then
@@ -634,51 +684,47 @@ function PANEL:UpdatePointsShop(weaponslot)
 	
 	self.m_TitleLabel:SizeToContents()
 	self.m_TitleLabel:CenterHorizontal()		
-	
-	if GAMEMODE:IsClassicMode() then 
-		for catid, catname in ipairs(GAMEMODE.ItemCategories) do
-			if !table.IsEmpty(self.m_PropSheet.scrollLists) and  ispanel(self.m_PropSheet.scrollLists[catid]) then
-				self.m_PropSheet.scrollLists[catid]:Clear()
-			end
-		end
-	else
-		if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
-			self.m_ShopScrollList:Clear()
-		end
+
+	if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
+		self.m_ShopScrollList:Clear()
 	end
-	
+
 	local list = nil
-	for i, tab in ipairs(GAMEMODE.Items) do
-		if GAMEMODE:IsClassicMode() then
-			if not (tab.NoClassicMode) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and MySelf:GetWeapon(tab.SWEP) and MySelf:GetWeapon(tab.SWEP):IsValid())) then 
-				for catid, catname in ipairs(GAMEMODE.ItemCategories) do
-					if tab.Category == catid then
-						if !table.IsEmpty(self.m_PropSheet.scrollLists) and  ispanel(self.m_PropSheet.scrollLists[catid]) then
-							list = self.m_PropSheet.scrollLists[catid]
+
+	if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
+		list = self.m_ShopScrollList
+		local catid = nil
+		local currentslotwep = ""
+		if (weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) then
+			currentslotwep = weaponslot == WEAPONLOADOUT_SLOT1 and MySelf:GetWeapon1() or MySelf:GetWeapon2()
+			catid = ITEMCAT_GUNS
+
+			for i = 1, 15 do
+				local wepclassitems = GAMEMODE.ItemsWepClass[i]
+				for j, tab in ipairs(wepclassitems) do
+					if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+					not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) and 
+					(!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and tab.SWEP == currentslotwep)) then 
+						if tab.Category == catid then
+							PrintTable(tab)
 							local itembut = vgui.Create("ShopItemButton")
-							itembut:SetupItemButton(i,weaponslot)
+							itembut:SetupItemButton(tab.ID,weaponslot)
 							itembut:Dock(TOP)
 							list:AddItem(itembut)
 							if tab.SWEP == wep then 
-								self.CurrentID = i
+								self.CurrentID = tab.ID
 								SetViewer(tab)
 								currentweppanel = itembut
-								currentwepcatname = catname
 								currentweplist = list
 							end
+							break
 						end
 					end
 				end
 			end
 		else
-			if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
-				list = self.m_ShopScrollList
-				local catid = nil
-				local currentslotwep = ""
-				if (weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) then
-					currentslotwep = weaponslot == WEAPONLOADOUT_SLOT1 and MySelf:GetWeapon1() or MySelf:GetWeapon2()
-					catid = ITEMCAT_GUNS 
-				elseif weaponslot == WEAPONLOADOUT_MELEE then
+			for i, tab in ipairs(GAMEMODE.Items) do
+				if weaponslot == WEAPONLOADOUT_MELEE then
 					currentslotwep = MySelf:GetWeaponMelee()
 					catid = ITEMCAT_MELEE 
 				elseif weaponslot == WEAPONLOADOUT_TOOLS then
@@ -687,7 +733,6 @@ function PANEL:UpdatePointsShop(weaponslot)
 				elseif (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
 					catid = ITEMCAT_CONS
 				end
-				
 				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
 				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and tab.SWEP == currentslotwep)) then 
 					if tab.Category == catid then
@@ -708,9 +753,6 @@ function PANEL:UpdatePointsShop(weaponslot)
 	end
 
 	if currentweppanel then
-		if GAMEMODE:IsClassicMode() then
-			self.m_PropSheet:SwitchToName(translate.Get(currentwepcatname))
-		end
 		if ispanel(currentweplist) then
 			timer.Simple( 0.02, function() if (currentweplist and currentweplist:IsValid()) then currentweplist:ScrollToChild(currentweppanel) end end)
 		end
