@@ -738,6 +738,7 @@ function meta:PlayGiveAmmoSound()
 end
 
 function meta:PlayDeathSound()
+	if not (self:Team() == TEAM_BANDIT or self:Team() == TEAM_HUMAN) then return end
 	local snds = GAMEMODE.VoiceSets[self.VoiceSet].DeathSounds
 	if snds then
 		self:EmitSound(snds[math.random(1, #snds)])
