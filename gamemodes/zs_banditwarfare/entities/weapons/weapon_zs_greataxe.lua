@@ -96,29 +96,29 @@ function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 		end
 	end
 end
-
-function SWEP:ProcessDamage(dmginfo)
-	local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
-	local owner = self:GetOwner()
-	local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
-	if attacker:IsPlayer() then
-		if self:GetDefenseStacks() and self:GetDefenseStacks() > 0 then
-			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) then
-				dmginfo:ScaleDamage(0.5)
+if SERVER then
+	function SWEP:ProcessDamage(dmginfo)
+		local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
+		local owner = self:GetOwner()
+		local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
+		if attacker:IsPlayer() then
+			if self:GetDefenseStacks() and self:GetDefenseStacks() > 0 then
+				if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) then
+					dmginfo:ScaleDamage(0.5)
+				end
+				local center = owner:LocalToWorld(owner:OBBCenter())
+				local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
+				local effectdata = EffectData()
+					effectdata:SetOrigin(center)
+					effectdata:SetStart(owner:WorldToLocal(hitpos))
+					effectdata:SetAngles((center - hitpos):Angle())
+					effectdata:SetEntity(owner)
+				util.Effect("shadedeflect", effectdata, true, true)
+				self:SetDefenseStacks(math.max(self:GetDefenseStacks()-1,0))
 			end
-			local center = owner:LocalToWorld(owner:OBBCenter())
-			local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
-			local effectdata = EffectData()
-				effectdata:SetOrigin(center)
-				effectdata:SetStart(owner:WorldToLocal(hitpos))
-				effectdata:SetAngles((center - hitpos):Angle())
-				effectdata:SetEntity(owner)
-			util.Effect("shadedeflect", effectdata, true, true)
-			self:SetDefenseStacks(math.max(self:GetDefenseStacks()-1,0))
 		end
 	end
 end
-
 
 if CLIENT then
 	local texGradDown = surface.GetTextureID("VGUI/gradient_down")

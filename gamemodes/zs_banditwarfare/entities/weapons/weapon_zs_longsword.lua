@@ -125,9 +125,9 @@ end
 
 function SWEP:Move(mv)
 	if self:GetIsCharging() and mv:KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
-		mv:SetMaxSpeed(self.WalkSpeed*0.3)
-		mv:SetMaxClientSpeed(self.WalkSpeed*0.3)	
-		mv:SetSideSpeed(mv:GetSideSpeed() * 0.3)
+		mv:SetMaxSpeed(self.WalkSpeed*0.15)
+		mv:SetMaxClientSpeed(self.WalkSpeed*0.15)	
+		mv:SetSideSpeed(mv:GetSideSpeed() * 0.2)
 	end
 end
 
