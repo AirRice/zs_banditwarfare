@@ -627,7 +627,7 @@ function PANEL:UpdatePointsShopClassic()
 	end
 
 	local list = nil
-	
+
 	for i, tab in ipairs(GAMEMODE.Items) do
 		if not (tab.NoClassicMode) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and MySelf:GetWeapon(tab.SWEP) and MySelf:GetWeapon(tab.SWEP):IsValid())) then 
 			for catid, catname in ipairs(GAMEMODE.ItemCategories) do
@@ -657,31 +657,28 @@ function PANEL:UpdatePointsShopClassic()
 	self:InvalidateLayout()
 end
 
+
 function PANEL:UpdatePointsShop(weaponslot)
+
 	if GAMEMODE:IsClassicMode() then
 		self:UpdatePointsShopClassic()
 		return 
 	end
 
+	local titleString = {
+		[WEAPONLOADOUT_SLOT1] = "pointshop_title_guns1",
+		[WEAPONLOADOUT_SLOT2] = "pointshop_title_guns2",
+		[WEAPONLOADOUT_MELEE] = "pointshop_title_melee",
+		[WEAPONLOADOUT_TOOLS] = "pointshop_title_tools"
+	}
+
 	local currentweppanel = nil
 	local currentweplist = nil
 	local currentwepcatname = nil
 	
-	local wep = nil
-	if weaponslot == WEAPONLOADOUT_SLOT1 then
-		self.m_TitleLabel:SetText(translate.Get("pointshop_title_guns1"))
-		wep = MySelf:GetWeapon1()
-	elseif weaponslot == WEAPONLOADOUT_SLOT2 then
-		self.m_TitleLabel:SetText(translate.Get("pointshop_title_guns2"))
-		wep = MySelf:GetWeapon2()
-	elseif weaponslot == WEAPONLOADOUT_MELEE then
-		self.m_TitleLabel:SetText(translate.Get("pointshop_title_melee"))
-		wep = MySelf:GetWeaponMelee()
-	elseif weaponslot == WEAPONLOADOUT_TOOLS then
-		self.m_TitleLabel:SetText(translate.Get("pointshop_title_tools"))
-		wep = MySelf:GetWeaponToolslot()	
-	end	
-	
+	local wep = MySelf:GetWeaponLoadoutBySlot(weaponslot)
+	self.m_TitleLabel:SetText(translate.Get(titleString[weaponslot]))
+
 	self.m_TitleLabel:SizeToContents()
 	self.m_TitleLabel:CenterHorizontal()		
 
