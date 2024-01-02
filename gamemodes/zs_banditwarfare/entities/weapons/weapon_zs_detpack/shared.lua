@@ -14,7 +14,6 @@ SWEP.Secondary.DefaultClip = 1
 SWEP.Secondary.Ammo = "dummy"
 
 SWEP.WalkSpeed = SPEED_NORMAL
-SWEP.FullWalkSpeed = SPEED_SLOW
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType("slam")
@@ -33,12 +32,6 @@ end
 
 function SWEP:GetReplicatedAmmo()
 	return self:GetDTInt(0)
-end
-
-function SWEP:GetWalkSpeed()
-	if self:GetPrimaryAmmoCount() > 0 then
-		return self.FullWalkSpeed
-	end
 end
 
 function SWEP:Reload()
