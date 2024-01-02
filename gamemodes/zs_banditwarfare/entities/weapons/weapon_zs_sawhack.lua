@@ -72,6 +72,15 @@ sound.Add( {
 	volume = 0.1,
 	sound = "npc/manhack/mh_engine_loop1.wav"
 } )
+sound.Add( {
+	name = "Loop_Sawhack_Whine",
+	channel = CHAN_AUTO+22,
+	volume = 1,
+	level = 75,
+	pitch = 220,
+	volume = 0.15,
+	sound = "ambient/machines/machine_whine1.wav"
+} )
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Bool", 5, "Blocking")
@@ -104,11 +113,13 @@ end
 function SWEP:OnRemove()
 	self:StopSound( "Loop_Sawhack_Engine" )
 	self:StopSound( "Loop_Sawhack_Engine2" )
+	self:StopSound( "Loop_Sawhack_Whine" )
 end
 
 function SWEP:Holster()
     self:StopSound( "Loop_Sawhack_Engine" )
 	self:StopSound( "Loop_Sawhack_Engine2" )
+	self:StopSound( "Loop_Sawhack_Whine" )
 	return self.BaseClass.Holster(self)
 end
 
@@ -136,12 +147,17 @@ end
 function SWEP:Think()
     if self:GetOwner():KeyReleased(IN_ATTACK2) or not self:GetOwner():Alive() or self:GetOwner():Health() <= 0 then
 		self:SetBlocking( false )
+		self:GetOwner():ResetSpeed()
 		self.LastStopBlocking = CurTime()
+		self:StopSound( "Loop_Sawhack_Whine" )
     end
     if self:GetOwner():KeyDown(IN_ATTACK2) then
 		if not self:GetBlocking() then
 			self.LastStartBlocking = CurTime()
 			self:SetBlocking(true)
+			self:GetOwner():ResetSpeed()
+			self:EmitSound("npc/zombie/foot_slide"..math.random(1,3)..".wav", 80, math.Rand(90, 110),1,CHAN_AUTO+20)
+			self:EmitSound( "Loop_Sawhack_Whine" )
 		end
 	end
 	if self.BaseClass.Think then
@@ -149,12 +165,11 @@ function SWEP:Think()
 	end
 end
 
-function SWEP:Move(mv)
-	if self:GetBlocking() and mv:KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
-		mv:SetMaxSpeed(self.WalkSpeed*0.25)
-		mv:SetMaxClientSpeed(self.WalkSpeed*0.25)	
-		mv:SetSideSpeed(mv:GetSideSpeed() * 0.25)
+function SWEP:GetWalkSpeedModifier()
+	if self:GetBlocking() then
+		return -self.WalkSpeed*0.75
 	end
+	return 0
 end
 
 function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)

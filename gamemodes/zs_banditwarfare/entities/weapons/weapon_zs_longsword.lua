@@ -74,6 +74,7 @@ function SWEP:SecondaryAttack()
 		self:SetNextSecondaryFire(CurTime() + self.ChargeDelay)
 		if not self:GetIsCharging() then
 			self:SetIsCharging(true)
+			self:GetOwner():ResetSpeed()
 		end
 	end
 end
@@ -103,15 +104,16 @@ function SWEP:Think()
 					self:SendWeaponAnim(self.MissAnim)
 					owner:DoAttackEvent()
 					local pushvel = self:GetOwner():GetEyeTrace().Normal * fwd + (self:GetOwner():GetAngles():Up()*100)
-					self:GetOwner():SetGroundEntity(nil)
-					self:GetOwner():SetLocalVelocity( self:GetOwner():GetVelocity() + pushvel)
-					local ownerplayer = self:GetOwner()
+					owner:SetGroundEntity(nil)
+					owner:SetLocalVelocity( self:GetOwner():GetVelocity() + pushvel)
+					
 				end
 			end
 			self:SetChargePerc(0)
 			self:SetIsCharging(false)
 			self:SetNextPrimaryFire(CurTime())
 			self:SetNextSecondaryFire(CurTime() + self.ChargeDelay/2)
+			owner:ResetSpeed()
 		elseif self:GetChargePerc() < 1 then
 			if self.LastCharge <= CurTime() then
 				self:SetChargePerc(math.Clamp(self:GetChargePerc() + 0.03, 0, 1))
@@ -123,12 +125,11 @@ function SWEP:Think()
 	self.BaseClass.Think(self)
 end
 
-function SWEP:Move(mv)
-	if self:GetIsCharging() and mv:KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
-		mv:SetMaxSpeed(self.WalkSpeed*0.15)
-		mv:SetMaxClientSpeed(self.WalkSpeed*0.15)	
-		mv:SetSideSpeed(mv:GetSideSpeed() * 0.2)
+function SWEP:GetWalkSpeedOverride()
+	if self:GetIsCharging() and self:GetOwner():KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
+		return self.WalkSpeed*0.15
 	end
+	return self.WalkSpeed
 end
 
 if CLIENT then

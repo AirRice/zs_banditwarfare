@@ -40,7 +40,7 @@ SWEP.WalkSpeed = SPEED_NORMAL
 SWEP.Primary.Delay = 0.5
 SWEP.Secondary.Delay = 10
 SWEP.HitAnim = ACT_VM_MISSCENTER
-SWEP.ChargeSpeed = 1000
+SWEP.ChargeSpeed = 1200
 
 function SWEP:SetupDataTables()
 	self:NetworkVar("Float", 11, "ChargePerc")

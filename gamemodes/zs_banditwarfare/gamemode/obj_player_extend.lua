@@ -122,10 +122,9 @@ function meta:ApplyAdrenaline()
 end
 
 function meta:WearBodyArmor()
-	self.HumanSpeedAdder = (self.HumanSpeedAdder or 0) -25
-	self:ResetSpeed() 
 	self:SetBodyArmor(100)
 	self:EmitSound("npc/combine_soldier/gear"..math.random(6)..".wav")
+	self:ResetSpeed() 
 	return true
 end
 
@@ -407,6 +406,18 @@ function meta:ResetSpeed(noset)
 	if self.HumanSpeedAdder and (self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT) and 32 < speed then
 		speed = speed + self.HumanSpeedAdder
 	end
+
+	if wep:IsValid() then
+		if wep.GetWalkSpeedModifier then
+			speed = speed + wep:GetWalkSpeedModifier()
+		end
+		if wep.GetWalkSpeedOverride then
+			speed = wep:GetWalkSpeedOverride()
+			print(speed)
+		end
+	end
+
+	speed = math.max(24, speed)
 
 	if not noset then
 		self:SetSpeed(speed)
