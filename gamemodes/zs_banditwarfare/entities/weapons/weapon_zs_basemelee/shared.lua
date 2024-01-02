@@ -47,13 +47,23 @@ function SWEP:Initialize()
 	self:SetDeploySpeed(1.1)
 	self:SetWeaponHoldType(self.HoldType)
 	self:SetWeaponSwingHoldType(self.SwingHoldType)
-
+	if self.SpecialHoldType then
+		self:SetWeaponSpecialHoldType(self.SpecialHoldType)
+	end
 	if CLIENT then
 		self:Anim_Initialize()
 		if self.TranslateName then
 			self.PrintName = translate.Get(self.TranslateName)
 		end
 	end
+end
+
+function SWEP:SetWeaponSpecialHoldType(t)
+	local old = self.ActivityTranslate
+	self:SetWeaponHoldType(t)
+	local new = self.ActivityTranslate
+	self.ActivityTranslate = old
+	self.ActivityTranslateSpecial = new
 end
 
 function SWEP:SetWeaponSwingHoldType(t)

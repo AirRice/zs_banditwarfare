@@ -31,7 +31,7 @@ SWEP.HoldType = "melee2"
 
 SWEP.Primary.Delay = 0.45
 
-SWEP.MeleeDamage = 27
+SWEP.MeleeDamage = 20
 SWEP.MeleeRange = 55
 SWEP.MeleeSize = 1.9
 SWEP.MeleeKnockBack = 10
@@ -43,10 +43,17 @@ SWEP.SwingRotation = Angle(0, -35, -50)
 SWEP.SwingOffset = Vector(10, 0, 0)
 SWEP.HoldType = "melee2"
 SWEP.SwingHoldType = "melee"
+SWEP.SpecialHoldType = "slam"
 
 SWEP.HitDecal = "Manhackcut"
 SWEP.HitAnim = ACT_VM_MISSCENTER
 
+SWEP.BlockingPos = Vector(34, 10, -10)
+SWEP.BlockingAng = Angle(0, 90, -20)
+
+SWEP.LastStartBlocking = 0
+SWEP.BlockDelay = 0.3
+SWEP.LastStopBlocking = 0
 sound.Add( {
 	name = "Loop_Sawhack_Engine",
 	channel = CHAN_AUTO+20,
@@ -65,6 +72,13 @@ sound.Add( {
 	volume = 0.1,
 	sound = "npc/manhack/mh_engine_loop1.wav"
 } )
+
+function SWEP:SetupDataTables()
+	self:NetworkVar("Bool", 5, "Blocking")
+	if self.BaseClass.SetupDataTables then
+		self.BaseClass.SetupDataTables(self)
+	end
+end
 
 function SWEP:PlaySwingSound()
 	self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav", 75, math.random(75, 80))
@@ -109,6 +123,40 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	end
 end
 
+function SWEP:CanPrimaryAttack()
+	if self:GetBlocking() or (self.LastStopBlocking + self.BlockDelay) >= CurTime() then
+		return false
+	end
+	if self.BaseClass.CanPrimaryAttack then
+		return self.BaseClass.CanPrimaryAttack(self)
+	end
+	return true
+end
+
+function SWEP:Think()
+    if self:GetOwner():KeyReleased(IN_ATTACK2) or not self:GetOwner():Alive() or self:GetOwner():Health() <= 0 then
+		self:SetBlocking( false )
+		self.LastStopBlocking = CurTime()
+    end
+    if self:GetOwner():KeyDown(IN_ATTACK2) then
+		if not self:GetBlocking() then
+			self.LastStartBlocking = CurTime()
+			self:SetBlocking(true)
+		end
+	end
+	if self.BaseClass.Think then
+		self.BaseClass.Think(self)
+	end
+end
+
+function SWEP:Move(mv)
+	if self:GetBlocking() and mv:KeyDown(IN_ATTACK2) and not self:GetOwner():GetBarricadeGhosting() then
+		mv:SetMaxSpeed(self.WalkSpeed*0.25)
+		mv:SetMaxClientSpeed(self.WalkSpeed*0.25)	
+		mv:SetSideSpeed(mv:GetSideSpeed() * 0.25)
+	end
+end
+
 function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 	hitent:MeleeViewPunch(damage*0.1)
 	if hitent:WouldDieFrom(damage, dmginfo:GetDamagePosition()) then
@@ -127,6 +175,67 @@ function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 		end
 	end
 end
+
+if SERVER then
+	function SWEP:ProcessDamage(dmginfo)
+		local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
+		local owner = self:GetOwner()
+		local lasthitgroup = owner:LastHitGroup()
+		local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
+		if attacker:IsPlayer() then
+			local center = owner:LocalToWorld(owner:OBBCenter())
+			local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
+			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and owner:IsPosInBoneRange(hitpos, "ValveBiped.Bip01_Head1", 24) and math.random(3) == 3 then
+				local reflectdmginfo = dmginfo
+				dmginfo:SetDamage(0)
+				local effectdata = EffectData()
+					effectdata:SetOrigin(center)
+					effectdata:SetStart(owner:WorldToLocal(hitpos))
+					effectdata:SetAngles((center - hitpos):Angle())
+					effectdata:SetEntity(owner)
+				util.Effect("shadedeflect", effectdata, true, true)
+
+				local reflectTarget = self:GetClosestReflectTarget()
+				local damage = reflectdmginfo:GetDamage()
+				if IsValid(reflectTarget) && reflectTarget:IsPlayer() && IsFirstTimePredicted() then
+					self:FireBullets({Num = 1, Src = hitpos, Dir = reflectTarget:EyePos() - hitpos, Spread = Vector(0.15, 0.15, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage, Callback = GenericBulletCallback})
+				end
+			end
+		end
+	end
+
+	function SWEP:GetClosestReflectTarget()
+		local owner = self:GetOwner()
+		local minimum = nil
+		local selectedTarget = nil
+		local mypos = owner:EyePos()
+		for _,ent in ipairs(player.GetAllActive()) do
+			if ent == owner or ent:Team() == owner:Team() or (ent:Team() != TEAM_BANDIT && ent:Team() != TEAM_HUMAN) then continue end
+			local centre = ent:WorldSpaceCenter()
+			local sqrdst = mypos:DistToSqr(centre)
+			if (centre - mypos):GetNormalized():Dot(owner:GetAimVector()) < 0.5 then continue end
+			if (minimum == nil or sqrdst < minimum) then
+				minimum = sqrdst
+				selectedTarget = ent
+			end
+		end
+		if (selectedTarget and selectedTarget:IsValid() and WorldVisible(mypos,selectedTarget:WorldSpaceCenter())) then
+			return selectedTarget
+		else
+			return nil
+		end
+	end
+end
+
+function SWEP:TranslateActivity( act )
+
+	if self:GetBlocking() and self.ActivityTranslateSpecial[act] then
+		return self.ActivityTranslateSpecial[act] or -1
+	end
+
+	return self.BaseClass.TranslateActivity(self, act)
+end
+
 
 if CLIENT then
 	function SWEP:PostDrawViewModel(vm, pl, wep)
@@ -150,5 +259,41 @@ if CLIENT then
 		saw1ang.y = (rotatespeed)%360
 		saw2ang.y = (rotatespeed)%360
 		self:Anim_DrawWorldModel()
+	end
+
+	local ghostlerp = 0
+	function SWEP:GetViewModelPosition(pos, ang)
+		
+			local rot = self.BlockingAng
+			local offset = self.BlockingPos
+
+			ang = Angle(ang.pitch, ang.yaw, ang.roll) -- Copy
+			local power = 0
+			if self:GetBlocking() then
+				local delta = math.Clamp(CurTime() - self.LastStartBlocking , 0, self.BlockDelay)
+				power = CosineInterpolation(0, 1, delta / self.BlockDelay)
+			else
+				local delta = math.Clamp(math.Clamp((self.LastStopBlocking - self.LastStartBlocking), 0, self.BlockDelay) - (CurTime() - self.LastStopBlocking), 0, self.BlockDelay)
+				power = CosineInterpolation(0, 1, delta / self.BlockDelay)				
+			end
+			pos = pos + offset.x * power * ang:Right() + offset.y * power * ang:Forward() + offset.z * power * ang:Up()
+
+			ang:RotateAroundAxis(ang:Right(), rot.pitch * power)
+			ang:RotateAroundAxis(ang:Up(), rot.yaw * power)
+			ang:RotateAroundAxis(ang:Forward(), rot.roll * power)
+		
+
+		if self:GetOwner():GetBarricadeGhosting() then
+			ghostlerp = math.min(1, ghostlerp + FrameTime() * 4)
+		elseif ghostlerp > 0 then
+			ghostlerp = math.max(0, ghostlerp - FrameTime() * 5)
+		end
+
+		if ghostlerp > 0 then
+			pos = pos + 3.5 * ghostlerp * ang:Up()
+			ang:RotateAroundAxis(ang:Right(), -30 * ghostlerp)
+		end
+
+		return pos, ang
 	end
 end

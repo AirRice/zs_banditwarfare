@@ -129,6 +129,20 @@ function meta:WearBodyArmor()
 	return true
 end
 
+function meta:IsPosInBoneRange(pos, bonename, range)
+	if not bonename or not pos then return false end
+
+	local bone = self:LookupBone(bonename)
+
+	if not bone then return false end
+
+	local bpos, _ = self:GetBonePosition(bone)
+	if bpos == self:GetPos() then
+		bpos = self:GetBoneMatrix(bone):GetTranslation()
+	end
+
+	return (pos:DistToSqr(bpos) <= range * range)
+end
 
 function meta:NearestDismemberableBone(pos)
 	local dismemberables = {"ValveBiped.Bip01_Head1", "ValveBiped.Bip01_L_Calf","ValveBiped.Bip01_R_Calf", "ValveBiped.Bip01_L_Forearm","ValveBiped.Bip01_R_Forearm"}
