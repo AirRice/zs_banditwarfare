@@ -75,24 +75,31 @@ function IsValidRoundMode(mode)
 end
 
 function FindWeaponConsequents(id)
-	if not id then return end
+	if not id then return {} end
 	local num = tonumber(id)
 	if num then
 		id = GAMEMODE.Items[num].Signature
 	end
+	
+	local tab = FindItem(id)
+	if not tab then return {} end
 
-	local consequents = {}
-	for _, tab in ipairs(GAMEMODE.Items) do
-		if tab.Prerequisites and istable(tab.Prerequisites) then
-			for _, prereqsig in ipairs(tab.Prerequisites) do
-				if prereqsig == id then
-					table.insert(consequents, tab.Signature)
-					break
+	if (tab.Consequents == nil) then 
+		tab.Consequents = {} 
+		for _, ctab in ipairs(GAMEMODE.Items) do
+			if ctab.Prerequisites and istable(ctab.Prerequisites) then
+				for _, prereqsig in ipairs(ctab.Prerequisites) do
+					if prereqsig == id then
+						table.insert(tab.Consequents, ctab.Signature)
+						break
+					end
 				end
 			end
 		end
+		PrintTable(tab.Consequents)
 	end
-	return consequents
+
+	return tab.Consequents
 end
 
 function FindWeaponPrerequisites(id)
@@ -156,7 +163,7 @@ end
 
 function GetItemCost(itemtab)
 	if not itemtab then return nil end
-	local cost = itemtab.Worth
+	local cost = itemtab.Cost
 	local cat = itemtab.Category
 	if not (cost and cat) then return nil end
 	cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and cat ~= ITEMCAT_OTHER) and GAMEMODE.ClassicModeDiscountMultiplier or 1))

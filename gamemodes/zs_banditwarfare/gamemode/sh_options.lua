@@ -50,9 +50,23 @@ GM.PossibleMelees = {
 }
 
 GM.Items = {}
-function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, canbuy, failtobuystr, wepclass)
+function GM:AddItem(tier, signature, name, desc, category, cost, swep, callback, canbuy, failtobuystr, wepclass)
 	local prereqs = {}
-	local tab = { ID = #self.Items + 1, Tier = tier, Signature = signature, TranslateName = name, TranslateDesc = desc, Category = category, Worth = worth or 0, SWEP = swep, Callback = callback, CanPurchaseFunc = canbuy, FailTranslateString = failtobuystr, Prerequisites = prereqs, WeaponClass = wepclass}
+	local tab = { 
+		ID = #self.Items + 1, 
+		Tier = tier, 
+		Signature = signature, 
+		TranslateName = name, 
+		TranslateDesc = desc, 
+		Category = category, 
+		Cost = cost or 0, 
+		SWEP = swep, 
+		Callback = callback, 
+		CanPurchaseFunc = canbuy, 
+		FailTranslateString = failtobuystr, 
+		Prerequisites = prereqs,
+		WeaponClass = wepclass
+	}
 	self.Items[#self.Items + 1] = tab
 	return tab
 end
@@ -69,11 +83,12 @@ function GM:AddPointShopWeapon(tier, signature, category, points, swep, wepclass
 end
 
 function GM:AddWeaponPrerequisite(wep,prereqsignature)
-	local reqstable = wep.Prerequisites
-	if (reqstable == nil) then wep.Prerequisites = {} end
+	if (wep.Prerequisites == nil) then 
+		wep.Prerequisites = {} 
+	end
+
 	table.insert( wep.Prerequisites, "ps_"..prereqsignature)
-	--PrintTable(wep.prereqs)
-end
+end 
 
 -- These ammo types are available at ammunition boxes.
 -- The amount is the ammo to give them.
@@ -412,8 +427,8 @@ end
 GM.ItemsWepClass = {}
 for i = 1, 15 do -- update when more weapon classes get added
 	GM.ItemsWepClass[i] = GetItemsByWeaponClass(i)
-	print("Weapon Class "..i)
-	PrintTable(GM.ItemsWepClass[i])
+	--print("Weapon Class "..i)
+	--PrintTable(GM.ItemsWepClass[i])
 end
 
 -- These are the honorable mentions that come at the end of the round.
