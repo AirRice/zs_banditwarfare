@@ -166,6 +166,17 @@ function FindWeaponConsequents(id)
 	return tab.Consequents
 end
 
+function WeaponSlotToCatID(slot)
+	if slot == WEAPONLOADOUT_SLOT1 || slot == WEAPONLOADOUT_SLOT2 then 
+		return ITEMCAT_GUNS
+	elseif slot == WEAPONLOADOUT_TOOLS then
+		return ITEMCAT_TOOLS
+	elseif slot == WEAPONLOADOUT_MELEE then
+		return ITEMCAT_MELEE
+	end
+	return ITEMCAT_CONS
+end
+
 function FindWeaponPrerequisites(id)
 	if not id then return {} end
 	local num = tonumber(id)
