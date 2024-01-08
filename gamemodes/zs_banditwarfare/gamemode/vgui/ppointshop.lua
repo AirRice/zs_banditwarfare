@@ -1298,8 +1298,11 @@ function PANEL:PopulateUpgradeList(id, weaponslot, upgrademode)
 	local tab = FindItem(id)
 	if not tab then return end
 
-	PrintTable(GetPossibleWepUpgradePaths(id, true))
-	
+	for i, upgradepath in ipairs(GetPossibleWepUpgradePaths(id)) do
+		for j, upgrade in ipairs(upgradepath) do
+			
+		end
+	end
 	local itemslist = upgrademode and FindWeaponConsequents(id) or FindWeaponPrerequisites(id)
 	if not istable(itemslist) then itemslist = {} end
 	if !table.IsEmpty(itemslist) then
