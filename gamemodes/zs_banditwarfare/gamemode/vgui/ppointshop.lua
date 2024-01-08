@@ -288,6 +288,25 @@ local function PurchaseButtonThink(self)
 	end
 end
 
+local function OpenUpgradesShop(swep, wepslot, id)
+	local tab = FindItembyClass(swep)
+	if not tab then return end
+	if not id then id = tab.ID end
+	
+	local ispurchasedweapon = true
+	if GAMEMODE:IsClassicMode() then
+		ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[swep] or GAMEMODE.ClassicModeInsuredWeps[swep])
+	end
+	if ispurchasedweapon then
+		surface.PlaySound("buttons/button17.wav")
+		local shopframe = vgui.Create("DUpgradesShopFrame")
+		shopframe:SetUpUpgradeMenu(id, wepslot)
+		GAMEMODE.m_PointsShop:SetVisible(false)
+	else
+		surface.PlaySound("buttons/button8.wav")
+	end
+end
+
 function PANEL:Init()
 	local screenscale = BetterScreenScale()
 	self:SetText("")
@@ -312,18 +331,7 @@ function PANEL:DoClick()
 	if not tab then return end
 	if self.m_LastIsUpgradeBtn or self.m_LastAbleToBuy then
 		if self.m_LastIsUpgradeBtn then
-			local ispurchasedweapon = true
-			if GAMEMODE:IsClassicMode() then
-				ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
-			end
-			if ispurchasedweapon then
-				surface.PlaySound("buttons/button17.wav")
-				local shopframe = vgui.Create("DUpgradesShopFrame")
-				shopframe:SetUpUpgradeMenu(id,GAMEMODE.m_PointsShop.m_LoadoutSlot)
-				GAMEMODE.m_PointsShop:SetVisible(false)
-			else
-				surface.PlaySound("buttons/button8.wav")
-			end
+			OpenUpgradesShop(tab.SWEP, GAMEMODE.m_PointsShop.m_LoadoutSlot, id)
 			return
 		end
 		surface.PlaySound("buttons/button17.wav")
@@ -1335,9 +1343,7 @@ vgui.Register("DUpgradesShopFrame", PANEL, "DFrame")
 
 function GM:OpenPointsShop(weaponslot)
 	local oldpointshop = nil
-	--[[if self.m_UpgradesShop and self.m_UpgradesShop:Valid() then
-		self.m_UpgradesShop:Close()
-	end]]
+
 	if self.m_PointsShop and self.m_PointsShop:Valid() then
 		oldpointshop = self.m_PointsShop
 	end
@@ -1346,6 +1352,18 @@ function GM:OpenPointsShop(weaponslot)
 	if oldpointshop and oldpointshop:Valid() and ispanel(oldpointshop) then
 		oldpointshop:Close()
 	end
+	local toupgrade
+	if (GAMEMODE:IsClassicMode()) then
+		local activewep = MySelf:GetActiveWeapon()
+		if activewep and activewep:IsValid() then toupgrade = activewep:GetClass() end
+	else
+		toupgrade = GetWeaponLoadoutBySlot(weaponslot)
+	end
+	local tab = FindItembyClass(toupgrade)
+	if tab and !(table.IsEmpty(FindWeaponConsequents(tab.ID)) and table.IsEmpty(FindWeaponPrerequisites(tab.ID))) then
+		OpenUpgradesShop(toupgrade, weaponslot)
+	end
+
 end
 
 GM.OpenPointShop = GM.OpenPointsShop
