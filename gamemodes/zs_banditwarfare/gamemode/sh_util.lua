@@ -74,6 +74,70 @@ function IsValidRoundMode(mode)
 	return false
 end
 
+function GetPossibleWepUpgradePaths(id, reverse)
+	if not id then return {} end
+	local num = tonumber(id)
+	if num then
+		id = GAMEMODE.Items[num].Signature
+	end
+	
+	local tab = FindItem(id)
+	if not tab then return {} end
+	local outputtable = reverse and tab.DowngradePaths or tab.UpgradePaths
+	if (outputtable == nil) then 
+		outputtable = {}
+
+		local treestack = util.Stack()
+		local treelevel = 1
+		local pathsraw = {}
+		treestack:Push(
+			{
+				ID = id,
+				Depth = treelevel
+			}
+		)
+
+		-- Depth first search implementation to get a raw output of upgrade paths
+		-- table elements will be in order 1 -> (end tier), then going back to each branching point and continuing to the end tier iteratively 
+		while (treestack:Size() > 0) do
+			local curnode = treestack:Top()
+			local nexttierconsqs = reverse and FindWeaponPrerequisites(curnode.ID) or FindWeaponConsequents(curnode.ID)
+			treestack:Pop()
+			table.insert(pathsraw, curnode)
+			--print(curnode.ID)
+			--print("tier: "..curnode.Depth)
+			if (#nexttierconsqs > 0) then
+				for _, ntid in ipairs(nexttierconsqs) do
+					treestack:Push(
+						{
+							ID = ntid,
+							Depth = curnode.Depth + 1
+						}
+					)
+				end
+			end
+		end
+
+		-- Returns an output of all known paths to leaf node (end tier)
+		local path = {}
+		for _, upgrade in ipairs(pathsraw) do
+			if (path[upgrade.Depth] ~= nil) then
+				table.insert(outputtable, path)
+				path = {unpack(path, 1, upgrade.Depth-1)}
+			end
+			table.insert(path, upgrade.Depth, upgrade.ID)
+		end
+		table.insert(outputtable, path)
+		if reverse then
+			tab.DowngradePaths = outputtable
+		else
+			tab.UpgradePaths = outputtable
+		end
+	end
+	
+	return outputtable
+end
+
 function FindWeaponConsequents(id)
 	if not id then return {} end
 	local num = tonumber(id)
@@ -96,7 +160,7 @@ function FindWeaponConsequents(id)
 				end
 			end
 		end
-		PrintTable(tab.Consequents)
+		--PrintTable(tab.Consequents)
 	end
 
 	return tab.Consequents

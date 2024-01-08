@@ -298,9 +298,6 @@ GM:AddWeaponPrerequisite(item,"inferno")
 local item = GM:AddPointShopWeapon(4,"crossbow", ITEMCAT_GUNS, 300, "weapon_zs_crossbow", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"arbalest")
 
---GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
-
-
 
 local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 35, "weapon_zs_hammer")
 item.NoClassicMode = true
