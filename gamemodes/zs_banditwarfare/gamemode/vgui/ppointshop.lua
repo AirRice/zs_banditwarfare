@@ -676,8 +676,8 @@ function PANEL:UpdatePointsShop(weaponslot)
 	local currentweplist = nil
 	local currentwepcatname = nil
 	
-	local wep = MySelf:GetWeaponLoadoutBySlot(weaponslot)
-	if !(weaponslot == WEAPONLOADOUT_NULL || wep == nil) then
+	local currentslotwep = MySelf:GetWeaponLoadoutBySlot(weaponslot)
+	if !(weaponslot == WEAPONLOADOUT_NULL || currentslotwep == nil) then
 		self.m_TitleLabel:SetText(translate.Get(titleString[weaponslot]))
 	end
 
@@ -690,61 +690,35 @@ function PANEL:UpdatePointsShop(weaponslot)
 		self.m_ShopScrollList:Clear()
 		list = self.m_ShopScrollList
 
-		local catid = nil
-		local currentslotwep = ""
+		local catid = WeaponSlotToCatID(weaponslot)
 		local weaponclassbuttons = {}
-		if (weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) then
-			currentslotwep = (weaponslot == WEAPONLOADOUT_SLOT1 and MySelf:GetWeapon1() or MySelf:GetWeapon2())
-			catid = ITEMCAT_GUNS
-
-			for i = 1, 15 do
-				local wepclassitems = GAMEMODE.ItemsWepClass[i]
-				for j, tab in ipairs(wepclassitems) do
-					if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-					not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then
-						if (tab.SWEP and tab.SWEP == currentslotwep) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
-							if tab.Category == catid then
-								--PrintTable(tab)
-								local itembut = vgui.Create("ShopItemButton")
-								itembut:SetupItemButton(tab.ID,weaponslot)
-								itembut:Dock(TOP)
-								list:AddItem(itembut)
-								if tab.SWEP == wep then 
-									self.CurrentID = tab.ID
-									SetViewer(tab)
-									currentweppanel = itembut
-									currentweplist = list
-								end
-								break
-							end
-						end
-					end
-				end
-			end
-		else
-			for i, tab in ipairs(GAMEMODE.Items) do
-				if weaponslot == WEAPONLOADOUT_MELEE then
-					currentslotwep = MySelf:GetWeaponMelee()
-					catid = ITEMCAT_MELEE 
-				elseif weaponslot == WEAPONLOADOUT_TOOLS then
-					currentslotwep = MySelf:GetWeaponToolslot()
-					catid = ITEMCAT_TOOLS
-				elseif (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
-					catid = ITEMCAT_CONS
-				end
+		local classrange = GAMEMODE.WeaponClassItemCatRanges[catid]
+		local minclass, maxclass = classrange[1], classrange[2] or classrange[1]
+		for i = minclass, maxclass, 1 do
+			local wepclassitems = GAMEMODE.ItemsWepClass[i]
+			for j, tab in ipairs(wepclassitems) do
 				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and tab.SWEP == currentslotwep)) then 
-					if tab.Category == catid then
-						local itembut = vgui.Create("ShopItemButton")
-						itembut:SetupItemButton(i,weaponslot)
+				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then
+					if (tab.SWEP and tab.SWEP == currentslotwep) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
+						--PrintTable(tab)
+						local itembut = nil
+						if weaponclassbuttons[i] and IsValid(weaponclassbuttons[i]) and ispanel(weaponclassbuttons[i]) then
+							itembut = weaponclassbuttons[i]
+						else
+							itembut = vgui.Create("ShopItemButton")
+							list:AddItem(itembut)
+							weaponclassbuttons[i] = itembut
+						end
+						itembut:SetupItemButton(tab.ID,weaponslot)
 						itembut:Dock(TOP)
-						list:AddItem(itembut)
-						if tab.SWEP == wep then 
-							self.CurrentID = i
+
+						if tab.SWEP == currentslotwep then 
+							self.CurrentID = tab.ID
 							SetViewer(tab)
 							currentweppanel = itembut
 							currentweplist = list
 						end
+						break
 					end
 				end
 			end
