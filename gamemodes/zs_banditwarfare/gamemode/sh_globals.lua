@@ -54,6 +54,14 @@ DEFAULT_JUMP_POWER = 180
 DEFAULT_STEP_SIZE = 18
 DEFAULT_MASS = 80
 DEFAULT_MODELSCALE = 1
+-- ItemCategory (use in shops only)
+
+ITEMCAT_GUNS = 1 --From weaponclass 1-15
+ITEMCAT_MELEE = 2 -- From weaponclass 24 - 
+ITEMCAT_TOOLS = 3 -- Weaponclass 47
+ITEMCAT_CONS = 4 -- Weaponclass 48
+ITEMCAT_OTHER = 5 -- Weaponclass not used
+--ITEMCAT_RETURNS = 7
 
 -- Weapon Classes (for visualisation)
 WEAPONCLASS_FASTPISTOL = 1
@@ -79,6 +87,18 @@ WEAPONCLASS_MEDICAL = 14
 WEAPONCLASS_UTIL = 15
 
 ---- Melee Classes (for visualisation)
+
+WEAPONCLASS_MELEE_GENERIC = 24
+WEAPONCLASS_MELEE_BLADED = 25
+WEAPONCLASS_MELEE_DEBUFF = 26
+WEAPONCLASS_MELEE_DEFENSIVE = 27
+WEAPONCLASS_MELEE_UTIL = 29
+
+-- You can use numbers 19-46 if adding custom weapon types
+
+WEAPONCLASS_TOOL = 47
+
+WEAPONCLASS_CONSUMABLE = 48
 
 
 -- Humans can not carry OR drag anything heavier than this (in kg.)

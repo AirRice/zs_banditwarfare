@@ -74,25 +74,107 @@ function IsValidRoundMode(mode)
 	return false
 end
 
-function FindWeaponConsequents(id)
-	if not id then return end
+function GetPossibleWepUpgradePaths(id, reverse)
+	if not id then return {} end
 	local num = tonumber(id)
 	if num then
 		id = GAMEMODE.Items[num].Signature
 	end
+	
+	local tab = FindItem(id)
+	if not tab then return {} end
+	local outputtable = reverse and tab.DowngradePaths or tab.UpgradePaths
+	if (outputtable == nil) then 
+		outputtable = {}
 
-	local consequents = {}
-	for _, tab in ipairs(GAMEMODE.Items) do
-		if tab.Prerequisites and istable(tab.Prerequisites) then
-			for _, prereqsig in ipairs(tab.Prerequisites) do
-				if prereqsig == id then
-					table.insert(consequents, tab.Signature)
-					break
+		local treestack = util.Stack()
+		local treelevel = 1
+		local pathsraw = {}
+		treestack:Push(
+			{
+				ID = id,
+				Depth = treelevel
+			}
+		)
+
+		-- Depth first search implementation to get a raw output of upgrade paths
+		-- table elements will be in order 1 -> (end tier), then going back to each branching point and continuing to the end tier iteratively 
+		while (treestack:Size() > 0) do
+			local curnode = treestack:Top()
+			local nexttierconsqs = reverse and FindWeaponPrerequisites(curnode.ID) or FindWeaponConsequents(curnode.ID)
+			treestack:Pop()
+			table.insert(pathsraw, curnode)
+			--print(curnode.ID)
+			--print("tier: "..curnode.Depth)
+			if (#nexttierconsqs > 0) then
+				for _, ntid in ipairs(nexttierconsqs) do
+					treestack:Push(
+						{
+							ID = ntid,
+							Depth = curnode.Depth + 1
+						}
+					)
 				end
 			end
 		end
+
+		-- Returns an output of all known paths to leaf node (end tier)
+		local path = {}
+		for _, upgrade in ipairs(pathsraw) do
+			if (path[upgrade.Depth] ~= nil) then
+				table.insert(outputtable, path)
+				path = {unpack(path, 1, upgrade.Depth-1)}
+			end
+			table.insert(path, upgrade.Depth, upgrade.ID)
+		end
+		table.insert(outputtable, path)
+		if reverse then
+			tab.DowngradePaths = outputtable
+		else
+			tab.UpgradePaths = outputtable
+		end
 	end
-	return consequents
+	
+	return outputtable
+end
+
+function FindWeaponConsequents(id)
+	if not id then return {} end
+	local num = tonumber(id)
+	if num then
+		id = GAMEMODE.Items[num].Signature
+	end
+	
+	local tab = FindItem(id)
+	if not tab then return {} end
+
+	if (tab.Consequents == nil) then 
+		tab.Consequents = {} 
+		for _, ctab in ipairs(GAMEMODE.Items) do
+			if ctab.Prerequisites and istable(ctab.Prerequisites) then
+				for _, prereqsig in ipairs(ctab.Prerequisites) do
+					if prereqsig == id then
+						table.insert(tab.Consequents, ctab.Signature)
+						break
+					end
+				end
+			end
+		end
+		--PrintTable(tab.Consequents)
+	end
+
+	return tab.Consequents
+end
+
+function WeaponSlotToCatID(slot)
+	if slot == WEAPONLOADOUT_SLOT1 || slot == WEAPONLOADOUT_SLOT2 then 
+		return ITEMCAT_GUNS
+	elseif slot == WEAPONLOADOUT_TOOLS then
+		return ITEMCAT_TOOLS
+	elseif slot == WEAPONLOADOUT_MELEE then
+		return ITEMCAT_MELEE
+	end
+	return ITEMCAT_CONS
 end
 
 function FindWeaponPrerequisites(id)
@@ -156,7 +238,7 @@ end
 
 function GetItemCost(itemtab)
 	if not itemtab then return nil end
-	local cost = itemtab.Worth
+	local cost = itemtab.Cost
 	local cat = itemtab.Category
 	if not (cost and cat) then return nil end
 	cost = math.floor(cost * ((GAMEMODE:IsClassicMode() and cat ~= ITEMCAT_OTHER) and GAMEMODE.ClassicModeDiscountMultiplier or 1))
