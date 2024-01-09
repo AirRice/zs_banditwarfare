@@ -1,10 +1,10 @@
-GM.WeaponClassItemCatRanges = {
-	ITEMCAT_GUNS = {1,15},
-	ITEMCAT_MELEE = {24, 29},
-	ITEMCAT_TOOLS = {47},
-	ITEMCAT_CONS = {48}
-}
+GM.WeaponClassItemCatRanges = {}
+GM.WeaponClassItemCatRanges[ITEMCAT_GUNS] = {1,15}
+GM.WeaponClassItemCatRanges[ITEMCAT_MELEE] = {24, 29}
+GM.WeaponClassItemCatRanges[ITEMCAT_TOOLS] = {47}
+GM.WeaponClassItemCatRanges[ITEMCAT_CONS] = {48}
 
+GM.MultiAllowedWeaponClasses = {WEAPONCLASS_PULSE, WEAPONCLASS_UTIL, WEAPONCLASS_TOOL, WEAPONCLASS_CONSUMABLE}
 ------------ WEAPON CLASS COLOURS ------------
 
 GM.WeaponClassColors = {}

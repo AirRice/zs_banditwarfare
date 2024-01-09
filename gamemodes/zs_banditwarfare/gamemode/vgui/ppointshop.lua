@@ -288,7 +288,7 @@ local function PurchaseButtonThink(self)
 	end
 end
 
-local function OpenUpgradesShop(swep, wepslot, id)
+local function OpenUpgradesShop(swep, wepslot, playsound, id)
 	local tab = FindItembyClass(swep)
 	if not tab then return end
 	if not id then id = tab.ID end
@@ -298,12 +298,16 @@ local function OpenUpgradesShop(swep, wepslot, id)
 		ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[swep] or GAMEMODE.ClassicModeInsuredWeps[swep])
 	end
 	if ispurchasedweapon then
-		surface.PlaySound("buttons/button17.wav")
+		if playsound then
+			surface.PlaySound("buttons/button17.wav")
+		end
 		local shopframe = vgui.Create("DUpgradesShopFrame")
 		shopframe:SetUpUpgradeMenu(id, wepslot)
 		GAMEMODE.m_PointsShop:SetVisible(false)
 	else
-		surface.PlaySound("buttons/button8.wav")
+		if playsound then
+			surface.PlaySound("buttons/button8.wav")
+		end
 	end
 end
 
@@ -331,7 +335,7 @@ function PANEL:DoClick()
 	if not tab then return end
 	if self.m_LastIsUpgradeBtn or self.m_LastAbleToBuy then
 		if self.m_LastIsUpgradeBtn then
-			OpenUpgradesShop(tab.SWEP, GAMEMODE.m_PointsShop.m_LoadoutSlot, id)
+			OpenUpgradesShop(tab.SWEP, GAMEMODE.m_PointsShop.m_LoadoutSlot, true, id)
 			return
 		end
 		surface.PlaySound("buttons/button17.wav")
@@ -699,7 +703,7 @@ function PANEL:UpdatePointsShop(weaponslot)
 		list = self.m_ShopScrollList
 
 		local catid = WeaponSlotToCatID(weaponslot)
-		local weaponclassbuttons = {}
+		local weaponperclass = {}
 		local classrange = GAMEMODE.WeaponClassItemCatRanges[catid]
 		local minclass, maxclass = classrange[1], classrange[2] or classrange[1]
 		for i = minclass, maxclass, 1 do
@@ -708,26 +712,26 @@ function PANEL:UpdatePointsShop(weaponslot)
 				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
 				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then
 					if (tab.SWEP and tab.SWEP == currentslotwep) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
-						--PrintTable(tab)
-						local itembut = nil
-						if weaponclassbuttons[i] and IsValid(weaponclassbuttons[i]) and ispanel(weaponclassbuttons[i]) then
-							itembut = weaponclassbuttons[i]
-						else
-							itembut = vgui.Create("ShopItemButton")
-							list:AddItem(itembut)
-							weaponclassbuttons[i] = itembut
-						end
-						itembut:SetupItemButton(tab.ID,weaponslot)
-						itembut:Dock(TOP)
-
-						if tab.SWEP == currentslotwep then 
-							self.CurrentID = tab.ID
-							SetViewer(tab)
-							currentweppanel = itembut
-							currentweplist = list
-						end
-						break
+						weaponperclass[i] = tab.ID
 					end
+				end
+			end
+		end
+		
+		for _, tabid in pairs(weaponperclass) do
+			local tab = FindItem(tabid)
+			if tab then
+				print(tabid)
+				local itembut = vgui.Create("ShopItemButton")
+				list:AddItem(itembut)
+				itembut:SetupItemButton(tabid, weaponslot)
+				itembut:Dock(TOP)
+
+				if tab.SWEP == currentslotwep then 
+					self.CurrentID = tabid
+					SetViewer(tab)
+					currentweppanel = itembut
+					currentweplist = list
 				end
 			end
 		end
@@ -1360,11 +1364,11 @@ function GM:OpenPointsShop(weaponslot)
 		local activewep = MySelf:GetActiveWeapon()
 		if activewep and activewep:IsValid() then toupgrade = activewep:GetClass() end
 	else
-		toupgrade = GetWeaponLoadoutBySlot(weaponslot)
+		toupgrade = MySelf:GetWeaponLoadoutBySlot(weaponslot)
 	end
 	local tab = FindItembyClass(toupgrade)
 	if tab and !(table.IsEmpty(FindWeaponConsequents(tab.ID)) and table.IsEmpty(FindWeaponPrerequisites(tab.ID))) then
-		OpenUpgradesShop(toupgrade, weaponslot)
+		OpenUpgradesShop(toupgrade, weaponslot, false)
 	end
 
 end
