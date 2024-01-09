@@ -303,7 +303,9 @@ local function OpenUpgradesShop(swep, wepslot, playsound, id)
 		end
 		local shopframe = vgui.Create("DUpgradesShopFrame")
 		shopframe:SetUpUpgradeMenu(id, wepslot)
-		GAMEMODE.m_PointsShop:SetVisible(false)
+		if GAMEMODE.m_PointsShop and IsValid(GAMEMODE.m_PointsShop) and ispanel(GAMEMODE.m_PointsShop) then
+			GAMEMODE.m_PointsShop:SetVisible(false)
+		end
 	else
 		if playsound then
 			surface.PlaySound("buttons/button8.wav")
@@ -711,27 +713,36 @@ function PANEL:UpdatePointsShop(weaponslot)
 			for j, tab in ipairs(wepclassitems) do
 				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
 				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then
-					if (tab.SWEP and tab.SWEP == currentslotwep) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
-						weaponperclass[i] = tab.ID
+					if (tab.SWEP and MySelf:HasWeapon(tab.SWEP)) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
+						if GAMEMODE.MultiAllowedWeaponClasses[i] then
+							if !istable(weaponperclass[i]) then weaponperclass[i] =  {} end
+							table.insert(weaponperclass[i], tab.ID)
+						else
+							weaponperclass[i] = tab.ID
+						end
 					end
 				end
 			end
 		end
 		
-		for _, tabid in pairs(weaponperclass) do
-			local tab = FindItem(tabid)
-			if tab then
-				print(tabid)
-				local itembut = vgui.Create("ShopItemButton")
-				list:AddItem(itembut)
-				itembut:SetupItemButton(tabid, weaponslot)
-				itembut:Dock(TOP)
+		for _, tabids in pairs(weaponperclass) do
+			local tabidtable = {}
+			table.Add(tabidtable, istable(tabids) and tabids or {tabids})
+			for __, tabid in pairs(tabidtable) do
+				local tab = FindItem(tabid)
+				if tab then
+					print(tabid)
+					local itembut = vgui.Create("ShopItemButton")
+					list:AddItem(itembut)
+					itembut:SetupItemButton(tabid, weaponslot)
+					itembut:Dock(TOP)
 
-				if tab.SWEP == currentslotwep then 
-					self.CurrentID = tabid
-					SetViewer(tab)
-					currentweppanel = itembut
-					currentweplist = list
+					if tab.SWEP == currentslotwep then 
+						self.CurrentID = tabid
+						SetViewer(tab)
+						currentweppanel = itembut
+						currentweplist = list
+					end
 				end
 			end
 		end
@@ -1349,16 +1360,11 @@ end
 vgui.Register("DUpgradesShopFrame", PANEL, "DFrame")
 
 function GM:OpenPointsShop(weaponslot)
-	local oldpointshop = nil
-
-	if self.m_PointsShop and self.m_PointsShop:Valid() then
-		oldpointshop = self.m_PointsShop
-	end
-	local shopframe = vgui.Create("DPointShopFrame")
+	/*local shopframe = vgui.Create("DPointShopFrame")
 	shopframe:SetUpPointsShop(weaponslot)
-	if oldpointshop and oldpointshop:Valid() and ispanel(oldpointshop) then
+	self.m_PointsShop and self.m_PointsShop:Valid() and ispanel(self.m_PointsShop) then
 		oldpointshop:Close()
-	end
+	end*/
 	local toupgrade
 	if (GAMEMODE:IsClassicMode()) then
 		local activewep = MySelf:GetActiveWeapon()
