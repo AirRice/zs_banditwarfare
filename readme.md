@@ -8,7 +8,7 @@ Mod by  Jooho 'air rice' Lee
 | Some HUD textures | Typhon (lukas-tinel@hotmail.com) |
 | Melee weapon models and sounds |  Zombie Panic: Source (http://www.zombiepanic.org/) |
 | Board Kit model |  Samuel (samuel_games@hotmail.com) |
-| Original Korean Translation |  Honsal |
+| Original Korean Translation |  Honsal (honjasalayo@gmail.com) |
 | Additional Code Snippets	  | Sunrust Community (Benjy, The Darker One, Raox, Scott), Original Git Repo, Honsal |
 | Translators | [Link to Translators](translation_credits.md) |
 ### Story (If you're into that kind of thing...)
