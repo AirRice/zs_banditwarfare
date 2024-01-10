@@ -1,6 +1,6 @@
 GM.WeaponClassItemCatRanges = {
 	ITEMCAT_GUNS = {1,15},
-	ITEMCAT_MELEE = {24, 29},
+	ITEMCAT_MELEE = {24, 32},
 	ITEMCAT_TOOLS = {47},
 	ITEMCAT_CONS = {48}
 }
@@ -330,7 +330,7 @@ GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"pipe", 55, "weapon_zs_pipe", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"zslamp")
 local item = GM:AddPointShopWeapon(1,"keyboard", 50, "weapon_zs_keyboard", WEAPONCLASS_MELEE_DEBUFF)
-GM:AddWeaponPrerequisite(item,"zslamp")
+GM:AddWeaponPrerequisite(item,"hook")
 local item = GM:AddPointShopWeapon(1,"breenbust", 65, "weapon_zs_bust", WEAPONCLASS_MELEE_DEFENSIVE)
 GM:AddWeaponPrerequisite(item,"axe")
 
