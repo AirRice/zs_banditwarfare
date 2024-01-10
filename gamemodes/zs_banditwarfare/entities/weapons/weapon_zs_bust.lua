@@ -68,18 +68,29 @@ function SWEP:RegenBreak()
 end
 
 function SWEP:OnMeleeHit(hitent, hitflesh, tr)
-	if not self:GetIsBroken() then
-		local edata = EffectData()
-			edata:SetOrigin(tr.HitPos)
-			edata:SetNormal(tr.HitNormal)
-		util.Effect("hit_stone", edata)
-		self:SetIsBroken(true)
-		self:SetLastBroken(CurTime())
-		if hitent and hitent:IsValid() and hitent:IsPlayer() and self:GetOwner() and self:GetOwner():IsValid() and self:GetOwner():IsPlayer() and hitent:Team() ~= self:GetOwner():Team() then
-			local status = hitent:GiveStatus("confusion",20)
-		end
-	else
+	if self:GetIsBroken() then
 		hitent:TakeSpecialDamage(self.MeleeDamage*0.5, DMG_SLASH, self:GetOwner(), self, tr.HitPos)
+	end
+end
+
+if SERVER then
+	function SWEP:ProcessDamage(dmginfo)
+		local attacker, inflictor = dmginfo:GetAttacker(), dmginfo:GetInflictor()
+		local owner = self:GetOwner()
+		local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
+		if attacker:IsPlayer() and !self:GetIsBroken() then
+			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and dmginfo:GetDamage() >= 50 then
+				dmginfo:SetDamage(0)
+			end
+			local center = owner:LocalToWorld(owner:OBBCenter())
+			local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
+			local effectdata = EffectData()
+				effectdata:SetOrigin(center)
+				effectdata:SetNormal((hitpos - center):GetNormalized())
+			util.Effect("hit_stone", effectdata)
+			self:SetIsBroken(true)
+			self:SetLastBroken(CurTime())
+		end
 	end
 end
 
