@@ -336,7 +336,7 @@ GM:AddWeaponPrerequisite(item,"axe")
 
 local item = GM:AddPointShopWeapon(2,"longsword", 85, "weapon_zs_longsword", WEAPONCLASS_MELEE_BLADED)
 GM:AddWeaponPrerequisite(item,"butcher")
-local item = GM:AddPointShopWeapon(2,"extbaton", 80, "weapon_zs_extendingbaton", WEAPONCLASS_MELEE_BLUNT)
+local item = GM:AddPointShopWeapon(2,"extbaton", 80, "weapon_zs_extendingbaton", WEAPONCLASS_MELEE_BLUNT_FAST)
 GM:AddWeaponPrerequisite(item,"pipe")
 local item = GM:AddPointShopWeapon(2,"sledgehammer", 90, "weapon_zs_sledgehammer", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"pipe")

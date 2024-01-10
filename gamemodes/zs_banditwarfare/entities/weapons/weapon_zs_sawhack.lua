@@ -185,7 +185,7 @@ if SERVER then
 		if attacker:IsPlayer() then
 			local center = owner:LocalToWorld(owner:OBBCenter())
 			local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
-			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and owner:IsPosInBoneRange(hitpos, "ValveBiped.Bip01_Head1", 24) and math.random(3) == 3 then
+			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and owner:IsPosInBoneRange(hitpos, "ValveBiped.Bip01_Head1", 24) and math.random(10) > 3 then
 				local reflectdmginfo = dmginfo
 				dmginfo:SetDamage(0)
 				local effectdata = EffectData()
