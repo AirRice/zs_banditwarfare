@@ -283,7 +283,6 @@ GM:AddWeaponPrerequisite(item,"inferno")
 local item = GM:AddPointShopWeapon(4,"crossbow", ITEMCAT_GUNS, 300, "weapon_zs_crossbow", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"arbalest")
 
-<<<<<<< HEAD
 ----------------------------- MELEE ---------------------------------
 
 GM:AddPointShopWeapon(0,"knife", 10, "weapon_zs_swissarmyknife", WEAPONCLASS_MELEE_BLADED)
@@ -306,34 +305,9 @@ GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"shovel", 55, "weapon_zs_shovel", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"zpcpot", 60, "weapon_zs_pot", WEAPONCLASS_MELEE_UTIL)
-=======
---GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
-
-
-
-local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 35, "weapon_zs_hammer")
-item.NoClassicMode = true
-local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 40, "weapon_zs_wrench")
-item.NoClassicMode = true
-item.NoSampleCollectMode = true
-GM:AddPointShopWeapon(0,"zpplnk", ITEMCAT_MELEE, 10, "weapon_zs_plank")
-GM:AddPointShopWeapon(0,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
-GM:AddPointShopWeapon(0,"zslamp", ITEMCAT_MELEE, 10, "weapon_zs_lamp")
-GM:AddPointShopWeapon(0,"hook", ITEMCAT_MELEE, 38, "weapon_zs_hook")
-
-local item = GM:AddPointShopWeapon(1,"electrohmr", ITEMCAT_MELEE, 85, "weapon_zs_electrohammer")
-GM:AddWeaponPrerequisite(item,"crphmr")
-item.NoClassicMode = true
-local item = GM:AddPointShopWeapon(1,"breenbust", ITEMCAT_MELEE, 65, "weapon_zs_bust")
-GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"keyboard", ITEMCAT_MELEE, 50, "weapon_zs_keyboard")
-GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"crowbar", ITEMCAT_MELEE, 52, "weapon_zs_crowbar")
->>>>>>> parent of 5c83fb8 (Merge branch 'ui_improvements' into melee_overhaul)
 GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"pipe", 55, "weapon_zs_pipe", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"zslamp")
-<<<<<<< HEAD
 local item = GM:AddPointShopWeapon(1,"keyboard", 50, "weapon_zs_keyboard", WEAPONCLASS_MELEE_DEBUFF)
 GM:AddWeaponPrerequisite(item,"hook")
 local item = GM:AddPointShopWeapon(1,"breenbust", 65, "weapon_zs_bust", WEAPONCLASS_MELEE_DEFENSIVE)
@@ -363,40 +337,6 @@ GM:AddWeaponPrerequisite(item,"sledgehammer")
 GM:AddWeaponPrerequisite(item,"extbaton")
 local item = GM:AddPointShopWeapon(3,"sawhack", 140, "weapon_zs_sawhack", WEAPONCLASS_MELEE_DEFENSIVE)
 GM:AddWeaponPrerequisite(item,"greataxe")
-=======
-local item = GM:AddPointShopWeapon(1,"shovel", ITEMCAT_MELEE, 55, "weapon_zs_shovel")
-GM:AddWeaponPrerequisite(item,"zslamp")
-GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"axe", ITEMCAT_MELEE, 55, "weapon_zs_axe")
-GM:AddWeaponPrerequisite(item,"knife")
-GM:AddWeaponPrerequisite(item,"zslamp")
-local item = GM:AddPointShopWeapon(1,"butcher", ITEMCAT_MELEE, 55, "weapon_zs_butcherknife")
-GM:AddWeaponPrerequisite(item,"knife")
-
-local item = GM:AddPointShopWeapon(2,"extbaton", ITEMCAT_MELEE, 80, "weapon_zs_extendingbaton")
-GM:AddWeaponPrerequisite(item,"breenbust")
-GM:AddWeaponPrerequisite(item,"keyboard")
-local item = GM:AddPointShopWeapon(2,"sledgehammer", ITEMCAT_MELEE, 90, "weapon_zs_sledgehammer")
-GM:AddWeaponPrerequisite(item,"crowbar")
-GM:AddWeaponPrerequisite(item,"shovel")
-local item = GM:AddPointShopWeapon(2,"pipe", ITEMCAT_MELEE, 85, "weapon_zs_pipe")
-GM:AddWeaponPrerequisite(item,"crowbar")
-GM:AddWeaponPrerequisite(item,"breenbust")
-local item = GM:AddPointShopWeapon(2,"sawhack", ITEMCAT_MELEE, 80, "weapon_zs_sawhack")
-GM:AddWeaponPrerequisite(item,"axe")
-local item = GM:AddPointShopWeapon(2,"longsword", ITEMCAT_MELEE, 85, "weapon_zs_longsword")
-GM:AddWeaponPrerequisite(item,"butcher")
-
-local item = GM:AddPointShopWeapon(3,"megamasher", ITEMCAT_MELEE, 150, "weapon_zs_megamasher")
-GM:AddWeaponPrerequisite(item,"sledgehammer")
-GM:AddWeaponPrerequisite(item,"pipe")
-local item = GM:AddPointShopWeapon(3,"stunbaton", ITEMCAT_MELEE, 135, "weapon_zs_stunbaton")
-GM:AddWeaponPrerequisite(item,"extbaton")
-local item = GM:AddPointShopWeapon(3,"energysword", ITEMCAT_MELEE, 145, "weapon_zs_energysword")
-GM:AddWeaponPrerequisite(item,"longsword")
-local item = GM:AddPointShopWeapon(3,"greataxe", ITEMCAT_MELEE, 140, "weapon_zs_greataxe")
-GM:AddWeaponPrerequisite(item,"sawhack")
->>>>>>> parent of 5c83fb8 (Merge branch 'ui_improvements' into melee_overhaul)
 
 
 GM:AddPointShopWeapon(nil,"barricadekit", ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
