@@ -35,7 +35,8 @@ if SERVER then
 		if ent ~= self:GetOwner() then return end
 
 		local attacker = dmginfo:GetAttacker()
-		if attacker:IsValid() and attacker:IsPlayer() and ent:IsValid() and ent:IsPlayer() and attacker:Team() ~= ent:Team() then
+		local inflictor = (dmginfo:GetInflictor():IsWeapon() and dmginfo:GetInflictor())
+		if attacker:IsValid() and attacker:IsPlayer() and ent:IsValid() and ent:IsPlayer() and attacker:Team() ~= ent:Team() and not (inflictor and inflictor.IgnoreDamageScaling) then
 			dmginfo:SetDamage(dmginfo:GetDamage() * self.DamageScale)
 		end
 	end
