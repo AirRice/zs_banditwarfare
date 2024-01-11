@@ -38,7 +38,7 @@ SWEP.HoldType = "melee"
 SWEP.MeleeDamage = 75
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 1.5
-SWEP.Primary.Delay = 1
+SWEP.Primary.Delay = 0.85
 
 SWEP.DamageType = DMG_SLASH
 
@@ -58,7 +58,7 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
-	self:SetDefenseStacks(10)
+	--self:SetDefenseStacks(10)
 	if self.BaseClass.Initialize then
 		self.BaseClass.Initialize(self)
 	end
@@ -104,7 +104,10 @@ if SERVER then
 		if attacker:IsPlayer() then
 			if self:GetDefenseStacks() and self:GetDefenseStacks() > 0 then
 				if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) then
-					dmginfo:ScaleDamage(0.5)
+					local stat = owner:GiveStatus("dmgreduction")
+					if stat and stat:IsValid() then
+						stat.DamageReduction = self:GetDefenseStacks()
+					end
 				end
 				local center = owner:LocalToWorld(owner:OBBCenter())
 				local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
@@ -114,7 +117,7 @@ if SERVER then
 					effectdata:SetAngles((center - hitpos):Angle())
 					effectdata:SetEntity(owner)
 				util.Effect("shadedeflect", effectdata, true, true)
-				self:SetDefenseStacks(math.max(self:GetDefenseStacks()-1,0))
+				self:SetDefenseStacks(0)
 			end
 		end
 	end

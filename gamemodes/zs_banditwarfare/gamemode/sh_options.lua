@@ -1,10 +1,9 @@
-
-ITEMCAT_GUNS = 1
-ITEMCAT_MELEE = 2
-ITEMCAT_TOOLS = 3
-ITEMCAT_CONS = 4
-ITEMCAT_OTHER = 5
---ITEMCAT_RETURNS = 7
+GM.WeaponClassItemCatRanges = {
+	ITEMCAT_GUNS = {1,15},
+	ITEMCAT_MELEE = {24, 32},
+	ITEMCAT_TOOLS = {47},
+	ITEMCAT_CONS = {48}
+}
 
 ------------ WEAPON CLASS COLOURS ------------
 
@@ -50,30 +49,51 @@ GM.PossibleMelees = {
 }
 
 GM.Items = {}
-function GM:AddItem(tier, signature, name, desc, category, worth, swep, callback, canbuy, failtobuystr, wepclass)
+function GM:AddItem(tier, signature, name, desc, cost, swep, callback, canbuy, failtobuystr, wepclass)
 	local prereqs = {}
-	local tab = { ID = #self.Items + 1, Tier = tier, Signature = signature, TranslateName = name, TranslateDesc = desc, Category = category, Worth = worth or 0, SWEP = swep, Callback = callback, CanPurchaseFunc = canbuy, FailTranslateString = failtobuystr, Prerequisites = prereqs, WeaponClass = wepclass}
+	local category = ITEMCAT_OTHER
+	if wepclass ~= nil then
+		for k, v in pairs(self.WeaponClassItemCatRanges) do
+			if ((v[1] && v[2]) && wepclass >= v[1] && wepclass <= v[2]) || v[1] && wepclass == v[1] then
+				category = k
+				break
+			end
+		end
+	end
+	local tab = { 
+		ID = #self.Items + 1, 
+		Tier = tier, 
+		Signature = signature, 
+		TranslateName = name, 
+		TranslateDesc = desc, 
+		Category = category, 
+		Cost = cost or 0, 
+		SWEP = swep, 
+		Callback = callback, 
+		CanPurchaseFunc = canbuy, 
+		FailTranslateString = failtobuystr, 
+		Prerequisites = prereqs,
+		WeaponClass = wepclass
+	}
 	self.Items[#self.Items + 1] = tab
 	return tab
 end
 
-function GM:AddPointShopItem(tier, signature, name, desc, category, points, callback, canbuy, failtobuystr)
-	return self:AddItem(tier, "ps_"..signature, name, desc, category, points, nil, callback, canbuy, failtobuystr, nil)
+function GM:AddPointShopItem(tier, signature, name, desc, points, callback, canbuy, failtobuystr)
+	return self:AddItem(tier, "ps_"..signature, name, desc, points, nil, callback, canbuy, failtobuystr, nil)
 end
 
-function GM:AddPointShopWeapon(tier, signature, category, points, swep, wepclass)
-	if (category == ITEMCAT_GUNS && wepclass == nil) then
-		wepclass = WEAPONCLASS_UTIL
-	end
-	return self:AddItem(tier, "ps_"..signature, nil, nil, category, points, swep, nil,nil,nil, wepclass)
+function GM:AddPointShopWeapon(tier, signature, points, swep, wepclass)
+	return self:AddItem(tier, "ps_"..signature, nil, nil, points, swep, nil,nil,nil, wepclass)
 end
 
 function GM:AddWeaponPrerequisite(wep,prereqsignature)
-	local reqstable = wep.Prerequisites
-	if (reqstable == nil) then wep.Prerequisites = {} end
+	if (wep.Prerequisites == nil) then 
+		wep.Prerequisites = {} 
+	end
+
 	table.insert( wep.Prerequisites, "ps_"..prereqsignature)
-	--PrintTable(wep.prereqs)
-end
+end 
 
 -- These ammo types are available at ammunition boxes.
 -- The amount is the ammo to give them.
@@ -97,302 +117,299 @@ GM.AmmoResupply["sniperround"] = 1
 -- Points --
 ------------
 
------------- GUNS ------------
+------------ WEAPONS ------------
 /* 
-ALL guns need to be defined as AddPointShopWeapon(tier (int), unique id (string), ITEMCAT enum, points to purchase/ upgrade (int) , weapon classname (string), WEAPONCLASS enum)
+ALL weapons need to be defined as AddPointShopWeapon(tier (int), unique id (string),points to purchase/ upgrade (int) , weapon classname (string), WEAPONCLASS enum)
 */
+------------ GUNS --------------
 ------------ TIER 0 ------------
 
-GM:AddPointShopWeapon(0,"btlax", ITEMCAT_GUNS, 10, "weapon_zs_battleaxe", WEAPONCLASS_MAGNUMPISTOL)
-GM:AddPointShopWeapon(0,"pshtr", ITEMCAT_GUNS, 10, "weapon_zs_peashooter", WEAPONCLASS_FASTPISTOL)
-GM:AddPointShopWeapon(0,"slngr", ITEMCAT_GUNS, 10, "weapon_zs_slinger", WEAPONCLASS_CROSSBOW)
-GM:AddPointShopWeapon(0,"tossr", ITEMCAT_GUNS, 15, "weapon_zs_tosser", WEAPONCLASS_SMG)
-GM:AddPointShopWeapon(0,"crklr", ITEMCAT_GUNS, 15, "weapon_zs_crackler", WEAPONCLASS_ASSAULT)
-GM:AddPointShopWeapon(0,"stbbr", ITEMCAT_GUNS, 15, "weapon_zs_stubber", WEAPONCLASS_SNIPER)
-GM:AddPointShopWeapon(0,"doublebarrel", ITEMCAT_GUNS, 15, "weapon_zs_doublebarrel", WEAPONCLASS_SHOTGUN)
-GM:AddPointShopWeapon(0,"jabbr", ITEMCAT_GUNS, 20, "weapon_zs_injector", WEAPONCLASS_MEDICAL)
+GM:AddPointShopWeapon(0,"btlax", 10, "weapon_zs_battleaxe", WEAPONCLASS_MAGNUMPISTOL)
+GM:AddPointShopWeapon(0,"pshtr", 10, "weapon_zs_peashooter", WEAPONCLASS_FASTPISTOL)
+GM:AddPointShopWeapon(0,"slngr", 10, "weapon_zs_slinger", WEAPONCLASS_CROSSBOW)
+GM:AddPointShopWeapon(0,"tossr", 15, "weapon_zs_tosser", WEAPONCLASS_SMG)
+GM:AddPointShopWeapon(0,"crklr", 15, "weapon_zs_crackler", WEAPONCLASS_ASSAULT)
+GM:AddPointShopWeapon(0,"stbbr", 15, "weapon_zs_stubber", WEAPONCLASS_SNIPER)
+GM:AddPointShopWeapon(0,"doublebarrel", 15, "weapon_zs_doublebarrel", WEAPONCLASS_SHOTGUN)
+GM:AddPointShopWeapon(0,"jabbr", 20, "weapon_zs_injector", WEAPONCLASS_MEDICAL)
 
 -- Conflicted about this one being here, but should be OK since it's non classic mode.
-GM:AddPointShopWeapon(0,"nailgun", ITEMCAT_GUNS, 30, "weapon_zs_nailgun", WEAPONCLASS_UTIL).NoClassicMode = true
+GM:AddPointShopWeapon(0,"nailgun", 30, "weapon_zs_nailgun", WEAPONCLASS_UTIL).NoClassicMode = true
 
 ------------ TIER 1 ------------
 
-local item = GM:AddPointShopWeapon(1,"deagle", ITEMCAT_GUNS, 65, "weapon_zs_deagle", WEAPONCLASS_MAGNUMPISTOL)
+local item = GM:AddPointShopWeapon(1,"deagle", 65, "weapon_zs_deagle", WEAPONCLASS_MAGNUMPISTOL)
 GM:AddWeaponPrerequisite(item,"btlax")
 
-local item = GM:AddPointShopWeapon(1,"owens", ITEMCAT_GUNS, 65, "weapon_zs_owens", WEAPONCLASS_SPLITPISTOL)
+local item = GM:AddPointShopWeapon(1,"owens", 65, "weapon_zs_owens", WEAPONCLASS_SPLITPISTOL)
 GM:AddWeaponPrerequisite(item,"btlax")
 
-local item = GM:AddPointShopWeapon(1,"eraser", ITEMCAT_GUNS, 65, "weapon_zs_eraser", WEAPONCLASS_FASTPISTOL)
+local item = GM:AddPointShopWeapon(1,"eraser", 65, "weapon_zs_eraser", WEAPONCLASS_FASTPISTOL)
 GM:AddWeaponPrerequisite(item,"pshtr")
 
-local item = GM:AddPointShopWeapon(1,"z9000", ITEMCAT_GUNS, 70, "weapon_zs_z9000", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(1,"z9000", 70, "weapon_zs_z9000", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"pshtr")
 GM:AddWeaponPrerequisite(item,"btlax")
 
-local item = GM:AddPointShopWeapon(1,"medgun", ITEMCAT_GUNS, 60, "weapon_zs_medicgun", WEAPONCLASS_MEDICAL)
+local item = GM:AddPointShopWeapon(1,"medgun", 60, "weapon_zs_medicgun", WEAPONCLASS_MEDICAL)
 GM:AddWeaponPrerequisite(item,"jabbr")
 
-local item = GM:AddPointShopWeapon(1,"bioshotgun", ITEMCAT_GUNS, 65, "weapon_zs_bioticshotgun", WEAPONCLASS_BIO)
+local item = GM:AddPointShopWeapon(1,"bioshotgun", 65, "weapon_zs_bioticshotgun", WEAPONCLASS_BIO)
 GM:AddWeaponPrerequisite(item,"doublebarrel")
 GM:AddWeaponPrerequisite(item,"slngr")
-local item = GM:AddPointShopWeapon(1,"trench", ITEMCAT_GUNS, 70, "weapon_zs_trenchshotgun", WEAPONCLASS_SHOTGUN)
+local item = GM:AddPointShopWeapon(1,"trench", 70, "weapon_zs_trenchshotgun", WEAPONCLASS_SHOTGUN)
 GM:AddWeaponPrerequisite(item,"doublebarrel")
 
-local item = GM:AddPointShopWeapon(1,"shredder", ITEMCAT_GUNS, 60, "weapon_zs_smg", WEAPONCLASS_SMG)
+local item = GM:AddPointShopWeapon(1,"shredder", 60, "weapon_zs_smg", WEAPONCLASS_SMG)
 GM:AddWeaponPrerequisite(item,"tossr")
 
-local item = GM:AddPointShopWeapon(1,"annabelle", ITEMCAT_GUNS, 75, "weapon_zs_annabelle", WEAPONCLASS_SNIPER)
+local item = GM:AddPointShopWeapon(1,"annabelle", 75, "weapon_zs_annabelle", WEAPONCLASS_SNIPER)
 GM:AddWeaponPrerequisite(item,"stbbr")
 
-local item = GM:AddPointShopWeapon(1,"kalash", ITEMCAT_GUNS, 75, "weapon_zs_kalash", WEAPONCLASS_ASSAULT)
+local item = GM:AddPointShopWeapon(1,"kalash", 75, "weapon_zs_kalash", WEAPONCLASS_ASSAULT)
 GM:AddWeaponPrerequisite(item,"crklr")
 
-local item = GM:AddPointShopWeapon(1,"inquisition", ITEMCAT_GUNS, 70, "weapon_zs_inquisition", WEAPONCLASS_CROSSBOW)
+local item = GM:AddPointShopWeapon(1,"inquisition", 70, "weapon_zs_inquisition", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"slngr")
 GM:AddWeaponPrerequisite(item,"nailgun")
 
 ------------ TIER 2 ------------
 
-local item = GM:AddPointShopWeapon(2,"magnum", ITEMCAT_GUNS, 140, "weapon_zs_magnum", WEAPONCLASS_MAGNUMPISTOL)
+local item = GM:AddPointShopWeapon(2,"magnum", 140, "weapon_zs_magnum", WEAPONCLASS_MAGNUMPISTOL)
 GM:AddWeaponPrerequisite(item,"deagle")
 
-local item = GM:AddPointShopWeapon(2,"glock3", ITEMCAT_GUNS, 135, "weapon_zs_glock3", WEAPONCLASS_SPLITPISTOL)
+local item = GM:AddPointShopWeapon(2,"glock3", 135, "weapon_zs_glock3", WEAPONCLASS_SPLITPISTOL)
 GM:AddWeaponPrerequisite(item,"owens")
 
-local item = GM:AddPointShopWeapon(2,"terminator", ITEMCAT_GUNS, 135, "weapon_zs_terminator", WEAPONCLASS_FASTPISTOL)
+local item = GM:AddPointShopWeapon(2,"terminator", 135, "weapon_zs_terminator", WEAPONCLASS_FASTPISTOL)
 GM:AddWeaponPrerequisite(item,"eraser")
 
-local item = GM:AddPointShopWeapon(2,"neutrino", ITEMCAT_GUNS, 140, "weapon_zs_neutrino", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(2,"neutrino", 140, "weapon_zs_neutrino", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"z9000")
 GM:AddWeaponPrerequisite(item,"shredder")
-local item = GM:AddPointShopWeapon(2,"ioncannon", ITEMCAT_GUNS, 145, "weapon_zs_ioncannon", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(2,"ioncannon", 145, "weapon_zs_ioncannon", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"z9000")
 GM:AddWeaponPrerequisite(item,"trench")
-local item = GM:AddPointShopWeapon(2,"rupture", ITEMCAT_GUNS, 130, "weapon_zs_rupture", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(2,"rupture", 130, "weapon_zs_rupture", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"z9000")
 GM:AddWeaponPrerequisite(item,"inquisition")
 
-local item = GM:AddPointShopWeapon(2,"practition", ITEMCAT_GUNS, 145, "weapon_zs_practition", WEAPONCLASS_MEDICAL)
+local item = GM:AddPointShopWeapon(2,"practition", 145, "weapon_zs_practition", WEAPONCLASS_MEDICAL)
 GM:AddWeaponPrerequisite(item,"medgun")
 
-local item = GM:AddPointShopWeapon(2,"biosmg", ITEMCAT_GUNS, 140, "weapon_zs_bioticsmg", WEAPONCLASS_BIO)
+local item = GM:AddPointShopWeapon(2,"biosmg", 140, "weapon_zs_bioticsmg", WEAPONCLASS_BIO)
 GM:AddWeaponPrerequisite(item,"bioshotgun")
-local item = GM:AddPointShopWeapon(2,"sweeper", ITEMCAT_GUNS, 145, "weapon_zs_sweepershotgun", WEAPONCLASS_SHOTGUN)
+local item = GM:AddPointShopWeapon(2,"sweeper", 145, "weapon_zs_sweepershotgun", WEAPONCLASS_SHOTGUN)
 GM:AddWeaponPrerequisite(item,"trench")
 
-local item = GM:AddPointShopWeapon(2,"sprayer", ITEMCAT_GUNS, 145, "weapon_zs_sprayersmg", WEAPONCLASS_SMG)
+local item = GM:AddPointShopWeapon(2,"sprayer", 145, "weapon_zs_sprayersmg", WEAPONCLASS_SMG)
 GM:AddWeaponPrerequisite(item,"shredder")
 
-local item = GM:AddPointShopWeapon(2,"hunter", ITEMCAT_GUNS, 135, "weapon_zs_hunter", WEAPONCLASS_SNIPER)
+local item = GM:AddPointShopWeapon(2,"hunter", 135, "weapon_zs_hunter", WEAPONCLASS_SNIPER)
 GM:AddWeaponPrerequisite(item,"annabelle")
-local item = GM:AddPointShopWeapon(2,"fusilier", ITEMCAT_GUNS, 150, "weapon_zs_fusilier", WEAPONCLASS_MARKSMAN)
+local item = GM:AddPointShopWeapon(2,"fusilier", 150, "weapon_zs_fusilier", WEAPONCLASS_MARKSMAN)
 GM:AddWeaponPrerequisite(item,"annabelle")
 
-local item = GM:AddPointShopWeapon(2,"stalker", ITEMCAT_GUNS, 150, "weapon_zs_m4", WEAPONCLASS_ASSAULT)
+local item = GM:AddPointShopWeapon(2,"stalker", 150, "weapon_zs_m4", WEAPONCLASS_ASSAULT)
 GM:AddWeaponPrerequisite(item,"kalash")
 
-local item = GM:AddPointShopWeapon(2,"podvodny", ITEMCAT_GUNS, 145, "weapon_zs_podvodny", WEAPONCLASS_CROSSBOW)
+local item = GM:AddPointShopWeapon(2,"podvodny", 145, "weapon_zs_podvodny", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"inquisition")
 
 ------------ TIER 3 ------------
 
-local item = GM:AddPointShopWeapon(3,"immortal", ITEMCAT_GUNS, 200, "weapon_zs_immortal", WEAPONCLASS_MAGNUMPISTOL)
+local item = GM:AddPointShopWeapon(3,"immortal", 200, "weapon_zs_immortal", WEAPONCLASS_MAGNUMPISTOL)
 GM:AddWeaponPrerequisite(item,"magnum")
 
-local item = GM:AddPointShopWeapon(3,"waraxe", ITEMCAT_GUNS, 200, "weapon_zs_waraxe", WEAPONCLASS_SPLITPISTOL)
+local item = GM:AddPointShopWeapon(3,"waraxe", 200, "weapon_zs_waraxe", WEAPONCLASS_SPLITPISTOL)
 GM:AddWeaponPrerequisite(item,"glock3")
 
-local item = GM:AddPointShopWeapon(3,"redeemer", ITEMCAT_GUNS, 200, "weapon_zs_redeemers", WEAPONCLASS_FASTPISTOL)
+local item = GM:AddPointShopWeapon(3,"redeemer", 200, "weapon_zs_redeemers", WEAPONCLASS_FASTPISTOL)
 GM:AddWeaponPrerequisite(item,"terminator")
 
-local item = GM:AddPointShopWeapon(3,"pulserifle", ITEMCAT_GUNS, 215, "weapon_zs_pulserifle", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(3,"pulserifle", 215, "weapon_zs_pulserifle", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"neutrino")
 GM:AddWeaponPrerequisite(item,"ioncannon")
 GM:AddWeaponPrerequisite(item,"stalker")
-local item = GM:AddPointShopWeapon(3,"renegade", ITEMCAT_GUNS, 210, "weapon_zs_renegade", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(3,"renegade", 210, "weapon_zs_renegade", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"rupture")
 GM:AddWeaponPrerequisite(item,"ioncannon")
 GM:AddWeaponPrerequisite(item,"hunter")
 
-local item = GM:AddPointShopWeapon(3,"medicrifle", ITEMCAT_GUNS, 195, "weapon_zs_medicrifle", WEAPONCLASS_MEDICAL)
+local item = GM:AddPointShopWeapon(3,"medicrifle", 195, "weapon_zs_medicrifle", WEAPONCLASS_MEDICAL)
 GM:AddWeaponPrerequisite(item,"practition")
 
-local item = GM:AddPointShopWeapon(3,"biorifle", ITEMCAT_GUNS, 195, "weapon_zs_bioticrifle", WEAPONCLASS_BIO)
+local item = GM:AddPointShopWeapon(3,"biorifle", 195, "weapon_zs_bioticrifle", WEAPONCLASS_BIO)
 GM:AddWeaponPrerequisite(item,"biosmg")
-local item = GM:AddPointShopWeapon(3,"albatross",  ITEMCAT_GUNS, 195, "weapon_zs_albatross", WEAPONCLASS_AUTOSHOTGUN)
+local item = GM:AddPointShopWeapon(3,"albatross", 195, "weapon_zs_albatross", WEAPONCLASS_AUTOSHOTGUN)
 GM:AddWeaponPrerequisite(item,"sweeper")
-local item = GM:AddPointShopWeapon(3,"severance", ITEMCAT_GUNS, 200, "weapon_zs_severance", WEAPONCLASS_SHOTGUN)
+local item = GM:AddPointShopWeapon(3,"severance", 200, "weapon_zs_severance", WEAPONCLASS_SHOTGUN)
 GM:AddWeaponPrerequisite(item,"sweeper")
 
-local item = GM:AddPointShopWeapon(3,"bulletstorm", ITEMCAT_GUNS, 215, "weapon_zs_bulletstorm", WEAPONCLASS_SMG)
+local item = GM:AddPointShopWeapon(3,"bulletstorm", 215, "weapon_zs_bulletstorm", WEAPONCLASS_SMG)
 GM:AddWeaponPrerequisite(item,"sprayer")
-local item = GM:AddPointShopWeapon(3,"reaper", ITEMCAT_GUNS, 200, "weapon_zs_reaper", WEAPONCLASS_ASSAULTSMG)
+local item = GM:AddPointShopWeapon(3,"reaper", 200, "weapon_zs_reaper", WEAPONCLASS_ASSAULTSMG)
 GM:AddWeaponPrerequisite(item,"sprayer")
 
-local item = GM:AddPointShopWeapon(3,"zeus", ITEMCAT_GUNS, 205, "weapon_zs_zeus", WEAPONCLASS_MARKSMAN)
+local item = GM:AddPointShopWeapon(3,"zeus", 205, "weapon_zs_zeus", WEAPONCLASS_MARKSMAN)
 GM:AddWeaponPrerequisite(item,"fusilier")
-local item = GM:AddPointShopWeapon(3,"blockdown", ITEMCAT_GUNS, 210, "weapon_zs_combinesniper", WEAPONCLASS_SNIPER)
+local item = GM:AddPointShopWeapon(3,"blockdown", 210, "weapon_zs_combinesniper", WEAPONCLASS_SNIPER)
 GM:AddWeaponPrerequisite(item,"hunter")
 
-local item = GM:AddPointShopWeapon(3,"inferno", ITEMCAT_GUNS, 205, "weapon_zs_inferno", WEAPONCLASS_ASSAULT)
+local item = GM:AddPointShopWeapon(3,"inferno", 205, "weapon_zs_inferno", WEAPONCLASS_ASSAULT)
 GM:AddWeaponPrerequisite(item,"stalker")
 
-local item = GM:AddPointShopWeapon(3,"silencedm4", ITEMCAT_GUNS, 255, "weapon_zs_m4_silenced", WEAPONCLASS_ASSAULT)
+local item = GM:AddPointShopWeapon(3,"silencedm4", 255, "weapon_zs_m4_silenced", WEAPONCLASS_ASSAULT)
 GM:AddWeaponPrerequisite(item,"stalker")
 
-local item = GM:AddPointShopWeapon(3,"arbalest",  ITEMCAT_GUNS, 200, "weapon_zs_arbalest", WEAPONCLASS_CROSSBOW)
+local item = GM:AddPointShopWeapon(3,"arbalest", 200, "weapon_zs_arbalest", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"podvodny")
 
 ------------ TIER 4 ------------
 
-local item = GM:AddPointShopWeapon(4,"ventilator", ITEMCAT_GUNS, 285, "weapon_zs_ventilator", WEAPONCLASS_MAGNUMPISTOL)
+local item = GM:AddPointShopWeapon(4,"ventilator", 285, "weapon_zs_ventilator", WEAPONCLASS_MAGNUMPISTOL)
 GM:AddWeaponPrerequisite(item,"immortal")
 GM:AddWeaponPrerequisite(item,"waraxe")
 
-local item = GM:AddPointShopWeapon(4,"silencer", ITEMCAT_GUNS, 290, "weapon_zs_silencer", WEAPONCLASS_FASTPISTOL)
+local item = GM:AddPointShopWeapon(4,"silencer", 290, "weapon_zs_silencer", WEAPONCLASS_FASTPISTOL)
 GM:AddWeaponPrerequisite(item,"redeemer")
 
-local item = GM:AddPointShopWeapon(4,"positron", ITEMCAT_GUNS, 320, "weapon_zs_positron", WEAPONCLASS_PULSE)
+local item = GM:AddPointShopWeapon(4,"positron", 320, "weapon_zs_positron", WEAPONCLASS_PULSE)
 GM:AddWeaponPrerequisite(item,"pulserifle")
 GM:AddWeaponPrerequisite(item,"renegade")
 
-local item = GM:AddPointShopWeapon(4,"palliator", ITEMCAT_GUNS, 290, "weapon_zs_palliator", WEAPONCLASS_MEDICAL)
+local item = GM:AddPointShopWeapon(4,"palliator", 290, "weapon_zs_palliator", WEAPONCLASS_MEDICAL)
 GM:AddWeaponPrerequisite(item,"medicrifle")
 
-local item = GM:AddPointShopWeapon(4,"blightcaster", ITEMCAT_GUNS, 280, "weapon_zs_blightcaster", WEAPONCLASS_BIO)
+local item = GM:AddPointShopWeapon(4,"blightcaster", 280, "weapon_zs_blightcaster", WEAPONCLASS_BIO)
 GM:AddWeaponPrerequisite(item,"biorifle")
-local item = GM:AddPointShopWeapon(4,"boomstick", ITEMCAT_GUNS, 285, "weapon_zs_boomstick", WEAPONCLASS_SHOTGUN)
+local item = GM:AddPointShopWeapon(4,"boomstick", 285, "weapon_zs_boomstick", WEAPONCLASS_SHOTGUN)
 GM:AddWeaponPrerequisite(item,"severance")
-local item = GM:AddPointShopWeapon(4,"ender",  ITEMCAT_GUNS, 290, "weapon_zs_ender", WEAPONCLASS_AUTOSHOTGUN)
+local item = GM:AddPointShopWeapon(4,"ender", 290, "weapon_zs_ender", WEAPONCLASS_AUTOSHOTGUN)
 GM:AddWeaponPrerequisite(item,"albatross")
 
-local item = GM:AddPointShopWeapon(4,"m249", ITEMCAT_GUNS, 300, "weapon_zs_m249", WEAPONCLASS_SMG)
+local item = GM:AddPointShopWeapon(4,"m249", 300, "weapon_zs_m249", WEAPONCLASS_SMG)
 GM:AddWeaponPrerequisite(item,"bulletstorm")
-local item = GM:AddPointShopWeapon(4,"tommy", ITEMCAT_GUNS, 290, "weapon_zs_tommy", WEAPONCLASS_ASSAULTSMG)
+local item = GM:AddPointShopWeapon(4,"tommy", 290, "weapon_zs_tommy", WEAPONCLASS_ASSAULTSMG)
 GM:AddWeaponPrerequisite(item,"reaper")
 
-local item = GM:AddPointShopWeapon(4,"sg550", ITEMCAT_GUNS, 295, "weapon_zs_sg550", WEAPONCLASS_MARKSMAN)
+local item = GM:AddPointShopWeapon(4,"sg550", 295, "weapon_zs_sg550", WEAPONCLASS_MARKSMAN)
 GM:AddWeaponPrerequisite(item,"zeus")
-local item = GM:AddPointShopWeapon(4,"slugrifle", ITEMCAT_GUNS, 300, "weapon_zs_slugrifle", WEAPONCLASS_SNIPER)
+local item = GM:AddPointShopWeapon(4,"slugrifle", 300, "weapon_zs_slugrifle", WEAPONCLASS_SNIPER)
 GM:AddWeaponPrerequisite(item,"blockdown")
 
-local item = GM:AddPointShopWeapon(4,"blitz", ITEMCAT_GUNS, 295, "weapon_zs_blitz", WEAPONCLASS_ASSAULT)
+local item = GM:AddPointShopWeapon(4,"blitz", 295, "weapon_zs_blitz", WEAPONCLASS_ASSAULT)
 GM:AddWeaponPrerequisite(item,"inferno")
 
-local item = GM:AddPointShopWeapon(4,"crossbow", ITEMCAT_GUNS, 300, "weapon_zs_crossbow", WEAPONCLASS_CROSSBOW)
+local item = GM:AddPointShopWeapon(4,"crossbow", 300, "weapon_zs_crossbow", WEAPONCLASS_CROSSBOW)
 GM:AddWeaponPrerequisite(item,"arbalest")
 
---GM:AddPointShopWeapon(2,"grenadelauncher", ITEMCAT_GUNS, 120, "weapon_zs_grenadelauncher")
+----------------------------- MELEE ---------------------------------
 
-
-
-local item = GM:AddPointShopWeapon(0,"crphmr", ITEMCAT_MELEE, 35, "weapon_zs_hammer")
+GM:AddPointShopWeapon(0,"knife", 10, "weapon_zs_swissarmyknife", WEAPONCLASS_MELEE_BLADED)
+local item = GM:AddPointShopWeapon(0,"crphmr", 35, "weapon_zs_hammer", WEAPONCLASS_MELEE_REPAIR)
 item.NoClassicMode = true
-local item = GM:AddPointShopWeapon(0,"wrench", ITEMCAT_MELEE, 40, "weapon_zs_wrench")
-item.NoClassicMode = true
-item.NoSampleCollectMode = true
-GM:AddPointShopWeapon(0,"zpplnk", ITEMCAT_MELEE, 10, "weapon_zs_plank")
-GM:AddPointShopWeapon(0,"knife", ITEMCAT_MELEE, 10, "weapon_zs_swissarmyknife")
-GM:AddPointShopWeapon(0,"zslamp", ITEMCAT_MELEE, 10, "weapon_zs_lamp")
-GM:AddPointShopWeapon(0,"hook", ITEMCAT_MELEE, 38, "weapon_zs_hook")
+GM:AddPointShopWeapon(0,"zpplnk", 10, "weapon_zs_plank", WEAPONCLASS_MELEE_UTIL)
+GM:AddPointShopWeapon(0,"zslamp", 10, "weapon_zs_lamp", WEAPONCLASS_MELEE_BLUNT)
+GM:AddPointShopWeapon(0,"hook", 38, "weapon_zs_hook", WEAPONCLASS_MELEE_DEBUFF)
+GM:AddPointShopWeapon(0,"axe", 10, "weapon_zs_axe", WEAPONCLASS_MELEE_DEFENSIVE)
+--GM:AddPointShopWeapon(0,"zpfryp", 31, "weapon_zs_fryingpan")
+--GM:AddPointShopWeapon(0,"zpcpot", 32, "weapon_zs_pot")
 
-local item = GM:AddPointShopWeapon(1,"electrohmr", ITEMCAT_MELEE, 85, "weapon_zs_electrohammer")
+local item = GM:AddPointShopWeapon(1,"butcher", 55, "weapon_zs_butcherknife", WEAPONCLASS_MELEE_BLADED)
+GM:AddWeaponPrerequisite(item,"knife")
+local item = GM:AddPointShopWeapon(1,"electrohmr", 85, "weapon_zs_electrohammer", WEAPONCLASS_MELEE_REPAIR)
 GM:AddWeaponPrerequisite(item,"crphmr")
 item.NoClassicMode = true
-local item = GM:AddPointShopWeapon(1,"breenbust", ITEMCAT_MELEE, 65, "weapon_zs_bust")
+local item = GM:AddPointShopWeapon(1,"crowbar", 52, "weapon_zs_crowbar", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"keyboard", ITEMCAT_MELEE, 50, "weapon_zs_keyboard")
+local item = GM:AddPointShopWeapon(1,"shovel", 55, "weapon_zs_shovel", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"crowbar", ITEMCAT_MELEE, 52, "weapon_zs_crowbar")
+local item = GM:AddPointShopWeapon(1,"zpcpot", 60, "weapon_zs_pot", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
+local item = GM:AddPointShopWeapon(1,"pipe", 55, "weapon_zs_pipe", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"zslamp")
-local item = GM:AddPointShopWeapon(1,"shovel", ITEMCAT_MELEE, 55, "weapon_zs_shovel")
-GM:AddWeaponPrerequisite(item,"zslamp")
-GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"axe", ITEMCAT_MELEE, 55, "weapon_zs_axe")
-GM:AddWeaponPrerequisite(item,"knife")
-GM:AddWeaponPrerequisite(item,"zslamp")
-local item = GM:AddPointShopWeapon(1,"butcher", ITEMCAT_MELEE, 55, "weapon_zs_butcherknife")
-GM:AddWeaponPrerequisite(item,"knife")
+local item = GM:AddPointShopWeapon(1,"keyboard", 50, "weapon_zs_keyboard", WEAPONCLASS_MELEE_DEBUFF)
+GM:AddWeaponPrerequisite(item,"hook")
+local item = GM:AddPointShopWeapon(1,"breenbust", 65, "weapon_zs_bust", WEAPONCLASS_MELEE_DEFENSIVE)
+GM:AddWeaponPrerequisite(item,"axe")
 
-local item = GM:AddPointShopWeapon(2,"extbaton", ITEMCAT_MELEE, 80, "weapon_zs_extendingbaton")
-GM:AddWeaponPrerequisite(item,"breenbust")
+local item = GM:AddPointShopWeapon(2,"longsword", 85, "weapon_zs_longsword", WEAPONCLASS_MELEE_BLADED)
+GM:AddWeaponPrerequisite(item,"butcher")
+local item = GM:AddPointShopWeapon(2,"extbaton", 80, "weapon_zs_extendingbaton", WEAPONCLASS_MELEE_BLUNT_FAST)
+GM:AddWeaponPrerequisite(item,"pipe")
+local item = GM:AddPointShopWeapon(2,"sledgehammer", 90, "weapon_zs_sledgehammer", WEAPONCLASS_MELEE_BLUNT)
+GM:AddWeaponPrerequisite(item,"pipe")
+local item = GM:AddPointShopWeapon(2,"stunbaton", 110, "weapon_zs_stunbaton", WEAPONCLASS_MELEE_DEBUFF)
 GM:AddWeaponPrerequisite(item,"keyboard")
-local item = GM:AddPointShopWeapon(2,"sledgehammer", ITEMCAT_MELEE, 90, "weapon_zs_sledgehammer")
+local item = GM:AddPointShopWeapon(2,"greataxe", 90, "weapon_zs_greataxe", WEAPONCLASS_MELEE_DEFENSIVE)
+GM:AddWeaponPrerequisite(item,"breenbust")
+
+
+local item = GM:AddPointShopWeapon(3,"energysword", 145, "weapon_zs_energysword", WEAPONCLASS_MELEE_BLADED)
+GM:AddWeaponPrerequisite(item,"longsword")
+local item = GM:AddPointShopWeapon(3,"wrench", 160, "weapon_zs_wrench", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"crowbar")
 GM:AddWeaponPrerequisite(item,"shovel")
-local item = GM:AddPointShopWeapon(2,"pipe", ITEMCAT_MELEE, 85, "weapon_zs_pipe")
-GM:AddWeaponPrerequisite(item,"crowbar")
-GM:AddWeaponPrerequisite(item,"breenbust")
-local item = GM:AddPointShopWeapon(2,"sawhack", ITEMCAT_MELEE, 80, "weapon_zs_sawhack")
-GM:AddWeaponPrerequisite(item,"axe")
-local item = GM:AddPointShopWeapon(2,"longsword", ITEMCAT_MELEE, 85, "weapon_zs_longsword")
-GM:AddWeaponPrerequisite(item,"butcher")
-
-local item = GM:AddPointShopWeapon(3,"megamasher", ITEMCAT_MELEE, 150, "weapon_zs_megamasher")
+GM:AddWeaponPrerequisite(item,"pot")
+local item = GM:AddPointShopWeapon(3,"megamasher", 150, "weapon_zs_megamasher", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"sledgehammer")
-GM:AddWeaponPrerequisite(item,"pipe")
-local item = GM:AddPointShopWeapon(3,"stunbaton", ITEMCAT_MELEE, 135, "weapon_zs_stunbaton")
+-- Power Punhcer
 GM:AddWeaponPrerequisite(item,"extbaton")
-local item = GM:AddPointShopWeapon(3,"energysword", ITEMCAT_MELEE, 145, "weapon_zs_energysword")
-GM:AddWeaponPrerequisite(item,"longsword")
-local item = GM:AddPointShopWeapon(3,"greataxe", ITEMCAT_MELEE, 140, "weapon_zs_greataxe")
-GM:AddWeaponPrerequisite(item,"sawhack")
+local item = GM:AddPointShopWeapon(3,"sawhack", 140, "weapon_zs_sawhack", WEAPONCLASS_MELEE_DEFENSIVE)
+GM:AddWeaponPrerequisite(item,"greataxe")
 
---GM:AddPointShopWeapon(nil,"zpfryp", ITEMCAT_MELEE, 31, "weapon_zs_fryingpan")
---GM:AddPointShopWeapon(nil,"zpcpot", ITEMCAT_MELEE, 32, "weapon_zs_pot")
 
-GM:AddPointShopWeapon(nil,"barricadekit", ITEMCAT_TOOLS, 125, "weapon_zs_barricadekit").NoClassicMode = true
-local item = GM:AddPointShopWeapon(nil,"empgun", ITEMCAT_TOOLS, 55, "weapon_zs_empgun")
+GM:AddPointShopWeapon(nil,"barricadekit", 125, "weapon_zs_barricadekit", WEAPONCLASS_TOOL).NoClassicMode = true
+local item = GM:AddPointShopWeapon(nil,"empgun", 55, "weapon_zs_empgun", WEAPONCLASS_TOOL)
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
 
-local item = GM:AddPointShopWeapon(nil,"grenadelauncher", ITEMCAT_TOOLS, 70, "weapon_zs_grenadelauncher")
+local item = GM:AddPointShopWeapon(nil,"grenadelauncher", 70, "weapon_zs_grenadelauncher", WEAPONCLASS_TOOL)
 item.NoClassicMode = true
-GM:AddPointShopWeapon(nil,"whirlwind", ITEMCAT_TOOLS, 70, "weapon_zs_whirlwind")
-local item = GM:AddPointShopWeapon(nil,"backdoor", ITEMCAT_TOOLS, 45, "weapon_zs_backdoor")
-item.NoClassicMode = true
-item.NoSampleCollectMode = true
-
-local item = GM:AddPointShopWeapon(nil,"sgnlboost", ITEMCAT_TOOLS, 20, "weapon_zs_signalbooster")
+GM:AddPointShopWeapon(nil,"whirlwind", 70, "weapon_zs_whirlwind", WEAPONCLASS_TOOL)
+local item = GM:AddPointShopWeapon(nil,"backdoor", 45, "weapon_zs_backdoor", WEAPONCLASS_TOOL)
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
 
-local item = GM:AddPointShopWeapon(nil,"infturret", ITEMCAT_TOOLS, 60, "weapon_zs_gunturret")
+local item = GM:AddPointShopWeapon(nil,"sgnlboost", 20, "weapon_zs_signalbooster", WEAPONCLASS_TOOL)
+item.NoClassicMode = true
+item.NoSampleCollectMode = true
+
+local item = GM:AddPointShopWeapon(nil,"infturret", 60, "weapon_zs_gunturret", WEAPONCLASS_TOOL)
 item.Countables = {"prop_gunturret"}
 --item.ControllerWep = "weapon_zs_gunturretcontrol"
 --item.NoClassicMode = true
 
-local item = GM:AddPointShopWeapon(nil,"manhack", ITEMCAT_TOOLS, 55, "weapon_zs_manhack")
+local item = GM:AddPointShopWeapon(nil,"manhack", 55, "weapon_zs_manhack", WEAPONCLASS_TOOL)
 item.Countables = {"prop_manhack","weapon_zs_manhackcontrol"}
 item.ControllerWep = "weapon_zs_manhackcontrol"
 --item.NoClassicMode = true
 
-local item = GM:AddPointShopWeapon(nil,"drone", ITEMCAT_TOOLS, 50, "weapon_zs_drone")
+local item = GM:AddPointShopWeapon(nil,"drone", 50, "weapon_zs_drone", WEAPONCLASS_TOOL)
 item.Countables = {"prop_drone","weapon_zs_dronecontrol"}
 item.ControllerWep = "weapon_zs_dronecontrol"
 item.NoClassicMode = true
 item.NoSampleCollectMode = true
 
-GM:AddPointShopWeapon(nil,"ffemitter", ITEMCAT_TOOLS, 60, "weapon_zs_ffemitter").Countables = "prop_ffemitter"
-GM:AddPointShopWeapon(nil,"pointdefence", ITEMCAT_TOOLS, 60, "weapon_zs_spotlamp").Countables = "prop_spotlamp"
-GM:AddPointShopWeapon(nil,"enemytracker", ITEMCAT_TOOLS, 15, "weapon_zs_enemyradar")
-GM:AddPointShopWeapon(nil,"medkit", ITEMCAT_TOOLS, 40, "weapon_zs_medicalkit")
-GM:AddPointShopWeapon(nil,"ammokit", ITEMCAT_TOOLS, 40, "weapon_zs_ammokit")
+GM:AddPointShopWeapon(nil,"ffemitter", 60, "weapon_zs_ffemitter", WEAPONCLASS_TOOL).Countables = "prop_ffemitter"
+GM:AddPointShopWeapon(nil,"pointdefence", 60, "weapon_zs_spotlamp", WEAPONCLASS_TOOL).Countables = "prop_spotlamp"
+GM:AddPointShopWeapon(nil,"enemytracker", 15, "weapon_zs_enemyradar", WEAPONCLASS_TOOL)
+GM:AddPointShopWeapon(nil,"medkit", 40, "weapon_zs_medicalkit", WEAPONCLASS_TOOL)
+GM:AddPointShopWeapon(nil,"ammokit", 40, "weapon_zs_ammokit", WEAPONCLASS_TOOL)
 
-GM:AddPointShopWeapon(nil,"boardpack", ITEMCAT_TOOLS, 25, "weapon_zs_boardpack").NoClassicMode = true
+GM:AddPointShopWeapon(nil,"boardpack", 25, "weapon_zs_boardpack", WEAPONCLASS_TOOL).NoClassicMode = true
 
-GM:AddPointShopWeapon(nil,"grenade", ITEMCAT_CONS, 15, "weapon_zs_grenade")
-GM:AddPointShopWeapon(nil,"flashbang", ITEMCAT_CONS, 10, "weapon_zs_flashbang")
-GM:AddPointShopWeapon(nil,"smoke", ITEMCAT_CONS, 7, "weapon_zs_smokegrenade")
-GM:AddPointShopWeapon(nil,"detpck", ITEMCAT_CONS, 40, "weapon_zs_detpack")
+GM:AddPointShopWeapon(nil,"grenade", 15, "weapon_zs_grenade", WEAPONCLASS_CONSUMABLE)
+GM:AddPointShopWeapon(nil,"flashbang", 10, "weapon_zs_flashbang", WEAPONCLASS_CONSUMABLE)
+GM:AddPointShopWeapon(nil,"smoke", 7, "weapon_zs_smokegrenade", WEAPONCLASS_CONSUMABLE)
+GM:AddPointShopWeapon(nil,"detpck", 40, "weapon_zs_detpack", WEAPONCLASS_CONSUMABLE)
 
-local item = GM:AddPointShopItem(nil,"bodyarmor", "shopitem_bodyarmor_name", "shopitem_bodyarmor_desc",ITEMCAT_OTHER, 25,function(pl) pl:WearBodyArmor() end, function(pl) return (pl.GetBodyArmor and pl:GetBodyArmor() < 100) end,"shopitem_bodyarmor_alreadyhave")
+local item = GM:AddPointShopItem(nil,"bodyarmor", "shopitem_bodyarmor_name", "shopitem_bodyarmor_desc", 25,function(pl) pl:WearBodyArmor() end, function(pl) return (pl.GetBodyArmor and pl:GetBodyArmor() < 100) end,"shopitem_bodyarmor_alreadyhave")
 
-local item = GM:AddPointShopItem(nil,"extraspd", "shopitem_adrenaline_name", "shopitem_adrenaline_desc", ITEMCAT_OTHER, 10,function(pl) pl:ApplyAdrenaline() end, function(pl) return not (pl:GetMaxHealth() < 60) end,"shopitem_adrenaline_toomuch")
+local item = GM:AddPointShopItem(nil,"extraspd", "shopitem_adrenaline_name", "shopitem_adrenaline_desc", 10,function(pl) pl:ApplyAdrenaline() end, function(pl) return not (pl:GetMaxHealth() < 60) end,"shopitem_adrenaline_toomuch")
 
-local item = GM:AddPointShopItem(nil,"ammopurchase", "shopitem_ammo_name", "shopitem_ammo_desc", ITEMCAT_OTHER, 20, function(pl) pl:RefillActiveWeapon() end, function(pl) return pl:ActiveWeaponCanBeRefilled() end, "shopitem_ammo_invalid")
+local item = GM:AddPointShopItem(nil,"ammopurchase", "shopitem_ammo_name", "shopitem_ammo_desc", 20, function(pl) pl:RefillActiveWeapon() end, function(pl) return pl:ActiveWeaponCanBeRefilled() end, "shopitem_ammo_invalid")
 
 -- Cache this now so we don't need to do it over and over
 
@@ -410,10 +427,10 @@ local function GetItemsByWeaponClass(wepclass)
 end
 
 GM.ItemsWepClass = {}
-for i = 1, 15 do -- update when more weapon classes get added
+for i = 1, 48 do -- update when more weapon classes get added
 	GM.ItemsWepClass[i] = GetItemsByWeaponClass(i)
-	print("Weapon Class "..i)
-	PrintTable(GM.ItemsWepClass[i])
+	--print("Weapon Class "..i)
+	--PrintTable(GM.ItemsWepClass[i])
 end
 
 -- These are the honorable mentions that come at the end of the round.
