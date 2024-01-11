@@ -1,6 +1,5 @@
 local draw_SimpleText = draw.SimpleText
 local draw_DrawText = draw.DrawText
-local surf_DrawRect = surface.DrawRect
 
 local FontBlurX = 0
 local FontBlurX2 = 0
@@ -68,27 +67,6 @@ local function GetAmmoColor(clip, maxclip)
 		colAmmo.b = sat * 255
 	end
 	return colAmmo
-end
-
-function surface.DrawSteppedBeam(pos1x, pos1y, pos2x, pos2y, width, vertfirst)
-	local halfwid = width/2
-	local beamtall = math.abs(pos2y - pos1y)
-	local beamwide = math.abs(pos2x - pos1x)
-	if (pos1x == pos2x) then
-		surf_DrawRect(pos1x-halfwid, math.min(pos1y, pos2y), width, beamtall)
-		return
-	elseif (pos1y == pos2y) then
-		surf_DrawRect(math.min(pos1x,pos2x), pos1y-halfwid, beamwide, width)
-		return
-	end
-
-	if (!vertfirst) then
-		surf_DrawRect(math.min(pos1x,pos2x), math.max(pos1y, pos2y)-halfwid, beamwide, width)
-		surf_DrawRect(math.max(pos1x,pos2x)-halfwid, math.min(pos1y, pos2y), width, beamtall)
-	else
-		surf_DrawRect(math.min(pos1x,pos2x)-halfwid, math.min(pos1y, pos2y), width, beamtall)
-		surf_DrawRect(math.min(pos1x,pos2x), math.max(pos1y, pos2y)-halfwid, beamwide, width)
-	end
 end
 
 function draw.DrawAmmoHud(clip, spare, maxclip, wid, hei, x, y, requiredclip, noclip, onlyclip,lowthreshold, is3d, pos, ang, hud3dscale)

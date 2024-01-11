@@ -25,22 +25,22 @@ LANGUAGE.itemcategory_melee							= "Cuerpo a cuerpo"
 LANGUAGE.itemcategory_tools							= "Herram."
 LANGUAGE.itemcategory_etc							= "Etc."
 
-LANGUAGE.select_team                                = "Cambiar de equipo"
 LANGUAGE.playermodel_changed_to_x					= "Tu modelo de jugador se ha establecido en %s."
 LANGUAGE.select_playermodel							= "Seleccionar modelo de jugador"
-LANGUAGE.random_model                               = "Modelo aleatorio"
-LANGUAGE.reset_playermodel_button                   = "Usar modelo de jugador aleatorio"
+LANGUAGE.player_color								= "Color de jugador"
+LANGUAGE.weapon_color								= "Color de arma (solo algunas)"
+LANGUAGE.colors_button								= "Colores de jugador"
 LANGUAGE.options_button								= "Opciones"
 LANGUAGE.credits_button								= "Créditos"
 LANGUAGE.close_button								= "Cerrar"
 LANGUAGE.back_button								= "Atrás"
 LANGUAGE.consumables_purchase_button				= "Comprar consumibles"
 
+
 LANGUAGE.option_no_floating_scores					= "No mostrar puntos flotantes"
 LANGUAGE.option_show_team_indicators				= "Mostrar indicadores de compañeros"
 LANGUAGE.option_enable_killstreak_sounds			= "Activar sonidos de racha de bajas"
 LANGUAGE.option_spectator_mode						= "Modo espectador (aplicado en sig. oleada)"
-LANGUAGE.option_auto_select_team                    = "Elegir equipo automáticamente al entrar"
 LANGUAGE.option_hide_most_of_hud					= "Modo película (oculta la mayoría de elementos HUD)"
 LANGUAGE.option_simple_score_board					= "Tabla de clasificación simple (ocultar puntos)"
 LANGUAGE.option_play_music							= "Reproducir música de fondo"
@@ -455,7 +455,6 @@ LANGUAGE.sudden_death								= "MUERTE SÚBITA"
 
 LANGUAGE.too_close_to_another_nail					= "No puedes poner dos clavos tan juntos."
 LANGUAGE.object_too_damaged_to_be_used				= "Este objeto está demasiado dañado para usarse."
-LANGUAGE.selected_team_is_full                      = "El equipo seleccionado está lleno."
 LANGUAGE.x_turned_on_noclip							= "%s ha activado el noclip."
 LANGUAGE.x_turned_off_noclip						= "%s ha desactivado el noclip."
 
@@ -528,8 +527,6 @@ LANGUAGE.stat_gundmg								= "Daño"
 LANGUAGE.stat_numshots								= "Balas por disparo"
 LANGUAGE.stat_firedelay								= "Cadencia de disparo"
 
-LANGUAGE.team_desc_bandit                           = "Los bandidos son supervivientes que se armaron hasta los dientes con un arsenal innovador para combatir las hordas de zombis durante la pandemia. Pero... ¿saldrán victoriosos en su contienda por el control y la autonomía contra el resto de supervivientes?"
-LANGUAGE.team_desc_human                            = "Los supervivientes son los honrados preservadores de la humanidad, los cuales lucharon contra la pandemia zombi y establecieron una forma de sociedad civilizada. Pero ahora tendrán que palear una amenaza interna: ¿podrán con aquellos aliados que se han convertido en asesinos rebeldes?"
 
 -- The help file... Quite big! I wouldn't blame you if you didn't translate this part.
 LANGUAGE.help_cat_introduction						= "Introducción"

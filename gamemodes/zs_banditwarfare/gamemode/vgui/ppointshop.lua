@@ -288,25 +288,6 @@ local function PurchaseButtonThink(self)
 	end
 end
 
-local function OpenUpgradesShop(swep, wepslot, id)
-	local tab = FindItembyClass(swep)
-	if not tab then return end
-	if not id then id = tab.ID end
-	
-	local ispurchasedweapon = true
-	if GAMEMODE:IsClassicMode() then
-		ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[swep] or GAMEMODE.ClassicModeInsuredWeps[swep])
-	end
-	if ispurchasedweapon then
-		surface.PlaySound("buttons/button17.wav")
-		local shopframe = vgui.Create("DUpgradesShopFrame")
-		shopframe:SetUpUpgradeMenu(id, wepslot)
-		GAMEMODE.m_PointsShop:SetVisible(false)
-	else
-		surface.PlaySound("buttons/button8.wav")
-	end
-end
-
 function PANEL:Init()
 	local screenscale = BetterScreenScale()
 	self:SetText("")
@@ -331,7 +312,18 @@ function PANEL:DoClick()
 	if not tab then return end
 	if self.m_LastIsUpgradeBtn or self.m_LastAbleToBuy then
 		if self.m_LastIsUpgradeBtn then
-			OpenUpgradesShop(tab.SWEP, GAMEMODE.m_PointsShop.m_LoadoutSlot, id)
+			local ispurchasedweapon = true
+			if GAMEMODE:IsClassicMode() then
+				ispurchasedweapon = (GAMEMODE.ClassicModePurchasedThisWave[tab.SWEP] or GAMEMODE.ClassicModeInsuredWeps[tab.SWEP])
+			end
+			if ispurchasedweapon then
+				surface.PlaySound("buttons/button17.wav")
+				local shopframe = vgui.Create("DUpgradesShopFrame")
+				shopframe:SetUpUpgradeMenu(id,GAMEMODE.m_PointsShop.m_LoadoutSlot)
+				GAMEMODE.m_PointsShop:SetVisible(false)
+			else
+				surface.PlaySound("buttons/button8.wav")
+			end
 			return
 		end
 		surface.PlaySound("buttons/button17.wav")
@@ -635,7 +627,7 @@ function PANEL:UpdatePointsShopClassic()
 	end
 
 	local list = nil
-
+	
 	for i, tab in ipairs(GAMEMODE.Items) do
 		if not (tab.NoClassicMode) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and MySelf:GetWeapon(tab.SWEP) and MySelf:GetWeapon(tab.SWEP):IsValid())) then 
 			for catid, catname in ipairs(GAMEMODE.ItemCategories) do
@@ -665,68 +657,95 @@ function PANEL:UpdatePointsShopClassic()
 	self:InvalidateLayout()
 end
 
-
 function PANEL:UpdatePointsShop(weaponslot)
-
 	if GAMEMODE:IsClassicMode() then
 		self:UpdatePointsShopClassic()
 		return 
 	end
 
-	local titleString = {
-		[WEAPONLOADOUT_SLOT1] = "pointshop_title_guns1",
-		[WEAPONLOADOUT_SLOT2] = "pointshop_title_guns2",
-		[WEAPONLOADOUT_MELEE] = "pointshop_title_melee",
-		[WEAPONLOADOUT_TOOLS] = "pointshop_title_tools"
-	}
-
 	local currentweppanel = nil
 	local currentweplist = nil
 	local currentwepcatname = nil
 	
-	local currentslotwep = MySelf:GetWeaponLoadoutBySlot(weaponslot)
-	if !(weaponslot == WEAPONLOADOUT_NULL || currentslotwep == nil) then
-		self.m_TitleLabel:SetText(translate.Get(titleString[weaponslot]))
-	end
-
+	local wep = nil
+	if weaponslot == WEAPONLOADOUT_SLOT1 then
+		self.m_TitleLabel:SetText(translate.Get("pointshop_title_guns1"))
+		wep = MySelf:GetWeapon1()
+	elseif weaponslot == WEAPONLOADOUT_SLOT2 then
+		self.m_TitleLabel:SetText(translate.Get("pointshop_title_guns2"))
+		wep = MySelf:GetWeapon2()
+	elseif weaponslot == WEAPONLOADOUT_MELEE then
+		self.m_TitleLabel:SetText(translate.Get("pointshop_title_melee"))
+		wep = MySelf:GetWeaponMelee()
+	elseif weaponslot == WEAPONLOADOUT_TOOLS then
+		self.m_TitleLabel:SetText(translate.Get("pointshop_title_tools"))
+		wep = MySelf:GetWeaponToolslot()	
+	end	
+	
 	self.m_TitleLabel:SizeToContents()
 	self.m_TitleLabel:CenterHorizontal()		
+
+	if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
+		self.m_ShopScrollList:Clear()
+	end
 
 	local list = nil
 
 	if self.m_ShopScrollList and ispanel(self.m_ShopScrollList) then
-		self.m_ShopScrollList:Clear()
 		list = self.m_ShopScrollList
+		local catid = nil
+		local currentslotwep = ""
+		if (weaponslot == WEAPONLOADOUT_SLOT1 or weaponslot == WEAPONLOADOUT_SLOT2) then
+			currentslotwep = weaponslot == WEAPONLOADOUT_SLOT1 and MySelf:GetWeapon1() or MySelf:GetWeapon2()
+			catid = ITEMCAT_GUNS
 
-		local catid = WeaponSlotToCatID(weaponslot)
-		local weaponclassbuttons = {}
-		local classrange = GAMEMODE.WeaponClassItemCatRanges[catid]
-		local minclass, maxclass = classrange[1], classrange[2] or classrange[1]
-		for i = minclass, maxclass, 1 do
-			local wepclassitems = GAMEMODE.ItemsWepClass[i]
-			for j, tab in ipairs(wepclassitems) do
-				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
-				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) then
-					if (tab.SWEP and tab.SWEP == currentslotwep) or !tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) then
-						--PrintTable(tab)
-						local itembut = nil
-						if weaponclassbuttons[i] and IsValid(weaponclassbuttons[i]) and ispanel(weaponclassbuttons[i]) then
-							itembut = weaponclassbuttons[i]
-						else
-							itembut = vgui.Create("ShopItemButton")
+			for i = 1, 15 do
+				local wepclassitems = GAMEMODE.ItemsWepClass[i]
+				for j, tab in ipairs(wepclassitems) do
+					if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+					not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) and 
+					(!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and tab.SWEP == currentslotwep)) then 
+						if tab.Category == catid then
+							PrintTable(tab)
+							local itembut = vgui.Create("ShopItemButton")
+							itembut:SetupItemButton(tab.ID,weaponslot)
+							itembut:Dock(TOP)
 							list:AddItem(itembut)
-							weaponclassbuttons[i] = itembut
+							if tab.SWEP == wep then 
+								self.CurrentID = tab.ID
+								SetViewer(tab)
+								currentweppanel = itembut
+								currentweplist = list
+							end
+							break
 						end
-						itembut:SetupItemButton(tab.ID,weaponslot)
+					end
+				end
+			end
+		else
+			for i, tab in ipairs(GAMEMODE.Items) do
+				if weaponslot == WEAPONLOADOUT_MELEE then
+					currentslotwep = MySelf:GetWeaponMelee()
+					catid = ITEMCAT_MELEE 
+				elseif weaponslot == WEAPONLOADOUT_TOOLS then
+					currentslotwep = MySelf:GetWeaponToolslot()
+					catid = ITEMCAT_TOOLS
+				elseif (weaponslot == WEAPONLOADOUT_NULL or not weaponslot) then
+					catid = ITEMCAT_CONS
+				end
+				if not (tab.NoSampleCollectMode and GAMEMODE:IsSampleCollectMode()) and 
+				not (tab.SampleCollectModeOnly and not GAMEMODE:IsSampleCollectMode()) and (!tab.Prerequisites or (tab.Prerequisites and table.IsEmpty(tab.Prerequisites)) or (tab.SWEP and tab.SWEP == currentslotwep)) then 
+					if tab.Category == catid then
+						local itembut = vgui.Create("ShopItemButton")
+						itembut:SetupItemButton(i,weaponslot)
 						itembut:Dock(TOP)
-
-						if tab.SWEP == currentslotwep then 
-							self.CurrentID = tab.ID
+						list:AddItem(itembut)
+						if tab.SWEP == wep then 
+							self.CurrentID = i
 							SetViewer(tab)
 							currentweppanel = itembut
 							currentweplist = list
 						end
-						break
 					end
 				end
 			end
@@ -860,38 +879,6 @@ local function SetViewer_upgrade(tab)
 	frame.RefusePurchaseLabel:MoveBelow(prevlabel, 4)
 end
 
-function PANEL:Init()
-	local screenscale = BetterScreenScale()
-	self:SetText("")
-	self:DockMargin(0, 0, 0, 2)
-	self:DockPadding(4, 4, 4, 4)
-
-	self.IconFrame = vgui.Create("DEXRoundedPanel", self)
-	self.IconFrame:SetWide(120*screenscale)
-	self.IconFrame:SetTall(60*screenscale-8)
-	self.IconFrame:Dock(FILL)
-	self.IconFrame:DockMargin(0, 8, 0, 8)
-	self.IconFrame:SetMouseInputEnabled(false)
-	
-	self.PriceLabel = EasyLabel(self, "", (screenscale > 0.9 and "ZSHUDFontSmallest" or "ZSHUDFontTiny"))
-	self.PriceLabel:SetWide(self.IconFrame:GetWide())
-	self.PriceLabel:SetContentAlignment(5)
-	self.PriceLabel:Dock(BOTTOM)
-	self.PriceLabel:DockMargin(0, 0, 0, 8)
-
-	textw, texth = self.PriceLabel:GetTextSize()
-	self:SetSize(120*screenscale + 8, 80*screenscale+texth)
-	
-	self.ItemCounter = vgui.Create("ItemAmountCounter", self.IconFrame)
-	
-	self.Think = UpgradeItemButtonThink
-	self.m_LastAbleToBuy = true
-	self.m_LastAbleToUpgrade = false
-	self.m_LastPrice = nil
-	self:SetupItemButton(nil,nil)
-	self.m_LoadoutSlot = WEAPONLOADOUT_NULL
-end
-
 function PANEL:DoClick()
 	local id = self.ID
 	local tab = FindItem(id)
@@ -917,55 +904,33 @@ function PANEL:Paint(w, h)
 	end
 	draw.RoundedBox(8, 0, 0, w, h, outline)
 	draw.RoundedBox(4, 4, 4, w - 8, h - 8, color_black)
-
 end
 
-function PANEL:SetupItemButton(id,slot)
-	self.ID = id
-	self.m_LoadoutSlot = slot
-	local tab = FindItem(id)
-
-	if not tab then
-		self.IconFrame:SetVisible(false)
-		self.ItemCounter:SetVisible(false)
-		return
-	end
-	if tab.SWEP then
-		self.IconFrame:SetVisible(true)
-		WeaponIconFill(tab.SWEP,self.IconFrame)
-	else
-		self.IconFrame = nil
-	end
-	if tab.SWEP or tab.Countables then
-		self.ItemCounter:SetItemID(id)
-		self.ItemCounter:SetVisible(true)
-	else
-		self.ItemCounter:SetVisible(false)
-	end
-
-	self:SetAlpha(255)
+function PANEL:Init()
+	self.Think = UpgradeItemButtonThink
 end
 
-vgui.Register("UpgradeItemButton", PANEL, "DButton")
+vgui.Register("UpgradeItemButton", PANEL, "ShopItemButton")
 
 PANEL = {}
 
 function PANEL:Init()
 	local screenscale = BetterScreenScale()
+	
 	self:SetText("")
 	self:DockMargin(0, 0, 0, 2)
 	self:DockPadding(4, 4, 4, 4)
+	self:SetTall(60*screenscale)
+	self:SetWide(120*screenscale)
 	
 	self.IconFrame = vgui.Create("DEXRoundedPanel", self)
-	self.IconFrame:Dock(FILL)
-	self.IconFrame:SetWide(120*screenscale)
 	self.IconFrame:SetTall(60*screenscale-8)
-	self.IconFrame:DockMargin(0, 8, 0 ,8)
+	self.IconFrame:SetWide(120*screenscale-8)
+	self.IconFrame:Dock(FILL)
+	self.IconFrame:DockMargin(0, 0, 8, 0)
 	self.IconFrame:SetMouseInputEnabled(false)
 
-	self:SetupItemLabel(nil)
-
-	self:SetSize(120*screenscale + 8, 80*screenscale)
+	self.m_LoadoutSlot = WEAPONLOADOUT_NULL
 	self:SetupItemLabel(nil)
 end
 
@@ -1016,6 +981,22 @@ local function upgrade_PurchaseButtonThink(self)
 		self:AlphaTo(75, 0.1, 0)
 	end
 end
+
+--[[function PANEL:Init()
+	self:SetText("")
+
+	self:DockPadding(4, 4, 4, 4)
+	self:SetTall(60)
+
+	self.BuyLabel = EasyLabel(self, translate.Get("upgrade_item"), "ZSHUDFontSmall")
+	self.BuyLabel:SetContentAlignment(5)
+	self.BuyLabel:Dock(FILL)
+
+	self.Think = upgrade_PurchaseButtonThink
+	self.m_LastAbleToBuy = true
+	self.m_LastPrice = nil
+	self.m_LastIsUpgradeBtn = false
+end]]
 
 function PANEL:Init()
 	self.Think = upgrade_PurchaseButtonThink
@@ -1169,10 +1150,15 @@ function PANEL:PerformLayout()
 	self.m_TopSpace.m_CostCounter:SetContentAlignment(6)
 	
 	self.m_CurrentItemLabel:AlignLeft(4)
-	self.m_CurrentItemLabel:SetY(32)
+	self.m_CurrentItemLabel:CenterVertical()
 	
 	self.m_CenterImg:MoveRightOf(self.m_CurrentItemLabel,4)
 	self.m_CenterImg:CenterVertical()	
+	
+	self.m_UpgradesScrollList:SetPadding(2)
+	self.m_UpgradesScrollList:SetWide(self.m_LeftPanel:GetWide() - (self.m_CurrentItemLabel:GetWide() + self.m_CenterImg:GetWide()+16))
+	self.m_UpgradesScrollList:MoveRightOf(self.m_CenterImg,4)
+	self.m_UpgradesScrollList:CenterVertical()
 	
 	self.m_CloseButton:SetTall(topspacetall)
 	self.m_CloseButton:SetWide(128*screenscale)
@@ -1241,9 +1227,8 @@ function PANEL:Init()
 	local bottomspace = vgui.Create("DPanel", self)
 	self.m_BottomSpace = bottomspace
 	
-	local upgradepanel = vgui.Create("DPanPanel",self)
+	local upgradepanel = vgui.Create("DPanel",self)
 	self.m_LeftPanel = upgradepanel
-	self.m_LeftPanel.Paint = upgradePanPanelPaint
 	
 	local currentitemlabel = vgui.Create("ShopUpgradeCurrentItemLabel",upgradepanel)
 	self.m_CurrentItemLabel = currentitemlabel
@@ -1252,6 +1237,10 @@ function PANEL:Init()
 	centerarrowimg:SetSize(48, 48)
 	centerarrowimg:SetMouseInputEnabled(false)
 	self.m_CenterImg = centerarrowimg
+	
+	local list = vgui.Create("DScrollPanel", upgradepanel)
+	list:SetPaintBackground(false)
+	self.m_UpgradesScrollList = list
 	
 	local rightinfopanel = vgui.Create("DPanel",self)
 	self.m_RightPanel = rightinfopanel
@@ -1297,30 +1286,23 @@ function PANEL:PopulateUpgradeList(id, weaponslot, upgrademode)
 	local screenscale = BetterScreenScale()
 	local tab = FindItem(id)
 	if not tab then return end
-
-	for i, upgradepath in ipairs(GetPossibleWepUpgradePaths(id)) do
-		for j, upgrade in ipairs(upgradepath) do
-			
-		end
-	end
 	local itemslist = upgrademode and FindWeaponConsequents(id) or FindWeaponPrerequisites(id)
 	if not istable(itemslist) then itemslist = {} end
+	self.m_UpgradesScrollList:Clear()
 	if !table.IsEmpty(itemslist) then
 		local numitems = #itemslist
+		self.m_UpgradesScrollList:SetTall((62*math.min(numitems,5))*screenscale)
+		self.m_UpgradesScrollList:CenterVertical()
 		for _, sig in ipairs(itemslist) do
 			local itembut = vgui.Create("UpgradeItemButton")
 			itembut:SetupItemButton(sig,weaponslot)
-			itembut:SetParent(self.m_LeftPanel)
-			itembut:SetPos(4, self.m_CurrentItemLabel:GetTall() + 64 + (_-1) * ( 32 + itembut:GetTall()) )
+			itembut:Dock(TOP)
+			self.m_UpgradesScrollList:AddItem(itembut)
 		end
 		self.RefusePurchaseLabel:SetText("")
 	else
 		self.RefusePurchaseLabel:SetText(self.m_IsRevertMode and translate.Get("weapon_has_no_prerequisites") or translate.Get("weapon_has_no_upgrades"))
 	end
-end
-
-local function upgradePanPanelPaint(wid, hei)
-	
 end
 
 function PANEL:SetUpUpgradeMenu(id, weaponslot)
@@ -1337,8 +1319,9 @@ function PANEL:SetUpUpgradeMenu(id, weaponslot)
 	self.m_TitleLabel:SetText(translate.Format("upgrading_x",nametext))
 	self.PurchaseSelectedButton.BuyLabel:SetText(self.m_IsRevertMode and translate.Get("revert_item") or translate.Get("upgrade_item"))
 	self.m_CurrentItemLabel:SetupItemLabel(tab.Signature)
+	self.m_UpgradesScrollList:SetTall(60*screenscale)
 	self:SetCurrentUpgradeMode(false)
-	self:PopulateUpgradeList(tab.Signature, weaponslot, true)
+	self:PopulateUpgradeList(id,weaponslot,true)
 	SetViewer_upgrade(tab)
 end
 
@@ -1346,7 +1329,9 @@ vgui.Register("DUpgradesShopFrame", PANEL, "DFrame")
 
 function GM:OpenPointsShop(weaponslot)
 	local oldpointshop = nil
-
+	--[[if self.m_UpgradesShop and self.m_UpgradesShop:Valid() then
+		self.m_UpgradesShop:Close()
+	end]]
 	if self.m_PointsShop and self.m_PointsShop:Valid() then
 		oldpointshop = self.m_PointsShop
 	end
@@ -1355,18 +1340,6 @@ function GM:OpenPointsShop(weaponslot)
 	if oldpointshop and oldpointshop:Valid() and ispanel(oldpointshop) then
 		oldpointshop:Close()
 	end
-	local toupgrade
-	if (GAMEMODE:IsClassicMode()) then
-		local activewep = MySelf:GetActiveWeapon()
-		if activewep and activewep:IsValid() then toupgrade = activewep:GetClass() end
-	else
-		toupgrade = GetWeaponLoadoutBySlot(weaponslot)
-	end
-	local tab = FindItembyClass(toupgrade)
-	if tab and !(table.IsEmpty(FindWeaponConsequents(tab.ID)) and table.IsEmpty(FindWeaponPrerequisites(tab.ID))) then
-		OpenUpgradesShop(toupgrade, weaponslot)
-	end
-
 end
 
 GM.OpenPointShop = GM.OpenPointsShop
