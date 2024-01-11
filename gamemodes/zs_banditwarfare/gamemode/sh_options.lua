@@ -325,7 +325,7 @@ local item = GM:AddPointShopWeapon(1,"crowbar", 52, "weapon_zs_crowbar", WEAPONC
 GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"shovel", 55, "weapon_zs_shovel", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
-local item = GM:AddPointShopWeapon(1,"wrench", 40, "weapon_zs_wrench", WEAPONCLASS_MELEE_UTIL)
+local item = GM:AddPointShopWeapon(1,"zpcpot", 60, "weapon_zs_pot", WEAPONCLASS_MELEE_UTIL)
 GM:AddWeaponPrerequisite(item,"zpplnk")
 local item = GM:AddPointShopWeapon(1,"pipe", 55, "weapon_zs_pipe", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"zslamp")
@@ -345,8 +345,13 @@ GM:AddWeaponPrerequisite(item,"keyboard")
 local item = GM:AddPointShopWeapon(2,"greataxe", 90, "weapon_zs_greataxe", WEAPONCLASS_MELEE_DEFENSIVE)
 GM:AddWeaponPrerequisite(item,"breenbust")
 
+
 local item = GM:AddPointShopWeapon(3,"energysword", 145, "weapon_zs_energysword", WEAPONCLASS_MELEE_BLADED)
 GM:AddWeaponPrerequisite(item,"longsword")
+local item = GM:AddPointShopWeapon(3,"wrench", 160, "weapon_zs_wrench", WEAPONCLASS_MELEE_UTIL)
+GM:AddWeaponPrerequisite(item,"crowbar")
+GM:AddWeaponPrerequisite(item,"shovel")
+GM:AddWeaponPrerequisite(item,"pot")
 local item = GM:AddPointShopWeapon(3,"megamasher", 150, "weapon_zs_megamasher", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"sledgehammer")
 -- Power Punhcer
