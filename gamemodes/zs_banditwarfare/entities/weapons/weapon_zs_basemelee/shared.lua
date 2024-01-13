@@ -267,7 +267,6 @@ function SWEP:PostHitUtil(owner, hitent, dmginfo, tr, vel)
 		effectdata:SetNormal(tr.HitNormal)
 		util.Effect("RagdollImpact", effectdata)
 		if not tr.HitSky then
-			effectdata:SetFlags(0x1)
 			effectdata:SetSurfaceProp(tr.SurfaceProps)
 			effectdata:SetDamageType(self.FakeDamageType and self.FakeDamageType or self.DamageType)
 			effectdata:SetHitBox(tr.HitBox)

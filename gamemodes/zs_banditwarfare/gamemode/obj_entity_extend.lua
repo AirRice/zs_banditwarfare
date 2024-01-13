@@ -126,16 +126,32 @@ function meta:CollisionRulesChanged()
 	self.m_OldCollisionGroup = nil
 end
 
-function meta:HitByHammer(wep, pl, tr)
+function meta:DefaultHitByHammer(wep, pl, tr)
 	if not IsValid(pl) and pl:IsPlayer() then return end
 	local healstrength = GAMEMODE.NailHealthPerRepair * (pl.HumanRepairMultiplier or 1) * (wep.HealStrength or 1)
-	if self:IsNailed() and self:IsSameTeam(pl) then
-		local oldhealth = self:GetBarricadeHealth()
-		if oldhealth <= 0 or oldhealth >= self:GetMaxBarricadeHealth() or self:GetBarricadeRepairs() <= 0 then return end
-		self:SetBarricadeHealth(math.min(self:GetMaxBarricadeHealth(), self:GetBarricadeHealth() + math.min(self:GetBarricadeRepairs(), healstrength)))
-		local healed = self:GetBarricadeHealth() - oldhealth
-		self:SetBarricadeRepairs(math.max(self:GetBarricadeRepairs() - healed, 0))
-		gamemode.Call("PlayerRepairedObject", pl, self, healed, wep)
+	local owner = nil
+	if self.GetObjectOwner and self:GetObjectOwner():IsPlayer() then
+		owner = self:GetObjectOwner()
+	elseif self.GetOwner and self:GetOwner():IsPlayer() then
+		owner = self:GetOwner()
+	end
+	local nailedprop = self:IsNailed()
+	if !nailedprop && !IsValid(owner) then return end
+	if self:IsSameTeam(pl) then
+		local oldhealth = nailedprop and self:GetBarricadeHealth() or self:GetObjectHealth()
+		local maxhealth = nailedprop and self:GetMaxBarricadeHealth() or self:GetMaxObjectHealth()
+		local healed = 0
+		if oldhealth <= 0 or oldhealth >= maxhealth or self.m_LastDamaged and CurTime() < self.m_LastDamaged + 0.5 then return end
+		if nailedprop then
+			if self:GetBarricadeRepairs() <= 0 then return end
+			self:SetBarricadeHealth(math.min(maxhealth, self:GetBarricadeHealth() + math.min(self:GetBarricadeRepairs(), healstrength)))
+			healed = self:GetBarricadeHealth() - oldhealth
+			self:SetBarricadeRepairs(math.max(self:GetBarricadeRepairs() - healed, 0))
+		else
+			self:SetObjectHealth(math.min(maxhealth, self:GetObjectHealth() + healstrength/2))
+			healed = self:GetObjectHealth() - oldhealth
+		end
+		gamemode.Call("PlayerRepairedObject", pl, self, healed / (nailedprop and 1 or 2), wep)
 		return true
 	end
 	return false

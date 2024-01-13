@@ -59,16 +59,7 @@ function SWEP:OnMeleeHit(hitent, hitflesh, tr)
 	if hitent:IsValid() then
 		local healstrength = GAMEMODE.NailHealthPerRepair * (self:GetOwner().HumanRepairMultiplier or 1) * (self.HealStrength or 1)
 		local didrepair = false
-		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr) then
-			didrepair = true
-		elseif hitent.GetObjectHealth and 
-		(hitent.GetObjectOwner and hitent:GetObjectOwner():IsPlayer() and hitent:GetObjectOwner():Team() == self:GetOwner():Team() or 
-		hitent.GetOwner and hitent:GetOwner():IsPlayer() and hitent:GetOwner():Team() == self:GetOwner():Team()) then
-			local oldhealth = hitent:GetObjectHealth()
-			if oldhealth <= 0 or oldhealth >= hitent:GetMaxObjectHealth() or hitent.m_LastDamaged and CurTime() < hitent.m_LastDamaged + 0.5 then return end
-			hitent:SetObjectHealth(math.min(hitent:GetMaxObjectHealth(), hitent:GetObjectHealth() + healstrength/2))
-			local healed = hitent:GetObjectHealth() - oldhealth
-			gamemode.Call("PlayerRepairedObject", self:GetOwner(), hitent, healed / 2, self)
+		if hitent.HitByHammer and hitent:HitByHammer(self, self:GetOwner(), tr)  or hitent:DefaultHitByHammer(self, self:GetOwner(), tr) then
 			didrepair = true
 		end
 		if didrepair then
