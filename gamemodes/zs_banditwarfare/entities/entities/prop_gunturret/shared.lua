@@ -280,13 +280,13 @@ end
 
 function ENT:HitByHammer(wep, pl, tr)
 	local owner = self:GetObjectOwner()
-	if not (IsValid(pl) and IsValid(owner) and owner:IsPlayer() and pl:IsPlayer() and owner:Team() == pl:Team()) then return end
+	if not (IsValid(pl) and IsValid(owner) and owner:IsPlayer() and pl:IsPlayer() and owner:Team() == pl:Team()) then return false end
 	if self:GetObjectHealth() >= self:GetMaxObjectHealth() then 
 		local curammo = self:GetAmmo()
-		if curammo > self.MaxAmmo then return end
+		if curammo >= self.MaxAmmo then return end
 		self:SetAmmo(math.min(self.MaxAmmo,curammo + 40))
 		self:EmitSound("npc/turret_floor/click1.wav")
-		gamemode.Call("PlayerRepairedObject", self:GetOwner(), self, 20, self)
+		gamemode.Call("PlayerRepairedObject", owner, self, 20, self)
 		return true
 	end
 	return false

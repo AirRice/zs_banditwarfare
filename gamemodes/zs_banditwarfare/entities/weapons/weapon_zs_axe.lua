@@ -31,13 +31,12 @@ SWEP.MeleeKnockBack = 32
 
 SWEP.Primary.Delay = 1.25
 SWEP.WalkSpeed = SPEED_FAST
+SWEP.DamageType = DMG_SLASH
 
 SWEP.SwingTime = 0.6
 SWEP.SwingRotation = Angle(0, -20, -40)
 SWEP.SwingOffset = Vector(10, 0, 0)
 SWEP.SwingHoldType = "melee"
-
-SWEP.HitDecal = "Manhackcut"
 
 function SWEP:PlaySwingSound()
 	self:EmitSound("weapons/iceaxe/iceaxe_swing1.wav", 75, math.random(65, 70))

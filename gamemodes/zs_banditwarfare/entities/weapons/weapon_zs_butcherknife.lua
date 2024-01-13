@@ -39,7 +39,6 @@ SWEP.UseMelee1 = true
 SWEP.HitGesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE
 SWEP.MissGesture = SWEP.HitGesture
 
-SWEP.HitDecal = "Manhackcut"
 SWEP.HitAnim = ACT_VM_MISSCENTER
 
 SWEP.MovementBonusResetDelay = 4

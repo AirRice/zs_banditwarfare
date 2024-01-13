@@ -24,8 +24,6 @@ SWEP.WalkSpeed = SPEED_FASTEST
 
 SWEP.Primary.Delay = 0.35
 
-SWEP.HitDecal = "Manhackcut"
-
 SWEP.HitGesture = ACT_HL2MP_GESTURE_RANGE_ATTACK_KNIFE
 SWEP.MissGesture = SWEP.HitGesture
 

@@ -38,7 +38,6 @@ SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
 SWEP.ShowWorldModel = false
 SWEP.ShowViewModel = false
 SWEP.UseHands = true
-SWEP.HitDecal = "Manhackcut"
 
 SWEP.MeleeDamage = 35
 SWEP.MeleeRange = 60

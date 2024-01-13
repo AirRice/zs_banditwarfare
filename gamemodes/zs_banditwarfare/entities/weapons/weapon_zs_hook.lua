@@ -111,7 +111,7 @@ function SWEP:PlayerHitUtil(owner, damage, hitent, dmginfo)
 end
 
 function SWEP:CanPrimaryAttack()
-	if self:IsHit() then return false end
+	if self:GetIsHit() then return false end
 
 	return self.BaseClass.CanPrimaryAttack(self)
 end

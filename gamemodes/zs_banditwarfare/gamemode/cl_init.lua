@@ -58,8 +58,8 @@ hook.Add("InitPostEntity", "GetLocal", function()
 end)
 
 -- Remove when model decal crash is fixed.
-function util.Decal()
-end
+/*function util.Decal()
+end*/
 
 -- Save on global lookup time.
 local render = render

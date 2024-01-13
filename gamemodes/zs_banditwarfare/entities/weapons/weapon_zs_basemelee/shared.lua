@@ -34,8 +34,6 @@ SWEP.SwingHoldType = "grenade"
 SWEP.DamageType = DMG_SLASH
 
 SWEP.BloodDecal = "Blood"
-SWEP.HitDecal = "Impact.Concrete"
-
 SWEP.HitAnim = ACT_VM_HITCENTER
 SWEP.MissAnim = ACT_VM_MISSCENTER
 
@@ -197,7 +195,9 @@ function SWEP:MeleeSwing()
 			self:PlayHitSound()
 		end
 	else
-		--util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		if self.HitDecal then
+			--util.Decal(self.HitDecal, tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		end
 		self:PlayHitSound()
 	end
 
@@ -260,18 +260,20 @@ function SWEP:PostHitUtil(owner, hitent, dmginfo, tr, vel)
 			hitent:ThrowFromPositionSetZ(tr.StartPos, knockback, nil, true)
 		end
 	end
-
-	local effectdata = EffectData()
-	effectdata:SetOrigin(tr.HitPos)
-	effectdata:SetStart(tr.StartPos)
-	effectdata:SetNormal(tr.HitNormal)
-	util.Effect("RagdollImpact", effectdata)
-	if not tr.HitSky then
-		effectdata:SetSurfaceProp(tr.SurfaceProps)
-		effectdata:SetDamageType(self.FakeDamageType and self.FakeDamageType or self.DamageType)
-		effectdata:SetHitBox(tr.HitBox)
-		effectdata:SetEntity(hitent)
-		util.Effect("Impact", effectdata)
+	if IsFirstTimePredicted() then
+		local effectdata = EffectData()
+		effectdata:SetOrigin(tr.HitPos)
+		effectdata:SetStart(tr.StartPos)
+		effectdata:SetNormal(tr.HitNormal)
+		util.Effect("RagdollImpact", effectdata)
+		if not tr.HitSky then
+			effectdata:SetFlags(0x1)
+			effectdata:SetSurfaceProp(tr.SurfaceProps)
+			effectdata:SetDamageType(self.FakeDamageType and self.FakeDamageType or self.DamageType)
+			effectdata:SetHitBox(tr.HitBox)
+			effectdata:SetEntity(hitent)
+			util.Effect("Impact", effectdata)
+		end
 	end
 	if self.MeleeFlagged then self.IsMelee = nil end
 end

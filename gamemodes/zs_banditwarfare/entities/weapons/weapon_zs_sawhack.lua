@@ -28,7 +28,7 @@ SWEP.WorldModel = "models/weapons/w_crowbar.mdl"
 SWEP.UseHands = true
 
 SWEP.HoldType = "melee2"
-
+SWEP.DamageType = DMG_SLASH
 SWEP.Primary.Delay = 0.45
 
 SWEP.MeleeDamage = 20
@@ -45,7 +45,6 @@ SWEP.HoldType = "melee2"
 SWEP.SwingHoldType = "melee"
 SWEP.SpecialHoldType = "slam"
 
-SWEP.HitDecal = "Manhackcut"
 SWEP.HitAnim = ACT_VM_MISSCENTER
 
 SWEP.BlockingPos = Vector(34, 10, -10)
