@@ -80,7 +80,7 @@ function SWEP:Attack(proj)
 	if proj:IsValid() and (!proj.Twister or proj.Twister == nil or !IsValid(proj.Twister)) then
 		self:GetOwner():EmitSound("weapons/ar1/ar1_dist"..math.random(2)..".wav")
 		self:TakeAmmo()
-	
+		self.LastAttemptedShot = CurTime()
 		local owner = self:GetOwner()
 		--owner:MuzzleFlash()
 		self:SendWeaponAnimation()

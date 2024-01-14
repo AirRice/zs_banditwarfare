@@ -792,7 +792,7 @@ end
 function GM:PlayerRepairedObject(pl, other, health, wep)
 	if self:GetWave() == 0 then return end
 
-	pl.RepairedThisRound = pl.RepairedThisRound + health
+	pl.RepairedThisRound = (pl.RepairedThisRound or 0) + health
 	pl.CarryOverRepair = (pl.CarryOverRepair or 0) + health
 
 	local hpperpoint = self.RepairHealthPerPoint

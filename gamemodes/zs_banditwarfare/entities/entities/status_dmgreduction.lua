@@ -10,10 +10,6 @@ ENT.LifeTime = 5
 
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
-
-	self:SetModel(self.Model)
-	self:DrawShadow(false)
-
 	if SERVER then
 		hook.Add("EntityTakeDamage", self, self.EntityTakeDamage)
 	end
@@ -22,7 +18,7 @@ function ENT:Initialize()
 		hook.Add("PrePlayerDraw", self, self.PrePlayerDraw)
 		hook.Add("PostPlayerDraw", self, self.PostPlayerDraw)
 	end
-	--self:EmitSound("beams/beamstart5.wav", 65, 140)
+	self:EmitSound("beams/beamstart5.wav", 65, 140)
 	self.DieTime = CurTime() + self.LifeTime
 end
 

@@ -109,6 +109,28 @@ function PANEL:Init()
 
 	self:ParentToHUD()
 	self:InvalidateLayout()
+
+	local dmgreductionstatus = vgui.Create("ZSHealthStatus", contents)
+	dmgreductionstatus:SetTall(20)
+	dmgreductionstatus:SetAlpha(200)
+	dmgreductionstatus:SetColor(Color(22, 175, 175))
+	dmgreductionstatus:SetTranslateMemberName("statusname_dmgreduction")
+	dmgreductionstatus.GetNameOverride = function(me)
+		return translate.Get("statusname_dmgreduction") .. " X "..self.DamageReduction
+	end
+	dmgreductionstatus.GetMemberValue = function(me)
+		local lp = LocalPlayer()
+		if lp:IsValid() then
+			local status = lp:GetStatus("dmgreduction")
+			if status and status:IsValid() then
+				return status.DieTime - CurTime()
+			end
+		end
+
+		return 0
+	end
+	dmgreductionstatus.MemberMaxValue = 5
+	dmgreductionstatus:Dock(TOP)
 end
 
 function PANEL:PerformLayout()
@@ -392,6 +414,9 @@ function PANEL:Paint()
 
 	local t1 = math.ceil(value)
 	local membername = translate.Get(self:GetTranslateMemberName())
+	if self.GetNameOverride then
+		membername = self:GetNameOverride()
+	end
 	draw.SimpleText(t1, "DefaultFontLarge", w - 3, h / 2 + 1, color_black, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	draw.SimpleText(t1, "DefaultFontLarge", w - 4, h / 2, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
 	draw.SimpleText(membername, "DefaultFontLarge", 5, h / 2 + 1, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)

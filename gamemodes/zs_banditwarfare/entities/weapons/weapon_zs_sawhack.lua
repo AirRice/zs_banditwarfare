@@ -196,11 +196,12 @@ if SERVER then
 		local owner = self:GetOwner()
 		local lasthitgroup = owner:LastHitGroup()
 		local attackweapon = (attacker:IsPlayer() and attacker:GetActiveWeapon() or nil)
-		if attacker:IsPlayer() then
+		if self:GetBlocking() and attacker:IsPlayer() and owner:IsPlayer() and owner:Alive() then
 			local center = owner:LocalToWorld(owner:OBBCenter())
 			local hitpos = owner:NearestPoint(dmginfo:GetDamagePosition())
-			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and owner:IsPosInBoneRange(hitpos, "ValveBiped.Bip01_Head1", 24) and math.random(10) > 3 then
-				local reflectdmginfo = dmginfo
+			local attackerpos = attacker:GetPos()
+			if dmginfo:IsDamageType(DMG_BULLET) and not (attackweapon and attackweapon.IgnoreDamageScaling) and owner:IsPosInBoneRange(hitpos, "ValveBiped.Bip01_Head1", 24) and (attackerpos - center):GetNormalized():Dot(owner:GetAimVector()) > 0.1 and math.random(10) > 3 then
+				local reflectdmg = dmginfo:GetDamage()
 				dmginfo:SetDamage(0)
 				local effectdata = EffectData()
 					effectdata:SetOrigin(center)
@@ -210,9 +211,8 @@ if SERVER then
 				util.Effect("shadedeflect", effectdata, true, true)
 
 				local reflectTarget = self:GetClosestReflectTarget()
-				local damage = reflectdmginfo:GetDamage()
 				if IsValid(reflectTarget) && reflectTarget:IsPlayer() && IsFirstTimePredicted() then
-					self:FireBullets({Num = 1, Src = hitpos, Dir = reflectTarget:EyePos() - hitpos, Spread = Vector(0.15, 0.15, 0), Tracer = 1, TracerName = "rico_trace", Force = damage * 0.15, Damage = damage, Callback = GenericBulletCallback})
+					owner:FireBullets({Num = 1, Src = hitpos, Dir = (reflectTarget:GetShootPos() - hitpos):GetNormalized(), Spread = Vector(0.05, 0.05, 0), Tracer = 1, TracerName = "rico_trace", Force = reflectdmg * 0.15, Damage = reflectdmg, Callback = GenericBulletCallback})
 				end
 			end
 		end
@@ -233,7 +233,7 @@ if SERVER then
 				selectedTarget = ent
 			end
 		end
-		if (selectedTarget and selectedTarget:IsValid() and WorldVisible(mypos,selectedTarget:WorldSpaceCenter())) then
+		if (selectedTarget and selectedTarget:IsValid() and TrueVisible(mypos,selectedTarget:GetShootPos())) then
 			return selectedTarget
 		else
 			return nil
