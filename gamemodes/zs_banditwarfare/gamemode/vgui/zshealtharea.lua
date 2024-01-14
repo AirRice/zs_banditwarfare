@@ -116,7 +116,7 @@ function PANEL:Init()
 	dmgreductionstatus:SetColor(Color(22, 175, 175))
 	dmgreductionstatus:SetTranslateMemberName("statusname_dmgreduction")
 	dmgreductionstatus.GetNameOverride = function(me)
-		return translate.Get("statusname_dmgreduction") .. " X "..self.DamageReduction
+		return translate.Get("statusname_dmgreduction") .. " +"..self.DamageReduction
 	end
 	dmgreductionstatus.GetMemberValue = function(me)
 		local lp = LocalPlayer()

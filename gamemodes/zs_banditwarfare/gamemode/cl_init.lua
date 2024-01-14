@@ -1061,7 +1061,11 @@ function GM:_CreateMove(cmd)
 		self:CreateMoveTaunt(cmd)
 		return
 	end
-
+	if !MySelf:GetCanJump() then
+		if bit.band(cmd:GetButtons(), IN_JUMP) ~= 0 then
+			cmd:SetButtons(cmd:GetButtons() - IN_JUMP)
+		end
+	end
 	-- Anti spaz out method A. Forces player to stay ducking until 0.5s after landing if they crouch in mid-air AND disables jumping during that time.
 	if MySelf:Team() == TEAM_HUMAN or MySelf:Team() == TEAM_BANDIT then
 		-- Forces duck to be held for 0.5s after pressing it if in mid-air

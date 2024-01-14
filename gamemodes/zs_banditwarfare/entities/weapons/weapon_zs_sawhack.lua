@@ -143,6 +143,10 @@ function SWEP:CanPrimaryAttack()
 	return true
 end
 
+function SWEP:GetCanJump()
+	return !self:GetBlocking()
+end
+
 function SWEP:Think()
     if self:GetOwner():KeyReleased(IN_ATTACK2) or not self:GetOwner():Alive() or self:GetOwner():Health() <= 0 then
 		self:SetBlocking( false )

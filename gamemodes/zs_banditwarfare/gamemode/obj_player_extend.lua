@@ -426,16 +426,25 @@ function meta:ResetSpeed(noset)
 	return speed
 end
 
+function meta:GetCanJump()
+	local wep = self:GetActiveWeapon()
+	if self:GetBarricadeGhosting() or wep.GetCanJump and !wep:GetCanJump() then
+		return false
+	else
+		return true
+	end
+end
+
 function meta:ResetJumpPower(noset)
 	local power = DEFAULT_JUMP_POWER
+	local wep = self:GetActiveWeapon()
 
 	if self:Team() == TEAM_HUMAN or self:Team() == TEAM_BANDIT then
-		if self:GetBarricadeGhosting() then
+		if not self:GetCanJump() then
 			power = power * 0.25
 			if not noset then
 				self:SetJumpPower(power)
 			end
-
 			return power
 		end
 	end
