@@ -318,6 +318,7 @@ LANGUAGE.statusname_bodyarmor						= "BODY ARMOR"
 LANGUAGE.statusname_poisonrecover					= "POISON RECOVERY"
 LANGUAGE.statusname_toxic							= "OVERDOSE"
 LANGUAGE.statusname_bleeding						= "BLEEDING"
+LANGUAGE.statusname_dmgreduction					= "DEFENSE"
 
 LANGUAGE.ammo_medical_energy						= "Medical Energy"
 

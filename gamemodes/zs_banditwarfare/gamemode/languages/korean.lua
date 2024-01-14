@@ -307,6 +307,7 @@ LANGUAGE.statusname_bodyarmor						= "방탄복"
 LANGUAGE.statusname_poisonrecover					= "독 회복중"
 LANGUAGE.statusname_toxic							= "중독됨"
 LANGUAGE.statusname_bleeding						= "출혈"
+LANGUAGE.statusname_dmgreduction					= "방어력"
 
 LANGUAGE.ammo_medical_energy						= "의료 에너지"
 
