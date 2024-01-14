@@ -264,25 +264,6 @@ if CLIENT then
 		end
 	end
 	SWEP.DrawWorldModelTranslucent = SWEP.DrawWorldModel
-
-	function SWEP:GetMuzzlePos( weapon, attachment )
-		if(!IsValid(weapon)) then return end
-		local origin = weapon:GetPos()
-		local angle = weapon:GetAngles()
-		if weapon:IsWeapon() and weapon:IsCarriedByLocalPlayer() then
-			if( IsValid( weapon:GetOwner() ) && GetViewEntity() == weapon:GetOwner() ) then
-				local viewmodel = weapon:GetOwner():GetViewModel()
-				if( IsValid( viewmodel ) ) then
-					weapon = viewmodel
-				end
-			end
-		end
-		local attachment = weapon:GetAttachment( attachment or 1 )
-		if( !attachment ) then
-			return origin, angle
-		end
-		return attachment.Pos, attachment.Ang
-	end
 	
 	local matBeam = Material("trails/laser")
 	local matGlow = Material("sprites/glow04_noz")

@@ -148,6 +148,25 @@ function SWEP:CalcViewModelView(vm, oldpos, oldang, pos, ang)
 	return pos, ang
 end
 
+function SWEP:GetMuzzlePos( weapon, attachment )
+	if(!IsValid(weapon)) then return end
+	local origin = weapon:GetPos()
+	local angle = weapon:GetAngles()
+	if weapon:IsWeapon() and weapon:IsCarriedByLocalPlayer() then
+		if( IsValid( weapon:GetOwner() ) && GetViewEntity() == weapon:GetOwner() ) then
+			local viewmodel = weapon:GetOwner():GetViewModel()
+			if( IsValid( viewmodel ) ) then
+				weapon = viewmodel
+			end
+		end
+	end
+	local attachment = weapon:GetAttachment( attachment or 1 )
+	if( !attachment ) then
+		return origin, angle
+	end
+	return attachment.Pos, attachment.Ang
+end
+
 function SWEP:DrawWeaponSelection(...)
 	return self:BaseDrawWeaponSelection(...)
 end
