@@ -364,7 +364,7 @@ function SWEP:GetBoneOrientation( basetab, name, ent, bone_override, buildup )
 end
 
 local allbones
-local hasGarryFixedBoneScalingYet = false
+local hasGarryFixedBoneScalingYet = true
 
 function SWEP:UpdateBonePositions(vm)
 	

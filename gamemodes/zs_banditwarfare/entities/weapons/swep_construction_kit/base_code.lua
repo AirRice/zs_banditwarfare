@@ -385,7 +385,7 @@ if CLIENT then
 	end
 	
 	local allbones
-	local hasGarryFixedBoneScalingYet = false
+	local hasGarryFixedBoneScalingYet = true
 
 	function SWEP:UpdateBonePositions(vm)
 		
