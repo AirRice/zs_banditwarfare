@@ -40,7 +40,7 @@ function ENT:HitByHammer(wep, pl, tr)
 	return false
 end
 
-function ENT:HitByWrench(wep, pl, tr)
+--[[function ENT:HitByWrench(wep, pl, tr)
 	if not (IsValid(pl) and pl:IsPlayer()) then return end
 	if self:GetTransmitterTeam() != pl:Team() and (pl:Team() == TEAM_HUMAN or pl:Team() == TEAM_BANDIT) and (self:GetTransmitterTeam() == TEAM_BANDIT or self:GetTransmitterTeam() == TEAM_HUMAN) then
 		if SERVER then
@@ -49,4 +49,4 @@ function ENT:HitByWrench(wep, pl, tr)
 		return true
 	end
 	return false
-end
+end]]
