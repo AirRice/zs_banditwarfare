@@ -175,7 +175,7 @@ killicon.Add("weapon_zs_ioncannon", "killicon/weapon_zs_ioncannon", color_white)
 
 killicon.Add("weapon_zs_lamp", "killicon/weapon_zs_lamp", color_white)
 killicon.Add("weapon_zs_longsword", "killicon/weapon_zs_longsword", color_white)
-
+killicon.Add("weapon_zs_cordlessdrill", "killicon/weapon_zs_cordlessdrill", color_white)
 killicon.Add("weapon_zs_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("prop_manhack", "killicon/weapon_zs_manhack", color_white)
 killicon.Add("weapon_zs_manhackcontrol", "killicon/weapon_zs_manhack", color_white)

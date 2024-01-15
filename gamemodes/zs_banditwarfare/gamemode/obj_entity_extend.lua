@@ -141,6 +141,9 @@ function meta:DefaultHitByHammer(wep, pl, tr)
 		local oldhealth = nailedprop and self:GetBarricadeHealth() or self:GetObjectHealth()
 		local maxhealth = nailedprop and self:GetMaxBarricadeHealth() or self:GetMaxObjectHealth()
 		local healed = 0
+		if nailedprop and wep.RepairsRegain then 
+			self:SetBarricadeRepairs(math.min(self:GetBarricadeRepairs() + wep.RepairsRegain, self:GetMaxBarricadeRepairs()))
+		end
 		if oldhealth <= 0 or oldhealth >= maxhealth or self.m_LastDamaged and CurTime() < self.m_LastDamaged + 0.5 then return end
 		if nailedprop then
 			if self:GetBarricadeRepairs() <= 0 then return end
