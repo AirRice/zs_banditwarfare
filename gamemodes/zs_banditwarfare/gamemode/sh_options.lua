@@ -293,11 +293,10 @@ GM:AddPointShopWeapon(0,"zslamp", 10, "weapon_zs_lamp", WEAPONCLASS_MELEE_BLUNT)
 GM:AddPointShopWeapon(0,"hook", 38, "weapon_zs_hook", WEAPONCLASS_MELEE_DEBUFF)
 GM:AddPointShopWeapon(0,"axe", 10, "weapon_zs_axe", WEAPONCLASS_MELEE_DEFENSIVE)
 --GM:AddPointShopWeapon(0,"zpfryp", 31, "weapon_zs_fryingpan")
---GM:AddPointShopWeapon(0,"zpcpot", 32, "weapon_zs_pot")
 
 local item = GM:AddPointShopWeapon(1,"butcher", 55, "weapon_zs_butcherknife", WEAPONCLASS_MELEE_BLADED)
 GM:AddWeaponPrerequisite(item,"knife")
-local item = GM:AddPointShopWeapon(1,"electrohmr", 85, "weapon_zs_electrohammer", WEAPONCLASS_MELEE_REPAIR)
+local item = GM:AddPointShopWeapon(1,"electrohmr", 65, "weapon_zs_electrohammer", WEAPONCLASS_MELEE_REPAIR)
 GM:AddWeaponPrerequisite(item,"crphmr")
 item.NoClassicMode = true
 local item = GM:AddPointShopWeapon(1,"crowbar", 52, "weapon_zs_crowbar", WEAPONCLASS_MELEE_UTIL)
@@ -315,6 +314,9 @@ GM:AddWeaponPrerequisite(item,"axe")
 
 local item = GM:AddPointShopWeapon(2,"longsword", 85, "weapon_zs_longsword", WEAPONCLASS_MELEE_BLADED)
 GM:AddWeaponPrerequisite(item,"butcher")
+local item = GM:AddPointShopWeapon(2,"crdlssdrill", 100, "weapon_zs_cordlessdrill", WEAPONCLASS_MELEE_REPAIR)
+GM:AddWeaponPrerequisite(item,"electrohmr")
+item.NoClassicMode = true
 local item = GM:AddPointShopWeapon(2,"extbaton", 80, "weapon_zs_extendingbaton", WEAPONCLASS_MELEE_BLUNT_FAST)
 GM:AddWeaponPrerequisite(item,"pipe")
 local item = GM:AddPointShopWeapon(2,"sledgehammer", 90, "weapon_zs_sledgehammer", WEAPONCLASS_MELEE_BLUNT)
@@ -328,9 +330,7 @@ GM:AddWeaponPrerequisite(item,"breenbust")
 local item = GM:AddPointShopWeapon(3,"energysword", 145, "weapon_zs_energysword", WEAPONCLASS_MELEE_BLADED)
 GM:AddWeaponPrerequisite(item,"longsword")
 local item = GM:AddPointShopWeapon(3,"wrench", 160, "weapon_zs_wrench", WEAPONCLASS_MELEE_UTIL)
-GM:AddWeaponPrerequisite(item,"crowbar")
-GM:AddWeaponPrerequisite(item,"shovel")
-GM:AddWeaponPrerequisite(item,"pot")
+
 local item = GM:AddPointShopWeapon(3,"megamasher", 150, "weapon_zs_megamasher", WEAPONCLASS_MELEE_BLUNT)
 GM:AddWeaponPrerequisite(item,"sledgehammer")
 -- Power Punhcer

@@ -22,7 +22,7 @@ SWEP.Base = "weapon_zs_hammer"
 SWEP.Primary.Delay = 0.5
 SWEP.SwingTime = 0.15
 SWEP.MeleeDamage = 32
-SWEP.HealStrength = 1.5
+SWEP.HealStrength = 1.25
 
 SWEP.MeleeRange = 60
 SWEP.MeleeSize = 0.875
