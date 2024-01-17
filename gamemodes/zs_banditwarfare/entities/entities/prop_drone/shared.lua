@@ -15,7 +15,7 @@ ENT.MaxSpeed = 260
 ENT.TurnSpeed = 70
 ENT.IdleDrag = 1
 ENT.SameTeamNoCollide = true
-
+ENT.IsUpgraded = false
 function ENT:SetObjectHealth(health)
 	self:SetDTFloat(0, health)
 
