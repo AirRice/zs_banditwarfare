@@ -35,6 +35,14 @@ function ENT:CalcSurroundingTeam()
  				bnum = bnum + 1
  			end
 			self.NearbyPlayers[pl_uid] = true
+		elseif pl:GetClass() = "prop_drone" and pl:IsPlayer() and pl:Alive() then
+			local drone_uid = pl:GetOwner():SteamID64().."_drone"
+			if pl:GetOwner():Team() == TEAM_HUMAN then
+				hnum = hnum + 1
+			elseif pl:GetOwner():Team() == TEAM_BANDIT then
+				bnum = bnum + 1
+			end
+		   self.NearbyPlayers[drone_uid] = true	
 		end
 	end
 
@@ -57,9 +65,17 @@ function ENT:Think()
 		if self:GetLastCalcedNearby() <= CurTime() - 1 and self:GetIsActive() then
 			local calcedTeam = self:CalcSurroundingTeam()
 			self:SetLastCaptureTeam(calcedTeam)
-			for k, pl in pairs(player.GetAllActive()) do
-				local pl_uid = pl:SteamID64()
-				if self.NearbyPlayers[pl_uid] and pl:IsPlayer() and pl:Alive() then
+			local toassess = {}
+			table.Add( toassess, player.GetAllActive() )
+			table.Add( toassess, ents.FindByClass("prop_drone") )
+			for k, pl in pairs() do
+				local pl_uid = nil 
+				if pl:GetClass() == "prop_drone" then
+					pl_uid = (IsValid(pl:GetOwner()) and pl:IsPlayer() and pl:Alive()) and pl:GetOwner():SteamID64().."_drone" or nil
+				else
+					pl_uid = pl:SteamID64()
+				end
+				if pl_uid and self.NearbyPlayers[pl_uid] and (pl:IsPlayer() and pl:Alive()) or (pl:GetClass() == "prop_drone" and pl:GetOwner():IsPlayer() and pl:GetOwner():Alive())  then
 					if (calcedTeam == TEAM_BANDIT or calcedTeam == TEAM_HUMAN) then
 						local plysamples = pl:GetSamples()
 						self.PlayerAdditionalInsertCount[pl_uid] = (self.PlayerAdditionalInsertCount[pl_uid] or 0)

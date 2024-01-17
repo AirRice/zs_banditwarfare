@@ -46,6 +46,22 @@ function ENT:GetMaxObjectHealth()
 	return self:GetDTFloat(1)
 end
 
+function ENT:SetSamples(samples)
+	self:SetDTInt(0, samples)
+end
+
+function ENT:AddSamples(samples)
+	self:SetDTInt(0, self:GetDTInt(0) + samples)
+end
+
+function ENT:TakeSamples(samples)
+	self:SetDTInt(0, self:GetDTInt(0) - samples)
+end
+
+function ENT:GetSamples()
+	return self:GetDTInt(0)
+end
+
 function ENT:GetRedLightPos()
 	return self:LocalToWorld(Vector(3, 0, 13.75))
 end

@@ -42,16 +42,33 @@ function ENT:Use(activator, caller)
 end
 
 function ENT:GiveToActivator(activator)
-	if self.DieTime ~= 0 and activator:IsPlayer() and activator:Alive() and (activator:Team() == TEAM_HUMAN or activator:Team() == TEAM_BANDIT) and GAMEMODE:IsSampleCollectMode() then
-		activator:AddSamples(self.SampleAmount or 1)
-		self:EmitSound("physics/flesh/flesh_bloody_break.wav")
-		util.Blood(self:GetPos(), math.random(2), Vector(0, 0, 1), 100, self:GetDTInt(0), true)
-		self.DieTime = 0
+	local isdrone = false
+	local droneent = nil
+	local togiveent = nil
+	if not GAMEMODE:IsSampleCollectMode() or  self.DieTime == 0 then return end
+	if activator:GetClass() == "prop_drone" and IsValid(activator:GetOwner()) then
+		isdrone = true
+		droneent = activator
+		togiveent = activator:GetOwner()
+	else
+		togiveent = activator
 	end
+	if togiveent:IsPlayer() and togiveent:Alive() and (togiveent:Team() == TEAM_HUMAN or togiveent:Team() == TEAM_BANDIT) then
+		if isdrone then
+			droneent:AddSamples(self.SampleAmount or 1)
+		else
+			togiveent:AddSamples(self.SampleAmount or 1)
+		end
+	else
+		return
+	end
+	self:EmitSound("physics/flesh/flesh_bloody_break.wav")
+	util.Blood(self:GetPos(), math.random(2), Vector(0, 0, 1), 100, self:GetDTInt(0), true)
+	self.DieTime = 0
 end
 
 function ENT:StartTouch(ent)
-	if self.DieTime ~= 0 and ent:IsPlayer() and ent:Alive() then
+	if self.DieTime ~= 0 and (ent:IsPlayer() and ent:Alive()) or (ent:GetClass() == "prop_drone") then
 		self:GiveToActivator(ent)
 	end
 end
