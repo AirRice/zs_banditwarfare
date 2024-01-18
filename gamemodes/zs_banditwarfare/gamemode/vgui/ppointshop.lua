@@ -1312,10 +1312,17 @@ function PANEL:PopulateUpgradeList(id, weaponslot, upgrademode)
 	local screenscale = BetterScreenScale()
 	local tab = FindItem(id)
 	if not tab then return end
-
+	local added = {}
 	for i, upgradepath in ipairs(GetPossibleWepUpgradePaths(id)) do
 		for j, upgrade in ipairs(upgradepath) do
-			
+			if (added[upgrade] != nil) then
+				continue
+			end
+			local itembut = vgui.Create("UpgradeItemButton")
+			itembut:SetupItemButton(upgrade, weaponslot)
+			itembut:SetParent(self.m_LeftPanel)
+			itembut:SetPos(4 + (i-1) * (self.m_CurrentItemLabel:GetWide() + 32), self.m_CurrentItemLabel:GetTall() + 64 + (j-1) * ( 32 + itembut:GetTall()) )
+			added[upgrade] = itembut
 		end
 	end
 	local itemslist = upgrademode and FindWeaponConsequents(id) or FindWeaponPrerequisites(id)
